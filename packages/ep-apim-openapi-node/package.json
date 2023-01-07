@@ -1,6 +1,6 @@
 {
   "name": "@solace-labs/ep-apim-openapi-node",
-  "version": "1.0.8",
+  "version": "1.0.0",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "description": "Solace Event Portal APIM OpenAPI Client for NodeJS (Typescript), v2.0.0",
@@ -8,11 +8,11 @@
   "private": true,
   "repository": {
     "type": "git",
-    "url": "github:ricardojosegomezulmke/solace-tools",
+    "url": "github:SolaceLabs/solace-tools",
     "directory": "packages/ep-apim-openapi-node"
   },
   "bugs": {
-    "url": "github:ricardojosegomezulmke/issues"
+    "url": "github:SolaceLabs/issues"
   },
   "author": "Solace Corporation",
   "contributors": [

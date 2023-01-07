@@ -1,6 +1,6 @@
 {
   "name": "@solace-labs/ep-openapi-node",
-  "version": "2.0.17",
+  "version": "2.50.0",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "type": "commonjs",
@@ -8,11 +8,11 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "github:ricardojosegomezulmke/solace-tools",
+    "url": "github:SolaceLabs/solace-tools",
     "directory": "packages/ep-openapi-node"
   },
   "bugs": {
-    "url": "github:ricardojosegomezulmke/issues"
+    "url": "github:SolaceLabs/issues"
   },
   "author": "Solace Corporation",
   "contributors": [
