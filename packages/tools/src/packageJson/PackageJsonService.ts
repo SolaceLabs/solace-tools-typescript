@@ -28,7 +28,7 @@ class PackageJsonService {
       // backup
       s.cp(`${packageJsonFile}`, packageJsonBackupFile);
       // write new file
-      fs.writeFileSync(packageJsonFile, newPackageJsonString);  
+      fs.writeFileSync(packageJsonFile, newPackageJsonString);
       console.log(`${logName}: success.`);
     } catch(e) {
       console.log(`${logName}: error=${e}`);
