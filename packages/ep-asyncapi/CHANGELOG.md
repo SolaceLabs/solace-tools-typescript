@@ -1,5 +1,13 @@
 # @solace-labs/ep-asyncapi
 
+## 0.50.1
+
+### Patch Changes
+
+- d79cb9e: migrate to solace labs
+- Updated dependencies [d79cb9e]
+  - @solace-labs/ep-openapi-node@2.50.1
+
 ## 1.0.9
 
 ### Patch Changes
