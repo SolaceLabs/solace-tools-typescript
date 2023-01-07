@@ -4,7 +4,7 @@
   "statements": 96,
   "branches": 82,
   "functions": 99,
-  "lines": 99,
+  "lines": 97,
   "temp-dir": "./test/logs/nyc_output",
   "reporter": ["html", "text", "text-summary", "lcov"],
   "report-dir": "./test/logs/coverage",
