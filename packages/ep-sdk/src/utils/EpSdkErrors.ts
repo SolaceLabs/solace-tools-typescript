@@ -1,5 +1,5 @@
 /* istanbul ignore file */
-import { ApiError } from "@rjgu/ep-openapi-node";
+import { ApiError } from "@solace-labs/ep-openapi-node";
 import { EpSdkLogger } from "./EpSdkLogger";
 import { 
   IEpSdkTask_TransactionLogData,

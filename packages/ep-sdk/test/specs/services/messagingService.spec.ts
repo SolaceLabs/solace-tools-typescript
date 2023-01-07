@@ -1,25 +1,15 @@
-import 'mocha';
-import { expect } from 'chai';
-import path from 'path';
+import "mocha";
+import { expect } from "chai";
+import path from "path";
+import { TestContext, TestUtils } from "@internal/tools/src";
+import { TestLogger, TestConfig } from "../../lib";
 import {
-  TestContext,
-  TestUtils
-} from '@internal/tools/src';
-import { 
-  TestLogger,
-  TestConfig,
-} from '../../lib';
-import { 
-  ApiError, 
+  ApiError,
   Plan,
   SolaceClassOfServicePolicy,
   MessagingService,
-} from '@rjgu/ep-openapi-node';
-import { 
-  EpSdkError,
-  EpSdkMessagingService,
-} from '../../../src';
-
+} from "@solace-labs/ep-openapi-node";
+import { EpSdkError, EpSdkMessagingService } from "../../../src";
 
 const scriptName: string = path.basename(__filename);
 TestLogger.logMessage(scriptName, ">>> starting ...");
@@ -87,7 +77,6 @@ let ApplicationDomainId: string | undefined;
 // const MessagingServiceName = `${TestSpecId}`;
 // let MessagingServiceId: string | undefined;
 
-
 // fixed, taken from UI
 const MessagingServiceId = "14p394d5c0i";
 
@@ -104,28 +93,28 @@ const EventApiProductVersionPlan_1: Plan = {
     accessType: SolaceClassOfServicePolicy.accessType.EXCLUSIVE,
     maximumTimeToLive: 1,
     maxMsgSpoolUsage: 1,
-    messageDeliveryMode: SolaceClassOfServicePolicy.messageDeliveryMode.GUARANTEED,
+    messageDeliveryMode:
+      SolaceClassOfServicePolicy.messageDeliveryMode.GUARANTEED,
     queueType: SolaceClassOfServicePolicy.queueType.COMBINED,
-    type: 'solaceClassOfServicePolicy'
-  }
+    type: "solaceClassOfServicePolicy",
+  },
 };
 let EventApiProductVersionPlanId_1: string | undefined;
 const EventApiProductVersionPlan_2: Plan = {
   name: "direct-plan",
   solaceClassOfServicePolicy: {
     messageDeliveryMode: SolaceClassOfServicePolicy.messageDeliveryMode.DIRECT,
-    type: 'solaceClassOfServicePolicy'
-  }
+    type: "solaceClassOfServicePolicy",
+  },
 };
 let EventApiProductVersionPlanId_2: string | undefined;
 
 const initializeGlobals = () => {
   ApplicationDomainName = `${TestConfig.getAppId()}/services/${TestSpecName}`;
-}
+};
 
 describe(`${scriptName}`, () => {
-
-  before(async() => {
+  before(async () => {
     initializeGlobals();
     // TestContext.newItId();
     // const applicationDomainResponse: ApplicationDomainResponse = await ApplicationDomainsService.createApplicationDomain({
@@ -135,12 +124,12 @@ describe(`${scriptName}`, () => {
     // });
     // ApplicationDomainId = applicationDomainResponse.data.id;
   });
-  
+
   beforeEach(() => {
     TestContext.newItId();
   });
 
-  after(async() => {
+  after(async () => {
     // TestContext.newItId();
     // // delete event mesh
     // // await EventMeshesService.deleteEventMesh({ id: EventMeshId });
@@ -158,7 +147,7 @@ describe(`${scriptName}`, () => {
   //         enumObjectSettings: {
   //           shared: true,
   //         },
-  //       });  
+  //       });
   //       const epSdkEnumTask_ExecuteReturn: IEpSdkEnumTask_ExecuteReturn = await epSdkEnumTask.execute();
   //       enumInfo.enumId = epSdkEnumTask_ExecuteReturn.epObject.id;
   //       const epSdkEnumVersionTask = new EpSdkEnumVersionTask({
@@ -171,9 +160,9 @@ describe(`${scriptName}`, () => {
   //           displayName: enumInfo.enumName,
   //         },
   //         enumValues: enumInfo.enumValues,
-  //       });  
+  //       });
   //       const epSdkEnumVersionTask_ExecuteReturn: IEpSdkEnumVersionTask_ExecuteReturn = await epSdkEnumVersionTask.execute();
-  //       enumInfo.enumVersionId = epSdkEnumVersionTask_ExecuteReturn.epObject.id;  
+  //       enumInfo.enumVersionId = epSdkEnumVersionTask_ExecuteReturn.epObject.id;
   //     }
   //   } catch(e) {
   //     if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
@@ -192,7 +181,7 @@ describe(`${scriptName}`, () => {
   //         schemaObjectSettings: {
   //           shared: true,
   //         },
-  //       });  
+  //       });
   //       const epSdkSchemaTask_ExecuteReturn: IEpSdkSchemaTask_ExecuteReturn = await epSdkSchemaTask.execute();
   //       schemaInfo.schemaId = epSdkSchemaTask_ExecuteReturn.epObject.id;
   //       const epSdkSchemaVersionTask = new EpSdkSchemaVersionTask({
@@ -206,9 +195,9 @@ describe(`${scriptName}`, () => {
   //           description: 'description',
   //           content: schemaInfo.schemaContent,
   //         },
-  //       });  
+  //       });
   //       const epSdkSchemaVersionTask_ExecuteReturn: IEpSdkSchemaVersionTask_ExecuteReturn = await epSdkSchemaVersionTask.execute();
-  //       schemaInfo.schemaVersionId = epSdkSchemaVersionTask_ExecuteReturn.epObject.id;  
+  //       schemaInfo.schemaVersionId = epSdkSchemaVersionTask_ExecuteReturn.epObject.id;
   //     }
   //   } catch(e) {
   //     if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
@@ -228,7 +217,7 @@ describe(`${scriptName}`, () => {
   //         eventObjectSettings: {
   //           shared: true,
   //         },
-  //       });  
+  //       });
   //       const epSdkEpEventTask_ExecuteReturn: IEpSdkEpEventTask_ExecuteReturn = await epSdkEpEventTask.execute();
   //       eventInfo.eventId = epSdkEpEventTask_ExecuteReturn.epObject.id;
   //       const epSdkEpEventVersionTask = new EpSdkEpEventVersionTask({
@@ -243,9 +232,9 @@ describe(`${scriptName}`, () => {
   //           description: 'description',
   //           schemaVersionId: SchemaInfoList[idx].schemaVersionId
   //         },
-  //       });  
-  //       const epSdkEpEventVersionTask_ExecuteReturn: IEpSdkEpEventVersionTask_ExecuteReturn = await epSdkEpEventVersionTask.execute();            
-  //       eventInfo.eventVersionId = epSdkEpEventVersionTask_ExecuteReturn.epObject.id;  
+  //       });
+  //       const epSdkEpEventVersionTask_ExecuteReturn: IEpSdkEpEventVersionTask_ExecuteReturn = await epSdkEpEventVersionTask.execute();
+  //       eventInfo.eventVersionId = epSdkEpEventVersionTask_ExecuteReturn.epObject.id;
   //       idx++;
   //     }
   //   } catch(e) {
@@ -257,7 +246,7 @@ describe(`${scriptName}`, () => {
 
   // it(`${scriptName}: should create event api & version`, async () => {
   //   try {
-  //     const eventApiResponse: EventApiResponse = await EventApIsService.createEventApi({ 
+  //     const eventApiResponse: EventApiResponse = await EventApIsService.createEventApi({
   //       requestBody: {
   //         applicationDomainId: ApplicationDomainId,
   //         name: EventApiName,
@@ -270,10 +259,10 @@ describe(`${scriptName}`, () => {
   //       eventApiId: EventApiId,
   //       version: '1.0.0',
   //       displayName: EventApiName,
-  //       consumedEventVersionIds: EventInfoList.map( (eventInfo: TEventInfo) => { 
+  //       consumedEventVersionIds: EventInfoList.map( (eventInfo: TEventInfo) => {
   //         return eventInfo.eventVersionId;
   //       }),
-  //       producedEventVersionIds: EventInfoList.map( (eventInfo: TEventInfo) => { 
+  //       producedEventVersionIds: EventInfoList.map( (eventInfo: TEventInfo) => {
   //         return eventInfo.eventVersionId;
   //       }),
   //     };
@@ -294,7 +283,7 @@ describe(`${scriptName}`, () => {
   // it(`${scriptName}: should find the pre-configured environment`, async () => {
   //   try {
   //     // assuming there are less than 100 envs defined in EP
-  //     const environmentsResponse: EnvironmentsResponse = await EnvironmentsService.getEnvironments({ 
+  //     const environmentsResponse: EnvironmentsResponse = await EnvironmentsService.getEnvironments({
   //       pageSize: 100,
   //     });
   //     const message = `TEST expects ${EnvironmentName} to be defined in EP`;
@@ -386,61 +375,79 @@ describe(`${scriptName}`, () => {
   it(`${scriptName}: should get list of all messaging services`, async () => {
     const PageSize = 1;
     try {
-      const messagingServiceList: Array<MessagingService> = await EpSdkMessagingService.listAll({
-        pageSize: PageSize
-      });
+      const messagingServiceList: Array<MessagingService> =
+        await EpSdkMessagingService.listAll({
+          pageSize: PageSize,
+        });
       expect(messagingServiceList.length).to.be.greaterThan(1);
       TotalMessagingServices = messagingServiceList.length;
       // // DEBUG
       // expect(false, `messagingServiceList=\n${JSON.stringify(messagingServiceList, null, 2)}`).to.be.true;
-    } catch(e) {
-      if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+    } catch (e) {
+      if (e instanceof ApiError)
+        expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
+        .to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
+        .true;
     }
   });
 
   it(`${scriptName}: should get list of all messaging services by idList=[]`, async () => {
     try {
-      const messagingServiceList: Array<MessagingService> = await EpSdkMessagingService.listAll({
-        idList: []
-      });
+      const messagingServiceList: Array<MessagingService> =
+        await EpSdkMessagingService.listAll({
+          idList: [],
+        });
       expect(messagingServiceList.length).to.equal(TotalMessagingServices);
       // // DEBUG
       // expect(false, `messagingServiceList=\n${JSON.stringify(messagingServiceList, null, 2)}`).to.be.true;
-    } catch(e) {
-      if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+    } catch (e) {
+      if (e instanceof ApiError)
+        expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
+        .to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
+        .true;
     }
   });
 
   it(`${scriptName}: should get list of all messaging services by idList`, async () => {
     const PageSize = 1;
     try {
-      const messagingServiceList: Array<MessagingService> = await EpSdkMessagingService.listAll({
-        pageSize: PageSize,
-        idList: [MessagingServiceId]
-      });
+      const messagingServiceList: Array<MessagingService> =
+        await EpSdkMessagingService.listAll({
+          pageSize: PageSize,
+          idList: [MessagingServiceId],
+        });
       expect(messagingServiceList.length).to.equal(1);
       // // DEBUG
       // expect(false, `messagingServiceList=\n${JSON.stringify(messagingServiceList, null, 2)}`).to.be.true;
-    } catch(e) {
-      if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+    } catch (e) {
+      if (e instanceof ApiError)
+        expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
+        .to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
+        .true;
     }
   });
-  
+
   it(`${scriptName}: should get messaging service`, async () => {
     try {
-      const messagingService: MessagingService = await EpSdkMessagingService.getById({ messagingServiceId: MessagingServiceId });
+      const messagingService: MessagingService =
+        await EpSdkMessagingService.getById({
+          messagingServiceId: MessagingServiceId,
+        });
       // // DEBUG
       // expect(false, `messagingService=\n${JSON.stringify(messagingService, null, 2)}`).to.be.true;
-    } catch(e) {
-      if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+    } catch (e) {
+      if (e instanceof ApiError)
+        expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
+        .to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
+        .true;
     }
   });
 
@@ -456,7 +463,7 @@ describe(`${scriptName}`, () => {
   //     expect(messagingServicesResponse.data.length, message).to.be.greaterThan(0);
   //     if(!messagingServicesResponse.data || messagingServicesResponse.data.length ===0) throw new Error(message);
   //     TheMessagingService = messagingServicesResponse.data[0];
-      
+
   //     // create the product
   //     const eventApiProductResponse: EventApiProductResponse = await EventApiProductsService.createEventApiProduct({
   //       requestBody: {
@@ -493,7 +500,4 @@ describe(`${scriptName}`, () => {
   //     expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
   //   }
   // });
-
-
 });
-

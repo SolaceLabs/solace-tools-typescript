@@ -1,7 +1,7 @@
 import {
   OpenAPI,
   OpenAPIConfig
-} from '@rjgu/ep-openapi-node';
+} from '@solace-labs/ep-openapi-node';
 
 /**
  * Convenience class to initialize the OpenAPI config for @solace-labs/ep-openapi-node.

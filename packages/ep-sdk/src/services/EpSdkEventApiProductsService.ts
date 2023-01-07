@@ -5,7 +5,7 @@ import {
   EventApiProductsResponse,
   EventApiProductsService,
   Pagination, 
-} from '@rjgu/ep-openapi-node';
+} from '@solace-labs/ep-openapi-node';
 import { 
   EEpSdkLoggerCodes, 
   EpSdkApiContentError, 

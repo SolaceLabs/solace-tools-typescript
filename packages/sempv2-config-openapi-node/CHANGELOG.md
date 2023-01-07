@@ -1,4 +1,4 @@
-# @rjgu/sempv2-config-openapi-node
+# @solace-labs/sempv2-config-openapi-node
 
 ## 1.0.11
 

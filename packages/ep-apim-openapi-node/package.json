@@ -1,5 +1,5 @@
 {
-  "name": "@rjgu/ep-apim-openapi-node",
+  "name": "@solace-labs/ep-apim-openapi-node",
   "version": "1.0.8",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

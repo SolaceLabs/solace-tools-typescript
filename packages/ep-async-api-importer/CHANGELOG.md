@@ -1,4 +1,4 @@
-# @rjgu/ep-async-api-importer
+# @solace-labs/ep-async-api-importer
 
 ## 0.50.4
 
@@ -6,8 +6,8 @@
 
 - 75d5499: test publish
 - Updated dependencies [75d5499]
-  - @rjgu/ep-asyncapi@1.0.9
-  - @rjgu/ep-sdk@1.0.8
+  - @solace-labs/ep-asyncapi@1.0.9
+  - @solace-labs/ep-sdk@1.0.8
 
 ## 0.50.2
 
@@ -15,8 +15,8 @@
 
 - d7be165: fixed publish files
 - Updated dependencies [d7be165]
-  - @rjgu/ep-asyncapi@1.0.7
-  - @rjgu/ep-sdk@1.0.6
+  - @solace-labs/ep-asyncapi@1.0.7
+  - @solace-labs/ep-sdk@1.0.6
 
 ## 0.50.1
 
@@ -30,5 +30,5 @@
     - setting to false disables logging of progress/summary to the console. useful when running in CI/CD pipeline.
 
 - Updated dependencies [8b9f729]
-  - @rjgu/ep-asyncapi@1.0.6
-  - @rjgu/ep-sdk@1.0.5
+  - @solace-labs/ep-asyncapi@1.0.6
+  - @solace-labs/ep-sdk@1.0.5

@@ -1,6 +1,6 @@
 {
-  "name": "@rjgu/solace-tools-typescript",
-  "version": "1.7.1",
+  "name": "@solace-labs/solace-tools-typescript",
+  "version": "2.0.0",
   "private": true,
   "workspaces": [
     "packages/*"

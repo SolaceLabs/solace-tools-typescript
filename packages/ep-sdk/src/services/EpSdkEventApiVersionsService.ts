@@ -10,7 +10,7 @@ import {
   StateChangeRequestResponse,
   EventApiResponse,
   Pagination,
-} from '@rjgu/ep-openapi-node';
+} from '@solace-labs/ep-openapi-node';
 import { 
   EpSdkApiContentError, 
   EpSdkValidationError 

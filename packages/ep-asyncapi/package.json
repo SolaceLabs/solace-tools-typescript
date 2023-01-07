@@ -1,5 +1,5 @@
 {
-  "name": "@rjgu/ep-asyncapi",
+  "name": "@solace-labs/ep-asyncapi",
   "version": "1.0.9",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -61,7 +61,7 @@
   "dependencies": {
     "@asyncapi/avro-schema-parser": "^1.1.0",
     "@asyncapi/parser": "^1.17.2",
-    "@rjgu/ep-openapi-node": "^2.0.17",
+    "@solace-labs/ep-openapi-node": "^2.0.17",
     "js-yaml": "^4.1.0",
     "jsonschema": "^1.4.1",
     "lodash": "^4.17.21",

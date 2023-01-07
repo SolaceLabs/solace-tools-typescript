@@ -1,30 +1,26 @@
-import 'mocha';
-import { expect } from 'chai';
-import path from 'path';
-import { 
-  ApiError, 
-  ApplicationDomain, 
-  ApplicationDomainResponse, 
-  ApplicationDomainsService 
-} from '@rjgu/ep-openapi-node';
+import "mocha";
+import { expect } from "chai";
+import path from "path";
 import {
-  TestContext,
-  TestUtils
-} from '@internal/tools/src';
-import { 
+  ApiError,
+  ApplicationDomain,
+  ApplicationDomainResponse,
+  ApplicationDomainsService,
+} from "@solace-labs/ep-openapi-node";
+import { TestContext, TestUtils } from "@internal/tools/src";
+import {
   TestLogger,
   TestConfig,
   EpSdkPinoLogger,
-  TestHelpers
-} from '../../lib';
-import { 
+  TestHelpers,
+} from "../../lib";
+import {
   EpSdkError,
   EEpSdkLogLevel,
   EpSdkLogger,
   EpSdkApplicationDomainsService,
   IEpSdkLoggerInstance,
-} from '../../../src';
-
+} from "../../../src";
 
 const scriptName: string = path.basename(__filename);
 TestLogger.logMessage(scriptName, ">>> starting ...");
@@ -37,23 +33,26 @@ let epExistingLoggerInstance: IEpSdkLoggerInstance;
 
 const initializeGlobals = () => {
   ApplicationDomainName = `${TestConfig.getAppId()}/misc/${TestSpecName}`;
-}
+};
 
 describe(`${scriptName}`, () => {
-    
-  before(async() => {
+  before(async () => {
     TestContext.newItId();
     initializeGlobals();
-    const xvoid: void = await TestHelpers.applicationDomainAbsent({ applicationDomainName: ApplicationDomainName });
+    const xvoid: void = await TestHelpers.applicationDomainAbsent({
+      applicationDomainName: ApplicationDomainName,
+    });
   });
 
   beforeEach(() => {
     TestContext.newItId();
   });
 
-  after(async() => {
+  after(async () => {
     TestContext.newItId();
-    const xvoid: void = await TestHelpers.applicationDomainAbsent({ applicationDomainName: ApplicationDomainName });
+    const xvoid: void = await TestHelpers.applicationDomainAbsent({
+      applicationDomainName: ApplicationDomainName,
+    });
   });
 
   it(`${scriptName}: should initialize logger with pino`, async () => {
@@ -65,15 +64,27 @@ describe(`${scriptName}`, () => {
       //   epSdkLogLevel: epExistingLoggerInstance.epSdkLogLevel
       // }, null, 2)}`)
 
-      const epSdkPinoLogger: EpSdkPinoLogger = new EpSdkPinoLogger(TestConfig.getAppId(), EEpSdkLogLevel.Trace);
+      const epSdkPinoLogger: EpSdkPinoLogger = new EpSdkPinoLogger(
+        TestConfig.getAppId(),
+        EEpSdkLogLevel.Trace
+      );
       EpSdkLogger.initialize({ epSdkLoggerInstance: epSdkPinoLogger });
-      EpSdkLogger.info(EpSdkLogger.createLogEntry(scriptName, { code: 'TEST_INFO', module: scriptName, details: {
-        hello: 'world'
-      }}));
-    } catch(e) {
-      if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      EpSdkLogger.info(
+        EpSdkLogger.createLogEntry(scriptName, {
+          code: "TEST_INFO",
+          module: scriptName,
+          details: {
+            hello: "world",
+          },
+        })
+      );
+    } catch (e) {
+      if (e instanceof ApiError)
+        expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
+        .to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
+        .true;
     }
     // // DEBUG
     // expect(false, TestLogger.createLogMessage('check logging')).to.be.true;
@@ -81,53 +92,76 @@ describe(`${scriptName}`, () => {
 
   it(`${scriptName}: should create application domain`, async () => {
     try {
-      const applicationDomainResponse: ApplicationDomainResponse = await ApplicationDomainsService.createApplicationDomain({
-        requestBody: {
-          name: ApplicationDomainName,
-        }
-      });
+      const applicationDomainResponse: ApplicationDomainResponse =
+        await ApplicationDomainsService.createApplicationDomain({
+          requestBody: {
+            name: ApplicationDomainName,
+          },
+        });
       ApplicationDomainId = applicationDomainResponse.data.id;
-    } catch(e) {
-      if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+    } catch (e) {
+      if (e instanceof ApiError)
+        expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
+        .to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
+        .true;
     }
   });
 
   it(`${scriptName}: should get application domain by name`, async () => {
     try {
-      const applicationDomain: ApplicationDomain | undefined = await EpSdkApplicationDomainsService.getByName({ applicationDomainName: ApplicationDomainName });
+      const applicationDomain: ApplicationDomain | undefined =
+        await EpSdkApplicationDomainsService.getByName({
+          applicationDomainName: ApplicationDomainName,
+        });
       // expect(false, TestLogger.createLogMessage('check logging')).to.be.true;
-      expect(applicationDomain, TestLogger.createApiTestFailMessage('applicationDomain === undefined')).to.not.be.undefined;
-    } catch(e) {
-      if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      expect(
+        applicationDomain,
+        TestLogger.createApiTestFailMessage("applicationDomain === undefined")
+      ).to.not.be.undefined;
+    } catch (e) {
+      if (e instanceof ApiError)
+        expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
+        .to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
+        .true;
     }
   });
 
   it(`${scriptName}: should restore logger`, async () => {
     try {
       EpSdkLogger.initialize({ epSdkLoggerInstance: epExistingLoggerInstance });
-    } catch(e) {
-      if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+    } catch (e) {
+      if (e instanceof ApiError)
+        expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
+        .to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
+        .true;
     }
   });
 
   it(`${scriptName}: should get application domain by name`, async () => {
     try {
-      const applicationDomain: ApplicationDomain | undefined = await EpSdkApplicationDomainsService.getByName({ applicationDomainName: ApplicationDomainName });
+      const applicationDomain: ApplicationDomain | undefined =
+        await EpSdkApplicationDomainsService.getByName({
+          applicationDomainName: ApplicationDomainName,
+        });
       // DEBUG
       // expect(false, TestLogger.createLogMessage('check logging with default logger')).to.be.true;
-      expect(applicationDomain, TestLogger.createApiTestFailMessage('applicationDomain === undefined')).to.not.be.undefined;
-    } catch(e) {
-      if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      expect(
+        applicationDomain,
+        TestLogger.createApiTestFailMessage("applicationDomain === undefined")
+      ).to.not.be.undefined;
+    } catch (e) {
+      if (e instanceof ApiError)
+        expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
+        .to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
+        .true;
     }
   });
-
 });
-

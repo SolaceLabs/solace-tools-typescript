@@ -5,7 +5,7 @@ import {
   EventsResponse,
   EventsService,
   Pagination,
-} from '@rjgu/ep-openapi-node';
+} from '@solace-labs/ep-openapi-node';
 import { 
   EEpSdkCustomAttributeEntityTypes,
   TEpSdkCustomAttributeList 

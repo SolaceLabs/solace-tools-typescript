@@ -12,7 +12,7 @@ import {
   Pagination,
   EventResponse,
   StateChangeRequestResponse
-} from '@rjgu/ep-openapi-node';
+} from '@solace-labs/ep-openapi-node';
 import { 
   EpSdkApiContentError, 
   EpSdkFeatureNotSupportedError,

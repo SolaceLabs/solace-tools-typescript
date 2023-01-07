@@ -1,11 +1,5 @@
-import {
-  EpSdkStatesService 
-} from "@rjgu/ep-sdk";
-import { 
-  CliError,
-  CliUtils
-} from '../cli-components';
-
+import { EpSdkStatesService } from "@solace-labs/ep-sdk";
+import { CliError, CliUtils } from "../cli-components";
 
 export enum ECliAssetImport_TargetLifecycleState {
   RELEASED = "released",
@@ -13,14 +7,15 @@ export enum ECliAssetImport_TargetLifecycleState {
 }
 
 class CliEPStatesService {
-
-  public getTargetLifecycleState({ cliAssetImport_TargetLifecycleState }:{
+  public getTargetLifecycleState({
+    cliAssetImport_TargetLifecycleState,
+  }: {
     cliAssetImport_TargetLifecycleState: ECliAssetImport_TargetLifecycleState;
   }): string {
-    const funcName = 'getTargetLifecycleState';
+    const funcName = "getTargetLifecycleState";
     const logName = `${CliEPStatesService.name}.${funcName}()`;
 
-    switch(cliAssetImport_TargetLifecycleState) {
+    switch (cliAssetImport_TargetLifecycleState) {
       case ECliAssetImport_TargetLifecycleState.DRAFT:
         return EpSdkStatesService.draftId;
       case ECliAssetImport_TargetLifecycleState.RELEASED:
@@ -33,4 +28,3 @@ class CliEPStatesService {
 }
 
 export default new CliEPStatesService();
-

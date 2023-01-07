@@ -1,5 +1,5 @@
 {
-  "name": "@rjgu/sempv2-config-openapi-node",
+  "name": "@solace-labs/sempv2-config-openapi-node",
   "version": "1.0.11",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

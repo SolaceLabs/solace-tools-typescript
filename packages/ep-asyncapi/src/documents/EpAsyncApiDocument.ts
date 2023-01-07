@@ -1,35 +1,53 @@
 import yaml from "js-yaml";
-import { AsyncAPIDocument, Message, Channel } from '@asyncapi/parser';
-import { Validator, ValidatorResult } from 'jsonschema';
-import { $EventApi, $EventApiVersion } from "@rjgu/ep-openapi-node";
-import { EpAsyncApiUtils, EpAsyncApiInternalError, EpAsyncApiSpecError, EpAsyncApiValidationError, EpAsyncApiXtensionError } from '../utils';
+import { AsyncAPIDocument, Message, Channel } from "@asyncapi/parser";
+import { Validator, ValidatorResult } from "jsonschema";
+import { $EventApi, $EventApiVersion } from "@solace-labs/ep-openapi-node";
+import {
+  EpAsyncApiUtils,
+  EpAsyncApiInternalError,
+  EpAsyncApiSpecError,
+  EpAsyncApiValidationError,
+  EpAsyncApiXtensionError,
+} from "../utils";
 import { EpAsyncApiMessageDocument } from "./EpAsyncApiMessageDocument";
 import { EpAsyncApiChannelDocument } from "./EpAsyncApiChannelDocument";
 import { EpAsyncApiChannelParameterDocument } from "./EpAsyncApiChannelParameterDocument";
-import { EpAsynApiChannelPublishOperation, EpAsyncApiChannelSubscribeOperation } from "./EpAsyncApiChannelOperation";
+import {
+  EpAsynApiChannelPublishOperation,
+  EpAsyncApiChannelSubscribeOperation,
+} from "./EpAsyncApiChannelOperation";
 
 enum E_EpAsyncApiExtensions {
   X_EP_APPLICATION_DOMAIN_NAME = "x-ep-application-domain-name",
-  X_EP_ASSETS_APPLICATION_DOMAIN_NAME = "x-ep-assets-application-domain-name"
+  X_EP_ASSETS_APPLICATION_DOMAIN_NAME = "x-ep-assets-application-domain-name",
 }
 
 export enum E_EpAsyncApiContentTypes {
-  APPLICATION_JSON = "application/json"
+  APPLICATION_JSON = "application/json",
 }
 
 export type T_EpAsyncApi_LogInfo = {
   title: string;
   version: string;
   applicationDomainName: string;
-}
+};
 
-export type T_EpAsyncApiChannelDocumentMap = Map<string, EpAsyncApiChannelDocument>;
-export type T_EpAsyncApiChannelParameterDocumentMap = Map<string, EpAsyncApiChannelParameterDocument>;
-export type T_EpAsyncApiMessageDocumentMap = Map<string, EpAsyncApiMessageDocument>;
+export type T_EpAsyncApiChannelDocumentMap = Map<
+  string,
+  EpAsyncApiChannelDocument
+>;
+export type T_EpAsyncApiChannelParameterDocumentMap = Map<
+  string,
+  EpAsyncApiChannelParameterDocument
+>;
+export type T_EpAsyncApiMessageDocumentMap = Map<
+  string,
+  EpAsyncApiMessageDocument
+>;
 export type T_EpAsyncApiEventNames = {
   publishEventNames: Array<string>;
   subscribeEventNames: Array<string>;
-}
+};
 
 export class EpAsyncApiDocument {
   // private appConfig: TCliAppConfig;
@@ -44,45 +62,63 @@ export class EpAsyncApiDocument {
   private unprefixedAssetsApplicationDomainName: string;
   private epEventApiName?: string;
   private epEventApiVersionName?: string;
-  public static NotSemVerIssue = 'Please use semantic versioning format for API version.';
+  public static NotSemVerIssue =
+    "Please use semantic versioning format for API version.";
 
   private getJSON(asyncApiDocument: AsyncAPIDocument): any {
-    const funcName = 'getJSON';
+    const funcName = "getJSON";
     const logName = `${EpAsyncApiDocument.name}.${funcName}()`;
     const anyDoc: any = asyncApiDocument;
-    if(anyDoc["_json"] === undefined) throw new EpAsyncApiSpecError(logName, this.constructor.name, '_json not found in parsed async api spec', {
-      asyncApiSpecTitle: this.getTitle(),
-      details: undefined
-    });
+    if (anyDoc["_json"] === undefined)
+      throw new EpAsyncApiSpecError(
+        logName,
+        this.constructor.name,
+        "_json not found in parsed async api spec",
+        {
+          asyncApiSpecTitle: this.getTitle(),
+          details: undefined,
+        }
+      );
     return anyDoc["_json"];
   }
 
   private get_X_EpApplicationDomainName(): string | undefined {
     // TODO: there should be a parser method to get this
-    return this.asyncApiDocumentJson[E_EpAsyncApiExtensions.X_EP_APPLICATION_DOMAIN_NAME];
+    return this.asyncApiDocumentJson[
+      E_EpAsyncApiExtensions.X_EP_APPLICATION_DOMAIN_NAME
+    ];
   }
 
   private get_X_EpAssetsApplicationDomainName(): string | undefined {
     // TODO: there should be a parser method to get this
-    return this.asyncApiDocumentJson[E_EpAsyncApiExtensions.X_EP_ASSETS_APPLICATION_DOMAIN_NAME];
+    return this.asyncApiDocumentJson[
+      E_EpAsyncApiExtensions.X_EP_ASSETS_APPLICATION_DOMAIN_NAME
+    ];
   }
 
   private createApplicationDomainName(prefix?: string): string {
-    const funcName = 'createApplicationDomainName';
+    const funcName = "createApplicationDomainName";
     const logName = `${EpAsyncApiDocument.name}.${funcName}()`;
 
-    let appDomainName: string | undefined = this.overrideEpApplicationDomainName;
-    if(appDomainName === undefined) {
+    let appDomainName: string | undefined =
+      this.overrideEpApplicationDomainName;
+    if (appDomainName === undefined) {
       const specAppDomainName = this.get_X_EpApplicationDomainName();
-      if(specAppDomainName === undefined) appDomainName = undefined;
+      if (specAppDomainName === undefined) appDomainName = undefined;
       else appDomainName = specAppDomainName;
     }
-    if(appDomainName === undefined) throw new EpAsyncApiXtensionError(logName, this.constructor.name, "no application domain name defined", {
-      asyncApiSpecTitle: this.getTitle(),
-      xtensionKey: E_EpAsyncApiExtensions.X_EP_APPLICATION_DOMAIN_NAME,
-    });
-    // add the prefix 
-    if(prefix !== undefined) appDomainName = `${prefix}/${appDomainName}`;
+    if (appDomainName === undefined)
+      throw new EpAsyncApiXtensionError(
+        logName,
+        this.constructor.name,
+        "no application domain name defined",
+        {
+          asyncApiSpecTitle: this.getTitle(),
+          xtensionKey: E_EpAsyncApiExtensions.X_EP_APPLICATION_DOMAIN_NAME,
+        }
+      );
+    // add the prefix
+    if (prefix !== undefined) appDomainName = `${prefix}/${appDomainName}`;
     return appDomainName;
   }
 
@@ -90,30 +126,33 @@ export class EpAsyncApiDocument {
     // const funcName = 'createAssetApplicationDomainName';
     // const logName = `${EpAsyncApiDocument.name}.${funcName}()`;
     const appDomainNameNoPrefix = this.createApplicationDomainName(undefined);
-    let assetsAppDomainName: string | undefined = this.overrideEpAssetsApplicationDomainName;
-    if(assetsAppDomainName === undefined) {
+    let assetsAppDomainName: string | undefined =
+      this.overrideEpAssetsApplicationDomainName;
+    if (assetsAppDomainName === undefined) {
       const specAssetAppDomainName = this.get_X_EpAssetsApplicationDomainName();
-      if(specAssetAppDomainName === undefined) assetsAppDomainName = undefined;
+      if (specAssetAppDomainName === undefined) assetsAppDomainName = undefined;
       else assetsAppDomainName = specAssetAppDomainName;
     }
-    if(assetsAppDomainName === undefined) assetsAppDomainName = appDomainNameNoPrefix;
-    // add the prefix 
-    if(prefix !== undefined) assetsAppDomainName = `${prefix}/${assetsAppDomainName}`;
+    if (assetsAppDomainName === undefined)
+      assetsAppDomainName = appDomainNameNoPrefix;
+    // add the prefix
+    if (prefix !== undefined)
+      assetsAppDomainName = `${prefix}/${assetsAppDomainName}`;
     return assetsAppDomainName;
   }
 
   private createEpEventApiName() {
-    if(this.epEventApiName !== undefined) return;
+    if (this.epEventApiName !== undefined) return;
     const xEpEventApiName: string = this.getTitle();
     this.epEventApiName = xEpEventApiName;
   }
   private createEpEventApiVersionName() {
-    if(this.epEventApiVersionName !== undefined) return;
+    if (this.epEventApiVersionName !== undefined) return;
     const xEpEventApiVersionName: string = this.getTitle();
     this.epEventApiVersionName = xEpEventApiVersionName;
   }
   private createOriginalApiSpecJson(originalApiSpec: any): any {
-    const funcName = 'createOriginalApiSpecJson';
+    const funcName = "createOriginalApiSpecJson";
     const logName = `${EpAsyncApiDocument.name}.${funcName}()`;
 
     // console.log(`${logName}: originalApiSpec=${originalApiSpec}`);
@@ -122,90 +161,140 @@ export class EpAsyncApiDocument {
       const json = JSON.parse(originalApiSpec);
       // console.log(`${logName}, a json string, json=${JSON.stringify(json)}`);
       return json;
-    } catch(e) {
+    } catch (e) {
       try {
         // yaml string?
         const json = yaml.load(originalApiSpec);
         try {
           // check if really an object now
           const jsonObject = JSON.parse(JSON.stringify(json));
-          if(JSON.stringify(jsonObject).includes('["object Object"]')) throw new Error('next');
+          if (JSON.stringify(jsonObject).includes('["object Object"]'))
+            throw new Error("next");
           // console.log(`${logName}, a yaml string, json=${JSON.stringify(jsonObject)}`);
           return jsonObject;
-        } catch(e) {
+        } catch (e) {
           // json object?
           const json = JSON.parse(JSON.stringify(originalApiSpec));
           // console.log(`${logName}, a json object, json=${JSON.stringify(json)}`);
           return json;
         }
-      } catch(e) {
-        throw new EpAsyncApiInternalError(logName, this.constructor.name, 'unable to determine original spec type');
+      } catch (e) {
+        throw new EpAsyncApiInternalError(
+          logName,
+          this.constructor.name,
+          "unable to determine original spec type"
+        );
       }
     }
   }
 
-  constructor(originalApiSpec: any, asyncApiDocument: AsyncAPIDocument, overrideEpApplicationDomainName: string | undefined, overrideEpAssetApplicationDomainName: string | undefined, prefixEpApplicationDomainName: string | undefined) {
+  constructor(
+    originalApiSpec: any,
+    asyncApiDocument: AsyncAPIDocument,
+    overrideEpApplicationDomainName: string | undefined,
+    overrideEpAssetApplicationDomainName: string | undefined,
+    prefixEpApplicationDomainName: string | undefined
+  ) {
     this.originalApiSpecJson = this.createOriginalApiSpecJson(originalApiSpec);
     this.asyncApiDocument = asyncApiDocument;
     this.asyncApiDocumentJson = this.getJSON(asyncApiDocument);
     this.overrideEpApplicationDomainName = overrideEpApplicationDomainName;
-    this.overrideEpAssetsApplicationDomainName = overrideEpAssetApplicationDomainName;
-    this.applicationDomainName = this.createApplicationDomainName(prefixEpApplicationDomainName);
-    this.assetsApplicationDomainName = this.createAssetsApplicationDomainName(prefixEpApplicationDomainName);
+    this.overrideEpAssetsApplicationDomainName =
+      overrideEpAssetApplicationDomainName;
+    this.applicationDomainName = this.createApplicationDomainName(
+      prefixEpApplicationDomainName
+    );
+    this.assetsApplicationDomainName = this.createAssetsApplicationDomainName(
+      prefixEpApplicationDomainName
+    );
     this.unprefixedApplicationDomainName = this.createApplicationDomainName();
-    this.unprefixedAssetsApplicationDomainName = this.createAssetsApplicationDomainName();
+    this.unprefixedAssetsApplicationDomainName =
+      this.createAssetsApplicationDomainName();
   }
 
   private validate_EpEventApiName = () => {
-    const funcName = 'validate_EpEventApiName';
+    const funcName = "validate_EpEventApiName";
     const logName = `${EpAsyncApiDocument.name}.${funcName}()`;
     const schema = $EventApi.properties.name;
 
     this.createEpEventApiName();
-    if(this.epEventApiName === undefined) throw new EpAsyncApiInternalError(logName, this.constructor.name, 'this.epEventApiName === undefined');
+    if (this.epEventApiName === undefined)
+      throw new EpAsyncApiInternalError(
+        logName,
+        this.constructor.name,
+        "this.epEventApiName === undefined"
+      );
     const v: Validator = new Validator();
-    const validateResult: ValidatorResult = v.validate(this.epEventApiName, schema);
+    const validateResult: ValidatorResult = v.validate(
+      this.epEventApiName,
+      schema
+    );
 
-    if(!validateResult.valid) throw new EpAsyncApiValidationError(logName, this.constructor.name, undefined, {
-      asyncApiSpecTitle: this.getTitle(),
-      issues: validateResult.errors,
-      value: {
-        epEventApiName: this.epEventApiName
-      }
-    });
-  }
+    if (!validateResult.valid)
+      throw new EpAsyncApiValidationError(
+        logName,
+        this.constructor.name,
+        undefined,
+        {
+          asyncApiSpecTitle: this.getTitle(),
+          issues: validateResult.errors,
+          value: {
+            epEventApiName: this.epEventApiName,
+          },
+        }
+      );
+  };
 
   private validate_EpEventApiVersionName = () => {
-    const funcName = 'validate_EpEventApiVersionName';
+    const funcName = "validate_EpEventApiVersionName";
     const logName = `${EpAsyncApiDocument.name}.${funcName}()`;
     const schema = $EventApiVersion.properties.displayName;
 
     this.createEpEventApiVersionName();
-    if(this.epEventApiVersionName === undefined) throw new EpAsyncApiInternalError(logName, this.constructor.name, 'this.epEventApiVersionName === undefined');
+    if (this.epEventApiVersionName === undefined)
+      throw new EpAsyncApiInternalError(
+        logName,
+        this.constructor.name,
+        "this.epEventApiVersionName === undefined"
+      );
     const v: Validator = new Validator();
-    const validateResult: ValidatorResult = v.validate(this.epEventApiVersionName, schema);
+    const validateResult: ValidatorResult = v.validate(
+      this.epEventApiVersionName,
+      schema
+    );
 
-    if(!validateResult.valid) throw new EpAsyncApiValidationError(logName, this.constructor.name, undefined, {
-      asyncApiSpecTitle: this.getTitle(),
-      issues: validateResult.errors,
-      value: {
-        epEventApiVersionName: this.epEventApiVersionName
-      }
-    });
-  }
+    if (!validateResult.valid)
+      throw new EpAsyncApiValidationError(
+        logName,
+        this.constructor.name,
+        undefined,
+        {
+          asyncApiSpecTitle: this.getTitle(),
+          issues: validateResult.errors,
+          value: {
+            epEventApiVersionName: this.epEventApiVersionName,
+          },
+        }
+      );
+  };
 
   private validate_VersionIsSemVerFormat(): void {
-    const funcName = 'validate_VersionIsSemVerFormat';
+    const funcName = "validate_VersionIsSemVerFormat";
     const logName = `${EpAsyncApiDocument.name}.${funcName}()`;
     const versionStr: string = this.getVersion();
-    if(!EpAsyncApiUtils.isSemVerFormat({ versionString: versionStr })) {
-      throw new EpAsyncApiValidationError(logName, this.constructor.name, undefined, {
-        asyncApiSpecTitle: this.getTitle(),
-        issues: EpAsyncApiDocument.NotSemVerIssue,
-        value: {
-          versionString: versionStr
+    if (!EpAsyncApiUtils.isSemVerFormat({ versionString: versionStr })) {
+      throw new EpAsyncApiValidationError(
+        logName,
+        this.constructor.name,
+        undefined,
+        {
+          asyncApiSpecTitle: this.getTitle(),
+          issues: EpAsyncApiDocument.NotSemVerIssue,
+          value: {
+            versionString: versionStr,
+          },
         }
-      });
+      );
     }
   }
 
@@ -215,8 +304,12 @@ export class EpAsyncApiDocument {
     this.validate_EpEventApiName();
     this.validate_EpEventApiVersionName();
     // cascade validation to all elements
-    const epAsyncApiChannelDocumentMap: T_EpAsyncApiChannelDocumentMap = this.getEpAsyncApiChannelDocumentMap();
-    for(const [topic, epAsyncApiChannelDocument] of epAsyncApiChannelDocumentMap) {
+    const epAsyncApiChannelDocumentMap: T_EpAsyncApiChannelDocumentMap =
+      this.getEpAsyncApiChannelDocumentMap();
+    for (const [
+      topic,
+      epAsyncApiChannelDocument,
+    ] of epAsyncApiChannelDocumentMap) {
       topic;
       epAsyncApiChannelDocument.validate();
     }
@@ -225,35 +318,53 @@ export class EpAsyncApiDocument {
     // add best practices validations for spec here
 
     // cascade validation to all elements
-    const epAsyncApiChannelDocumentMap: T_EpAsyncApiChannelDocumentMap = this.getEpAsyncApiChannelDocumentMap();
-    for(const [topic, epAsyncApiChannelDocument] of epAsyncApiChannelDocumentMap) {
+    const epAsyncApiChannelDocumentMap: T_EpAsyncApiChannelDocumentMap =
+      this.getEpAsyncApiChannelDocumentMap();
+    for (const [
+      topic,
+      epAsyncApiChannelDocument,
+    ] of epAsyncApiChannelDocumentMap) {
       topic;
       epAsyncApiChannelDocument.validate_BestPractices();
     }
   }
 
-  public getAsyncApiSpecVersion(): string { return this.asyncApiDocument.version(); }
-
-  public getTitle(): string { return this.asyncApiDocument.info().title(); }
-
-  public getVersion(): string { return this.asyncApiDocument.info().version(); }
-
-  public getDescription(): string { 
-    const descr: string | null = this.asyncApiDocument.info().description();
-    if(descr) return descr;
-    return '';
+  public getAsyncApiSpecVersion(): string {
+    return this.asyncApiDocument.version();
   }
 
-  public getApplicationDomainName(): string { return this.applicationDomainName; }
+  public getTitle(): string {
+    return this.asyncApiDocument.info().title();
+  }
 
-  public getUnprefixedApplicationDomainName(): string { return this.unprefixedApplicationDomainName; }
+  public getVersion(): string {
+    return this.asyncApiDocument.info().version();
+  }
 
-  public getAssetsApplicationDomainName(): string { return this.assetsApplicationDomainName; }
+  public getDescription(): string {
+    const descr: string | null = this.asyncApiDocument.info().description();
+    if (descr) return descr;
+    return "";
+  }
 
-  public getUnprefixedAssetsApplicationDomainName(): string { return this.unprefixedAssetsApplicationDomainName; }
+  public getApplicationDomainName(): string {
+    return this.applicationDomainName;
+  }
+
+  public getUnprefixedApplicationDomainName(): string {
+    return this.unprefixedApplicationDomainName;
+  }
+
+  public getAssetsApplicationDomainName(): string {
+    return this.assetsApplicationDomainName;
+  }
+
+  public getUnprefixedAssetsApplicationDomainName(): string {
+    return this.unprefixedAssetsApplicationDomainName;
+  }
 
   public getTitleAsFilePath(): string {
-    return this.getTitle().replaceAll(/[^0-9a-zA-Z]+/g, '-');
+    return this.getTitle().replaceAll(/[^0-9a-zA-Z]+/g, "-");
   }
 
   public getTitleAsFileName(ext: string): string {
@@ -261,25 +372,35 @@ export class EpAsyncApiDocument {
   }
 
   public getEpEventApiName(): string {
-    const funcName = 'getEpEventApiName';
+    const funcName = "getEpEventApiName";
     const logName = `${EpAsyncApiDocument.name}.${funcName}()`;
-    if(this.epEventApiName === undefined) {
+    if (this.epEventApiName === undefined) {
       this.createEpEventApiName();
       this.validate_EpEventApiName();
     }
-    if(this.epEventApiName === undefined) throw new EpAsyncApiInternalError(logName, this.constructor.name, 'this.epEventApiName === undefined');
-    return this.epEventApiName; 
+    if (this.epEventApiName === undefined)
+      throw new EpAsyncApiInternalError(
+        logName,
+        this.constructor.name,
+        "this.epEventApiName === undefined"
+      );
+    return this.epEventApiName;
   }
 
-  public getEpEventApiVersionName(): string { 
-    const funcName = 'getEpEventApiVersionName';
+  public getEpEventApiVersionName(): string {
+    const funcName = "getEpEventApiVersionName";
     const logName = `${EpAsyncApiDocument.name}.${funcName}()`;
-    if(this.epEventApiVersionName === undefined) {
+    if (this.epEventApiVersionName === undefined) {
       this.createEpEventApiVersionName();
       this.validate_EpEventApiVersionName();
     }
-    if(this.epEventApiVersionName === undefined) throw new EpAsyncApiInternalError(logName, this.constructor.name, 'this.epEventApiVersionName === undefined');
-    return this.epEventApiVersionName; 
+    if (this.epEventApiVersionName === undefined)
+      throw new EpAsyncApiInternalError(
+        logName,
+        this.constructor.name,
+        "this.epEventApiVersionName === undefined"
+      );
+    return this.epEventApiVersionName;
   }
 
   public getAsJson(): any {
@@ -304,17 +425,27 @@ export class EpAsyncApiDocument {
       publishEventNames: [],
       subscribeEventNames: [],
     };
-    const epAsyncApiChannelDocumentMap: T_EpAsyncApiChannelDocumentMap = this.getEpAsyncApiChannelDocumentMap();
-    for(const [topic, epAsyncApiChannelDocument] of epAsyncApiChannelDocumentMap) {
+    const epAsyncApiChannelDocumentMap: T_EpAsyncApiChannelDocumentMap =
+      this.getEpAsyncApiChannelDocumentMap();
+    for (const [
+      topic,
+      epAsyncApiChannelDocument,
+    ] of epAsyncApiChannelDocumentMap) {
       topic;
-      const epEventName: string = epAsyncApiChannelDocument.getEpEventName();  
-      const epAsynApiChannelPublishOperation: EpAsynApiChannelPublishOperation | undefined = epAsyncApiChannelDocument.getEpAsyncApiChannelPublishOperation();
-      if(epAsynApiChannelPublishOperation !== undefined) {
+      const epEventName: string = epAsyncApiChannelDocument.getEpEventName();
+      const epAsynApiChannelPublishOperation:
+        | EpAsynApiChannelPublishOperation
+        | undefined =
+        epAsyncApiChannelDocument.getEpAsyncApiChannelPublishOperation();
+      if (epAsynApiChannelPublishOperation !== undefined) {
         // const epAsyncApiMessageDocument: EpAsyncApiMessageDocument = epAsynApiChannelPublishOperation.getEpAsyncApiMessageDocument()
         epAsyncApiEventNames.publishEventNames.push(epEventName);
       }
-      const epAsyncApiChannelSubscribeOperation: EpAsyncApiChannelSubscribeOperation | undefined = epAsyncApiChannelDocument.getEpAsyncApiChannelSubscribeOperation();
-      if(epAsyncApiChannelSubscribeOperation !== undefined) {
+      const epAsyncApiChannelSubscribeOperation:
+        | EpAsyncApiChannelSubscribeOperation
+        | undefined =
+        epAsyncApiChannelDocument.getEpAsyncApiChannelSubscribeOperation();
+      if (epAsyncApiChannelSubscribeOperation !== undefined) {
         // const epAsyncApiMessageDocument: EpAsyncApiMessageDocument = epAsyncApiChannelSubscribeOperation.getEpAsyncApiMessageDocument()
         epAsyncApiEventNames.subscribeEventNames.push(epEventName);
       }
@@ -325,9 +456,14 @@ export class EpAsyncApiDocument {
   public getEpAsyncApiChannelDocumentMap(): T_EpAsyncApiChannelDocumentMap {
     const channels: Record<string, Channel> = this.asyncApiDocument.channels();
 
-    const epAsyncApiChannelDocumentMap: T_EpAsyncApiChannelDocumentMap = new Map<string, EpAsyncApiChannelDocument>();
-    for(const [key, channel] of Object.entries(channels)) {
-      const epAsyncApiChannelDocument = new EpAsyncApiChannelDocument(this, key, channel);
+    const epAsyncApiChannelDocumentMap: T_EpAsyncApiChannelDocumentMap =
+      new Map<string, EpAsyncApiChannelDocument>();
+    for (const [key, channel] of Object.entries(channels)) {
+      const epAsyncApiChannelDocument = new EpAsyncApiChannelDocument(
+        this,
+        key,
+        channel
+      );
       epAsyncApiChannelDocumentMap.set(key, epAsyncApiChannelDocument);
     }
     return epAsyncApiChannelDocumentMap;
@@ -337,12 +473,19 @@ export class EpAsyncApiDocument {
     // const funcName = 'getMessageDocuments';
     // const logName = `${CliAsyncApiDocument.name}.${funcName}()`;
 
-    const allMessages: Map<string, Message> = this.asyncApiDocument.allMessages();
+    const allMessages: Map<string, Message> =
+      this.asyncApiDocument.allMessages();
 
-    const epAsyncApiMessageDocumentMap: T_EpAsyncApiMessageDocumentMap = new Map<string, EpAsyncApiMessageDocument>();
-    
-    for(const [key, message] of allMessages) {
-      const epAsyncApiMessageDocument = new EpAsyncApiMessageDocument(this, undefined, key, message);
+    const epAsyncApiMessageDocumentMap: T_EpAsyncApiMessageDocumentMap =
+      new Map<string, EpAsyncApiMessageDocument>();
+
+    for (const [key, message] of allMessages) {
+      const epAsyncApiMessageDocument = new EpAsyncApiMessageDocument(
+        this,
+        undefined,
+        key,
+        message
+      );
       epAsyncApiMessageDocumentMap.set(key, epAsyncApiMessageDocument);
     }
     return epAsyncApiMessageDocumentMap;
@@ -353,18 +496,17 @@ export class EpAsyncApiDocument {
   }
 
   public getDefaultContentType(): string | undefined {
-    const defaultContentType: string | null = this.asyncApiDocument.defaultContentType();
-    if(defaultContentType === null) return undefined;
+    const defaultContentType: string | null =
+      this.asyncApiDocument.defaultContentType();
+    if (defaultContentType === null) return undefined;
     return defaultContentType;
   }
-  
+
   public getLogInfo(): T_EpAsyncApi_LogInfo {
     return {
       title: this.getTitle(),
       version: this.getVersion(),
-      applicationDomainName: this.getApplicationDomainName()
+      applicationDomainName: this.getApplicationDomainName(),
     };
   }
-
-
 }

@@ -1,22 +1,21 @@
-import { 
+import {
   SchemaObject,
   SchemaResponse,
   SchemasResponse,
   SchemasService,
-} from '@rjgu/ep-openapi-node';
-import { 
-  EpSdkApiContentError, 
+} from "@solace-labs/ep-openapi-node";
+import {
+  EpSdkApiContentError,
   EpSdkServiceError,
   EpSdkLogger,
   EEpSdkLoggerCodes,
-} from '../utils';
-import { EpSdkServiceClass } from './EpSdkService';
-
+} from "../utils";
+import { EpSdkServiceClass } from "./EpSdkService";
 
 /** @category Services */
 export enum EEpSdkSchemaType {
   JSON_SCHEMA = "jsonSchema",
-  AVRO = "avro"
+  AVRO = "avro",
 }
 /** @category Services */
 export enum EEpSdkSchemaContentType {
@@ -25,101 +24,146 @@ export enum EEpSdkSchemaContentType {
 
 /** @category Services */
 export class EpSdkSchemasServiceClass extends EpSdkServiceClass {
-  
-  public getByName = async({ schemaName, applicationDomainId }:{
+  public getByName = async ({
+    schemaName,
+    applicationDomainId,
+  }: {
     schemaName: string;
     applicationDomainId: string;
   }): Promise<SchemaObject | undefined> => {
-    const funcName = 'getByName';
+    const funcName = "getByName";
     const logName = `${EpSdkSchemasServiceClass.name}.${funcName}()`;
 
     const schemasResponse: SchemasResponse = await SchemasService.getSchemas({
       applicationDomainId: applicationDomainId,
-      name: schemaName
+      name: schemaName,
     });
 
-    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.SERVICE_GET, module: this.constructor.name, details: {
-      schemasResponse: schemasResponse
-    }}));
+    EpSdkLogger.trace(
+      EpSdkLogger.createLogEntry(logName, {
+        code: EEpSdkLoggerCodes.SERVICE_GET,
+        module: this.constructor.name,
+        details: {
+          schemasResponse: schemasResponse,
+        },
+      })
+    );
 
-    if(schemasResponse.data === undefined || schemasResponse.data.length === 0) return undefined;
+    if (schemasResponse.data === undefined || schemasResponse.data.length === 0)
+      return undefined;
     /* istanbul ignore next */
-    if(schemasResponse.data.length > 1) throw new EpSdkApiContentError(logName, this.constructor.name,'schemasResponse.data.length > 1', {    
-      schemasResponse: schemasResponse
-    });
+    if (schemasResponse.data.length > 1)
+      throw new EpSdkApiContentError(
+        logName,
+        this.constructor.name,
+        "schemasResponse.data.length > 1",
+        {
+          schemasResponse: schemasResponse,
+        }
+      );
     const epSchemaObject: SchemaObject = schemasResponse.data[0];
     return epSchemaObject;
-  }
+  };
 
-  public getById = async({ schemaId, applicationDomainId }:{
+  public getById = async ({
+    schemaId,
+    applicationDomainId,
+  }: {
     schemaId: string;
     applicationDomainId: string;
   }): Promise<SchemaObject> => {
-    const funcName = 'getById';
+    const funcName = "getById";
     const logName = `${EpSdkSchemasServiceClass.name}.${funcName}()`;
 
     applicationDomainId;
 
-    const schemaResponse: SchemaResponse = await  SchemasService.getSchema({
-      id: schemaId
+    const schemaResponse: SchemaResponse = await SchemasService.getSchema({
+      id: schemaId,
     });
-    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.SERVICE_GET, module: this.constructor.name, details: {
-      schemaResponse: schemaResponse
-    }}));
+    EpSdkLogger.trace(
+      EpSdkLogger.createLogEntry(logName, {
+        code: EEpSdkLoggerCodes.SERVICE_GET,
+        module: this.constructor.name,
+        details: {
+          schemaResponse: schemaResponse,
+        },
+      })
+    );
 
-    if(schemaResponse.data === undefined) {
+    if (schemaResponse.data === undefined) {
       /* istanbul ignore next */
-      throw new EpSdkApiContentError(logName, this.constructor.name, "schemaResponse.data === undefined", {
-        schemaId: schemaId
-      });
+      throw new EpSdkApiContentError(
+        logName,
+        this.constructor.name,
+        "schemaResponse.data === undefined",
+        {
+          schemaId: schemaId,
+        }
+      );
     }
     const epSchemaObject: SchemaObject = schemaResponse.data;
-    return epSchemaObject;  
-  }
+    return epSchemaObject;
+  };
 
-  public deleteById = async({ schemaId, applicationDomainId }:{
+  public deleteById = async ({
+    schemaId,
+    applicationDomainId,
+  }: {
     schemaId: string;
     applicationDomainId: string;
   }): Promise<SchemaObject> => {
-    const epSchemaObject: SchemaObject = await this.getById({ 
+    const epSchemaObject: SchemaObject = await this.getById({
       applicationDomainId: applicationDomainId,
       schemaId: schemaId,
-     });
-    const xvoid: void = await SchemasService.deleteSchema({ 
+    });
+    const xvoid: void = await SchemasService.deleteSchema({
       id: schemaId,
     });
     xvoid;
     return epSchemaObject;
-  }
+  };
 
-  public deleteByName = async({ applicationDomainId, schemaName }: {
+  public deleteByName = async ({
+    applicationDomainId,
+    schemaName,
+  }: {
     schemaName: string;
     applicationDomainId: string;
   }): Promise<SchemaObject> => {
-    const funcName = 'deleteByName';
+    const funcName = "deleteByName";
     const logName = `${EpSdkSchemasServiceClass.name}.${funcName}()`;
-    
-    const epSchemaObject: SchemaObject | undefined = await this.getByName({ 
+
+    const epSchemaObject: SchemaObject | undefined = await this.getByName({
       applicationDomainId: applicationDomainId,
       schemaName: schemaName,
-     });
-    if(epSchemaObject === undefined) throw new EpSdkServiceError(logName, this.constructor.name, "epSchemaObject === undefined", {
-      applicationDomainId: applicationDomainId,
-      schemaName: schemaName
     });
+    if (epSchemaObject === undefined)
+      throw new EpSdkServiceError(
+        logName,
+        this.constructor.name,
+        "epSchemaObject === undefined",
+        {
+          applicationDomainId: applicationDomainId,
+          schemaName: schemaName,
+        }
+      );
     /* istanbul ignore next */
-    if(epSchemaObject.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'epSchemaObject.id === undefined', {
-      epSchemaObject: epSchemaObject,
-    });
-    const epSchemaObjectDeleted: SchemaObject = await this.deleteById({ 
+    if (epSchemaObject.id === undefined)
+      throw new EpSdkApiContentError(
+        logName,
+        this.constructor.name,
+        "epSchemaObject.id === undefined",
+        {
+          epSchemaObject: epSchemaObject,
+        }
+      );
+    const epSchemaObjectDeleted: SchemaObject = await this.deleteById({
       applicationDomainId: applicationDomainId,
-      schemaId: epSchemaObject.id
-     });
+      schemaId: epSchemaObject.id,
+    });
     return epSchemaObjectDeleted;
-  }
-
+  };
 }
 
 /** @category Services */
 export default new EpSdkSchemasServiceClass();
-

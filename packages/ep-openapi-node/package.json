@@ -1,5 +1,5 @@
 {
-  "name": "@rjgu/ep-openapi-node",
+  "name": "@solace-labs/ep-openapi-node",
   "version": "2.0.17",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
