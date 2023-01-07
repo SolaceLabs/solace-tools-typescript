@@ -1,5 +1,13 @@
 # @rjgu/ep-asyncapi
 
+## 1.0.9
+
+### Patch Changes
+
+- 75d5499: test publish
+- Updated dependencies [75d5499]
+  - @rjgu/ep-openapi-node@2.0.17
+
 ## 1.0.7
 
 ### Patch Changes

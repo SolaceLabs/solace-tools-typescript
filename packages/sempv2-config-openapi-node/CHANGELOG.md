@@ -1,5 +1,11 @@
 # @rjgu/sempv2-config-openapi-node
 
+## 1.0.11
+
+### Patch Changes
+
+- 75d5499: test publish
+
 ## 1.0.7
 
 ### Patch Changes
