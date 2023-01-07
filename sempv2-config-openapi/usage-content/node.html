@@ -1,0 +1,332 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Solace SempV2 OpenAPI Client for NodeJS &mdash; Solace Tools r0.0.2 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/contentui.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/contentui.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Solace Event Portal AsyncAPI" href="../../ep-asyncapi/index.html" />
+    <link rel="prev" title="Usage" href="../usage.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Solace Tools
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Packages</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../ep-openapi/index.html">Solace Event Portal OpenAPI</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Solace SempV2 Config OpenAPI</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../usage.html">Usage</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Solace SempV2 OpenAPI Client for NodeJS</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#requirements">Requirements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#install">Install</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#configure-openapi-object">Configure OpenAPI Object</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#example-create-and-delete-a-client-username">Example: Create and Delete a client username</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#advanced-usage">Advanced Usage</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#resources">Resources</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../ep-asyncapi/index.html">Solace Event Portal AsyncAPI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ep-sdk/index.html">Solace Event Portal SDK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ep-async-api-importer/index.html">Solace Event Portal Async API Importer</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../reference-doc/tsdocs.html">TypeScript TypeDoc</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Solace Tools</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Solace SempV2 Config OpenAPI</a> &raquo;</li>
+        
+          <li><a href="../usage.html">Usage</a> &raquo;</li>
+        
+      <li>Solace SempV2 OpenAPI Client for NodeJS</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../_sources/sempv2-config-openapi/usage-content/node.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="solace-sempv2-openapi-client-for-nodejs">
+<span id="sempv2-openapi-usage-content-node"></span><h1>Solace SempV2 OpenAPI Client for NodeJS<a class="headerlink" href="#solace-sempv2-openapi-client-for-nodejs" title="Permalink to this heading">¶</a></h1>
+<section id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>node 16.x</p></li>
+</ul>
+</section>
+<section id="install">
+<h2>Install<a class="headerlink" href="#install" title="Permalink to this heading">¶</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>npm<span class="w"> </span>install<span class="w"> </span>@solace-labs/sempv2-openapi-node
+</pre></div>
+</div>
+</section>
+<section id="configure-openapi-object">
+<h2>Configure OpenAPI Object<a class="headerlink" href="#configure-openapi-object" title="Permalink to this heading">¶</a></h2>
+<div class="highlight-typescript notranslate"><div class="highlight"><pre><span></span><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">OpenAPI</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@solace-labs/sempv2-config-openapi-node&quot;</span><span class="p">;</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">protocol</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;https&quot;</span><span class="p">;</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">host</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;{service-name}.messaging.solace.cloud&quot;</span><span class="p">;</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">post</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">943</span><span class="p">;</span>
+
+<span class="nx">OpenAPI</span><span class="p">.</span><span class="nx">BASE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sb">`</span><span class="si">${</span><span class="nx">protocol</span><span class="si">}</span><span class="sb">://</span><span class="si">${</span><span class="nx">host</span><span class="si">}</span><span class="sb">:</span><span class="si">${</span><span class="nx">port</span><span class="si">}</span><span class="sb">/SEMP/v2/config`</span><span class="p">;</span>
+<span class="nx">OpenAPI</span><span class="p">.</span><span class="nx">USERNAME</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;{sempv2 username}&#39;</span><span class="p">;</span>
+<span class="nx">OpenAPI</span><span class="p">.</span><span class="nx">PASSWORD</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;{sempv2 password}&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+<section id="example-create-and-delete-a-client-username">
+<h2>Example: Create and Delete a client username<a class="headerlink" href="#example-create-and-delete-a-client-username" title="Permalink to this heading">¶</a></h2>
+<div class="highlight-typescript notranslate"><div class="highlight"><pre><span></span><span class="k">import</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">ClientUsernameService</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">MsgVpnClientUsername</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">MsgVpnClientUsernameResponse</span><span class="p">,</span>
+<span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@solace-labs/sempv2-config-openapi-node&quot;</span><span class="p">;</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">msgVpnClientUsername</span><span class="o">:</span><span class="w"> </span><span class="kt">MsgVpnClientUsername</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">clientUsername</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;foo&#39;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">password</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;bar&#39;</span>
+<span class="p">};</span>
+<span class="c1">// create</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">msgVpnClientUsernameResponse</span><span class="o">:</span><span class="w"> </span><span class="kt">MsgVpnClientUsernameResponse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">ClientUsernameService</span><span class="p">.</span><span class="nx">createMsgVpnClientUsername</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">msgVpnName</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;{msgVpnName}&#39;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">body</span><span class="o">:</span><span class="w"> </span><span class="kt">msgVpnClientUsername</span><span class="p">,</span>
+<span class="p">});</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`msgVpnClientUsernameResponse=</span><span class="si">${</span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">msgVpnClientUsernameResponse</span><span class="p">,</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="mf">2</span><span class="p">)</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
+<span class="c1">// delete</span>
+<span class="k">await</span><span class="w"> </span><span class="nx">ClientUsernameService</span><span class="p">.</span><span class="nx">deleteMsgVpnClientUsername</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">msgVpnName</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;{msgVpnName}&#39;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">clientUsername</span><span class="o">:</span><span class="w"> </span><span class="kt">msgVpnClientUsername.clientUsername</span><span class="p">,</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+</section>
+<section id="advanced-usage">
+<h2>Advanced Usage<a class="headerlink" href="#advanced-usage" title="Permalink to this heading">¶</a></h2>
+<section id="use-of-fetch-with-proxy">
+<h3>Use of <cite>fetch-with-proxy</cite><a class="headerlink" href="#use-of-fetch-with-proxy" title="Permalink to this heading">¶</a></h3>
+<p>Node <cite>fetch</cite> replaced with <cite>fetch-with-proxy</cite>.</p>
+<p>See <a class="reference external" href="https://github.com/touv/node-fetch-with-proxy#readme">node-fetch-with-proxy</a> for details.</p>
+</section>
+<section id="use-of-a-resolver">
+<h3>Use of a <cite>resolver</cite><a class="headerlink" href="#use-of-a-resolver" title="Permalink to this heading">¶</a></h3>
+<p>OpenAPIConfig:</p>
+<div class="highlight-typescript notranslate"><div class="highlight"><pre><span></span><span class="k">export</span><span class="w"> </span><span class="kr">type</span><span class="w"> </span><span class="nx">OpenAPIConfig</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">BASE</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">Resolver</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">VERSION</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">WITH_CREDENTIALS</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">CREDENTIALS</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;include&#39;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s1">&#39;omit&#39;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s1">&#39;same-origin&#39;</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">TOKEN?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">Resolver</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">USERNAME?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">Resolver</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">PASSWORD?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">Resolver</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">HEADERS?</span><span class="o">:</span><span class="w"> </span><span class="kt">Headers</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">Resolver</span><span class="o">&lt;</span><span class="nx">Headers</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">ENCODE_PATH</span><span class="o">?:</span><span class="w"> </span><span class="p">(</span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>Configure OpenAPI Object using a Resolver for the BASE Url:</p>
+<div class="highlight-typescript notranslate"><div class="highlight"><pre><span></span><span class="kd">const</span><span class="w"> </span><span class="nx">getBase</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">async</span><span class="p">()</span><span class="o">:</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w"> </span><span class="c1">// set your base ...</span>
+<span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">myBase</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">...,</span><span class="w"> </span><span class="nx">or</span>
+<span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">myBase</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="p">...</span>
+<span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nx">myBase</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// make use of it</span>
+<span class="nx">OpenAPI</span><span class="p">.</span><span class="nx">BASE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">async</span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">getBase</span><span class="p">();</span><span class="w"> </span><span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="../../ep-asyncapi/index.html" class="btn btn-neutral float-right" title="Solace Event Portal AsyncAPI" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../usage.html" class="btn btn-neutral float-left" title="Usage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2023, Solace Corporation, Ricardo Gomez-Ulmke, &lt;ricardo.gomez-ulmke@solace.com&gt;.
+      <span class="lastupdated">
+        Last updated on 07 Jan 2023 at 10:01.
+      </span>
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

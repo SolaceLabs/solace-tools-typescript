@@ -1,0 +1,278 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Examples &mdash; Solace Tools r0.0.2 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/contentui.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/contentui.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Solace Event Portal Async API Importer" href="../../ep-async-api-importer/index.html" />
+    <link rel="prev" title="Solace Event Portal SDK" href="overview.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Solace Tools
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Packages</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../ep-openapi/index.html">Solace Event Portal OpenAPI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sempv2-config-openapi/index.html">Solace SempV2 Config OpenAPI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ep-asyncapi/index.html">Solace Event Portal AsyncAPI</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Solace Event Portal SDK</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../usage.html">Usage</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="overview.html">Solace Event Portal SDK</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Examples</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#example-create-delete-application-domain-using-a-task">Example: Create/Delete Application Domain using a Task</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#resources">Resources</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../ep-async-api-importer/index.html">Solace Event Portal Async API Importer</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../reference-doc/tsdocs.html">TypeScript TypeDoc</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Solace Tools</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Solace Event Portal SDK</a> &raquo;</li>
+        
+          <li><a href="../usage.html">Usage</a> &raquo;</li>
+        
+      <li>Examples</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../_sources/ep-sdk/usage-content/examples.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="examples">
+<span id="ep-sdk-usage-content-examples"></span><h1>Examples<a class="headerlink" href="#examples" title="Permalink to this heading">¶</a></h1>
+<section id="example-create-delete-application-domain-using-a-task">
+<h2>Example: Create/Delete Application Domain using a Task<a class="headerlink" href="#example-create-delete-application-domain-using-a-task" title="Permalink to this heading">¶</a></h2>
+<div class="highlight-typescript notranslate"><div class="highlight"><pre><span></span><span class="k">import</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">EEpSdkTask_TargetState</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">EpSdkApplicationDomainTask</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">IEpSdkApplicationDomainTask_ExecuteReturn</span>
+<span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@rjgu/ep-sdk&quot;</span><span class="p">;</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">main</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">async</span><span class="p">()</span><span class="o">:</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="ow">void</span><span class="o">&gt;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">ApplicationDomainName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;foo&#39;</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">// ensure application domain exists</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">epSdkApplicationDomainTaskPresent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">EpSdkApplicationDomainTask</span><span class="p">({</span>
+<span class="w">    </span><span class="nx">epSdkTask_TargetState</span><span class="o">:</span><span class="w"> </span><span class="kt">EEpSdkTask_TargetState.PRESENT</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">applicationDomainName</span><span class="o">:</span><span class="w"> </span><span class="kt">ApplicationDomainName</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">applicationDomainSettings</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;my app domain&#39;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">epSdkApplicationDomainTask_ExecuteReturn_Present</span><span class="o">:</span><span class="w"> </span><span class="kt">IEpSdkApplicationDomainTask_ExecuteReturn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">epSdkApplicationDomainTaskPresent</span><span class="p">.</span><span class="nx">execute</span><span class="p">();</span>
+<span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`epSdkApplicationDomainTask_ExecuteReturn_Present.epSdkTask_TransactionLogData = </span><span class="si">${</span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">epSdkApplicationDomainTask_ExecuteReturn_Present</span><span class="p">.</span><span class="nx">epSdkTask_TransactionLogData</span><span class="p">,</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="mf">2</span><span class="p">)</span><span class="si">}</span><span class="sb">.`</span><span class="p">);</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">applicationDomainId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">epSdkApplicationDomainTask_ExecuteReturn_Present</span><span class="p">.</span><span class="nx">epObject</span><span class="p">.</span><span class="nx">id</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`application domain exists, applicationDomainId = </span><span class="si">${</span><span class="nx">applicationDomainId</span><span class="si">}</span><span class="sb">.`</span><span class="p">);</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="c1">// ensure application domain does not exist</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">epSdkApplicationDomainTaskAbsent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">EpSdkApplicationDomainTask</span><span class="p">({</span>
+<span class="w">    </span><span class="nx">epSdkTask_TargetState</span><span class="o">:</span><span class="w"> </span><span class="kt">EEpSdkTask_TargetState.ABSENT</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">applicationDomainName</span><span class="o">:</span><span class="w"> </span><span class="kt">ApplicationDomainName</span><span class="p">,</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">epSdkApplicationDomainTask_ExecuteReturn_Absent</span><span class="o">:</span><span class="w"> </span><span class="kt">IEpSdkApplicationDomainTask_ExecuteReturn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">epSdkApplicationDomainTaskAbsent</span><span class="p">.</span><span class="nx">execute</span><span class="p">();</span>
+<span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`epSdkApplicationDomainTask_ExecuteReturn_Absent.epSdkTask_TransactionLogData = </span><span class="si">${</span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">epSdkApplicationDomainTask_ExecuteReturn_Absent</span><span class="p">.</span><span class="nx">epSdkTask_TransactionLogData</span><span class="p">,</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="mf">2</span><span class="p">)</span><span class="si">}</span><span class="sb">.`</span><span class="p">);</span><span class="w">  </span>
+<span class="p">}</span>
+
+<span class="nx">main</span><span class="p">();</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="../../ep-async-api-importer/index.html" class="btn btn-neutral float-right" title="Solace Event Portal Async API Importer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="overview.html" class="btn btn-neutral float-left" title="Solace Event Portal SDK" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2023, Solace Corporation, Ricardo Gomez-Ulmke, &lt;ricardo.gomez-ulmke@solace.com&gt;.
+      <span class="lastupdated">
+        Last updated on 07 Jan 2023 at 10:01.
+      </span>
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
