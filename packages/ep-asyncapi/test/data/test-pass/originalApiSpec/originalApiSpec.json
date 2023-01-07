@@ -1,0 +1,86 @@
+{
+  "components": {
+    "schemas": {},
+    "messages": {
+      "ExampleTopic_0_1_0": {
+        "x-ep-event-id": "efvq9gc0c1n",
+        "x-ep-event-version-displayname": "ExampleTopic",
+        "x-ep-event-version-id": "dvt3deesyev",
+        "payload": {
+          "name": "ClickEvent",
+          "namespace": "samples.clickstream.avro",
+          "type": "record",
+          "fields": [
+            {
+              "name": "ip",
+              "type": "string"
+            },
+            {
+              "name": "eventtimestamp",
+              "type": "long"
+            },
+            {
+              "name": "devicetype",
+              "type": "string"
+            },
+            {
+              "name": "event_type",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            {
+              "name": "product_type",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            {
+              "name": "userid",
+              "type": "int"
+            },
+            {
+              "name": "globalseq",
+              "type": "long"
+            },
+            {
+              "default": 0,
+              "name": "prevglobalseq",
+              "type": "long"
+            }
+          ]
+        },
+        "x-ep-event-version": "0.1.0",
+        "x-ep-event-name": "ExampleTopic",
+        "description": "",
+        "schemaFormat": "application/vnd.apache.avro+json;version=1.9.0",
+        "contentType": "application/vnd.apache.avro+json",
+        "x-ep-event-state-id": "2",
+        "x-ep-event-state-name": "RELEASED"
+      }
+    }
+  },
+  "channels": {
+    "ExampleTopic": {
+      "publish": {
+        "message": {
+          "$ref": "#/components/messages/ExampleTopic_0_1_0"
+        }
+      }
+    }
+  },
+  "asyncapi": "2.0.0",
+  "info": {
+    "description": "Discovery Agent Scan",
+    "x-ep-displayname": "Avro Schema API",
+    "x-ep-state-name": "RELEASED",
+    "title": "Avro Schema API",
+    "x-ep-application-domain-id": "y7qnr3edhe0",
+    "version": "0.1.0",
+    "x-ep-state-id": "2",
+    "x-ep-event-api-version-id": "od5pemy9iez",
+    "x-ep-application-domain-name": "ep-asyncapi-importer/test/passing/misc/avro-schema.spec"
+  }
+}

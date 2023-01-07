@@ -1,0 +1,18 @@
+asyncapi: '2.4.0'
+x-ep-application-domain-name: ep-asyncapi/test
+info:
+  title: "very-long-event-name.spec"
+  version: '1.2.0'
+defaultContentType: application/json
+channels:
+  ep-asyncapi/test/very-long-event-name/very/very/very/very/very/very/very/very/very/very/very/very/very/very/very/very/very/veryvery/very/very/very/very/very/very/very/very/very/very/very/very/very/very/very/very/very/very/very/very/very/very/very/very/very/very/very/very/very/very/very/very/very/very/long:
+    publish:
+      message:
+        $ref: '#/components/messages/message-1'
+components:
+  messages:
+    message-1:
+     payload:
+       type: string
+
+

@@ -1,0 +1,59 @@
+{
+  "name": "@rjgu/sempv2-config-openapi-node",
+  "version": "1.0.10",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "description": "Solace SempV2 Config OpenAPI Client for NodeJS (Typescript), v2.30",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "github:ricardojosegomezulmke/solace-tools",
+    "directory": "packages/sempv2-config-openapi-node"
+  },
+  "bugs": {
+    "url": "github:ricardojosegomezulmke/issues"
+  },
+  "author": "Solace Corporation",
+  "contributors": [
+    {
+      "name": "Ricardo Gomez-Ulmke",
+      "email": "ricardo.gomez-ulmke@solace.com"
+    }
+  ],
+  "keywords": [
+    "solace",
+    "brokers",
+    "sempv2 api"
+  ],
+  "scripts": {
+    "build:src": "ts-node bin/build-src.ts",
+    "build": "yarn build:src && tsup generated-src/index.ts --format esm,cjs, --dts",
+    "clean": "rm -rf generated-src && rm -rf dist && rm -rf test/logs && rm -rf .turbo",
+    "build:test": "yarn build:src && yarn tsc",
+    "test": "yarn build:test && . ./test/source.env.sh && nyc mocha --config test/.mocharc.yml test/**/**.spec.ts && unset_source_env"
+  },
+  "typedoc": {
+    "entryPoint": "./generated-src/index.ts",
+    "displayName": "SempV2 Config OpenAPI Node",
+    "readmeFile": "./typedoc.README.md",
+    "tsconfig": "tsconfig.json"
+  },
+  "publishConfig": {
+    "access": "public",
+    "cache": ".cache/.npm",
+    "registry": "https://registry.npmjs.org",
+    "tag": "latest"
+  },
+  "files": [
+    "dist/**"
+  ],
+  "dependencies": {
+    "abort-controller": "^3.0.0",
+    "fetch-with-proxy": "^3.0.1",
+    "form-data": "^4.0.0"
+  },
+  "devDependencies": {
+    "@internal/tools": "*",
+    "openapi-typescript-codegen": "^0.19.0"
+  }
+}

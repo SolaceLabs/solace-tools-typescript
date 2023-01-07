@@ -1,0 +1,67 @@
+
+name: release-docs
+on:
+  workflow_dispatch:
+env:
+  DEBUG_FLAG: ${{ false }}
+
+jobs:
+  release-docs:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Check Auth
+        if: github.event_name == 'workflow_dispatch' && github.actor != 'ricardojosegomezulmke'
+        run: |
+          echo "not authorized"
+          echo "{IS_AUTHORIZED}={false}" >> $GITHUB_OUTPUT
+        id: auth
+      - name: Cancel Workflow
+        if: ${{ always() && steps.auth.outputs.IS_AUTHORIZED == 'false' }}
+        uses: andymckay/cancel-action@0.2
+
+      - name: Checkout Current Branch
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref }}
+
+      - name: "docs:setup python"
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.8
+
+      - name: "docs:install dependencies"
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r docs/devel/docs.requirements.txt
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: "build"
+        run: |
+          yarn install
+          yarn build
+
+      - name: "docs:make"
+        run: |
+          cd docs
+          ./make.sh
+
+      - name: "docs: publish to gh-pages"
+        run: |
+          git fetch origin gh-pages
+          git worktree add gh-pages gh-pages
+          date > generated.txt
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          rsync -av ./docs/build/html/ gh-pages/
+          cd gh-pages
+          git add -A
+          git commit --allow-empty -F ../generated.txt
+          # git push -f -u origin gh-pages
+          git push -u origin gh-pages
+
+
+###
+# The End.

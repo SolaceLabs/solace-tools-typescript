@@ -1,0 +1,17 @@
+asyncapi: '2.4.0'
+x-ep-application-domain-name: ep-asyncapi/test
+info:
+  title: "version-not-semver.spec"
+  version: '1'
+channels:
+  ep-asyncapi/test/message-1:
+    publish:
+      message:
+        $ref: '#/components/messages/message-1'
+components:
+  messages:
+    message-1:
+     payload:
+       type: string
+
+

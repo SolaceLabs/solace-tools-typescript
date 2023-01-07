@@ -1,0 +1,35 @@
+asyncapi: '2.4.0'
+id: urn:com:solace-labs:ep-asyncapi:test
+x-ep-application-domain-name: test/fail/title-too-long
+info:
+  title: this is a very, very, very, very, very, very long title
+  version: '1.2.9'
+  # description: |
+
+  license:
+    name: Apache 2.0
+
+defaultContentType: application/json
+
+channels:
+
+  solace-labs/test:
+    description: Test channel.
+    publish:
+      # summary: Receive till receipts from stores.
+      # operationId: receiveStoreTillReceipts
+      message:
+        $ref: '#/components/messages/test'
+
+components:
+  messages:
+
+    test:
+      name: test
+      contentType: application/json
+      payload:
+        type: object
+        properties:
+          greeting:
+            type: string
+

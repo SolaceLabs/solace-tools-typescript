@@ -1,0 +1,41 @@
+{
+  "$schema": "https://turborepo.org/schema.json",
+  "pipeline": {
+    "build": {
+      "dependsOn": ["clean", "^build"],
+      "outputs": ["dist/**", "generated-src/**/*.ts"],
+      "inputs": [
+        "bin/**/*.ts",
+        "src/**/*.ts",
+        "README.md",
+        "README.typedoc.md",
+        "openapi-spec/openapi-spec.json"
+      ]
+    },
+    "build:test": {
+      "dependsOn": ["clean", "^build:test"],
+      "outputs": ["dist/**", "generated-src/**/*.ts"],
+      "inputs": [
+        "typedoc.json",
+        "bin/**/*.ts",
+        "src/**/*.ts",
+        "README.md",
+        "openapi-spec/openapi-spec.json"
+      ]
+    },
+    "test": {
+      "dependsOn": ["build:test", "^test"],
+      "outputs": ["logs/**"],
+      "inputs": ["src/**/*.ts", "test/**/*.spec.ts", ".nycrc"]
+    },
+    "lint": {
+      "outputs": []
+    },
+    "lint:deprecated": {
+      "outputs": []
+    },
+    "clean": {
+      "cache": false
+    }
+  }
+}

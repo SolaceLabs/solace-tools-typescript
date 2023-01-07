@@ -1,0 +1,35 @@
+name: Changeset
+
+on:
+  # push:
+  #   branches: ["main"]
+  pull_request:
+    types: [opened, synchronize]
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  changeset_check:
+    name: Changeset Check
+    timeout-minutes: 15
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Check Changeset Status
+        run: |
+          git pull -f origin main:main
+          yarn changeset status --since=main

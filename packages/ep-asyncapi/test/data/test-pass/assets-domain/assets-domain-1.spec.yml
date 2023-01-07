@@ -1,0 +1,54 @@
+asyncapi: '2.4.0'
+x-ep-application-domain-name: solace-labs/ep-asyncapi/test/assets-domain/app-domain-1
+x-ep-assets-application-domain-name: solace-labs/ep-asyncapi/test/assets-domain/assets
+info:
+  title: Asset Domain 1
+  version: '1.0.0'
+
+defaultContentType: application/json
+
+channels:
+
+  solace-labs/ep-asyncapi/test/asset-domain/{type}/event-a:
+    x-ep-event-name: Event-A
+    parameters:
+      type:
+        $ref: '#/components/parameters/type'
+    publish:
+      message:
+        $ref: '#/components/messages/Event-A'
+
+  solace-labs/ep-asyncapi/test/asset-domain/{type}/event-b:
+    x-ep-event-name: Event-B
+    parameters:
+      type:
+        $ref: '#/components/parameters/type'
+    subscribe:
+      message:
+        $ref: '#/components/messages/Event-B'
+
+components:
+  messages:
+
+    Event-A:
+      payload:
+        type: object
+        properties:
+          event-a:
+            type: string
+
+    Event-B:
+      payload:
+        type: object
+        properties:
+          event-b:
+            type: string
+
+  parameters:
+    type:
+      schema:
+        type: string
+        enum:
+          - type-1
+          - type-2
+          - type-3

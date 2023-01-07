@@ -1,0 +1,32 @@
+Use of a `resolver`
+-------------------
+
+OpenAPIConfig:
+
+.. code-block:: typescript
+
+  export type OpenAPIConfig = {
+    BASE: string | Resolver<string>;
+    VERSION: string;
+    WITH_CREDENTIALS: boolean;
+    CREDENTIALS: 'include' | 'omit' | 'same-origin';
+    TOKEN?: string | Resolver<string>;
+    USERNAME?: string | Resolver<string>;
+    PASSWORD?: string | Resolver<string>;
+    HEADERS?: Headers | Resolver<Headers>;
+    ENCODE_PATH?: (path: string) => string;
+  };
+
+Configure OpenAPI Object using a Resolver for the BASE Url:
+
+.. code-block:: typescript
+
+  const getBase = async(): Promise<string> => {
+   // set your base ...
+   const myBase = ..., or
+   const myBase = await ...
+   return myBase;
+  }
+
+  // make use of it
+  OpenAPI.BASE = async() => { return await getBase(); }

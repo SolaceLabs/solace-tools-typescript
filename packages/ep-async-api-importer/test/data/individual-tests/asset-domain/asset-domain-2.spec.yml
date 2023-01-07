@@ -1,0 +1,54 @@
+asyncapi: '2.4.0'
+x-ep-application-domain-name: ep-asyncapi-importer/test/individual-tests/asset-domain/asset-domain-2.spec
+x-ep-assets-application-domain-name: ep-asyncapi-importer/test/individual-tests/asset-domain/assets
+info:
+  title: Asset Domain 2
+  version: '1.0.0'
+
+defaultContentType: application/json
+
+channels:
+
+  ep-asyncapi-importer/test/individual-tests/asset-domain/{type}/event-a:
+    x-ep-event-name: Event-A
+    parameters:
+      type:
+        $ref: '#/components/parameters/type'
+    publish:
+      message:
+        $ref: '#/components/messages/Event-A'
+
+  ep-asyncapi-importer/test/individual-tests/asset-domain/{type}/event-c:
+    x-ep-event-name: Event-C
+    parameters:
+      type:
+        $ref: '#/components/parameters/type'
+    subscribe:
+      message:
+        $ref: '#/components/messages/Event-C'
+
+components:
+  messages:
+
+    Event-A:
+      payload:
+        type: object
+        properties:
+          event-a:
+            type: string
+
+    Event-C:
+      payload:
+        type: object
+        properties:
+          event-c:
+            type: string
+
+  parameters:
+    type:
+      schema:
+        type: string
+        enum:
+          - type-1
+          - type-2
+          - type-3

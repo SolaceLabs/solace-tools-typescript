@@ -1,0 +1,6 @@
+Use of `fetch-with-proxy`
+-------------------------
+
+Node `fetch` replaced with `fetch-with-proxy`.
+
+See `node-fetch-with-proxy <https://github.com/touv/node-fetch-with-proxy#readme>`_ for details.

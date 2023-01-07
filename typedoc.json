@@ -1,0 +1,26 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "plugin": [
+    "typedoc-plugin-resolve-crossmodule-references"
+  ],
+  "name": "Solace Tools",
+  "entryPointStrategy": "packages",
+  "entryPoints": [
+    "packages/ep-asyncapi",
+    "packages/ep-openapi-node",
+    "packages/ep-sdk",
+    "packages/sempv2-config-openapi-node",
+  ],
+  "out": "./docs/source/_generated/tsdocs",
+  "readme": "none",
+  "includeVersion": true,
+  "hideGenerator": true,
+  "categorizeByGroup": true,
+  "excludePrivate": false,
+  "excludeExternals": false,
+  "excludeProtected": false,
+  "logLevel": "Verbose",
+  "treatWarningsAsErrors": true,
+  "sort": ["kind", "instance-first", "alphabetical"],
+  "disableSources": false
+}

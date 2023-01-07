@@ -1,0 +1,18 @@
+components:
+  messages:
+    ExampleTopic:
+      payload:
+        type: string
+      contentType: application/vnd.apache.avro+json
+channels:
+  ExampleTopic:
+    x-ep-event-name: x-ep-event-name
+    publish:
+      message:
+        $ref: '#/components/messages/ExampleTopic'
+asyncapi: 2.0.0
+x-ep-application-domain-name: x-ep-application-domain-name
+x-ep-assets-application-domain-name: x-ep-assets-application-domain-name
+info:
+  title: Version 2.0.0
+  version: 0.1.0

@@ -1,0 +1,28 @@
+asyncapi: '2.4.0'
+x-ep-application-domain-name: solace-labs/ep-asyncapi/test
+info:
+  title: "slash=/,amp;=&,star=*,quotes=''"
+  version: '1.2.9'
+  license:
+    name: Apache 2.0
+
+defaultContentType: application/json
+
+channels:
+
+  solace-labs/test:
+    publish:
+      message:
+        $ref: '#/components/messages/test'
+
+components:
+  messages:
+
+    test:
+      name: test
+      contentType: application/json
+      payload:
+        type: object
+        properties:
+          greeting:
+            type: string

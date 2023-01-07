@@ -1,0 +1,8 @@
+.DS_Store
+gh-pages
+node_modules
+.turbo
+yarn-error.log
+.cache
+.backup.*
+_todo*

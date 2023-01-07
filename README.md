@@ -15,8 +15,7 @@ A set of libaries to interact with various components in the Solace Platform.
 
 ## Documentation
 
-[Visit the docs for details](https://SolaceLabs.github.io/solace-tools-typescript/).
-
+[Visit the docs for details](https://solacelabs.github.io/solace-tools-typescript/).
 
 ## Resources
 

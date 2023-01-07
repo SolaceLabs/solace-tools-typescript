@@ -1,0 +1,22 @@
+asyncapi: '2.4.0'
+x-ep-application-domain-name: ep-asyncapi/test
+info:
+  title: "ep-asyncapi-test: no-content-type"
+  version: '1.2.0'
+# defaultContentType: application/json
+channels:
+  ep-asyncapi/test/no-content-type:
+    description: The topic to receive till receipts from stores on.
+    publish:
+      summary: Receive till receipts from stores.
+      operationId: receiveStoreTillReceipts
+      message:
+        $ref: '#/components/messages/message-1'
+components:
+  messages:
+    message-1:
+    #  contentType: application/json
+     payload:
+       type: string
+
+

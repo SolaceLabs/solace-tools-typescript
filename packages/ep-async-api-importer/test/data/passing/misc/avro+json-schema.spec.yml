@@ -1,0 +1,59 @@
+asyncapi: 2.4.0
+x-ep-application-domain-name: ep-asyncapi-importer/test/passing/misc/avro+json-schema.spec
+info:
+  title: Avro & JSON Schema API
+  version: 0.1.0
+
+components:
+  schemas: {}
+  messages:
+    jsonMessage:
+      name: jsonMessage
+      contentType: application/json
+      payload:
+        name: jsonMessage
+        type: object
+        properties:
+          first: 
+            type: string
+          last:
+            type: string
+    avroMessage:
+      name: avroMessage
+      contentType: application/json
+      schemaFormat: application/vnd.apache.avro;version=1.9.0
+      payload:
+        name: avroMessage
+        namespace: samples.avro
+        type: record
+        fields:
+          - name: ip
+            type: string
+          - name: eventtimestamp
+            type: long
+          - name: devicetype
+            type: string
+          - name: event_type
+            type:
+              - string
+              - 'null'
+          - name: product_type
+            type:
+              - string
+              - 'null'
+          - name: userid
+            type: int
+          - name: globalseq
+            type: long
+          - default: 0
+            name: prevglobalseq
+            type: long
+channels:
+  JSON_Topic:
+    publish:
+      message:
+        $ref: '#/components/messages/jsonMessage'
+  Avro_Topic:
+    publish:
+      message:
+        $ref: '#/components/messages/avroMessage'

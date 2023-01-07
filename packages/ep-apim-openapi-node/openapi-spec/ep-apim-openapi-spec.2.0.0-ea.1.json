@@ -1,0 +1,4711 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API Management / Dev Portal API",
+    "description": "This OpenAPI specification describes the contract for the API Management / Dev Portal API. Please note - at this time the specification is in an elaboration/design phase and there is currently no API Implementation available.",
+    "version": "2.0.0-alpha.001",
+    "license": {
+      "name": "MIT",
+      "url": "https://github.com/solace-iot-team/platform-api/blob/main/LICENSE"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.solace.cloud/api/v2/apim"
+    }
+  ],
+  "security": [
+    {
+      "OpenId": []
+    },
+    {
+      "BearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "eventapiproducts",
+      "description": "Manage APIs and API Products"
+    },
+    {
+      "name": "registrations",
+      "description": "Manage consumer credentials and access requests for apps"
+    },
+    {
+      "name": "gateways",
+      "description": "Gateway Messaging Services"
+    },
+    {
+      "name": "candidates",
+      "description": "Candidate resources and operations for review - e.e. API Management may want to create and manage API Product Plans"
+    }
+  ],
+  "paths": {
+    "/eventApiProducts": {
+      "get": {
+        "summary": "Coming Soon",
+        "description": "\"This resource allows filtering of results by query using RSQL.\nExample: ?query=brokerType==solace and version.state==RETIRED\nThe following fields are available: id, name, applicationDomainName, applicationDomainId, shared, \nbrokerType, customAttributes.name, customAttributes.value, plan id\nversion.createdTime, version.updatedTime, version.description, version.version, version.summary, version.displayName, version.state,\nversion.customAttributes.name, version.customAttributes.value\"\n",
+        "operationId": "listEventApiProducts",
+        "tags": [
+          "eventapiproducts"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/query"
+          },
+          {
+            "$ref": "#/components/parameters/page_size"
+          },
+          {
+            "$ref": "#/components/parameters/page_number"
+          },
+          {
+            "$ref": "#/components/parameters/sort_field_name"
+          },
+          {
+            "$ref": "#/components/parameters/sort_direction"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "list of event api products",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventApiProductsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      },
+      "post": {
+        "summary": "Coming Soon",
+        "operationId": "createEventAPIProduct",
+        "tags": [
+          "candidates"
+        ],
+        "requestBody": {
+          "description": "String",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventApiProductVersion"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "New Event API Product",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventApiProductResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request. Likely an invalid auth token provided.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMediaType"
+          },
+          "422": {
+            "description": "Duplicate organization",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      }
+    },
+    "/eventApiProducts/{eventApiProductId}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/eventApiProductId"
+        }
+      ],
+      "get": {
+        "summary": "Coming Soon",
+        "operationId": "getEventAPIProduct",
+        "tags": [
+          "eventapiproducts"
+        ],
+        "responses": {
+          "200": {
+            "description": "the Event API Product",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventApiProductResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Coming Soon",
+        "operationId": "updateEventApiProduct",
+        "tags": [
+          "candidates"
+        ],
+        "requestBody": {
+          "description": "String",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventApiProductVersion"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated Event API Product",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventApiProductResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request. ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "412": {
+            "$ref": "#/components/responses/PreconditionFailed"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMediaType"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Coming Soon",
+        "operationId": "deleteEventApiProduct",
+        "tags": [
+          "candidates"
+        ],
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      }
+    },
+    "/eventApiProducts/{eventApiProductId}/revisions": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/eventApiProductId"
+        }
+      ],
+      "get": {
+        "summary": "Coming Soon",
+        "operationId": "getEventAPIProductRevisions",
+        "tags": [
+          "eventapiproducts"
+        ],
+        "responses": {
+          "200": {
+            "description": "the Event API Product revisions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventApiProductsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      }
+    },
+    "/eventApiProducts/{eventApiProductId}/revisions/{revisionId}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/revisionId"
+        },
+        {
+          "$ref": "#/components/parameters/eventApiProductId"
+        }
+      ],
+      "get": {
+        "summary": "Coming Soon",
+        "operationId": "getEventAPIProductRevision",
+        "tags": [
+          "eventapiproducts"
+        ],
+        "responses": {
+          "200": {
+            "description": "the Event API Product revisions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventApiProductResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      }
+    },
+    "/eventApiProducts/{eventApiProductId}/attributes": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/eventApiProductId"
+        }
+      ],
+      "get": {
+        "summary": "Coming Soon",
+        "operationId": "getEventAPIProductAttributes",
+        "tags": [
+          "eventapiproducts"
+        ],
+        "responses": {
+          "200": {
+            "description": "the Event API Product Attributes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomAttributesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      },
+      "post": {
+        "summary": "Coming Soon",
+        "operationId": "createEventApiProductAttribute",
+        "tags": [
+          "eventapiproducts"
+        ],
+        "requestBody": {
+          "description": "New Event API Product Attribute",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomAttribute"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Created Event API Product Attribute",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomAttributeResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request. ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "412": {
+            "$ref": "#/components/responses/PreconditionFailed"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMediaType"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      }
+    },
+    "/eventApiProducts/{eventApiProductId}/attributes/{attributeId}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/attributeId"
+        },
+        {
+          "$ref": "#/components/parameters/eventApiProductId"
+        }
+      ],
+      "get": {
+        "summary": "Coming Soon",
+        "operationId": "getEventAPIProductAttribute",
+        "tags": [
+          "eventapiproducts"
+        ],
+        "responses": {
+          "200": {
+            "description": "the Event API Product Attribute",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomAttributeResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Coming Soon",
+        "operationId": "updateEventApiProductAttribute",
+        "tags": [
+          "eventapiproducts"
+        ],
+        "requestBody": {
+          "description": "Patch for Event API Product Attribute",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomAttribute"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated Event API Product Attribute",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomAttributeResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request. ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "412": {
+            "$ref": "#/components/responses/PreconditionFailed"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMediaType"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Coming Soon",
+        "operationId": "deleteEventApiProductAttribute",
+        "tags": [
+          "eventapiproducts"
+        ],
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      }
+    },
+    "/eventApiProducts/{eventApiProductId}/versionAttributes": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/eventApiProductId"
+        }
+      ],
+      "get": {
+        "summary": "Coming Soon",
+        "operationId": "getEventAPIProductVersionAttributes",
+        "tags": [
+          "eventapiproducts"
+        ],
+        "responses": {
+          "200": {
+            "description": "the Event API Product's Versioned Attributes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomAttributesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      },
+      "post": {
+        "summary": "Coming Soon",
+        "operationId": "createEventApiProductVersionAttribute",
+        "tags": [
+          "eventapiproducts"
+        ],
+        "requestBody": {
+          "description": "New Event API Product Versioned Attribute",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomAttribute"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Created Event API Product Attribute",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomAttributeResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request. ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "412": {
+            "$ref": "#/components/responses/PreconditionFailed"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMediaType"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      }
+    },
+    "/eventApiProducts/{eventApiProductId}/versionAttributes/{attributeId}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/attributeId"
+        },
+        {
+          "$ref": "#/components/parameters/eventApiProductId"
+        }
+      ],
+      "get": {
+        "summary": "Coming Soon",
+        "operationId": "getEventAPIProductVersionAttribute",
+        "tags": [
+          "eventapiproducts"
+        ],
+        "responses": {
+          "200": {
+            "description": "the Event API Product Versioned Attribute",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomAttributeResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Coming Soon",
+        "operationId": "updateEventApiProductVersionAttribute",
+        "tags": [
+          "eventapiproducts"
+        ],
+        "requestBody": {
+          "description": "Patch for Event API Product Versioned Attribute",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomAttribute"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated Event API Product Version Attribute",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomAttributeResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request. ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "412": {
+            "$ref": "#/components/responses/PreconditionFailed"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMediaType"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Coming Soon",
+        "operationId": "deleteEventApiProductVersionAttribute",
+        "tags": [
+          "eventapiproducts"
+        ],
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      }
+    },
+    "/eventApiProducts/{eventApiProductId}/plans": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/eventApiProductId"
+        }
+      ],
+      "get": {
+        "summary": "Coming Soon",
+        "operationId": "getEventAPIProductPlans",
+        "tags": [
+          "eventapiproducts"
+        ],
+        "responses": {
+          "200": {
+            "description": "the Event API Product Plans",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlansResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      },
+      "post": {
+        "summary": "Coming Soon",
+        "operationId": "createEventApiProductPlan",
+        "tags": [
+          "candidates"
+        ],
+        "requestBody": {
+          "description": "New Event API Product Plan",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Plan"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Created Event API Product Plan",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request. ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "412": {
+            "$ref": "#/components/responses/PreconditionFailed"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMediaType"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      }
+    },
+    "/eventApiProducts/{eventApiProductId}/plans/{planId}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/planId"
+        },
+        {
+          "$ref": "#/components/parameters/eventApiProductId"
+        }
+      ],
+      "get": {
+        "summary": "Coming Soon",
+        "operationId": "getEventAPIProductPlan",
+        "tags": [
+          "eventapiproducts"
+        ],
+        "responses": {
+          "200": {
+            "description": "the Event API Product Plan",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Coming Soon",
+        "operationId": "updateEventApiProductPlan",
+        "tags": [
+          "candidates"
+        ],
+        "requestBody": {
+          "description": "Patch to the Event API Product Plan",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Plan"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated Event API Product PLan",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request. ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "412": {
+            "$ref": "#/components/responses/PreconditionFailed"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMediaType"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Coming Soon",
+        "operationId": "deleteEventApiProductPlan",
+        "tags": [
+          "candidates"
+        ],
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      }
+    },
+    "/eventApiProducts/{eventApiProductId}/plans/{planId}/eventApis": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/planId"
+        },
+        {
+          "$ref": "#/components/parameters/eventApiProductId"
+        }
+      ],
+      "get": {
+        "summary": "Coming Soon",
+        "operationId": "getEventAPIProductPlanApis",
+        "tags": [
+          "eventapiproducts"
+        ],
+        "responses": {
+          "200": {
+            "description": "list of the Event API Product Plan APIs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventApisResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      }
+    },
+    "/eventApiProducts/{eventApiProductId}/plans/{planId}/eventApis/{eventApiId}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/eventApiId"
+        },
+        {
+          "$ref": "#/components/parameters/eventApiProductId"
+        },
+        {
+          "$ref": "#/components/parameters/planId"
+        },
+        {
+          "$ref": "#/components/parameters/apiFormat"
+        },
+        {
+          "$ref": "#/components/parameters/asyncApiVersion"
+        }
+      ],
+      "get": {
+        "summary": "Coming Soon",
+        "operationId": "getEventAPIProductPlanApi",
+        "tags": [
+          "eventapiproducts"
+        ],
+        "responses": {
+          "200": {
+            "description": "Async API Definition of the Plan's API",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 2,
+                  "maxLength": 2000000
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 2,
+                  "maxLength": 2000000
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      }
+    },
+    "/appRegistrations": {
+      "get": {
+        "summary": "Coming Soon",
+        "description": "\"This resource allows filtering of results by query using RSQL. \nThe following fields are available: \n  registrationId, name, customAttributes.name, customAttributes.value\nAn example query: ?query=registrationId==5 and customAttributes.name==EXPORTABLE and customAttributes.value==TRUE\"\n",
+        "operationId": "listAppRegistrations",
+        "tags": [
+          "registrations"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/query"
+          },
+          {
+            "$ref": "#/components/parameters/page_size"
+          },
+          {
+            "$ref": "#/components/parameters/page_number"
+          },
+          {
+            "$ref": "#/components/parameters/sort_field_name"
+          },
+          {
+            "$ref": "#/components/parameters/sort_direction"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "list of app regsitrations",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationRegistrationsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      },
+      "post": {
+        "summary": "Coming Soon",
+        "operationId": "createAppRegistration",
+        "tags": [
+          "registrations"
+        ],
+        "requestBody": {
+          "description": "New app registration",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApplicationRegistration"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created app registration",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationRegistrationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request. Likely an invalid auth token provided.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMediaType"
+          },
+          "422": {
+            "description": "Duplicate organization",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      }
+    },
+    "/appRegistrations/{appRegistrationId}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/appRegistrationId"
+        }
+      ],
+      "get": {
+        "summary": "Coming Soon",
+        "operationId": "getAppRegistration",
+        "tags": [
+          "registrations"
+        ],
+        "responses": {
+          "200": {
+            "description": "the app registration",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationRegistration"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Coming Soon",
+        "operationId": "updateAppRegistration",
+        "tags": [
+          "registrations"
+        ],
+        "requestBody": {
+          "description": "Patch to App Registration",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApplicationRegistration"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated App Registration",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationRegistrationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request. ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "412": {
+            "$ref": "#/components/responses/PreconditionFailed"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMediaType"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Coming Soon",
+        "operationId": "deleteAppRegistration",
+        "tags": [
+          "registrations"
+        ],
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      }
+    },
+    "/appRegistrations/{appRegistrationId}/eventApis": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/appRegistrationId"
+        }
+      ],
+      "get": {
+        "summary": "Coming Soon",
+        "operationId": "getAppRegistrationApis",
+        "tags": [
+          "registrations"
+        ],
+        "responses": {
+          "200": {
+            "description": "list of apis the app has access to",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventApisResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      }
+    },
+    "/appRegistrations/{appRegistrationId}/eventApis/{eventApiId}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/eventApiId"
+        },
+        {
+          "$ref": "#/components/parameters/appRegistrationId"
+        },
+        {
+          "$ref": "#/components/parameters/apiFormat"
+        },
+        {
+          "$ref": "#/components/parameters/asyncApiVersion"
+        }
+      ],
+      "get": {
+        "summary": "Coming Soon",
+        "operationId": "getAppRegistrationApi",
+        "tags": [
+          "registrations"
+        ],
+        "responses": {
+          "200": {
+            "description": "the async api specification tailored to the current app",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 2,
+                  "maxLength": 2000000
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "minLength": 2,
+                  "maxLength": 2000000,
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      }
+    },
+    "/appRegistrations/{appRegistrationId}/attributes": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/appRegistrationId"
+        }
+      ],
+      "get": {
+        "summary": "Coming Soon",
+        "operationId": "getAppRegistrationAttributes",
+        "tags": [
+          "registrations"
+        ],
+        "responses": {
+          "200": {
+            "description": "the AppRegistration Attributes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomAttributesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      },
+      "post": {
+        "summary": "Coming Soon",
+        "operationId": "createAppRegistrationAttribute",
+        "tags": [
+          "registrations"
+        ],
+        "requestBody": {
+          "description": "New App Registration Attribute",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomAttribute"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Created AppRegistration",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomAttributeResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request. ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "412": {
+            "$ref": "#/components/responses/PreconditionFailed"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMediaType"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      }
+    },
+    "/appRegistrations/{appRegistrationId}/attributes/{attributeId}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/appRegistrationId"
+        },
+        {
+          "$ref": "#/components/parameters/attributeId"
+        }
+      ],
+      "get": {
+        "summary": "Coming Soon",
+        "operationId": "getAppRegistrationAttribute",
+        "tags": [
+          "registrations"
+        ],
+        "responses": {
+          "200": {
+            "description": "the Event API Product Attribute",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomAttributeResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Coming Soon",
+        "operationId": "updateAppRegistrationAttribute",
+        "tags": [
+          "registrations"
+        ],
+        "requestBody": {
+          "description": "Patch to AppRegistration Attribute",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomAttribute"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated AppRegistration Attribute",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomAttributeResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request. ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "412": {
+            "$ref": "#/components/responses/PreconditionFailed"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMediaType"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Coming Soon",
+        "operationId": "deleteAppRegistrationAttribute",
+        "tags": [
+          "registrations"
+        ],
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      }
+    },
+    "/appRegistrations/{appRegistrationId}/credentials": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/appRegistrationId"
+        }
+      ],
+      "get": {
+        "summary": "Coming Soon",
+        "operationId": "getAppRegistrationCredentials",
+        "tags": [
+          "registrations"
+        ],
+        "responses": {
+          "200": {
+            "description": "the AppRegistration Credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CredentialsArrayResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      },
+      "post": {
+        "summary": "Coming Soon",
+        "operationId": "createAppRegistrationCredentials",
+        "tags": [
+          "registrations"
+        ],
+        "requestBody": {
+          "description": "New App Registration Attribute",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Credentials"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Created AppRegistration Credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CredentialsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request. ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "412": {
+            "$ref": "#/components/responses/PreconditionFailed"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMediaType"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      }
+    },
+    "/appRegistrations/{appRegistrationId}/credentials/{credentialsId}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/credentialsId"
+        },
+        {
+          "$ref": "#/components/parameters/appRegistrationId"
+        }
+      ],
+      "get": {
+        "summary": "Coming Soon",
+        "operationId": "getAppRegistrationCredential",
+        "tags": [
+          "registrations"
+        ],
+        "responses": {
+          "200": {
+            "description": "App Registration Credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CredentialsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Coming Soon",
+        "operationId": "updateAppRegistrationCredentials",
+        "tags": [
+          "registrations"
+        ],
+        "requestBody": {
+          "description": "Patch to AppRegistration Attribute",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Credentials"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated AppRegistration Credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CredentialsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request. ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "412": {
+            "$ref": "#/components/responses/PreconditionFailed"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMediaType"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Coming Soon",
+        "operationId": "deleteAppRegistrationCredentials",
+        "tags": [
+          "registrations"
+        ],
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      }
+    },
+    "/appRegistrations/{appRegistrationId}/accessRequests": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/appRegistrationId"
+        }
+      ],
+      "get": {
+        "summary": "Coming Soon",
+        "operationId": "getAppRegistrationAccessRequests",
+        "tags": [
+          "registrations"
+        ],
+        "responses": {
+          "200": {
+            "description": "the AppRegistration Access Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventApiProductRegistrationsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      },
+      "post": {
+        "summary": "Coming Soon",
+        "description": "Creates a new Access Request. The initial state of the request is returned in the response. If the  Event API Product requires \"manual\" approval the request is in \"pending\" state, if it is \"auto\" the request is in \"approved\" state.",
+        "operationId": "createAppRegistrationAccessRequest",
+        "tags": [
+          "registrations"
+        ],
+        "requestBody": {
+          "description": "New App Registration Access Request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventApiProductRegistrationCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Created AccessRequest",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventApiProductRegistrationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request. ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "412": {
+            "$ref": "#/components/responses/PreconditionFailed"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMediaType"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      }
+    },
+    "/appRegistrations/{appRegistrationId}/accessRequests/{accessRequestId}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/accessRequestId"
+        },
+        {
+          "$ref": "#/components/parameters/appRegistrationId"
+        }
+      ],
+      "get": {
+        "summary": "Coming Soon",
+        "operationId": "getAppRegistrationAccessRequest",
+        "tags": [
+          "registrations"
+        ],
+        "responses": {
+          "200": {
+            "description": "the App Registration AccessRequest",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventApiProductRegistrationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Coming Soon",
+        "operationId": "updateAppRegistrationAccessRequest",
+        "tags": [
+          "registrations"
+        ],
+        "requestBody": {
+          "description": "Patch to AppRegistration AccessRequests",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventApiProductRegistration"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated AppRegistration AccessRequests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventApiProductRegistrationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request. ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "412": {
+            "$ref": "#/components/responses/PreconditionFailed"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMediaType"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Coming Soon",
+        "operationId": "deleteAppRegistrationAccessRequest",
+        "tags": [
+          "registrations"
+        ],
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      }
+    },
+    "/appRegistrations/{appRegistrationId}/webHooks": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/appRegistrationId"
+        }
+      ],
+      "get": {
+        "operationId": "listAppRegistrationWebHooks",
+        "tags": [
+          "registrations"
+        ],
+        "responses": {
+          "200": {
+            "description": "list of webhooks",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebHookIdList"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      },
+      "post": {
+        "operationId": "createAppRegistrationWebHook",
+        "tags": [
+          "registrations"
+        ],
+        "requestBody": {
+          "description": "new webhook",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebHook"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "new webhook",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebHook"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request, contains information about failed back end calls when the app is  provisioned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "412": {
+            "$ref": "#/components/responses/PreconditionFailed"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMediaType"
+          },
+          "422": {
+            "description": "Duplicate app or invalid object reference e.g. invalid API product name",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "description": "Internal Server error, contains information about failed back end calls when the  app is provisioned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      }
+    },
+    "/appRegistrations/{appRegistrationId}/webHooks/{webhookId}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/appRegistrationId"
+        },
+        {
+          "$ref": "#/components/parameters/webhookId"
+        }
+      ],
+      "get": {
+        "operationId": "getAppRegistrationWebHook",
+        "tags": [
+          "registrations"
+        ],
+        "responses": {
+          "200": {
+            "description": "the webhook",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebHook"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      },
+      "patch": {
+        "operationId": "updateAppRegistrationWebHook",
+        "tags": [
+          "registrations"
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebHook"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "WebHook",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebHook"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request, contains information about failed back end calls when the app is  provisioned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "412": {
+            "$ref": "#/components/responses/PreconditionFailed"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMediaType"
+          },
+          "422": {
+            "description": "Duplicate app or invalid object reference e.g. invalid API product name",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "description": "Internal Server error, contains information about failed back end calls when the  app is provisioned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteAppRegistrationWebHook",
+        "tags": [
+          "registrations"
+        ],
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      }
+    },
+    "/gateways": {
+      "get": {
+        "summary": "Coming Soon",
+        "description": "This resource allows filtering of results by query. The following fields are available: id, solaceCloudMessagingServiceId, messagingServiceType, name, environmentName, eventMeshName",
+        "operationId": "listGateways",
+        "tags": [
+          "gateways"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/query"
+          },
+          {
+            "$ref": "#/components/parameters/page_size"
+          },
+          {
+            "$ref": "#/components/parameters/page_number"
+          },
+          {
+            "$ref": "#/components/parameters/sort_field_name"
+          },
+          {
+            "$ref": "#/components/parameters/sort_direction"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "list of gateways",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessagingServicesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      }
+    },
+    "/gateways/{gatewayId}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/gatewayId"
+        }
+      ],
+      "get": {
+        "summary": "Coming Soon",
+        "operationId": "getGateway",
+        "tags": [
+          "gateways"
+        ],
+        "responses": {
+          "200": {
+            "description": "a messaging service gateway",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessagingServiceResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "406": {
+            "$ref": "#/components/responses/NotAcceptable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          },
+          "504": {
+            "$ref": "#/components/responses/GatewayTimeout"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      },
+      "OpenId": {
+        "type": "openIdConnect",
+        "openIdConnectUrl": "/auth/.well-known/openid-configuration"
+      }
+    },
+    "parameters": {
+      "eventApiProductId": {
+        "name": "eventApiProductId",
+        "description": "the id of an object",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]*$",
+          "minLength": 4,
+          "maxLength": 188
+        }
+      },
+      "planId": {
+        "name": "planId",
+        "description": "the id of an object",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]*$",
+          "minLength": 4,
+          "maxLength": 188
+        }
+      },
+      "appRegistrationId": {
+        "name": "appRegistrationId",
+        "description": "the id of an object",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]*$",
+          "minLength": 4,
+          "maxLength": 188
+        }
+      },
+      "gatewayId": {
+        "name": "gatewayId",
+        "description": "the id of an object",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]*$",
+          "minLength": 4,
+          "maxLength": 188
+        }
+      },
+      "revisionId": {
+        "name": "revisionId",
+        "description": "the id of an object",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]*$",
+          "minLength": 4,
+          "maxLength": 188
+        }
+      },
+      "attributeId": {
+        "name": "attributeId",
+        "description": "the id of an object",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]*$",
+          "minLength": 4,
+          "maxLength": 188
+        }
+      },
+      "credentialsId": {
+        "name": "credentialsId",
+        "description": "the id of an object",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]*$",
+          "minLength": 4,
+          "maxLength": 188
+        }
+      },
+      "eventApiId": {
+        "name": "eventApiId",
+        "description": "the id of an object",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]*$",
+          "minLength": 4,
+          "maxLength": 188
+        }
+      },
+      "accessRequestId": {
+        "name": "accessRequestId",
+        "description": "the id of an object",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]*$",
+          "minLength": 4,
+          "maxLength": 188
+        }
+      },
+      "webhookId": {
+        "name": "webhookId",
+        "description": "the id of an object",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]*$",
+          "minLength": 4,
+          "maxLength": 188
+        }
+      },
+      "query": {
+        "name": "query",
+        "description": "Query string for filtering entity. Expressed in FIQL/RSQL language. Documentation link to help with multiple values for query - https://github.com/jirutka/rsql-parser.",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 1024
+        }
+      },
+      "page_size": {
+        "name": "pageSize",
+        "in": "query",
+        "description": "The number of items to get per page. Min: 1 Max: 100",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "format": "int32",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      "page_number": {
+        "name": "pageNumber",
+        "in": "query",
+        "description": "The page number to get. Min: 1",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "format": "int32",
+          "minimum": 1,
+          "maximum": 16384
+        }
+      },
+      "sort_direction": {
+        "name": "sortDirection",
+        "in": "query",
+        "description": "sort direction",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "default": "asc",
+          "enum": [
+            "asc",
+            "desc"
+          ]
+        }
+      },
+      "sort_field_name": {
+        "name": "sortFieldName",
+        "in": "query",
+        "description": "name of a field to sort on",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]*$",
+          "minLength": 2,
+          "maxLength": 512
+        }
+      },
+      "apiFormat": {
+        "name": "apiFormat",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "application/json",
+            "application/x-yaml",
+            "application/zip"
+          ]
+        }
+      },
+      "asyncApiVersion": {
+        "name": "asyncApiVersion",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "2.2.0",
+            "2.5.0"
+          ]
+        }
+      }
+    },
+    "responses": {
+      "PreconditionFailed": {
+        "description": "PreConditon Failed, likely a mismatch between current etag and if-match header",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "BadRequest": {
+        "description": "Bad Request.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Unauthorized.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "Forbidden.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Not Found.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "NotAcceptable": {
+        "description": "Not Acceptable.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "UnsupportedMediaType": {
+        "description": "Unsupported Media Type.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "TooManyRequests": {
+        "description": "Too many requests.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "InternalServerError": {
+        "description": "Internal Server Error.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "ServiceUnavailable": {
+        "description": "Service Unavailable.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "GatewayTimeout": {
+        "description": "Gateway Timeout.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "Conflict": {
+        "description": "Conflict",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "Plan": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/CommonId"
+          },
+          "name": {
+            "$ref": "#/components/schemas/CommonName"
+          },
+          "solaceClassOfServicePolicy": {
+            "$ref": "#/components/schemas/SolaceClassOfServicePolicy"
+          }
+        }
+      },
+      "SolaceClassOfServicePolicy": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "Solace class of service policy",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BasePolicyDTO"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "messageDeliveryMode": {
+                "type": "string",
+                "description": "The type of message delivery mode in the current event API product version",
+                "enum": [
+                  "direct",
+                  "guaranteed",
+                  "direct",
+                  "guaranteed"
+                ],
+                "default": "direct"
+              },
+              "accessType": {
+                "type": "string",
+                "enum": [
+                  "exclusive",
+                  "non-exclusive"
+                ]
+              },
+              "maximumTimeToLive": {
+                "type": "integer",
+                "description": "Duration in seconds of how long a message can live in a queue",
+                "format": "int32",
+                "example": 1500,
+                "minimum": -1,
+                "maximum": 95000000
+              },
+              "queueType": {
+                "type": "string",
+                "description": "The type of queue to be used in the current event API product version",
+                "enum": [
+                  "single",
+                  "combined",
+                  "single",
+                  "combined"
+                ],
+                "default": "combined"
+              },
+              "maxMsgSpoolUsage": {
+                "type": "integer",
+                "description": "Total number of MBs available for the queue to use",
+                "format": "int32",
+                "example": 5,
+                "minimum": 0,
+                "maximum": 800000
+              }
+            }
+          }
+        ]
+      },
+      "BasePolicyDTO": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/CommonId"
+          }
+        }
+      },
+      "SolaceMessagingService": {
+        "type": "object",
+        "description": "Solace Messaging Services",
+        "additionalProperties": true,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseMessagingServiceDTO"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "solaceCloudMessagingServiceId": {
+                "$ref": "#/components/schemas/CommonId"
+              }
+            }
+          }
+        ]
+      },
+      "BaseMessagingServiceDTO": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "messagingServiceId": {
+            "$ref": "#/components/schemas/CommonId"
+          },
+          "messagingServiceName": {
+            "$ref": "#/components/schemas/CommonNameReadOnly"
+          },
+          "supportedProtocols": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 32,
+            "description": "Values for allowed supported protocols",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32,
+              "description": "Values for allowed supported protocols"
+            }
+          },
+          "environmentName": {
+            "$ref": "#/components/schemas/CommonNameReadOnly"
+          },
+          "eventMeshName": {
+            "$ref": "#/components/schemas/CommonNameReadOnly"
+          }
+        }
+      },
+      "Filter": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "topicFilters": {
+            "type": "array",
+            "minItems": 0,
+            "maxItems": 128,
+            "description": "List of variable that contains address node name and filters",
+            "items": {
+              "$ref": "#/components/schemas/TopicFilter"
+            }
+          }
+        },
+        "description": "List of filters that contains eventVersionId name and variables"
+      },
+      "TopicFilter": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "$ref": "#/components/schemas/CommonNameReadOnly"
+          },
+          "filterValue": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 128,
+            "description": "Different filter values separated by comma",
+            "example": " Tes?, TEST*FILTER, SAmPle"
+          }
+        },
+        "description": "List of variable that contains address node name and filters"
+      },
+      "EventApiProductVersion": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "createdTime": {
+            "$ref": "#/components/schemas/CommonTimestampIntegerReadOnly"
+          },
+          "updatedTime": {
+            "$ref": "#/components/schemas/CommonTimestampIntegerReadOnly"
+          },
+          "createdBy": {
+            "type": "string",
+            "minLength": 4,
+            "maxLength": 64,
+            "readOnly": true,
+            "example": "12345678"
+          },
+          "changedBy": {
+            "type": "string",
+            "minLength": 4,
+            "maxLength": 64,
+            "readOnly": true,
+            "example": "12345678"
+          },
+          "description": {
+            "maxLength": 10000,
+            "type": "string",
+            "example": "Event API product created by Solace PubSub+ Cloud documentation"
+          },
+          "version": {
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 64,
+            "example": "1.0.0"
+          },
+          "summary": {
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 1024,
+            "example": "Summary string value of event API product version"
+          },
+          "customAttributes": {
+            "type": "array",
+            "minItems": 0,
+            "maxItems": 256,
+            "items": {
+              "$ref": "#/components/schemas/CustomAttribute"
+            }
+          },
+          "displayName": {
+            "$ref": "#/components/schemas/CommonName"
+          },
+          "state": {
+            "type": "string",
+            "minLength": 4,
+            "maxLength": 32,
+            "example": "RELEASED"
+          },
+          "plans": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 128,
+            "items": {
+              "$ref": "#/components/schemas/Plan"
+            }
+          },
+          "solaceMessagingServices": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 128,
+            "description": "Solace Messaging Services",
+            "items": {
+              "$ref": "#/components/schemas/SolaceMessagingService"
+            }
+          },
+          "filters": {
+            "type": "array",
+            "minItems": 0,
+            "maxItems": 256,
+            "description": "List of filters that contains eventVersionId name and variables",
+            "items": {
+              "$ref": "#/components/schemas/Filter"
+            }
+          },
+          "approvalType": {
+            "type": "string",
+            "description": "Approval type",
+            "enum": [
+              "automatic",
+              "manual"
+            ],
+            "default": "automatic"
+          }
+        }
+      },
+      "EventApiProduct": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/CommonId"
+          },
+          "name": {
+            "$ref": "#/components/schemas/CommonName"
+          },
+          "applicationDomainId": {
+            "$ref": "#/components/schemas/CommonId"
+          },
+          "applicationDomainName": {
+            "$ref": "#/components/schemas/CommonName"
+          },
+          "shared": {
+            "type": "boolean",
+            "example": true
+          },
+          "brokerType": {
+            "type": "string",
+            "description": "The type of the broker used for the event API product",
+            "enum": [
+              "kafka",
+              "solace"
+            ],
+            "default": "solace"
+          },
+          "customAttributes": {
+            "type": "array",
+            "minItems": 0,
+            "maxItems": 256,
+            "items": {
+              "$ref": "#/components/schemas/CustomAttribute"
+            }
+          },
+          "version": {
+            "$ref": "#/components/schemas/EventApiProductVersion"
+          }
+        }
+      },
+      "EventApiVersion": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/CommonId"
+          },
+          "description": {
+            "maxLength": 10000,
+            "minLength": 0,
+            "type": "string",
+            "example": "Event Api created by Solace PubSub+ Cloud documentation"
+          },
+          "version": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 64,
+            "example": "1.0.0"
+          },
+          "displayName": {
+            "$ref": "#/components/schemas/CommonName"
+          }
+        }
+      },
+      "ApplicationRegistration": {
+        "type": "object",
+        "required": [
+          "registrationId",
+          "registrationSource",
+          "name"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "registrationId": {
+            "$ref": "#/components/schemas/CommonExternalId"
+          },
+          "registrationSource": {
+            "$ref": "#/components/schemas/CommonExternalId"
+          },
+          "name": {
+            "$ref": "#/components/schemas/CommonName"
+          },
+          "customAttributes": {
+            "type": "array",
+            "minItems": 0,
+            "maxItems": 256,
+            "items": {
+              "$ref": "#/components/schemas/CustomAttribute"
+            }
+          }
+        }
+      },
+      "EventApiProductRegistration": {
+        "type": "object",
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/EventApiProductRegistrationCreate"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "state": {
+                "$ref": "#/components/schemas/RegistrationState"
+              }
+            }
+          }
+        ]
+      },
+      "EventApiProductRegistrationCreate": {
+        "type": "object",
+        "required": [
+          "accessRequestId",
+          "registrationId",
+          "eventApiProductId",
+          "planId"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "accessRequestId": {
+            "$ref": "#/components/schemas/CommonExternalId"
+          },
+          "registrationId": {
+            "$ref": "#/components/schemas/CommonExternalId"
+          },
+          "eventApiProductId": {
+            "$ref": "#/components/schemas/CommonId"
+          },
+          "planId": {
+            "$ref": "#/components/schemas/CommonId"
+          },
+          "customAttributes": {
+            "type": "array",
+            "minItems": 0,
+            "maxItems": 256,
+            "items": {
+              "$ref": "#/components/schemas/CustomAttribute"
+            }
+          }
+        }
+      },
+      "RegistrationState": {
+        "type": "string",
+        "enum": [
+          "PENDING_APPROVAL",
+          "REJECTED",
+          "REVOKED",
+          "APPROVED",
+          "ERROR",
+          "LIVE"
+        ]
+      },
+      "Credentials": {
+        "description": "Credentials object associated with an app",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "expiresAt": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": -1,
+            "maximum": 9007199254740991
+          },
+          "issuedAt": {
+            "$ref": "#/components/schemas/CommonTimestampInteger"
+          },
+          "secret": {
+            "$ref": "#/components/schemas/Secret"
+          },
+          "name": {
+            "$ref": "#/components/schemas/CommonName"
+          }
+        }
+      },
+      "Secret": {
+        "type": "object",
+        "required": [
+          "consumerKey"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "consumerKey": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9_-]*$",
+            "minLength": 8,
+            "maxLength": 64
+          },
+          "consumerSecret": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9_-]*$",
+            "minLength": 8,
+            "maxLength": 64
+          }
+        }
+      },
+      "WebHookBasicAuth": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "authMethod": {
+            "type": "string",
+            "enum": [
+              "Basic"
+            ]
+          },
+          "username": {
+            "$ref": "#/components/schemas/CommonUserName"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 256,
+            "pattern": "^[\\S]*$"
+          }
+        },
+        "required": [
+          "username",
+          "password"
+        ]
+      },
+      "WebHookHeaderAuth": {
+        "type": "object",
+        "description": "A HTTP header used for authentication",
+        "additionalProperties": false,
+        "properties": {
+          "authMethod": {
+            "type": "string",
+            "enum": [
+              "Header"
+            ]
+          },
+          "headerName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
+            "pattern": "^[\\s\\S]*$"
+          },
+          "headerValue": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 16384,
+            "pattern": "^[\\s\\S]*$"
+          }
+        },
+        "required": [
+          "headerName",
+          "headerValue"
+        ]
+      },
+      "WebHookAuth": {
+        "additionalProperties": true,
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/WebHookBasicAuth"
+          },
+          {
+            "$ref": "#/components/schemas/WebHookHeaderAuth"
+          }
+        ]
+      },
+      "WebHookTLSOptions": {
+        "type": "object",
+        "description": "TLS options required to support older PS+ brokers.",
+        "additionalProperties": false,
+        "deprecated": true,
+        "properties": {
+          "tlsTrustedCommonNames": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 0,
+            "maxItems": 255,
+            "description": "The Trusted Common Names for the REST Consumer are used by encrypted transports to verify the name in the certificate presented by the remote REST consumer. They must include the common name of the remote REST consumer's server certificate."
+          }
+        }
+      },
+      "WebHookHeader": {
+        "type": "object",
+        "description": "An arbitrary HTTP header applied to the WebHook",
+        "additionalProperties": false,
+        "properties": {
+          "headerName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50,
+            "pattern": "^[\\s\\S]*$"
+          },
+          "headerValue": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1024,
+            "pattern": "^[\\s\\S]*$"
+          }
+        },
+        "required": [
+          "headerName",
+          "headerValue"
+        ]
+      },
+      "WebHook": {
+        "type": "object",
+        "required": [
+          "uri",
+          "method"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "uri": {
+            "type": "string",
+            "pattern": "^https?:\\/\\/[A-Za-z\\.:0-9\\-]*.*$",
+            "minLength": 0,
+            "maxLength": 200
+          },
+          "name": {
+            "$ref": "#/components/schemas/CommonName"
+          },
+          "environments": {
+            "type": "array",
+            "description": "environments that this webhook serves, if absent webhook will be used for all environments",
+            "minItems": 0,
+            "maxItems": 255,
+            "items": {
+              "$ref": "#/components/schemas/CommonName"
+            }
+          },
+          "method": {
+            "type": "string",
+            "enum": [
+              "POST",
+              "PUT"
+            ],
+            "default": "POST"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "parallel",
+              "serial"
+            ],
+            "default": "parallel"
+          },
+          "authentication": {
+            "$ref": "#/components/schemas/WebHookAuth"
+          },
+          "tlsOptions": {
+            "$ref": "#/components/schemas/WebHookTLSOptions"
+          },
+          "requestHeaders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WebHookHeader"
+            },
+            "minItems": 0,
+            "maxItems": 50
+          }
+        }
+      },
+      "WebHookIdList": {
+        "description": "Name and display name attribute of a webhook",
+        "type": "array",
+        "minItems": 0,
+        "maxItems": 32768,
+        "items": {
+          "$ref": "#/components/schemas/WebHookIds"
+        }
+      },
+      "WebHookIds": {
+        "description": "Name and display name attribute of a webhook",
+        "type": "object",
+        "properties": {
+          "uri": {
+            "$ref": "#/components/schemas/CommonURL"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 200,
+            "pattern": "^.*$"
+          }
+        }
+      },
+      "MessagingServiceCredentials": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 128,
+            "description": "The name of the credentials object.",
+            "example": "basic auth credentials"
+          },
+          "credentials": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "description": "A JSON map containing the credentials information.",
+              "example": {
+                "username": "User1",
+                "password": "secretPass"
+              }
+            },
+            "description": "A JSON map containing the credentials information.",
+            "example": {
+              "username": "User1",
+              "password": "secretPass"
+            }
+          }
+        }
+      },
+      "MessagingServiceAuthentication": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "$ref": "#/components/schemas/CommonName"
+          },
+          "authenticationType": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 32,
+            "description": "The type of the authentication object.",
+            "example": "basicAuthentication"
+          },
+          "authenticationDetails": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "description": "A JSON map containing a map of extra details for the authentication.",
+              "example": {
+                "broker owner": "Solace PE team"
+              }
+            },
+            "description": "A JSON map containing a map of extra details for the authentication.",
+            "example": {
+              "broker owner": "Solace PE team"
+            }
+          },
+          "messagingServiceCredentials": {
+            "type": "array",
+            "minItems": 0,
+            "maxItems": 128,
+            "items": {
+              "$ref": "#/components/schemas/MessagingServiceCredentials"
+            }
+          }
+        }
+      },
+      "MessagingServiceConnection": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "$ref": "#/components/schemas/CommonName"
+          },
+          "url": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 1024,
+            "description": "The url of the connection object.",
+            "example": "https://abcd.messaging.solace.cloud:943"
+          },
+          "protocol": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 16,
+            "description": "The protocol of the connection object.",
+            "example": "https"
+          },
+          "protocolVersion": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 16,
+            "description": "The protocolVersion of the connection object.",
+            "example": "2.0"
+          },
+          "bindings": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "description": "A JSON map containing a map of connection-specific values. ",
+              "example": {
+                "msgVpn": "myVPN"
+              }
+            },
+            "description": "A JSON map containing a map of connection-specific values. ",
+            "example": {
+              "msgVpn": "myVPN"
+            }
+          },
+          "messagingServiceAuthentications": {
+            "type": "array",
+            "minItems": 0,
+            "maxItems": 128,
+            "items": {
+              "$ref": "#/components/schemas/MessagingServiceAuthentication"
+            }
+          }
+        }
+      },
+      "MessagingService": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/CommonId"
+          },
+          "solaceCloudMessagingServiceId": {
+            "$ref": "#/components/schemas/CommonId"
+          },
+          "messagingServiceType": {
+            "type": "string",
+            "minLength": 4,
+            "maxLength": 64,
+            "description": "The type of the messaging service.",
+            "example": "solace"
+          },
+          "name": {
+            "$ref": "#/components/schemas/CommonName"
+          },
+          "messagingServiceConnections": {
+            "type": "array",
+            "minItems": 0,
+            "maxItems": 128,
+            "items": {
+              "$ref": "#/components/schemas/MessagingServiceConnection"
+            }
+          },
+          "environmentName": {
+            "$ref": "#/components/schemas/CommonNameReadOnly"
+          },
+          "eventMeshName": {
+            "$ref": "#/components/schemas/CommonNameReadOnly"
+          }
+        }
+      },
+      "MessagingServiceResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/MessagingService"
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "MessagingServicesResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "minItems": 0,
+            "maxItems": 999,
+            "items": {
+              "$ref": "#/components/schemas/MessagingService"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/meta"
+          }
+        }
+      },
+      "ApplicationRegistrationResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ApplicationRegistration"
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "ApplicationRegistrationsResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "minItems": 0,
+            "maxItems": 999,
+            "items": {
+              "$ref": "#/components/schemas/ApplicationRegistration"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/meta"
+          }
+        }
+      },
+      "EventApiProductResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/EventApiProduct"
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "EventApiProductsResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "minItems": 0,
+            "maxItems": 999,
+            "items": {
+              "$ref": "#/components/schemas/EventApiProduct"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/meta"
+          }
+        }
+      },
+      "EventApisResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "minItems": 0,
+            "maxItems": 999,
+            "items": {
+              "$ref": "#/components/schemas/EventApiVersion"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/meta"
+          }
+        }
+      },
+      "CredentialsResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Credentials"
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "CredentialsArrayResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "minItems": 0,
+            "maxItems": 999,
+            "items": {
+              "$ref": "#/components/schemas/Credentials"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/meta"
+          }
+        }
+      },
+      "EventApiProductRegistrationResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/EventApiProductRegistration"
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "EventApiProductRegistrationsResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "minItems": 0,
+            "maxItems": 999,
+            "items": {
+              "$ref": "#/components/schemas/EventApiProductRegistration"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/meta"
+          }
+        }
+      },
+      "CustomAttributeResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/CustomAttribute"
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "CustomAttributesResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "minItems": 0,
+            "maxItems": 999,
+            "items": {
+              "$ref": "#/components/schemas/CustomAttribute"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/meta"
+          }
+        }
+      },
+      "PlanResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Plan"
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "PlansResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "minItems": 0,
+            "maxItems": 999,
+            "items": {
+              "$ref": "#/components/schemas/Plan"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/meta"
+          }
+        }
+      },
+      "meta": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        }
+      },
+      "CustomAttribute": {
+        "type": "object",
+        "required": [
+          "name",
+          "value"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "pattern": "a-zA-Z0-9_\\-\\.",
+            "minLength": 4,
+            "maxLength": 128,
+            "type": "string",
+            "example": "color"
+          },
+          "value": {
+            "type": "object",
+            "description": "Valid Objects are Strings with characters: [a-zA-Z0-9_\\-\\. ]",
+            "example": "red"
+          }
+        }
+      },
+      "Pagination": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nextPage": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "An error occurred",
+            "minLength": 4,
+            "maxLength": 256
+          },
+          "errorId": {
+            "type": "string",
+            "example": "123e4567-e89b-12d3-a456-426655440000",
+            "minLength": 4,
+            "maxLength": 64
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "example": "'object': { 'field': 'description' }"
+            },
+            "example": "'object': { 'field': 'description' }"
+          },
+          "validationDetails": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "minItems": 0,
+              "maxItems": 1024,
+              "example": "'name': ['Not unique']",
+              "items": {
+                "type": "string",
+                "example": "'name': ['Not unique']",
+                "minLength": 4,
+                "maxLength": 32768
+              }
+            },
+            "example": "'name': ['Not unique']"
+          }
+        }
+      },
+      "CommonTimestampInteger": {
+        "type": "integer",
+        "format": "int64",
+        "example": 1620311683577,
+        "maximum": 9007199254740991,
+        "minimum": 0
+      },
+      "CommonTimestampIntegerReadOnly": {
+        "type": "integer",
+        "format": "int64",
+        "example": 1620311683577,
+        "maximum": 9007199254740991,
+        "minimum": 0
+      },
+      "CommonName": {
+        "type": "string",
+        "example": "A name",
+        "pattern": "^.*$",
+        "minLength": 2,
+        "maxLength": 128
+      },
+      "CommonNameReadOnly": {
+        "type": "string",
+        "example": "A name",
+        "pattern": "^.*{2,128}$",
+        "minLength": 2,
+        "maxLength": 128,
+        "readOnly": true
+      },
+      "CommonId": {
+        "type": "string",
+        "description": "id as automatically issued by APIs , alphanumeric characters only",
+        "example": "n8kg4fjka9r",
+        "pattern": "^[a-zA-Z0-9]*$",
+        "minLength": 2,
+        "maxLength": 32
+      },
+      "CommonExternalId": {
+        "type": "string",
+        "description": "Id attribute as supplied by the APi Client",
+        "example": "n8kg4fjka9r",
+        "pattern": "^[a-zA-Z0-9_\\-]*(@[ |\\S]*)?$",
+        "minLength": 2,
+        "maxLength": 32
+      },
+      "CommonUserName": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 64,
+        "pattern": "^[.a-zA-Z0-9@_-]*$",
+        "example": "tom"
+      },
+      "CommonURL": {
+        "type": "string",
+        "minLength": 8,
+        "maxLength": 2083,
+        "example": "https://solace.cloud/api/v0/eventPortal/apiProducts/abc123/asyncApi.json",
+        "pattern": "^https?:\\/\\/[A-Za-z\\.:0-9\\-]*.*$"
+      }
+    }
+  }
+}

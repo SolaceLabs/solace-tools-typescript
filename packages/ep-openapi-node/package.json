@@ -1,0 +1,60 @@
+{
+  "name": "@rjgu/ep-openapi-node",
+  "version": "2.0.16",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "type": "commonjs",
+  "description": "Solace Event Portal OpenAPI Client for NodeJS (Typescript), v2.0.5",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "github:ricardojosegomezulmke/solace-tools",
+    "directory": "packages/ep-openapi-node"
+  },
+  "bugs": {
+    "url": "github:ricardojosegomezulmke/issues"
+  },
+  "author": "Solace Corporation",
+  "contributors": [
+    {
+      "name": "Ricardo Gomez-Ulmke",
+      "email": "ricardo.gomez-ulmke@solace.com"
+    }
+  ],
+  "keywords": [
+    "solace",
+    "event portal",
+    "event portal api"
+  ],
+  "scripts": {
+    "build:src": "ts-node bin/build-src.ts",
+    "build": "yarn build:src && tsup generated-src/index.ts --format esm,cjs --dts",
+    "clean": "rm -rf generated-src && rm -rf dist && rm -rf test/logs && rm -rf .turbo",
+    "build:test": "yarn build:src && yarn tsc",
+    "test": "yarn build:test && . ./test/source.env.sh && nyc mocha --config test/.mocharc.yml test/**/**.spec.ts && unset_source_env"
+  },
+  "typedoc": {
+    "entryPoint": "./generated-src/index.ts",
+    "displayName": "Event Portal OpenAPI Node",
+    "readmeFile": "./typedoc.README.md",
+    "tsconfig": "tsconfig.json"
+  },
+  "publishConfig": {
+    "access": "public",
+    "cache": ".cache/.npm",
+    "registry": "https://registry.npmjs.org",
+    "tag": "latest"
+  },
+  "files": [
+    "dist/**"
+  ],
+  "devDependencies": {
+    "@internal/tools": "*",
+    "openapi-typescript-codegen": "^0.19.0"
+  },
+  "dependencies": {
+    "abort-controller": "^3.0.0",
+    "fetch-with-proxy": "^3.0.1",
+    "form-data": "^4.0.0"
+  }
+}

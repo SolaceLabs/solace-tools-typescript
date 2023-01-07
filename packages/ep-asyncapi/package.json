@@ -1,0 +1,71 @@
+{
+  "name": "@rjgu/ep-asyncapi",
+  "version": "1.0.8",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "description": "Solace Event Portal AsyncAPI Library",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "github:ricardojosegomezulmke/solace-tools",
+    "directory": "packages/ep-asyncapi"
+  },
+  "bugs": {
+    "url": "github:ricardojosegomezulmke/solace-tools/issues"
+  },
+  "author": "Solace Corporation",
+  "contributors": [
+    {
+      "name": "Ricardo Gomez-Ulmke",
+      "email": "ricardo.gomez-ulmke@solace.com"
+    }
+  ],
+  "keywords": [
+    "solace",
+    "event portal",
+    "asyncapi",
+    "api management"
+  ],
+  "scripts": {
+    "build:examples": "tsc --project examples/tsconfig.json",
+    "build": "tsup src/index.ts --format esm,cjs, --dts && yarn build:examples",
+    "clean": "rm -rf dist && rm -rf test/logs && rm -rf .turbo && rm -rf examples/dist",
+    "build:test": "yarn build",
+    "test": "yarn build:test && . ./test/source.env.sh && nyc mocha --config test/.mocharc.yml test/**/**.spec.ts && unset_source_env",
+    "lint": "eslint .",
+    "lint:deprecated": "yarn lint | grep deprecated"
+  },
+  "typedoc": {
+    "entryPoint": "./src/index.ts",
+    "displayName": "Event Portal AsyncAPI",
+    "readmeFile": "./typedoc.README.md",
+    "tsconfig": "./tsconfig.json"
+  },
+  "publishConfig": {
+    "access": "public",
+    "cache": ".cache/.npm",
+    "registry": "https://registry.npmjs.org",
+    "tag": "latest"
+  },
+  "files": [
+    "dist/**"
+  ],
+  "devDependencies": {
+    "@internal/tools": "*",
+    "@types/js-yaml": "^4.0.5",
+    "@types/lodash": "^4.14.191",
+    "@types/lodash.isequal": "^4.5.6",
+    "@types/uuid": "^9.0.0",
+    "lodash.isequal": "^4.5.0"
+  },
+  "dependencies": {
+    "@asyncapi/avro-schema-parser": "^1.1.0",
+    "@asyncapi/parser": "^1.17.2",
+    "@rjgu/ep-openapi-node": "^2.0.14",
+    "js-yaml": "^4.1.0",
+    "jsonschema": "^1.4.1",
+    "lodash": "^4.17.21",
+    "semver": "^7.3.8",
+    "uuid": "^9.0.0"
+  }
+}

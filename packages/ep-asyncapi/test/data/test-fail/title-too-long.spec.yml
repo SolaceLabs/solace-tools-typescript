@@ -1,0 +1,17 @@
+asyncapi: '2.4.0'
+x-ep-application-domain-name: ep-asyncapi/test
+info:
+  title: "this is a very, very, very, very, very, very, very, very long title"
+  version: '1.2.0'
+channels:
+  ep-asyncapi/test/message-1:
+    publish:
+      message:
+        $ref: '#/components/messages/message-1'
+components:
+  messages:
+    message-1:
+     payload:
+       type: string
+
+

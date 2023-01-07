@@ -1,0 +1,71 @@
+asyncapi: '2.4.0'
+id: urn:com:acme-retail:central-it:provider:till-system
+# ep application domain: acme-retail:central-it:provider:till-system
+x-ep-application-domain-name: acme-retail/central-it/provider/till-system
+info:
+  title: Central-IT-Provider-TillSystem-v1
+  version: '1.2.9'
+  description: |
+    # AcmeRetail-Central-IT-Provider-TillSystem-v1
+
+    Provider Service API for the Central IT Till System.
+
+    ### Features
+
+    * Receive till receipts from stores
+
+      - update 1
+
+  license:
+    name: MIT
+
+defaultContentType: application/json
+
+channels:
+
+  catalyst-labs/acme-retail/till-system/v1/{regionId_v1}/{storeId_v1}/receipt:
+    x-ep-event-name: TillReceipt
+    description: The topic to receive till receipts from stores on.
+    parameters:
+      storeId_v1:
+        $ref: '#/components/parameters/storeId-v1'
+      regionId_v1:
+        $ref: '#/components/parameters/regionId-v1'
+    publish:
+      summary: Receive till receipts from stores.
+      operationId: receiveStoreTillReceipts
+      message:
+        # x-parser-message-name: storeTillReceipt
+        $ref: '#/components/messages/storeTillReceipt-v1'
+
+  catalyst-labs/acme-retail/till-system/v1/{regionId_v1}/{storeId_v1}/error:
+    x-ep-event-name: TillSystemError
+    description: The topic to send errors as response to a transaction on.
+    parameters:
+      storeId_v1:
+        $ref: '#/components/parameters/storeId-v1'
+      regionId_v1:
+        $ref: '#/components/parameters/regionId-v1'
+    subscribe:
+      summary: Send errors to store for transaction.
+      operationId: sendStoreTillSystemError
+      message:
+  #       # x-parser-message-name: storeTillReceipt
+        $ref: '#/components/messages/storeTillSystemError-v1'
+
+components:
+  messages:
+
+    storeTillReceipt-v1:
+      $ref: "https://raw.githubusercontent.com/solace-iot-team/sep-async-api-importer/references/data/acme-retail/references/messages/storeTillReceipt-v1.yml"
+
+    storeTillSystemError-v1:
+      $ref: "https://raw.githubusercontent.com/solace-iot-team/sep-async-api-importer/references/data/acme-retail/references/messages/storeTillSystemError-v1.yml"
+
+  parameters:
+    storeId-v1:
+      description: The ID of the store.
+      schema:
+        type: string
+    regionId-v1:
+      $ref: "https://raw.githubusercontent.com/solace-iot-team/sep-async-api-importer/references/data/acme-retail/references/parameters/regionId.v1.yml"
