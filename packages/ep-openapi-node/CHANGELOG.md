@@ -1,4 +1,4 @@
-# @rjgu/ep-openapi-node
+# @solace-labs/ep-openapi-node
 
 ## 2.0.17
 

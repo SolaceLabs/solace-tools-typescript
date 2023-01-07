@@ -1,13 +1,5 @@
-import { 
-  StatesResponse, 
-  StatesService 
-} from "@rjgu/ep-openapi-node";
-import { 
-  EpSdkApiContentError,
-  EpSdkLogger,
-  EEpSdkLoggerCodes
-} from "../utils";
-
+import { StatesResponse, StatesService } from "@solace-labs/ep-openapi-node";
+import { EpSdkApiContentError, EpSdkLogger, EEpSdkLoggerCodes } from "../utils";
 
 // "data": [
 //   {
@@ -45,45 +37,74 @@ export enum EEpSdkStateDTONames {
   DRAFT = "Draft",
   RELEASED = "Released",
   DEPRECATED = "Deprecated",
-  RETIRED = "Retired"
+  RETIRED = "Retired",
 }
 
 /** @category Services */
 export class EpSdkStatesServiceClass {
+  private _draftId = "1";
+  private _releasedId = "2";
+  private _deprecatedId = "3";
+  private _retiredId = "4";
 
-  private  _draftId = "1";
-  private  _releasedId = "2";
-  private  _deprecatedId = "3";
-  private  _retiredId = "4";
-
-  public validateStates = async(): Promise<void> => {
-    const funcName = 'validateStates';
+  public validateStates = async (): Promise<void> => {
+    const funcName = "validateStates";
     const logName = `${EpSdkStatesServiceClass.name}.${funcName}()`;
 
     const stateResponse: StatesResponse = await StatesService.getStates();
 
-    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.SERVICE_GET, module: this.constructor.name, details: {
-      stateResponse: stateResponse
-    }}));
+    EpSdkLogger.trace(
+      EpSdkLogger.createLogEntry(logName, {
+        code: EEpSdkLoggerCodes.SERVICE_GET,
+        module: this.constructor.name,
+        details: {
+          stateResponse: stateResponse,
+        },
+      })
+    );
     /* istanbul ignore next */
-    if(stateResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name,'stateResponse.data === undefined', {
-      stateResponse: stateResponse
-    });
+    if (stateResponse.data === undefined)
+      throw new EpSdkApiContentError(
+        logName,
+        this.constructor.name,
+        "stateResponse.data === undefined",
+        {
+          stateResponse: stateResponse,
+        }
+      );
     /* istanbul ignore next */
-    if(stateResponse.data.length !== 4) throw new EpSdkApiContentError(logName, this.constructor.name,'stateResponse.data.length !== 4', {
-      stateResponse: stateResponse
-    });
-    for(const stateDTO of stateResponse.data) {
+    if (stateResponse.data.length !== 4)
+      throw new EpSdkApiContentError(
+        logName,
+        this.constructor.name,
+        "stateResponse.data.length !== 4",
+        {
+          stateResponse: stateResponse,
+        }
+      );
+    for (const stateDTO of stateResponse.data) {
       /* istanbul ignore next */
-      if(stateDTO.name === undefined) throw new EpSdkApiContentError(logName, this.constructor.name,'stateDTO.name === undefined', {
-        stateDTO: stateDTO
-      });
+      if (stateDTO.name === undefined)
+        throw new EpSdkApiContentError(
+          logName,
+          this.constructor.name,
+          "stateDTO.name === undefined",
+          {
+            stateDTO: stateDTO,
+          }
+        );
       /* istanbul ignore next */
-      if(stateDTO.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name,'stateDTO.id === undefined', {
-        stateDTO: stateDTO
-      });
-  
-      switch(stateDTO.name) {
+      if (stateDTO.id === undefined)
+        throw new EpSdkApiContentError(
+          logName,
+          this.constructor.name,
+          "stateDTO.id === undefined",
+          {
+            stateDTO: stateDTO,
+          }
+        );
+
+      switch (stateDTO.name) {
         case EEpSdkStateDTONames.DRAFT:
           this._draftId = stateDTO.id;
           break;
@@ -98,13 +119,18 @@ export class EpSdkStatesServiceClass {
           break;
         default:
           /* istanbul ignore next */
-          throw new EpSdkApiContentError(logName, this.constructor.name,'stateDTO.name is unknown', {
-            stateDTO: stateDTO,
-            knownNames: Object.values(EEpSdkStateDTONames)
-          });
+          throw new EpSdkApiContentError(
+            logName,
+            this.constructor.name,
+            "stateDTO.name is unknown",
+            {
+              stateDTO: stateDTO,
+              knownNames: Object.values(EEpSdkStateDTONames),
+            }
+          );
       }
     }
-  }
+  };
 
   public get draftId() {
     return this._draftId;
@@ -122,13 +148,15 @@ export class EpSdkStatesServiceClass {
     return this._retiredId;
   }
 
-  public getEpStateIdByName = ({ epSdkStateDTOName }:{
+  public getEpStateIdByName = ({
+    epSdkStateDTOName,
+  }: {
     epSdkStateDTOName: EEpSdkStateDTONames;
   }): string => {
-    const funcName = 'getEpStateIdByName';
+    const funcName = "getEpStateIdByName";
     const logName = `${EpSdkStatesServiceClass.name}.${funcName}()`;
 
-    switch(epSdkStateDTOName) {
+    switch (epSdkStateDTOName) {
       case EEpSdkStateDTONames.DRAFT:
         return this._draftId;
       case EEpSdkStateDTONames.RELEASED:
@@ -139,17 +167,24 @@ export class EpSdkStatesServiceClass {
         return this._retiredId;
       default:
         /* istanbul ignore next */
-        throw new EpSdkApiContentError(logName, this.constructor.name,'unknown epSdkStateDTOName', {
-          epSdkStateDTOName: epSdkStateDTOName,
-          knownNames: Object.values(EEpSdkStateDTONames)
-        });
+        throw new EpSdkApiContentError(
+          logName,
+          this.constructor.name,
+          "unknown epSdkStateDTOName",
+          {
+            epSdkStateDTOName: epSdkStateDTOName,
+            knownNames: Object.values(EEpSdkStateDTONames),
+          }
+        );
     }
-  }
+  };
 
-  public getStateDTONameByEpStateId = ({ stateId}: {
+  public getStateDTONameByEpStateId = ({
+    stateId,
+  }: {
     stateId: string;
   }): string => {
-    switch(stateId) {
+    switch (stateId) {
       case this._draftId:
         return EEpSdkStateDTONames.DRAFT;
       case this._releasedId:
@@ -161,9 +196,8 @@ export class EpSdkStatesServiceClass {
       default:
         return stateId;
     }
-  }
+  };
 }
 
 /** @category Services */
 export default new EpSdkStatesServiceClass();
-

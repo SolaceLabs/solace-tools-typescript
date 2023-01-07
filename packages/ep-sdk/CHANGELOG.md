@@ -1,4 +1,4 @@
-# @rjgu/ep-sdk
+# @solace-labs/ep-sdk
 
 ## 1.0.8
 
@@ -6,7 +6,7 @@
 
 - 75d5499: test publish
 - Updated dependencies [75d5499]
-  - @rjgu/ep-openapi-node@2.0.17
+  - @solace-labs/ep-openapi-node@2.0.17
 
 ## 1.0.6
 
@@ -14,7 +14,7 @@
 
 - d7be165: fixed publish files
 - Updated dependencies [d7be165]
-  - @rjgu/ep-openapi-node@2.0.14
+  - @solace-labs/ep-openapi-node@2.0.14
 
 ## 1.0.5
 
@@ -22,7 +22,7 @@
 
 - 8b9f729: updated internal tools
 - Updated dependencies [8b9f729]
-  - @rjgu/ep-openapi-node@2.0.13
+  - @solace-labs/ep-openapi-node@2.0.13
 
 ## 1.0.4
 
@@ -30,7 +30,7 @@
 
 - 521073e: linting added
 - Updated dependencies [521073e]
-  - @rjgu/ep-openapi-node@2.0.12
+  - @solace-labs/ep-openapi-node@2.0.12
 
 ## 1.0.3
 
@@ -38,7 +38,7 @@
 
 - 6b8ac83: generating typedocs for the entire suite of packages
 - Updated dependencies [6b8ac83]
-  - @rjgu/ep-openapi-node@2.0.11
+  - @solace-labs/ep-openapi-node@2.0.11
 
 ## 1.0.2
 
@@ -46,7 +46,7 @@
 
 - 24f61cc: enabled api call logging in all tests
 - Updated dependencies [24f61cc]
-  - @rjgu/ep-openapi-node@2.0.10
+  - @solace-labs/ep-openapi-node@2.0.10
 
 ## 1.0.1
 

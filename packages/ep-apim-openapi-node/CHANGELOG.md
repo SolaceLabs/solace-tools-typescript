@@ -1,4 +1,4 @@
-# @rjgu/ep-apim-openapi-node
+# @solace-labs/ep-apim-openapi-node
 
 ## 1.0.8
 

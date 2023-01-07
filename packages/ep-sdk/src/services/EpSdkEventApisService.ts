@@ -3,7 +3,7 @@ import {
   EventApiResponse,
   EventApisResponse, 
   EventApIsService, 
-} from '@rjgu/ep-openapi-node';
+} from '@solace-labs/ep-openapi-node';
 import { 
   EpSdkApiContentError, 
   EpSdkServiceError,

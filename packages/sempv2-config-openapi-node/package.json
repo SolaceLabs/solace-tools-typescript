@@ -1,17 +1,17 @@
 {
-  "name": "@rjgu/sempv2-config-openapi-node",
-  "version": "1.0.11",
+  "name": "@solace-labs/sempv2-config-openapi-node",
+  "version": "1.0.0",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "description": "Solace SempV2 Config OpenAPI Client for NodeJS (Typescript), v2.30",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "github:ricardojosegomezulmke/solace-tools",
+    "url": "github:SolaceLabs/solace-tools",
     "directory": "packages/sempv2-config-openapi-node"
   },
   "bugs": {
-    "url": "github:ricardojosegomezulmke/issues"
+    "url": "github:SolaceLabs/issues"
   },
   "author": "Solace Corporation",
   "contributors": [
