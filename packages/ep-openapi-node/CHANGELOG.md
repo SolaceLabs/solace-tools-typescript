@@ -1,5 +1,11 @@
 # @rjgu/ep-openapi-node
 
+## 2.0.17
+
+### Patch Changes
+
+- 75d5499: test publish
+
 ## 2.0.14
 
 ### Patch Changes

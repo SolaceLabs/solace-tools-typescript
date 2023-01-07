@@ -1,5 +1,13 @@
 # @rjgu/ep-sdk
 
+## 1.0.8
+
+### Patch Changes
+
+- 75d5499: test publish
+- Updated dependencies [75d5499]
+  - @rjgu/ep-openapi-node@2.0.17
+
 ## 1.0.6
 
 ### Patch Changes

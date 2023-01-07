@@ -1,5 +1,14 @@
 # @rjgu/ep-async-api-importer
 
+## 0.50.4
+
+### Patch Changes
+
+- 75d5499: test publish
+- Updated dependencies [75d5499]
+  - @rjgu/ep-asyncapi@1.0.9
+  - @rjgu/ep-sdk@1.0.8
+
 ## 0.50.2
 
 ### Patch Changes

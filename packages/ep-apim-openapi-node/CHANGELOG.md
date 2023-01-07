@@ -1,5 +1,11 @@
 # @rjgu/ep-apim-openapi-node
 
+## 1.0.8
+
+### Patch Changes
+
+- 75d5499: test publish
+
 ## 1.0.6
 
 ### Patch Changes
