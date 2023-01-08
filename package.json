@@ -13,6 +13,7 @@
     "build": "turbo run build && yarn typedoc && ./docs/make.sh",
     "build:test": "turbo run build:test",
     "test": "turbo run test",
+    "dev:watch": "turbo run dev:watch",
     "lint": "turbo run lint",
     "lint:deprecated": "turbo run lint:deprecated",
     "clean": "turbo run clean && rm -rf ./docs/source/_generated && rm -rf ./docs/build",

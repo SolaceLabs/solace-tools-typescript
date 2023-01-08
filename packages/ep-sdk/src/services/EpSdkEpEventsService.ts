@@ -8,6 +8,8 @@ import {
 } from '@solace-labs/ep-openapi-node';
 import { 
   EEpSdkCustomAttributeEntityTypes,
+  EpSdkBrokerTypes,
+  IEpSdkAttributesQuery,
   TEpSdkCustomAttributeList 
 } from '../types';
 import { 
@@ -17,6 +19,7 @@ import {
   EEpSdkLoggerCodes
 } from '../utils';
 import EpSdkCustomAttributeDefinitionsService from './EpSdkCustomAttributeDefinitionsService';
+import EpSdkCustomAttributesQueryService from './EpSdkCustomAttributesQueryService';
 import EpSdkCustomAttributesService from './EpSdkCustomAttributesService';
 import { EpSdkServiceClass } from './EpSdkService';
 
@@ -109,9 +112,11 @@ export class EpSdkEpEventsServiceClass extends EpSdkServiceClass {
    * Retrieves a list of all Events without paging.
    * @param param0 
    */
-  public listAll = async({ applicationDomainIds, shared, sortFieldName }:{
+  public listAll = async({ applicationDomainIds, shared, sortFieldName, brokerType, attributesQuery }:{
     applicationDomainIds?: Array<string>;
     shared: boolean;
+    brokerType?: EpSdkBrokerTypes;
+    attributesQuery?: IEpSdkAttributesQuery;
     sortFieldName?: string;
   }): Promise<EventsResponse> => {
     const funcName = 'listAll';
@@ -121,7 +126,6 @@ export class EpSdkEpEventsServiceClass extends EpSdkServiceClass {
     
     let nextPage: number | undefined | null = 1;
     while(nextPage !== undefined && nextPage !== null) {
-
       const eventsResponse: EventsResponse = await EventsService.getEvents({
         applicationDomainIds: applicationDomainIds,
         shared: shared,
@@ -131,7 +135,22 @@ export class EpSdkEpEventsServiceClass extends EpSdkServiceClass {
       });
       if(eventsResponse.data === undefined || eventsResponse.data.length === 0) nextPage = undefined;
       else {
-        eventList.push(...eventsResponse.data);
+        if(brokerType || attributesQuery) {
+          const filteredList: Array<EPEvent> = eventsResponse.data.filter( (epEvent: EPEvent) => {
+            let doAdd = false;
+            if(brokerType) {
+              // EPEvent still has no brokerType in it
+            }
+            if(attributesQuery) {
+              if(EpSdkCustomAttributesQueryService.resolve({
+                customAttributes: epEvent.customAttributes,
+                attributesQuery: attributesQuery,
+              })) doAdd = true;
+            }
+            return doAdd;
+          });
+          eventList.push(...filteredList);
+        } else eventList.push(...eventsResponse.data);
         /* istanbul ignore next */
         if(eventsResponse.meta === undefined) throw new EpSdkApiContentError(logName, this.constructor.name,'eventsResponse.meta === undefined', {
           eventsResponse: eventsResponse
