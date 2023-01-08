@@ -109,8 +109,8 @@ export class EpSdkEpEventsServiceClass extends EpSdkServiceClass {
   }
 
   /**
-   * Retrieves a list of all Events without paging.
-   * @param param0 
+   * Retrieves a sorted and filtered list of all Events without paging.
+   * Filters are all AND.
    */
   public listAll = async({ applicationDomainIds, shared, sortFieldName, brokerType, attributesQuery }:{
     applicationDomainIds?: Array<string>;

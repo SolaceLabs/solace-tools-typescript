@@ -31,7 +31,7 @@
     "dev:watch": {
       "dependsOn": ["^dev:watch"],
       "outputs": ["dist/**", "generated-src/**/*.ts"],
-      "cache": true
+      "cache": false
     },
     "lint": {
       "outputs": []
