@@ -68,9 +68,9 @@ export type EpSdkEpEventAndVersionResponse = EpSdkEpEventAndVersion & {
 /** @category Services */
 export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
 
-  public getObjectAndVersionForEventId = async({ eventId, stateId, versionString }:{
+  public getObjectAndVersionForEventId = async({ eventId, stateIds, versionString }:{
     eventId: string;
-    stateId?: string;
+    stateIds?: Array<string>;
     versionString?: string;
   }): Promise<EpSdkEpEventAndVersionResponse | undefined> => {
     const funcName = 'getObjectAndVersionForEventId';
@@ -86,7 +86,7 @@ export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
     // get all versions for selected stateId
     const eventVersionList: Array<EventVersion> = await this.getVersionsForEventId({
       eventId: eventId,
-      stateId: stateId,
+      stateIds: stateIds,
     });
 
     let eventVersion: EventVersion | undefined = undefined;
@@ -140,9 +140,9 @@ export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
     return found;
   }
 
-  public getVersionsForEventId = async ({ eventId, stateId, pageSize = EpApiMaxPageSize }: {
+  public getVersionsForEventId = async ({ eventId, stateIds, pageSize = EpApiMaxPageSize }: {
     eventId: string;
-    stateId?: string;
+    stateIds?: Array<string>;
     pageSize?: number; /** for testing */
   }): Promise<Array<EventVersion>> => {
     const funcName = 'getVersionsForEventId';
@@ -160,13 +160,13 @@ export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
       if(eventVersionsResponse.data === undefined || eventVersionsResponse.data.length === 0) nextPage = null;
       else {
         // filter for stateId
-        if(stateId) {
+        if(stateIds && stateIds.length > 0) {
           const filteredList = eventVersionsResponse.data.filter( (eventVersion: EventVersion) => {
             /* istanbul ignore next */
             if(eventVersion.stateId === undefined) throw new EpSdkApiContentError(logName, this.constructor.name,'eventVersion.stateId === undefined', {
               eventVersion: eventVersion
             });
-            return eventVersion.stateId === stateId;
+            if(!stateIds.includes(eventVersion.stateId)) return false;
           });
           eventVersionList.push(...filteredList);
         } else {
@@ -227,15 +227,15 @@ export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
     return latestEventVersion.version;
   }
 
-  public getLatestVersionForEventId = async ({ eventId, applicationDomainId, stateId }: {
+  public getLatestVersionForEventId = async ({ eventId, applicationDomainId, stateIds }: {
     applicationDomainId?: string;
     eventId: string;
-    stateId?: string;
+    stateIds?: Array<string>;
   }): Promise<EventVersion | undefined> => {
     applicationDomainId;
     const eventVersionList: Array<EventVersion> = await this.getVersionsForEventId({
       eventId: eventId,
-      stateId: stateId,
+      stateIds: stateIds,
     });
     const latestEventVersion: EventVersion | undefined = this.getLatestEpObjectVersionFromList({ epObjectVersionList: eventVersionList });
     return latestEventVersion;
@@ -485,10 +485,10 @@ export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
     return eventVersionResponse.data;
   }
 
-  public listLatestVersions = async({ applicationDomainIds, shared, stateId, pageNumber = 1, pageSize = 20, sortFieldName }:{
+  public listLatestVersions = async({ applicationDomainIds, shared, stateIds, pageNumber = 1, pageSize = 20, sortFieldName }:{
     applicationDomainIds?: Array<string>;
     shared: boolean;
-    stateId?: string;
+    stateIds?: Array<string>;
     pageNumber?: number;
     pageSize?: number;
     sortFieldName?: string;
@@ -515,7 +515,7 @@ export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
       // get the latest version in the requested state
       const latest_EventVersion: EventVersion | undefined = await this.getLatestVersionForEventId({
         eventId: epEvent.id,
-        stateId: stateId
+        stateIds: stateIds
       });      
       if(latest_EventVersion !== undefined) complete_EpSdkEpEventAndVersionList.push({
         event: epEvent as EpSdkEpEvent,
