@@ -43,7 +43,7 @@ export class EpSdkEventApisServiceClass extends EpSdkServiceClass {
 
   public getById = async({ eventApiId, applicationDomainId }:{
     eventApiId: string;
-    applicationDomainId: string;
+    applicationDomainId?: string;
   }): Promise<EventApi> => {
     const funcName = 'getById';
     const logName = `${EpSdkEventApisServiceClass.name}.${funcName}()`;
@@ -69,7 +69,7 @@ export class EpSdkEventApisServiceClass extends EpSdkServiceClass {
 
   public deleteById = async({ eventApiId, applicationDomainId }:{
     eventApiId: string;
-    applicationDomainId: string;
+    applicationDomainId?: string;
   }): Promise<EventApi> => {
     const eventApi: EventApi = await this.getById({ 
       applicationDomainId: applicationDomainId,
