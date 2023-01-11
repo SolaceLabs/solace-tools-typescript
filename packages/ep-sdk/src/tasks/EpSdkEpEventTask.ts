@@ -1,20 +1,24 @@
 import { 
-  Event as EpEvent,
-  EventResponse,
-  EventsService,
+  // Event as EpEvent,
+  // EventResponse,
+  // EventsService,
 } from '@solace-labs/ep-openapi-node';
 import { 
   EpSdkApiContentError, 
   EpSdkInternalTaskError,
   EpSdkLogger,
-  EEpSdkLoggerCodes
+  EEpSdkLoggerCodes,
+  EpSdkUtils
 } from "../utils";
 import { 
   EpSdkEpEventsService 
 } from '../services';
 import { 
   EEpSdkObjectTypes,
-  EpSdkEvent
+  EpSdkBrokerTypes,
+  EpSdkEvent,
+  EpSdkEventResponse,
+  EpSdkEventUpdate
 } from '../types';
 import { 
   EpSdkTask,
@@ -30,12 +34,8 @@ import {
 } from "./EpSdkTask";
 
 /** @category Tasks */
-
-// here: add broker type from EpSdkEvent ...
-// don't use EpEvent or EventResponse
-
-export type TEpSdkEpEventTask_Settings = Partial<Pick<EpEvent, "shared">>;
-type TEpSdkEpEventTask_CompareObject = TEpSdkEpEventTask_Settings;
+export type TEpSdkEpEventTask_Settings = Partial<Pick<EpSdkEvent, "shared" | "brokerType">>;
+type TEpSdkEpEventTask_CompareObject = Omit<TEpSdkEpEventTask_Settings, "brokerType">;
 
 /** @category Tasks */
 export interface IEpSdkEpEventTask_Config extends IEpSdkTask_Config {
@@ -50,23 +50,23 @@ export interface IEpSdkEpEventTask_Keys extends IEpSdkTask_Keys {
 }
 /** @category Tasks */
 export interface IEpSdkEpEventTask_GetFuncReturn extends Omit<IEpSdkTask_GetFuncReturn, "epObject"> {
-  epObject: EpEvent | undefined;
+  epObject: EpSdkEvent | undefined;
 }
 /** @category Tasks */
 export interface IEpSdkEpEventTask_CreateFuncReturn extends Omit<IEpSdkTask_CreateFuncReturn, "epObject" > {
-  epObject: EpEvent;
+  epObject: EpSdkEvent;
 }
 /** @category Tasks */
 export interface IEpSdkEpEventTask_UpdateFuncReturn extends Omit<IEpSdkTask_UpdateFuncReturn, "epObject"> {
-  epObject: EpEvent;
+  epObject: EpSdkEvent;
 }
 /** @category Tasks */
 export interface IEpSdkEpEventTask_DeleteFuncReturn extends Omit<IEpSdkTask_DeleteFuncReturn, "epObject"> {
-  epObject: EpEvent;
+  epObject: EpSdkEvent;
 }
 /** @category Tasks */
 export interface IEpSdkEpEventTask_ExecuteReturn extends Omit<IEpSdkTask_ExecuteReturn, "epObject"> {
-  epObject: EpEvent;
+  epObject: EpSdkEvent;
 }
 
 /** @category Tasks */
@@ -79,15 +79,24 @@ export class EpSdkEpEventTask extends EpSdkTask {
   };
   private readonly Default_TEpSdkEpEventTask_Settings: TEpSdkEpEventTask_Settings = {
     shared: true,
+    brokerType: EpSdkBrokerTypes.Solace
   }
   private getTaskConfig(): IEpSdkEpEventTask_Config { 
     return this.epSdkTask_Config as IEpSdkEpEventTask_Config; 
   }
-  private createObjectSettings(): Partial<EpEvent> {
+  private createObjectSettings(): Partial<EpSdkEvent> {
     return {
       ...this.Default_TEpSdkEpEventTask_Settings,
       ...this.getTaskConfig().eventObjectSettings,
     };
+  }
+  private updateObjectSettings(): Partial<EpSdkEventUpdate> {
+    const epSdkEventUpdate = {
+      ...this.Default_TEpSdkEpEventTask_Settings,
+      ...this.getTaskConfig().eventObjectSettings,
+    };
+    delete epSdkEventUpdate[EpSdkUtils.nameOf<TEpSdkEpEventTask_Settings>("brokerType")];
+    return epSdkEventUpdate;
   }
 
   constructor(taskConfig: IEpSdkEpEventTask_Config) {
@@ -101,7 +110,7 @@ export class EpSdkEpEventTask extends EpSdkTask {
     };
   }
 
-  protected getEpObjectKeys(epObject: EpEvent | undefined): IEpSdkTask_EpObjectKeys {
+  protected getEpObjectKeys(epObject: EpSdkEvent | undefined): IEpSdkTask_EpObjectKeys {
     const funcName = 'getEpObjectKeys';
     const logName = `${EpSdkEpEventTask.name}.${funcName}()`;
     
@@ -131,21 +140,21 @@ export class EpSdkEpEventTask extends EpSdkTask {
       epSdkEpEventTask_Keys: epSdkEpEventTask_Keys
     }}));
 
-    const epEvent: EpEvent | undefined = await EpSdkEpEventsService.getByName({ 
+    const epSdkEvent: EpSdkEvent | undefined = await EpSdkEpEventsService.getByName({ 
       eventName: epSdkEpEventTask_Keys.eventName,
       applicationDomainId: epSdkEpEventTask_Keys.applicationDomainId
     });
 
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_API_GET, module: this.constructor.name, details: {
       epSdkEpEventTask_Keys: epSdkEpEventTask_Keys,
-      epEvent: epEvent ? epEvent : 'undefined'
+      epSdkEvent: epSdkEvent ? epSdkEvent : 'undefined'
     }}));
 
-    if(epEvent === undefined) return this.Empty_IEpSdkEpEventTask_GetFuncReturn;
+    if(epSdkEvent === undefined) return this.Empty_IEpSdkEpEventTask_GetFuncReturn;
 
     const epSdkEpEventTask_GetFuncReturn: IEpSdkEpEventTask_GetFuncReturn = {
-      epObjectKeys: this.getEpObjectKeys(epEvent),
-      epObject: epEvent,
+      epObjectKeys: this.getEpObjectKeys(epSdkEvent),
+      epObject: epSdkEvent,
       epObjectExists: true,
     }
     return epSdkEpEventTask_GetFuncReturn;
@@ -161,11 +170,11 @@ export class EpSdkEpEventTask extends EpSdkTask {
 
     if(epSdkEpEventTask_GetFuncReturn.epObject === undefined) throw new EpSdkInternalTaskError(logName, this.constructor.name, 'epSdkEpEventTask_GetFuncReturn.epObject === undefined');
 
-    const existingObject: EpEvent = epSdkEpEventTask_GetFuncReturn.epObject;
+    const existingObject: EpSdkEvent = epSdkEpEventTask_GetFuncReturn.epObject;
     const existingCompareObject: TEpSdkEpEventTask_CompareObject = {
       shared: existingObject.shared,
     }
-    const requestedCompareObject: TEpSdkEpEventTask_CompareObject = this.createObjectSettings();
+    const requestedCompareObject: TEpSdkEpEventTask_CompareObject = this.updateObjectSettings();
 
     const epSdkTask_IsUpdateRequiredFuncReturn: IEpSdkTask_IsUpdateRequiredFuncReturn = this.create_IEpSdkTask_IsUpdateRequiredFuncReturn({ 
       existingObject: existingCompareObject, 
@@ -188,7 +197,7 @@ export class EpSdkEpEventTask extends EpSdkTask {
 
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_START_CREATE, module: this.constructor.name }));
 
-    const create: EpEvent = {
+    const create: EpSdkEvent = {
       ...this.createObjectSettings(),
       applicationDomainId: this.getTaskConfig().applicationDomainId,
       name: this.getTaskConfig().eventName,
@@ -213,26 +222,26 @@ export class EpSdkEpEventTask extends EpSdkTask {
       };
     }
 
-    const eventResponse: EventResponse = await EventsService.createEvent({
+    const epSdkEventResponse: EpSdkEventResponse = await EpSdkEpEventsService.createEvent({
       requestBody: create
     });
 
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_CREATE, module: this.constructor.name, details: {
       epSdkEpEventTask_Config: this.getTaskConfig(),
       create: create,
-      eventResponse: eventResponse
+      epSdkEventResponse: epSdkEventResponse
     }}));
 
     /* istanbul ignore next */
-    if(eventResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'eventResponse.data === undefined', {
+    if(epSdkEventResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'epSdkEventResponse.data === undefined', {
       epSdkApplicationDomainTask_Config: this.getTaskConfig(),
       create: create,
-      eventResponse: eventResponse
+      epSdkEventResponse: epSdkEventResponse
     });
     return {
       epSdkTask_Action: this.getCreateFuncAction(),
-      epObject: eventResponse.data,
-      epObjectKeys: this.getEpObjectKeys(eventResponse.data)
+      epObject: epSdkEventResponse.data,
+      epObjectKeys: this.getEpObjectKeys(epSdkEventResponse.data)
     };
   }
 
@@ -248,8 +257,8 @@ export class EpSdkEpEventTask extends EpSdkTask {
       epObject: epSdkEpEventTask_GetFuncReturn.epObject
     });
 
-    const update: EpEvent = {
-      ...this.createObjectSettings(),
+    const update: EpSdkEventUpdate = {
+      ...this.updateObjectSettings(),
       applicationDomainId: this.getTaskConfig().applicationDomainId,
       name: this.getTaskConfig().eventName,
     };
@@ -260,7 +269,7 @@ export class EpSdkEpEventTask extends EpSdkTask {
     }}));
 
     if(this.isCheckmode()) {
-      const wouldBe_EpObject: EpEvent = {
+      const wouldBe_EpObject: EpSdkEvent = {
         ...epSdkEpEventTask_GetFuncReturn.epObject,
         ...update
       };
@@ -271,25 +280,25 @@ export class EpSdkEpEventTask extends EpSdkTask {
       };
     }
 
-    const eventResponse: EventResponse = await EventsService.updateEvent({
-      id: epSdkEpEventTask_GetFuncReturn.epObject.id,
+    const epSdkEventResponse: EpSdkEventResponse = await EpSdkEpEventsService.updateEvent({
+      eventId: epSdkEpEventTask_GetFuncReturn.epObject.id,
       requestBody: update
     });
 
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_UPDATE, module: this.constructor.name, details: {
       epSdkApplicationDomainTask_Config: this.getTaskConfig(),
       update: update,
-      eventResponse: eventResponse,
+      epSdkEventResponse: epSdkEventResponse,
     }}));
 
     /* istanbul ignore next */
-    if(eventResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'eventResponse.data === undefined', {
-      eventResponse: eventResponse
+    if(epSdkEventResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'epSdkEventResponse.data === undefined', {
+      epSdkEventResponse: epSdkEventResponse
     });
     const epSdkEpEventTask_UpdateFuncReturn: IEpSdkEpEventTask_UpdateFuncReturn = {
       epSdkTask_Action: this.getUpdateFuncAction(),
-      epObject: eventResponse.data,
-      epObjectKeys: this.getEpObjectKeys(eventResponse.data)
+      epObject: epSdkEventResponse.data,
+      epObjectKeys: this.getEpObjectKeys(epSdkEventResponse.data)
     };
     return epSdkEpEventTask_UpdateFuncReturn;
   }
@@ -314,14 +323,14 @@ export class EpSdkEpEventTask extends EpSdkTask {
       };
     }
 
-    const epEvent: EpEvent = await EpSdkEpEventsService.deleteById({ 
+    const epSdkEvent: EpSdkEvent = await EpSdkEpEventsService.deleteById({ 
       eventId: epSdkEpEventTask_GetFuncReturn.epObject.id,
     });
 
     const epSdkEpEventTask_DeleteFuncReturn: IEpSdkEpEventTask_DeleteFuncReturn = {
       epSdkTask_Action: this.getDeleteFuncAction(),
-      epObject: epEvent,
-      epObjectKeys: this.getEpObjectKeys(epEvent)
+      epObject: epSdkEvent,
+      epObjectKeys: this.getEpObjectKeys(epSdkEvent)
     };
     return epSdkEpEventTask_DeleteFuncReturn;
   }

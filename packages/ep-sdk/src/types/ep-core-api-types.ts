@@ -1,16 +1,27 @@
 import { 
   Event as EPEvent, 
-  EventResponse, 
+  EventResponse,
+  EventsResponse,
+  meta, 
 } from '@solace-labs/ep-openapi-node';
 import { EpSdkBrokerTypes } from './types';
 
 /** @category EP Core API Types */
 export type EpSdkEvent = EPEvent & {
-  brokerType: EpSdkBrokerTypes;
+  brokerType?: EpSdkBrokerTypes;
 }
+/** @category EP Core API Types */
+export type EpSdkEventCreate = EpSdkEvent;
+/** @category EP Core API Types */
+export type EpSdkEventUpdate = Omit<EpSdkEvent, "brokerType">;
 /** @category EP Core API Types */
 export type EpSdkEventResponse = EventResponse & {
   data?: EpSdkEvent;
-  meta?: Record<string, any>;
+  meta?: meta;
+};
+/** @category EP Core API Types */
+export type EpSdkEventsResponse = EventsResponse & {
+  data?: Array<EpSdkEvent>;
+  meta?: meta;
 };
 

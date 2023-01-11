@@ -12,6 +12,7 @@ import {
   EpSdkVersionTaskStrategyValidationError,
   EpSdkLogger,
   EEpSdkLoggerCodes,
+  EpSdkTaskConfigValidationError,
 } from "../utils";
 import {
   EpSdkEnumVersionsService,
@@ -34,30 +35,18 @@ import {
 } from "./EpSdkVersionTask";
 
 /** @category Tasks */
-export type TEpSdkEpEventVersionTask_Settings_DeliveryDescriptor = Pick<
-  DeliveryDescriptor,
-  "brokerType"
->;
+export type TEpSdkEpEventVersionTask_Settings_DeliveryDescriptor = Pick<DeliveryDescriptor,"brokerType">;
 /** @category Tasks */
-export type TEpSdkEpEventVersionTask_Settings = Required<
-  Pick<
-    EventVersion,
-    "description" | "displayName" | "stateId" | "schemaVersionId"
-  >
-> &
-  TEpSdkEpEventVersionTask_Settings_DeliveryDescriptor;
-type TEpSdkEpEventVersionTask_CompareObject =
-  Partial<TEpSdkEpEventVersionTask_Settings> &
-    Pick<EventVersion, "deliveryDescriptor"> &
-    Partial<Pick<EventVersion, "version">>;
+export type TEpSdkEpEventVersionTask_Settings = Required<Pick<EventVersion, "description" | "displayName" | "stateId" | "schemaVersionId">> & TEpSdkEpEventVersionTask_Settings_DeliveryDescriptor;
+type TEpSdkEpEventVersionTask_CompareObject = Partial<TEpSdkEpEventVersionTask_Settings> & Pick<EventVersion, "deliveryDescriptor"> & Partial<Pick<EventVersion, "version">>;
 
 /** @category Tasks */
-export interface IEpSdkEpEventVersionTask_Config
-  extends IEpSdkVersionTask_Config {
+export interface IEpSdkEpEventVersionTask_Config extends IEpSdkVersionTask_Config {
   applicationDomainId: string;
   eventId: string;
   eventVersionSettings: TEpSdkEpEventVersionTask_Settings;
   topicString: string;
+  topicDelimiter?: string[1];
 }
 /** @category Tasks */
 export interface IEpSdkEpEventVersionTask_Keys extends IEpSdkTask_Keys {
@@ -65,23 +54,19 @@ export interface IEpSdkEpEventVersionTask_Keys extends IEpSdkTask_Keys {
   eventId: string;
 }
 /** @category Tasks */
-export interface IEpSdkEpEventVersionTask_GetFuncReturn
-  extends Omit<IEpSdkTask_GetFuncReturn, "epObject"> {
+export interface IEpSdkEpEventVersionTask_GetFuncReturn extends Omit<IEpSdkTask_GetFuncReturn, "epObject"> {
   epObject: EventVersion | undefined;
 }
 /** @category Tasks */
-export interface IEpSdkEpEventVersionTask_CreateFuncReturn
-  extends Omit<IEpSdkTask_CreateFuncReturn, "epObject"> {
+export interface IEpSdkEpEventVersionTask_CreateFuncReturn extends Omit<IEpSdkTask_CreateFuncReturn, "epObject"> {
   epObject: EventVersion;
 }
 /** @category Tasks */
-export interface IEpSdkEpEventVersionTask_UpdateFuncReturn
-  extends Omit<IEpSdkTask_UpdateFuncReturn, "epObject"> {
+export interface IEpSdkEpEventVersionTask_UpdateFuncReturn extends Omit<IEpSdkTask_UpdateFuncReturn, "epObject"> {
   epObject: EventVersion;
 }
 /** @category Tasks */
-export interface IEpSdkEpEventVersionTask_ExecuteReturn
-  extends Omit<IEpSdkTask_ExecuteReturn, "epObject"> {
+export interface IEpSdkEpEventVersionTask_ExecuteReturn extends Omit<IEpSdkTask_ExecuteReturn, "epObject"> {
   epObject: EventVersion;
 }
 
@@ -89,27 +74,25 @@ export interface IEpSdkEpEventVersionTask_ExecuteReturn
 export class EpSdkEpEventVersionTask extends EpSdkVersionTask {
   private topicAddressLevelList: Array<AddressLevel> = [];
 
-  private readonly Empty_IEpSdkEpEventVersionTask_GetFuncReturn: IEpSdkEpEventVersionTask_GetFuncReturn =
-    {
-      epObjectKeys: this.getDefaultEpObjectKeys(),
-      epObject: undefined,
-      epObjectExists: false,
-    };
-  private readonly Default_TEpSdkEpEventVersionTask_Settings: Partial<TEpSdkEpEventVersionTask_Settings> =
-    {
-      // description: `Created by ${EpSdkConfig.getAppName()}.`,
-      brokerType: "solace",
-    };
+  private readonly Empty_IEpSdkEpEventVersionTask_GetFuncReturn: IEpSdkEpEventVersionTask_GetFuncReturn = {
+    epObjectKeys: this.getDefaultEpObjectKeys(),
+    epObject: undefined,
+    epObjectExists: false,
+  };
+  private readonly Default_TopicDelimiter = "/";
+  private readonly Default_TEpSdkEpEventVersionTask_Settings: Partial<TEpSdkEpEventVersionTask_Settings> = {
+    // description: `Created by ${EpSdkConfig.getAppName()}.`,
+    brokerType: "solace",
+  };
   private getTaskConfig(): IEpSdkEpEventVersionTask_Config {
     return this.epSdkTask_Config as IEpSdkEpEventVersionTask_Config;
   }
-  private initializeTopicAddressLevels = async ({
-    topicString,
-  }: {
+  private initializeTopicAddressLevels = async ({ topicString, topicDelimiter }: {
     topicString: string;
+    topicDelimiter: string[1];
   }): Promise<Array<AddressLevel>> => {
     const addressLevels: Array<AddressLevel> = [];
-    const topicLevelList: Array<string> = topicString.split("/");
+    const topicLevelList: Array<string> = topicString.split(topicDelimiter);
     for (let topicLevel of topicLevelList) {
       let type = AddressLevel.addressLevelType.LITERAL;
       let enumVersionId: string | undefined = undefined;
@@ -155,8 +138,17 @@ export class EpSdkEpEventVersionTask extends EpSdkVersionTask {
   }
 
   protected async initializeTask(): Promise<void> {
+    const funcName = "getEpObjectKeys";
+    const logName = `${EpSdkEpEventVersionTask.name}.${funcName}()`;
+    if(this.getTaskConfig().topicDelimiter === undefined) this.getTaskConfig().topicDelimiter = this.Default_TopicDelimiter;
+    else {
+      if(this.getTaskConfig().topicDelimiter.length !== 1) throw new EpSdkTaskConfigValidationError(logName, this.constructor.name, undefined, 'topicDelimiter length must be equal to 1', {
+        config: this.getTaskConfig()
+      });
+    }
     this.topicAddressLevelList = await this.initializeTopicAddressLevels({
       topicString: this.getTaskConfig().topicString,
+      topicDelimiter: this.getTaskConfig().topicDelimiter
     });
   }
 
