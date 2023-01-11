@@ -173,6 +173,7 @@ export class EpSdkValidationError extends EpSdkError {
   }
 }
 
+/** @category Errors */
 export class EpSdkTaskConfigValidationError extends EpSdkError {
   protected static DefaultDescription = 'EP Sdk Task Config Validation Error';
   private validationError: any;

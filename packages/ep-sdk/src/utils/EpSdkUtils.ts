@@ -9,12 +9,14 @@ import {
 } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 
-// use with // @ts-ignore if getting Type instantiation is excessively deep and possibly infinite.  TS2589
-type DotPrefix<T extends string> = T extends "" ? "" : `.${T}`;
-type DotNestedKeys<T> = (T extends object ?
+/** @category Utils */
+export type DotPrefix<T extends string> = T extends "" ? "" : `.${T}`;
+/** @category Utils */
+export type DotNestedKeys<T> = (T extends object ?
     { [K in Exclude<keyof T, symbol>]: `${K}${DotPrefix<DotNestedKeys<T[K]>>}` }[Exclude<keyof T, symbol>]
     : "") extends infer D ? Extract<D, string> : never;
-type DeepPartial<T> = T extends object ? {
+/** @category Utils */
+export type DeepPartial<T> = T extends object ? {
       [P in keyof T]?: DeepPartial<T[P]>;
 } : T;
 
@@ -33,6 +35,9 @@ export interface IEpSdkDeepCompareResult {
 /** @category Utils */
 export class EpSdkUtils {
 
+  /**
+   * use with // @ts-ignore if getting Type instantiation is excessively deep and possibly infinite.  TS2589
+   */
   public static nameOf<T>(name: DotNestedKeys<DeepPartial<T>>) {
     return name;
   }

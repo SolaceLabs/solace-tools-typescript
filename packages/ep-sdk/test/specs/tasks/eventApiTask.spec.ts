@@ -11,7 +11,6 @@ import {
 } from "@solace-labs/ep-openapi-node";
 import {
   EpSdkError,
-  EpSdkApplicationDomainsService,
   EpSdkEventApiTask,
   IEpSdkEventApiTask_ExecuteReturn,
   EEpSdkTask_Action,
