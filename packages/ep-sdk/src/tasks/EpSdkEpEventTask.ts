@@ -13,7 +13,8 @@ import {
   EpSdkEpEventsService 
 } from '../services';
 import { 
-  EEpSdkObjectTypes 
+  EEpSdkObjectTypes,
+  EpSdkEvent
 } from '../types';
 import { 
   EpSdkTask,
@@ -29,6 +30,10 @@ import {
 } from "./EpSdkTask";
 
 /** @category Tasks */
+
+// here: add broker type from EpSdkEvent ...
+// don't use EpEvent or EventResponse
+
 export type TEpSdkEpEventTask_Settings = Partial<Pick<EpEvent, "shared">>;
 type TEpSdkEpEventTask_CompareObject = TEpSdkEpEventTask_Settings;
 

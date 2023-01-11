@@ -167,6 +167,7 @@ export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
               eventVersion: eventVersion
             });
             if(!stateIds.includes(eventVersion.stateId)) return false;
+            return true;
           });
           eventVersionList.push(...filteredList);
         } else {

@@ -287,14 +287,9 @@ describe(`${scriptName}`, () => {
       CorrectDomainCustomAttributeList,
       UnknownDomainCustomAttributeList
     );
-    const xvoid: void =
-      await EpSdkEventApiProductsService.removeAssociatedEntityTypeFromCustomAttributeDefinitions(
-        {
-          customAttributeNames: allAttributes.map((x) => {
-            return x.name;
-          }),
-        }
-      );
+    const xvoid: void = await EpSdkEventApiProductsService.removeAssociatedEntityTypeFromCustomAttributeDefinitions({
+      customAttributeNames: allAttributes.map((x) => { return x.name; }),
+    });
   });
 
   it(`${scriptName}: should create all eventApiProducts with 1 version, half of them with a plan, of which half have correct domain attributes`, async () => {

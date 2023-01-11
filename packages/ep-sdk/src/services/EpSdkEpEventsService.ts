@@ -10,7 +10,9 @@ import {
   EEpSdkCustomAttributeEntityTypes,
   EpSdkBrokerTypes,
   IEpSdkAttributesQuery,
-  TEpSdkCustomAttributeList 
+  TEpSdkCustomAttributeList,
+  EpSdkEvent,
+  EpSdkEventResponse
 } from '../types';
 import { 
   EpSdkApiContentError, 
@@ -21,6 +23,7 @@ import {
 import EpSdkCustomAttributeDefinitionsService from './EpSdkCustomAttributeDefinitionsService';
 import EpSdkCustomAttributesQueryService from './EpSdkCustomAttributesQueryService';
 import EpSdkCustomAttributesService from './EpSdkCustomAttributesService';
+import EpSdkEventApiProductVersionsService from './EpSdkEventApiProductVersionsService';
 import { EpSdkServiceClass } from './EpSdkService';
 
 /** @category Services */
@@ -138,8 +141,10 @@ export class EpSdkEpEventsServiceClass extends EpSdkServiceClass {
         if(brokerType || attributesQuery) {
           const filteredList: Array<EPEvent> = eventsResponse.data.filter( (epEvent: EPEvent) => {
             let doAdd = false;
+            /* istanbul ignore next */
             if(brokerType) {
               // EPEvent still has no brokerType in it
+              // it is only in the event version, deliveryDescriptor
             }
             if(attributesQuery) {
               if(EpSdkCustomAttributesQueryService.resolve({
@@ -257,6 +262,29 @@ export class EpSdkEpEventsServiceClass extends EpSdkServiceClass {
     return epEventDeleted;
   }
 
+  public createEvent = async({ requestBody }:{
+    requestBody: EpSdkEvent;
+  }): Promise<EpSdkEventResponse> => {
+    const funcName = 'createEvent';
+    const logName = `${EpSdkEpEventsServiceClass.name}.${funcName}()`;
+    const eventResponse: EventResponse = await EventsService.createEvent({
+      requestBody: {
+        ...requestBody
+      },
+    });
+    if(eventResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'eventResponse.data === undefined', {
+      eventResponse: eventResponse,
+    });
+    const epSdkEventResponse: EpSdkEventResponse = {
+      data: {
+        ...eventResponse.data,
+        brokerType: requestBody.brokerType
+      },
+      meta: eventResponse.meta
+    }
+    return epSdkEventResponse;
+
+  }
 
 }
 
