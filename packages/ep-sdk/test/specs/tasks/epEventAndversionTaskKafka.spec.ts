@@ -106,7 +106,7 @@ describe(`${scriptName}`, () => {
 
   after(async () => {
     TestContext.newItId();
-    // const xvoid: void = await TestHelpers.applicationDomainAbsent({applicationDomainName: ApplicationDomainName,});
+    const xvoid: void = await TestHelpers.applicationDomainAbsent({applicationDomainName: ApplicationDomainName,});
   });
 
   it(`${scriptName}: epEvent present: checkmode create`, async () => {
