@@ -2,7 +2,7 @@ import "mocha";
 import { expect } from "chai";
 import path from "path";
 import { TestContext, TestUtils } from "@internal/tools/src";
-import { TestLogger, TestConfig } from "../../lib";
+import { TestLogger, TestConfig, TestHelpers } from "../../lib";
 import {
   ApiError,
   ApplicationDomainResponse,
@@ -63,8 +63,10 @@ const initializeGlobals = () => {
 
 describe(`${scriptName}`, () => {
   before(async () => {
-    TestContext.newItId();
     initializeGlobals();
+    TestContext.newItId();
+    const xvoid: void = await TestHelpers.applicationDomainAbsent({applicationDomainName: ApplicationDomainName,});
+    TestContext.newItId();
     try {
       const applicationDomainResponse: ApplicationDomainResponse =
         await ApplicationDomainsService.createApplicationDomain({

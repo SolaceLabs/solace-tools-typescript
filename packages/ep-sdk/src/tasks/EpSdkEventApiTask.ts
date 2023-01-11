@@ -24,9 +24,9 @@ import {
   IEpSdkTask_UpdateFuncReturn,
 } from "./EpSdkTask";
 
-type TEpSdkEventApiTask_Settings = Partial<
-  Pick<EventApi, "shared" | "brokerType">
->;
+
+/** @category Tasks */
+export type TEpSdkEventApiTask_Settings = Partial<Pick<EventApi, "shared" | "brokerType">>;
 type TEpSdkEventApiTask_CompareObject = TEpSdkEventApiTask_Settings;
 
 /** @category Tasks */

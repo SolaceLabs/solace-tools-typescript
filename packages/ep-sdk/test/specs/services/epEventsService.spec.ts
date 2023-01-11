@@ -1,8 +1,15 @@
 import "mocha";
 import { expect } from "chai";
 import path from "path";
-import { TestContext, TestUtils } from "@internal/tools/src";
-import { TestLogger, TestConfig } from "../../lib";
+import { 
+  TestContext, 
+  TestUtils 
+} from "@internal/tools/src";
+import { 
+  TestLogger, 
+  TestConfig, 
+  TestHelpers 
+} from "../../lib";
 import {
   ApiError,
   ApplicationDomainResponse,
@@ -17,6 +24,8 @@ import {
   EpSdkApplicationDomainsService,
   EpSdkEpEventsService,
   TEpSdkCustomAttributeList,
+  EpSdkBrokerTypes,
+  EpSdkEventResponse,
 } from "../../../src";
 
 const scriptName: string = path.basename(__filename);
@@ -57,6 +66,10 @@ const initializeGlobals = () => {
 describe(`${scriptName}`, () => {
   before(async () => {
     initializeGlobals();
+    TestContext.newItId();
+    const xvoid: void = await TestHelpers.applicationDomainAbsent({
+      applicationDomainName: ApplicationDomainName,
+    });
     TestContext.newItId();
     const applicationDomainResponse: ApplicationDomainResponse =
       await ApplicationDomainsService.createApplicationDomain({

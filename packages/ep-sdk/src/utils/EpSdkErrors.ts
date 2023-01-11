@@ -174,6 +174,18 @@ export class EpSdkValidationError extends EpSdkError {
 }
 
 /** @category Errors */
+export class EpSdkTaskConfigValidationError extends EpSdkError {
+  protected static DefaultDescription = 'EP Sdk Task Config Validation Error';
+  private validationError: any;
+  private value: any;
+  constructor(internalLogName: string, internalModuleName: string, message: string = EpSdkTaskConfigValidationError.DefaultDescription, validationError: any, value: any ) {
+    super(internalLogName, internalModuleName, message);
+    this.validationError = validationError;
+    this.value = value;
+  }
+}
+
+/** @category Errors */
 export type TEpSdkVersionTaskStrategyValidationError_Details = {
   versionString: string;
   versionStrategy: EEpSdk_VersionTaskStrategy;

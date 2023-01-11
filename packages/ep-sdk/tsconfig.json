@@ -15,6 +15,7 @@
     "forceConsistentCasingInFileNames": true,
     "strictPropertyInitialization": false,
     "sourceMap": true,
+    "rootDir": "./src"
   },
   "include": [
     "src/**/*.ts"

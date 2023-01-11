@@ -28,6 +28,11 @@
       "outputs": ["logs/**"],
       "inputs": ["src/**/*.ts", "test/**/*.spec.ts", ".nycrc"]
     },
+    "dev:watch": {
+      "dependsOn": ["^dev:watch"],
+      "outputs": ["dist/**", "generated-src/**/*.ts"],
+      "cache": false
+    },
     "lint": {
       "outputs": []
     },

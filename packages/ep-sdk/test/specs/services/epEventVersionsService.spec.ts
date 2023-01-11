@@ -1,8 +1,15 @@
 import "mocha";
 import { expect } from "chai";
 import path from "path";
-import { TestContext, TestUtils } from "@internal/tools/src";
-import { TestLogger, TestConfig } from "../../lib";
+import { 
+  TestContext, 
+  TestUtils 
+} from "@internal/tools/src";
+import { 
+  TestLogger, 
+  TestConfig, 
+  TestHelpers 
+} from "../../lib";
 import {
   Address,
   AddressLevel,
@@ -70,8 +77,13 @@ const initializeGlobals = () => {
 };
 
 describe(`${scriptName}`, () => {
+
   before(async () => {
     initializeGlobals();
+    TestContext.newItId();
+    const xvoid: void = await TestHelpers.applicationDomainAbsent({
+      applicationDomainName: ApplicationDomainName,
+    });
     TestContext.newItId();
     const applicationDomainResponse: ApplicationDomainResponse =
       await ApplicationDomainsService.createApplicationDomain({
@@ -123,10 +135,12 @@ describe(`${scriptName}`, () => {
 
   after(async () => {
     TestContext.newItId();
+    TestLogger.createLogMessage(`${scriptName}: after starting ...`);
     // delete application domain
     await EpSdkApplicationDomainsService.deleteById({
       applicationDomainId: ApplicationDomainId,
     });
+    TestLogger.createLogMessage(`${scriptName}: after done.`);
   });
 
   it(`${scriptName}: should create event version`, async () => {
@@ -139,14 +153,14 @@ describe(`${scriptName}`, () => {
         schemaVersionId: SchemaVersionId,
         deliveryDescriptor: EventVersionDeliveryDescriptor,
       };
-      const created: EventVersion =
-        await EpSdkEpEventVersionsService.createEventVersion({
-          applicationDomainId: ApplicationDomainId,
-          eventId: EventId,
-          eventVersion: create,
-          targetLifecycleStateId: EpSdkStatesService.releasedId,
-        });
+      const created: EventVersion = await EpSdkEpEventVersionsService.createEventVersion({
+        applicationDomainId: ApplicationDomainId,
+        eventId: EventId,
+        eventVersion: create,
+        targetLifecycleStateId: EpSdkStatesService.releasedId,
+      });
       EventVersionId = created.id;
+      expect(created.stateId, TestLogger.createLogMessage(`created=${JSON.stringify(created, null, 2)}`)).to.equal(EpSdkStatesService.releasedId);
     } catch (e) {
       if (e instanceof ApiError)
         expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
@@ -159,41 +173,27 @@ describe(`${scriptName}`, () => {
 
   it(`${scriptName}: should get event version by version`, async () => {
     try {
-      const eventVersion: EventVersion =
-        await EpSdkEpEventVersionsService.getVersionByVersion({
-          eventId: EventId,
-          eventVersionString: EventVersionString,
-        });
-      expect(
-        eventVersion.version,
-        TestLogger.createApiTestFailMessage("version mismatch")
-      ).to.eq(EventVersionString);
+      const eventVersion: EventVersion = await EpSdkEpEventVersionsService.getVersionByVersion({
+        eventId: EventId,
+        eventVersionString: EventVersionString,
+      });
+      expect(eventVersion.version, TestLogger.createApiTestFailMessage("version mismatch")).to.eq(EventVersionString);
     } catch (e) {
-      if (e instanceof ApiError)
-        expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
-        .to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
-        .true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 
   it(`${scriptName}: should get event versions for event id`, async () => {
     try {
-      const eventVersionList: Array<EventVersion> =
-        await EpSdkEpEventVersionsService.getVersionsForEventId({
-          eventId: EventId,
-          stateId: EpSdkStatesService.releasedId,
-        });
-      expect(
-        eventVersionList.length,
-        TestLogger.createApiTestFailMessage("length not === 1")
-      ).to.eq(1);
+      const eventVersionList: Array<EventVersion> = await EpSdkEpEventVersionsService.getVersionsForEventId({
+        eventId: EventId,
+        stateIds: [EpSdkStatesService.releasedId],
+      });
+      expect(eventVersionList.length, TestLogger.createApiTestFailMessage(`length=${eventVersionList.length} not eq 1, eventVersionList=${JSON.stringify(eventVersionList, null, 2)}`)).to.eq(1);
       const eventVersion: EventVersion = eventVersionList[0];
-      expect(
-        eventVersion.id,
-        TestLogger.createApiTestFailMessage("id mismatch")
-      ).to.eq(EventVersionId);
+      expect(eventVersion.id, TestLogger.createApiTestFailMessage("id mismatch")).to.eq(EventVersionId);
     } catch (e) {
       if (e instanceof ApiError)
         expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
@@ -385,7 +385,7 @@ describe(`${scriptName}`, () => {
         await EpSdkEpEventVersionsService.getVersionsForEventId({
           eventId: EventId,
           pageSize: PageSize,
-          stateId: EpSdkStatesService.draftId,
+          stateIds: [EpSdkStatesService.draftId],
         });
       expect(
         versionList.length,

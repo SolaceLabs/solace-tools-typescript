@@ -2,7 +2,7 @@ import "mocha";
 import { expect } from "chai";
 import path from "path";
 import { TestContext, TestUtils } from "@internal/tools/src";
-import { TestLogger, TestConfig } from "../../lib";
+import { TestLogger, TestConfig, TestHelpers } from "../../lib";
 import {
   ApiError,
   ApplicationDomainResponse,
@@ -11,7 +11,6 @@ import {
 } from "@solace-labs/ep-openapi-node";
 import {
   EpSdkError,
-  EpSdkApplicationDomainsService,
   EpSdkEventApiTask,
   IEpSdkEventApiTask_ExecuteReturn,
   EEpSdkTask_Action,
@@ -37,8 +36,10 @@ const initializeGlobals = () => {
 
 describe(`${scriptName}`, () => {
   before(async () => {
-    TestContext.newItId();
     initializeGlobals();
+    TestContext.newItId();
+    const xvoid: void = await TestHelpers.applicationDomainAbsent({applicationDomainName: ApplicationDomainName,});
+    TestContext.newItId();
     const applicationDomainResponse: ApplicationDomainResponse =
       await ApplicationDomainsService.createApplicationDomain({
         requestBody: {
@@ -54,11 +55,7 @@ describe(`${scriptName}`, () => {
 
   after(async () => {
     TestContext.newItId();
-    try {
-      await EpSdkApplicationDomainsService.deleteById({
-        applicationDomainId: ApplicationDomainId,
-      });
-    } catch (e) {}
+    const xvoid: void = await TestHelpers.applicationDomainAbsent({applicationDomainName: ApplicationDomainName,});
   });
 
   it(`${scriptName}: event api present: checkmode create`, async () => {

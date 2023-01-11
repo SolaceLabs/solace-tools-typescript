@@ -1,3 +1,7 @@
+import { 
+  Event as EPEvent, 
+} from '@solace-labs/ep-openapi-node';
+
 /** @category General Types */
 export enum EpSdkBrokerTypes {
   Solace = "solace",
@@ -64,4 +68,3 @@ export type TEpSdkCustomAttribute = {
 
 /** @category General Types */
 export type TEpSdkCustomAttributeList = Array<TEpSdkCustomAttribute>;
-

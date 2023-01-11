@@ -19,6 +19,10 @@ import {
   EpSdkEpEventAndVersionList,
   EpSdkEpEventAndVersionListResponse,
   EpSdkEpEventAndVersionResponse,
+  EpSdkBrokerTypes,
+  TEpSdkCustomAttribute,
+  IEpSdkAttributesQuery,
+  EEpSdkComparisonOps,
 } from "../../../src";
 
 const scriptName: string = path.basename(__filename);
@@ -39,6 +43,23 @@ let EventName: string;
 const EventShared = true;
 const EventVersionString_1 = "1.0.0";
 const EventVersionString_2 = "1.1.0";
+
+const EventAttribute: TEpSdkCustomAttribute = {
+  name: `${TestSpecName}-attribute`,
+  value: 'value',
+};
+const EventAttributesQuery: IEpSdkAttributesQuery = {
+  AND: {
+    queryList: [
+      {
+        attributeName: EventAttribute.name,
+        comparisonOp: EEpSdkComparisonOps.IS_EQUAL,
+        value: EventAttribute.value
+      },
+    ],
+  }
+};
+
 
 const initializeGlobals = () => {
   EventName = `${TestConfig.getAppId()}-event-${TestSpecId}`;
@@ -72,20 +93,30 @@ describe(`${scriptName}`, () => {
         applicationDomainId: applicationDomainId,
       });
     }
+    // delete attribute definition
+    const xvoid: void = await EpSdkEpEventsService.removeAssociatedEntityTypeFromCustomAttributeDefinitions({
+      customAttributeNames: [EventAttribute.name]
+    });
   });
 
   it(`${scriptName}: should create event & two versions in every application domain`, async () => {
     try {
       for (const applicationDomainId of ApplicationDomainIdList) {
         // create the event
-        const eventResponse: EventResponse = await EventsService.createEvent({
+        const eventResponse: EventResponse = await EpSdkEpEventsService.createEvent({
           requestBody: {
             applicationDomainId: applicationDomainId,
             name: EventName,
             shared: EventShared,
+            brokerType: EpSdkBrokerTypes.Solace,
           },
         });
         const eventId = eventResponse.data.id;
+        // add the custom attribute
+        const x = await EpSdkEpEventsService.setCustomAttributes({
+          eventId: eventId,
+          epSdkCustomAttributeList: [EventAttribute]
+        });
         // create version 1
         const version1 = await EventsService.createEventVersionForEvent({
           eventId: eventId,
@@ -104,12 +135,9 @@ describe(`${scriptName}`, () => {
         });
       }
     } catch (e) {
-      if (e instanceof ApiError)
-        expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
-        .to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
-        .true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 
@@ -119,6 +147,8 @@ describe(`${scriptName}`, () => {
         {
           applicationDomainIds: ApplicationDomainIdList,
           shared: EventShared,
+          brokerType: EpSdkBrokerTypes.Solace,
+          attributesQuery: EventAttributesQuery
         }
       );
       expect(
@@ -285,7 +315,7 @@ describe(`${scriptName}`, () => {
         const latest_EpSdkEpEventAndVersionResponse: EpSdkEpEventAndVersionResponse =
           await EpSdkEpEventVersionsService.getObjectAndVersionForEventId({
             eventId: epEvent.id,
-            stateId: undefined,
+            stateIds: undefined,
           });
         message = `latest_EpSdkEpEventAndVersionResponse=\n${JSON.stringify(
           latest_EpSdkEpEventAndVersionResponse,
@@ -316,7 +346,7 @@ describe(`${scriptName}`, () => {
         const version1_EpSdkEpEventAndVersionResponse: EpSdkEpEventAndVersionResponse =
           await EpSdkEpEventVersionsService.getObjectAndVersionForEventId({
             eventId: epEvent.id,
-            stateId: undefined,
+            stateIds: undefined,
             versionString: EventVersionString_1,
           });
         message = `version1_EpSdkEpEventAndVersionResponse=\n${JSON.stringify(
