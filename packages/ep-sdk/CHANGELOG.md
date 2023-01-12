@@ -1,5 +1,13 @@
 # @solace-labs/ep-sdk
 
+## 0.51.1
+
+### Patch Changes
+
+- de6afdf: update ep-openapi-node package version number
+- Updated dependencies [f44d556]
+  - @solace-labs/ep-openapi-node@2.51.0
+
 ## 0.51.0
 
 ### Minor Changes

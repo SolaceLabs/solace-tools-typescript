@@ -1,5 +1,19 @@
 # @solace-labs/ep-async-api-importer
 
+## 0.50.7
+
+### Patch Changes
+
+- 931c065: update ep-openapi-node package version number
+
+  **Documentation:**
+
+  - added examples for using file & http references in async api specs
+
+- Updated dependencies [de6afdf]
+  - @solace-labs/ep-asyncapi@0.50.2
+  - @solace-labs/ep-sdk@0.51.1
+
 ## 0.50.6
 
 ### Patch Changes
