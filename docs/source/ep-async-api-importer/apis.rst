@@ -7,3 +7,4 @@ Async Apis
   :maxdepth: 1
 
   apis-content/extensions
+  apis-content/references

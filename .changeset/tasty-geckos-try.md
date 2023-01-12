@@ -1,5 +1,4 @@
 ---
-"@solace-labs/ep-async-api-importer": patch
 "@solace-labs/ep-asyncapi": patch
 "@solace-labs/ep-sdk": patch
 ---
