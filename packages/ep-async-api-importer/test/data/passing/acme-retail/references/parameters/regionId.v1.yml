@@ -1,9 +1,0 @@
-description: The region Id.
-schema:
-  type: string
-  enum:
-  - de
-  - fr
-  - it
-  - us-west
-  - us-east
