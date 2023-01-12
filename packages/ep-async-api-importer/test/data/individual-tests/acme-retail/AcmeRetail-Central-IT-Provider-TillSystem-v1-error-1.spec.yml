@@ -79,7 +79,7 @@ components:
         payload:
           $ref: "#/components/schemas/storeTillReceiptPayload-v1"
         header:
-          $ref: "https://raw.githubusercontent.com/solace-iot-team/sep-async-api-importer/main/data/acme-retail/references/schemas/CommonHeader.v1.yml"
+          $ref: "https://raw.githubusercontent.com/SolaceLabs/solace-tools-typescript/references/asyncapi-specs/acme-retail/schemas/CommonHeader.v1.yml"
     storeTillReceiptPayload-v1:
       type: array
       items:
@@ -88,13 +88,13 @@ components:
       type: object
       properties:
         sku:
-          $ref: "https://raw.githubusercontent.com/solace-iot-team/sep-async-api-importer/main/data/acme-retail/references/schemas/sku.v1.yml"
+          $ref: "https://raw.githubusercontent.com/SolaceLabs/solace-tools-typescript/references/asyncapi-specs/acme-retail/schemas/sku.v1.yml"
         quantity:
-          $ref: "https://raw.githubusercontent.com/solace-iot-team/sep-async-api-importer/main/data/acme-retail/references/schemas/quantity.v1.yml"
+          $ref: "https://raw.githubusercontent.com/SolaceLabs/solace-tools-typescript/references/asyncapi-specs/acme-retail/schemas/quantity.v1.yml"
         price:
-          $ref: "https://raw.githubusercontent.com/solace-iot-team/sep-async-api-importer/main/data/acme-retail/references/schemas/price.v1.yml"
+          $ref: "https://raw.githubusercontent.com/SolaceLabs/solace-tools-typescript/references/asyncapi-specs/acme-retail/schemas/price.v1.yml"
         currency:
-          $ref: "https://raw.githubusercontent.com/solace-iot-team/sep-async-api-importer/main/data/acme-retail/references/schemas/currency.v1.yml"
+          $ref: "https://raw.githubusercontent.com/SolaceLabs/solace-tools-typescript/references/asyncapi-specs/acme-retail/schemas/currency.v1.yml"
       required:
         - sku
         - quantity
@@ -105,9 +105,9 @@ components:
       type: object
       properties:
         payload:
-          $ref: "https://raw.githubusercontent.com/solace-iot-team/sep-async-api-importer/main/data/acme-retail/references/schemas/storeTillSystemErrorPayload-v1.yml"
+          $ref: "https://raw.githubusercontent.com/SolaceLabs/solace-tools-typescript/references/asyncapi-specs/acme-retail/schemas/storeTillSystemErrorPayload-v1.yml"
         header:
-          $ref: "https://raw.githubusercontent.com/solace-iot-team/sep-async-api-importer/main/data/acme-retail/references/schemas/CommonHeader.v1.yml"
+          $ref: "https://raw.githubusercontent.com/SolaceLabs/solace-tools-typescript/references/asyncapi-specs/acme-retail/schemas/CommonHeader.v1.yml"
 
 
   # securitySchemes:
@@ -121,7 +121,7 @@ components:
       schema:
         type: string
     regionId-v1:
-      $ref: "https://raw.githubusercontent.com/solace-iot-team/sep-async-api-importer/main/data/acme-retail/references/parameters/regionId.v1.yml"
+      $ref: "https://raw.githubusercontent.com/SolaceLabs/solace-tools-typescript/references/asyncapi-specs/acme-retail/parameters/regionId.v1.yml"
 
   # messageTraits:
   #   commonHeaders:

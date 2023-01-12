@@ -1,7 +1,3 @@
-import { 
-  Event as EPEvent, 
-} from '@solace-labs/ep-openapi-node';
-
 /** @category General Types */
 export enum EpSdkBrokerTypes {
   Solace = "solace",

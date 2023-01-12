@@ -1,0 +1,34 @@
+asyncapi: '2.4.0'
+x-ep-application-domain-name: solace-labs/ep-asyncapi/test/file-refs/app-domain
+x-ep-assets-application-domain-name: solace-labs/ep-asyncapi/test/file-refs/assets
+info:
+  title: File Refs 1
+  version: '1.0.0'
+
+defaultContentType: application/json
+
+channels:
+
+  solace-labs/ep-asyncapi/test/asset-domain/{type}/message-a:
+    x-ep-event-name: Message-A
+    parameters:
+      type:
+        $ref: '#/components/parameters/type'
+    publish:
+      message:
+        $ref: '#/components/messages/Message-A'
+
+components:
+  messages:
+
+    Message-A:
+      $ref: ./messages/message-a.yml
+
+  parameters:
+    type:
+      schema:
+        type: string
+        enum:
+          - type-1
+          - type-2
+          - type-3

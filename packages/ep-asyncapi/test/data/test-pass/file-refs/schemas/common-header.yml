@@ -1,0 +1,13 @@
+  description: Common Header
+  type: object
+  properties:
+    sentAt:
+      type: string
+      format: date-time
+      description: Date and time when the message was sent.
+    transactionId:
+      type: string
+      description: The transaction id.
+  required:
+    - sentAt
+    - transactionId

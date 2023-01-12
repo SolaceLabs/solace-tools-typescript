@@ -57,10 +57,10 @@ components:
   messages:
 
     storeTillReceipt-v1:
-      $ref: "https://raw.githubusercontent.com/solace-iot-team/sep-async-api-importer/references/data/acme-retail/references/messages/storeTillReceipt-v1.yml"
+      $ref: "https://raw.githubusercontent.com/SolaceLabs/solace-tools-typescript/references/asyncapi-specs/acme-retail/messages/storeTillReceipt-v1.yml"
 
     storeTillSystemError-v1:
-      $ref: "https://raw.githubusercontent.com/solace-iot-team/sep-async-api-importer/references/data/acme-retail/references/messages/storeTillSystemError-v1.yml"
+      $ref: "https://raw.githubusercontent.com/SolaceLabs/solace-tools-typescript/references/asyncapi-specs/acme-retail/messages/storeTillSystemError-v1.yml"
 
   parameters:
     storeId-v1:
@@ -68,4 +68,4 @@ components:
       schema:
         type: string
     regionId-v1:
-      $ref: "https://raw.githubusercontent.com/solace-iot-team/sep-async-api-importer/references/data/acme-retail/references/parameters/regionId.v1.yml"
+      $ref: "https://raw.githubusercontent.com/SolaceLabs/solace-tools-typescript/references/asyncapi-specs/acme-retail/parameters/regionId.v1.yml"
