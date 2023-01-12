@@ -20654,7 +20654,7 @@
         },
         "responses": {
           "200": {
-            "description": "The updated messaging service object, e.g. if the API request body had {\"association\": \"EVENT_MESH\"} then the resulting object would not have eventMeshId attribute.",
+            "description": "The updated messaging service object, e.g. if the API request body had $&#123;\"association\": \"EVENT_MESH\"&#125; then the resulting object would not have eventMeshId attribute.",
             "content": {
               "application/json": {
                 "schema": {
