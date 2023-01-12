@@ -75,6 +75,19 @@ export class EpAsyncApiSpecError extends EpAsyncApiError {
   }
 }
 
+export type T_EpAsyncApiSpecXtensionErrorDetails = {
+  asyncApiSpecTitle: string;
+  xtension: string;
+  details: any;
+}
+export class EpAsyncApiSpecXtensionError extends EpAsyncApiError {
+  private details: T_EpAsyncApiSpecXtensionErrorDetails;
+  constructor(internalLogName: string, internalModuleName: string, internalMessage: string, details: T_EpAsyncApiSpecXtensionErrorDetails) {
+    super(internalLogName, internalModuleName, internalMessage);
+    this.details = details;
+  }
+}
+
 export type T_EpAsyncApiChannelOperationDetails = {
   issue: string;
   asyncApiSpecTitle: string;

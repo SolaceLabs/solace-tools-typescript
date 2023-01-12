@@ -1,0 +1,94 @@
+asyncapi: 2.4.0
+x-ep-application-domain-name: ep-asyncapi/test-pass/kafka
+x-ep-assets-application-domain-name: ep-asyncapi/test-pass/kafka/assets
+x-ep-broker-type: kafka
+x-ep-channel-delimiter: "."
+info:
+  title: Kafka Avro & JSON Schema API
+  description: |
+    - Test broker type
+    - Test topic delimiter
+    - Test Avro + JSON message payloads
+  version: 1.1.0
+defaultContentType: application/json
+channels:
+  clickstream.json.0:
+    publish:
+      message:
+        $ref: '#/components/messages/samples.clickstream.json.ClickEvent-0'
+  clickstream.json.1:
+    publish:
+      message:
+        $ref: '#/components/messages/samples.clickstream.json.ClickEvent-1'
+  clickstream.avro.0:
+    publish:
+      message:
+        $ref: '#/components/messages/samples.clickstream.avro.ClickEvent-0'
+  clickstream.avro.1:
+    publish:
+      message:
+        $ref: '#/components/messages/samples.clickstream.avro.ClickEvent-1'
+components:
+  schemas: {}
+  messages:
+    samples.clickstream.json.ClickEvent-0:
+      # name: samples.clickstream.json.ClickEvent-0
+      # contentType: application/json
+      # schemaFormat: application/vnd.aai.asyncapi;version=2.4.0
+      payload:
+        type: object
+        properties:
+          first:
+            type: string
+          last:
+            type: string
+    samples.clickstream.json.ClickEvent-1:
+      name: samples.clickstream.json.ClickEvent-1
+      contentType: application/json
+      schemaFormat: application/vnd.aai.asyncapi;version=2.4.0
+      payload:
+        type: object
+        properties:
+          first:
+            type: string
+          last:
+            type: string
+
+    samples.clickstream.avro.ClickEvent-0:
+      contentType: application/json
+      schemaFormat: application/vnd.apache.avro;version=1.9.0
+      payload:
+        name: ClickEvent_1
+        namespace: samples.clickstream.avro
+        type: record
+        fields:
+          - name: ip
+            type: string
+          - name: eventtimestamp
+            type: long
+          - name: devicetype
+            type: string
+          - name: event_type
+            type:
+              - string
+              - 'null'
+          - name: product_type
+            type:
+              - string
+              - 'null'
+          - name: userid
+            type: int
+          - name: globalseq
+            type: long
+          - default: 0
+            name: prevglobalseq
+            type: long
+    samples.clickstream.avro.ClickEvent-1:
+      schemaFormat: application/vnd.apache.avro+json;version=1.9.0
+      payload:
+        name: ClickEvent_2
+        namespace: samples.clickstream.avro
+        type: record
+        fields:
+          - name: ip
+            type: string

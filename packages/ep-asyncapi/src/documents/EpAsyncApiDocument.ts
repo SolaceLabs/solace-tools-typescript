@@ -8,6 +8,7 @@ import {
   EpAsyncApiSpecError,
   EpAsyncApiValidationError,
   EpAsyncApiXtensionError,
+  EpAsyncApiSpecXtensionError,
 } from "../utils";
 import { EpAsyncApiMessageDocument } from "./EpAsyncApiMessageDocument";
 import { EpAsyncApiChannelDocument } from "./EpAsyncApiChannelDocument";
@@ -20,6 +21,20 @@ import {
 enum E_EpAsyncApiExtensions {
   X_EP_APPLICATION_DOMAIN_NAME = "x-ep-application-domain-name",
   X_EP_ASSETS_APPLICATION_DOMAIN_NAME = "x-ep-assets-application-domain-name",
+  X_EP_BROKER_TYPE = "x-ep-broker-type",
+  X_EP_CHANNEL_DELIMITER = "x-ep-channel-delimiter",
+}
+
+export enum EBrokerTypes {
+  KAFKA = "kafka",
+  SOLACE = "solace",
+}
+
+export enum EChannelDelimiters {
+  SLASH = "/",
+  DOT = ".",
+  UNDERSCORE = "_",
+  MINUS = "-",
 }
 
 export enum E_EpAsyncApiContentTypes {
@@ -50,7 +65,11 @@ export type T_EpAsyncApiEventNames = {
 };
 
 export class EpAsyncApiDocument {
-  // private appConfig: TCliAppConfig;
+  public static readonly NotSemVerIssue ="Please use semantic versioning format for API version.";
+  public static readonly InvalidBrokerTypeIssue ="Please use a supported brokerType.";
+  public static readonly InvalidChannelDelimiterIssue ="Please use a supported channel delimiter.";
+  private static readonly DefaultBrokerType = EBrokerTypes.SOLACE;
+  private static readonly DefaultChannelDelimiter = EChannelDelimiters.SLASH;
   private originalApiSpecJson: any;
   private asyncApiDocument: AsyncAPIDocument;
   private overrideEpApplicationDomainName: string | undefined;
@@ -60,40 +79,36 @@ export class EpAsyncApiDocument {
   private applicationDomainName: string;
   private assetsApplicationDomainName: string;
   private unprefixedAssetsApplicationDomainName: string;
+  private brokerType: EBrokerTypes;
+  private overrideBrokerType: string | undefined;
+  private channelDelimiter: EChannelDelimiters;
+  private overrideChannelDelimiter: string | undefined;
   private epEventApiName?: string;
   private epEventApiVersionName?: string;
-  public static NotSemVerIssue =
-    "Please use semantic versioning format for API version.";
 
   private getJSON(asyncApiDocument: AsyncAPIDocument): any {
     const funcName = "getJSON";
     const logName = `${EpAsyncApiDocument.name}.${funcName}()`;
     const anyDoc: any = asyncApiDocument;
-    if (anyDoc["_json"] === undefined)
-      throw new EpAsyncApiSpecError(
-        logName,
-        this.constructor.name,
-        "_json not found in parsed async api spec",
-        {
-          asyncApiSpecTitle: this.getTitle(),
-          details: undefined,
-        }
-      );
+    if (anyDoc["_json"] === undefined) throw new EpAsyncApiSpecError(logName, this.constructor.name, "_json not found in parsed async api spec", {
+      asyncApiSpecTitle: this.getTitle(),
+      details: undefined,
+    });
     return anyDoc["_json"];
   }
 
   private get_X_EpApplicationDomainName(): string | undefined {
     // TODO: there should be a parser method to get this
-    return this.asyncApiDocumentJson[
-      E_EpAsyncApiExtensions.X_EP_APPLICATION_DOMAIN_NAME
-    ];
+    return this.asyncApiDocumentJson[E_EpAsyncApiExtensions.X_EP_APPLICATION_DOMAIN_NAME];
   }
-
   private get_X_EpAssetsApplicationDomainName(): string | undefined {
-    // TODO: there should be a parser method to get this
-    return this.asyncApiDocumentJson[
-      E_EpAsyncApiExtensions.X_EP_ASSETS_APPLICATION_DOMAIN_NAME
-    ];
+    return this.asyncApiDocumentJson[E_EpAsyncApiExtensions.X_EP_ASSETS_APPLICATION_DOMAIN_NAME];
+  }
+  private get_X_EpBrokerType(): string | undefined {
+    return this.asyncApiDocumentJson[E_EpAsyncApiExtensions.X_EP_BROKER_TYPE];
+  }
+  private get_X_EpChannelDelimiter(): string | undefined {
+    return this.asyncApiDocumentJson[E_EpAsyncApiExtensions.X_EP_CHANNEL_DELIMITER];
   }
 
   private createApplicationDomainName(prefix?: string): string {
@@ -140,7 +155,18 @@ export class EpAsyncApiDocument {
       assetsAppDomainName = `${prefix}/${assetsAppDomainName}`;
     return assetsAppDomainName;
   }
-
+  private createBrokerType(): EBrokerTypes {
+    let brokerType: string | undefined = this.get_X_EpBrokerType();
+    if(this.overrideBrokerType !== undefined) brokerType = this.overrideBrokerType;
+    if(brokerType === undefined) brokerType = EpAsyncApiDocument.DefaultBrokerType;
+    return brokerType as EBrokerTypes;
+  }
+  private createChannelDelimiter(): EChannelDelimiters {
+    let channelDelimiter: string | undefined = this.get_X_EpChannelDelimiter();
+    if(this.overrideChannelDelimiter !== undefined) channelDelimiter = this.overrideChannelDelimiter;
+    if(channelDelimiter === undefined) channelDelimiter = EpAsyncApiDocument.DefaultChannelDelimiter;
+    return channelDelimiter as EChannelDelimiters;
+  }
   private createEpEventApiName() {
     if (this.epEventApiName !== undefined) return;
     const xEpEventApiName: string = this.getTitle();
@@ -193,23 +219,23 @@ export class EpAsyncApiDocument {
     asyncApiDocument: AsyncAPIDocument,
     overrideEpApplicationDomainName: string | undefined,
     overrideEpAssetApplicationDomainName: string | undefined,
-    prefixEpApplicationDomainName: string | undefined
+    prefixEpApplicationDomainName: string | undefined,
+    overrideBrokerType: string | undefined,
+    overrideChannelDelimiter: string | undefined,
   ) {
     this.originalApiSpecJson = this.createOriginalApiSpecJson(originalApiSpec);
     this.asyncApiDocument = asyncApiDocument;
     this.asyncApiDocumentJson = this.getJSON(asyncApiDocument);
     this.overrideEpApplicationDomainName = overrideEpApplicationDomainName;
-    this.overrideEpAssetsApplicationDomainName =
-      overrideEpAssetApplicationDomainName;
-    this.applicationDomainName = this.createApplicationDomainName(
-      prefixEpApplicationDomainName
-    );
-    this.assetsApplicationDomainName = this.createAssetsApplicationDomainName(
-      prefixEpApplicationDomainName
-    );
+    this.overrideEpAssetsApplicationDomainName = overrideEpAssetApplicationDomainName;
+    this.applicationDomainName = this.createApplicationDomainName(prefixEpApplicationDomainName);
+    this.assetsApplicationDomainName = this.createAssetsApplicationDomainName(prefixEpApplicationDomainName);
     this.unprefixedApplicationDomainName = this.createApplicationDomainName();
-    this.unprefixedAssetsApplicationDomainName =
-      this.createAssetsApplicationDomainName();
+    this.unprefixedAssetsApplicationDomainName = this.createAssetsApplicationDomainName();
+    this.overrideBrokerType = overrideBrokerType;
+    this.overrideChannelDelimiter = overrideChannelDelimiter;
+    this.brokerType = this.createBrokerType();
+    this.channelDelimiter = this.createChannelDelimiter();
   }
 
   private validate_EpEventApiName = () => {
@@ -282,20 +308,41 @@ export class EpAsyncApiDocument {
     const funcName = "validate_VersionIsSemVerFormat";
     const logName = `${EpAsyncApiDocument.name}.${funcName}()`;
     const versionStr: string = this.getVersion();
-    if (!EpAsyncApiUtils.isSemVerFormat({ versionString: versionStr })) {
-      throw new EpAsyncApiValidationError(
-        logName,
-        this.constructor.name,
-        undefined,
-        {
-          asyncApiSpecTitle: this.getTitle(),
-          issues: EpAsyncApiDocument.NotSemVerIssue,
-          value: {
-            versionString: versionStr,
-          },
-        }
-      );
-    }
+    if (!EpAsyncApiUtils.isSemVerFormat({ versionString: versionStr })) throw new EpAsyncApiValidationError(logName, this.constructor.name, undefined, {
+      asyncApiSpecTitle: this.getTitle(),
+      issues: EpAsyncApiDocument.NotSemVerIssue,
+      value: {
+        versionString: versionStr,
+      }
+    });
+  }
+
+  private validate_BrokerType(): void {
+    const funcName = "validate_BrokerType";
+    const logName = `${EpAsyncApiDocument.name}.${funcName}()`;
+    const options: Array<string> = Object.values(EBrokerTypes);
+    if(!options.includes(this.brokerType)) throw new EpAsyncApiValidationError(logName, this.constructor.name, undefined, {
+      asyncApiSpecTitle: this.getTitle(),
+      issues: EpAsyncApiDocument.InvalidBrokerTypeIssue,
+      value: {
+        brokerType: this.brokerType,
+        options: options
+      }
+    });  
+  }
+
+  private validate_ChannelDelimiter(): void {
+    const funcName = "validate_ChannelDelimiter";
+    const logName = `${EpAsyncApiDocument.name}.${funcName}()`;
+    const options: Array<string> = Object.values(EChannelDelimiters);
+    if(!options.includes(this.channelDelimiter)) throw new EpAsyncApiValidationError(logName, this.constructor.name, undefined, {
+      asyncApiSpecTitle: this.getTitle(),
+      issues: EpAsyncApiDocument.InvalidChannelDelimiterIssue,
+      value: {
+        channelDelimiter: this.channelDelimiter,
+        options: options
+      }
+    });  
   }
 
   public validate(): void {
@@ -303,13 +350,11 @@ export class EpAsyncApiDocument {
     this.validate_VersionIsSemVerFormat();
     this.validate_EpEventApiName();
     this.validate_EpEventApiVersionName();
+    this.validate_BrokerType();
+    this.validate_ChannelDelimiter();
     // cascade validation to all elements
-    const epAsyncApiChannelDocumentMap: T_EpAsyncApiChannelDocumentMap =
-      this.getEpAsyncApiChannelDocumentMap();
-    for (const [
-      topic,
-      epAsyncApiChannelDocument,
-    ] of epAsyncApiChannelDocumentMap) {
+    const epAsyncApiChannelDocumentMap: T_EpAsyncApiChannelDocumentMap = this.getEpAsyncApiChannelDocumentMap();
+    for (const [topic, epAsyncApiChannelDocument,] of epAsyncApiChannelDocumentMap) {
       topic;
       epAsyncApiChannelDocument.validate();
     }
@@ -318,12 +363,8 @@ export class EpAsyncApiDocument {
     // add best practices validations for spec here
 
     // cascade validation to all elements
-    const epAsyncApiChannelDocumentMap: T_EpAsyncApiChannelDocumentMap =
-      this.getEpAsyncApiChannelDocumentMap();
-    for (const [
-      topic,
-      epAsyncApiChannelDocument,
-    ] of epAsyncApiChannelDocumentMap) {
+    const epAsyncApiChannelDocumentMap: T_EpAsyncApiChannelDocumentMap = this.getEpAsyncApiChannelDocumentMap();
+    for (const [topic, epAsyncApiChannelDocument, ] of epAsyncApiChannelDocumentMap) {
       topic;
       epAsyncApiChannelDocument.validate_BestPractices();
     }
@@ -370,6 +411,10 @@ export class EpAsyncApiDocument {
   public getTitleAsFileName(ext: string): string {
     return `${this.getTitleAsFilePath()}.${ext}`;
   }
+
+  public getBrokerType(): EBrokerTypes { return this.brokerType; }
+
+  public getChannelDelimiter(): EChannelDelimiters { return this.channelDelimiter; }
 
   public getEpEventApiName(): string {
     const funcName = "getEpEventApiName";
