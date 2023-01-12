@@ -1,0 +1,5 @@
+  description: SKU.
+  type: string
+  minLength: 4
+  maxLength: 255
+  pattern: ^[A-Za-z0-9_-]*$
