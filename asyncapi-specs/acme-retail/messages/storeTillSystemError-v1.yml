@@ -2,4 +2,4 @@ name: storeTillSystemError-v1
 title: Till System Error for transaction.
 contentType: application/json
 payload:
-  $ref: "https://raw.githubusercontent.com/solace-iot-team/sep-async-api-importer/references/data/acme-retail/references/schemas/storeTillSystemErrorPayload-v1.yml"
+  $ref: "https://raw.githubusercontent.com/SolaceLabs/solace-tools-typescript/references/asyncapi-specs/acme-retail/schemas/storeTillSystemErrorPayload-v1.yml"
