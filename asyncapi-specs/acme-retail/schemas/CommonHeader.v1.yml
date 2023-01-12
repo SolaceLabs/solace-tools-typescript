@@ -1,0 +1,17 @@
+  description: Generic message header.
+  type: object
+  properties:
+    sentAt:
+      type: string
+      format: date-time
+      description: Date and time when the message was sent.
+    transactionId:
+      type: string
+      description: The transaction id.
+    storeId:
+      type: string
+      description: The store id.
+  required:
+    - sentAt
+    - transactionId
+    - storeId
