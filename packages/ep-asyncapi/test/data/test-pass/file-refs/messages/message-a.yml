@@ -1,0 +1,13 @@
+name: Message-A
+title: Message A
+summary: Message A
+contentType: application/json
+payload:
+  type: object
+  properties:
+    payload:
+      type: array
+      items:
+        $ref: "../schemas/items.yml"
+    header:
+      $ref: "../schemas/common-header.yml"
