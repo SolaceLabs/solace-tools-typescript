@@ -1,10 +1,10 @@
 {
   "all": true,
   "check-coverage": true,
-  "statements": 77,
-  "branches": 64,
+  "statements": 78,
+  "branches": 68,
   "functions": 75,
-  "lines": 78,
+  "lines": 80,
   "temp-dir": "./test/logs/nyc_output",
   "reporter": ["html", "text", "text-summary", "lcov"],
   "report-dir": "./test/logs/coverage",

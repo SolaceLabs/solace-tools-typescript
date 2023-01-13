@@ -34,7 +34,7 @@ describe(`${scriptName}`, () => {
 
     it(`${scriptName}: should initialize globals`, async () => {
       try {
-        AsyncApiSpecFile = `${TestConfig.getConfig().dataRootDir}/test-pass/avro+json-schema.spec.yml`;
+        AsyncApiSpecFile = `${TestConfig.getConfig().dataRootDir}/test-pass/kafka/avro+json-schema.spec.yml`;
         // AsyncApiSpecFile_X_EpApplicationDomainName = "Discovery";
       } catch(e) {
         expect(e instanceof EpAsyncApiError, TestLogger.createNotEpAsyncApiErrorMessage(e)).to.be.true;

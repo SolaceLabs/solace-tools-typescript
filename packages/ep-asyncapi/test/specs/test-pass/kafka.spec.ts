@@ -1,6 +1,9 @@
 import 'mocha';
 import { expect } from 'chai';
+import fs from 'fs';
 import path from 'path';
+import _ from 'lodash';
+import yaml from "js-yaml";
 import {
   TestContext,
 } from '@internal/tools/src';
@@ -158,6 +161,99 @@ describe(`${scriptName}`, () => {
       }
     });
 
+    // original spec
+    it(`${scriptName}: should test original json spec from file`, async () => {
+      try {
+        const asyncApiSpecFile: string = `${TestConfig.getConfig().dataRootDir}/test-pass/kafka/original-spec/original.spec.json`;
+        const inputApiSpecAny = JSON.parse(fs.readFileSync(asyncApiSpecFile).toString());
+
+        const epAsyncApiDocument: EpAsyncApiDocument = await EpAsyncApiDocumentService.createFromFile({
+          filePath: asyncApiSpecFile,
+          overrideEpApplicationDomainName: scriptName
+        });
+
+        const outputApiSpecJson: any = epAsyncApiDocument.getOriginalSpecAsJson();
+        const outputApiSpecYamlString: string = epAsyncApiDocument.getOriginalSpecAsYamlString();
+
+        const jsonFailedMessage = `jsonFailedMessage: \n inputApiSpecAny=\n${JSON.stringify(inputApiSpecAny)}, \n outputApiSpecJson=\n${JSON.stringify(outputApiSpecJson)}`;
+        // // DEBUG
+        // expect(false, jsonFailedMessage).to.be.true;
+        const isJsonEqual = _.isEqual(inputApiSpecAny, outputApiSpecJson);
+        expect(isJsonEqual, jsonFailedMessage).to.be.true;
+
+        const inputAsYamlString = yaml.dump(inputApiSpecAny);
+        const yamlFailedMessage = `yamlFailedMessage: \n inputAsYamlString=\n${inputAsYamlString}, \n outputApiSpecYamlString=\n${outputApiSpecYamlString}`;
+        expect(inputAsYamlString, yamlFailedMessage).to.equal(outputApiSpecYamlString);
+      } catch(e) {
+        expect(false, TestLogger.createEpAsyncApiTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
+    it(`${scriptName}: should test original json spec from any`, async () => {
+      try {
+        const asyncApiSpecFile: string = `${TestConfig.getConfig().dataRootDir}/test-pass/kafka/original-spec/original.spec.json`;
+        const inputApiSpecAny: string = JSON.parse(fs.readFileSync(asyncApiSpecFile).toString());
+
+        // // DEBUG
+        // const debugMessage = `debugMessage: \n inputApiSpecAny=\n${inputApiSpecAny}`;
+        // console.log(debugMessage);
+
+        const epAsyncApiDocument: EpAsyncApiDocument = await EpAsyncApiDocumentService.createFromAny({
+          anySpec: JSON.parse(JSON.stringify(inputApiSpecAny)),
+          overrideEpApplicationDomainName: scriptName
+        });
+
+        const outputApiSpecJson: any = epAsyncApiDocument.getOriginalSpecAsJson();
+        const _outputApiSpecYamlString: string = epAsyncApiDocument.getOriginalSpecAsYamlString();
+
+        const jsonFailedMessage = `jsonFailedMessage: \n inputApiSpecAny=\n${JSON.stringify(inputApiSpecAny)}, \n outputApiSpecJson=\n${JSON.stringify(outputApiSpecJson)}`;
+        // // DEBUG
+        // expect(false, jsonFailedMessage).to.be.true;
+        const isJsonEqual = _.isEqual(inputApiSpecAny, outputApiSpecJson);
+        expect(isJsonEqual, jsonFailedMessage).to.be.true;
+        expect(JSON.stringify(inputApiSpecAny).length, 'lengths are different').to.equal(JSON.stringify(outputApiSpecJson).length);
+
+        const _inputAsYamlString = yaml.dump(inputApiSpecAny);
+        // there seems to be a blank at the end
+        const inputAsYamlString = _inputAsYamlString.slice(0, -1);
+        const outputApiSpecYamlString = _outputApiSpecYamlString.slice(0, -1);
+
+        const yamlFailedMessage = `yamlFailedMessage: \n inputAsYamlString=\n>${inputAsYamlString}<\n outputApiSpecYamlString=\n>${outputApiSpecYamlString}<`;
+        const isYamlEqual = _.isEqual(inputAsYamlString, outputApiSpecYamlString);
+        expect(isYamlEqual, yamlFailedMessage).to.be.true;
+      } catch(e) {
+        expect(false, TestLogger.createEpAsyncApiTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
+    it(`${scriptName}: should test original yaml spec`, async () => {
+      try {
+        const asyncApiSpecFile: string = `${TestConfig.getConfig().dataRootDir}/test-pass/kafka/original-spec/original.spec.yml`;
+        const inputApiSpecYamlString: string = fs.readFileSync(asyncApiSpecFile).toString();
+
+        const epAsyncApiDocument: EpAsyncApiDocument = await EpAsyncApiDocumentService.createFromFile({
+          filePath: asyncApiSpecFile,
+          overrideEpApplicationDomainName: scriptName
+        });
+
+        const outputApiSpecJson: any = epAsyncApiDocument.getOriginalSpecAsJson();
+        const outputApiSpecYamlString: string = epAsyncApiDocument.getOriginalSpecAsYamlString();
+
+        const inputAsJson: any = yaml.load(inputApiSpecYamlString);
+
+        const jsonFailedMessage = `jsonFailedMessage: \inputAsJson=\n>${JSON.stringify(inputAsJson)}<\noutputApiSpecJson=\n>${JSON.stringify(outputApiSpecJson)}<`;
+        const isJsonEqual = _.isEqual(inputAsJson, outputApiSpecJson);
+        expect(isJsonEqual, jsonFailedMessage).to.be.true;
+
+        const _inputApiSpecYamlString = inputApiSpecYamlString;
+        const _outputApiSpecYamlString = outputApiSpecYamlString.slice(0, -1);
+        const yamlFailedMessage = `yamlFailedMessage: \n inputApiSpecYamlString=\n>${_inputApiSpecYamlString}<\noutputApiSpecYamlString=\n>${_outputApiSpecYamlString}<`;         
+        const isYamlEqual = _.isEqual(_inputApiSpecYamlString, _outputApiSpecYamlString);
+        expect(isYamlEqual, yamlFailedMessage).to.be.true;
+      } catch(e) {
+        expect(false, TestLogger.createEpAsyncApiTestFailMessage('failed', e)).to.be.true;
+      }
+    });
 
 });
 
