@@ -1,5 +1,11 @@
 # @internal/tools
 
+## 0.1.8
+
+### Patch Changes
+
+- d4065b0: upgrade dependencies
+
 ## 0.1.7
 
 ### Patch Changes
