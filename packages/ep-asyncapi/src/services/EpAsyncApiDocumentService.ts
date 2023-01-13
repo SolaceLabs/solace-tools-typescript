@@ -39,11 +39,20 @@ export class EpAsyncApiDocumentServiceClass {
     }
   }
 
-  public createFromFile = async({ filePath, overrideEpApplicationDomainName, overrideEpAssetApplicationDomainName, prefixEpApplicationDomainName }:{
+  public createFromFile = async({ 
+    filePath, 
+    overrideEpApplicationDomainName, 
+    overrideEpAssetApplicationDomainName, 
+    prefixEpApplicationDomainName,
+    overrideBrokerType,
+    overrideChannelDelimiter
+  }:{
     filePath: string;
     overrideEpApplicationDomainName?: string;
     overrideEpAssetApplicationDomainName?: string;
     prefixEpApplicationDomainName?: string;
+    overrideBrokerType?: string,
+    overrideChannelDelimiter?: string,
   }): Promise<EpAsyncApiDocument> => {
     const apiSpecString: string = fs.readFileSync(filePath).toString();
     // take a copy of the spec
@@ -57,17 +66,28 @@ export class EpAsyncApiDocumentServiceClass {
       asyncApiDocument, 
       overrideEpApplicationDomainName, 
       overrideEpAssetApplicationDomainName, 
-      prefixEpApplicationDomainName
+      prefixEpApplicationDomainName,
+      overrideBrokerType,
+      overrideChannelDelimiter
     );
     epAsyncApiDocument.validate();
     return epAsyncApiDocument;
   }
 
-  public createFromAny = async({ anySpec, overrideEpApplicationDomainName, overrideEpAssetApplicationDomainName, prefixEpApplicationDomainName }:{
+  public createFromAny = async({ 
+    anySpec, 
+    overrideEpApplicationDomainName, 
+    overrideEpAssetApplicationDomainName, 
+    prefixEpApplicationDomainName,
+    overrideBrokerType,
+    overrideChannelDelimiter
+   }:{
     anySpec: any;
     overrideEpApplicationDomainName?: string;
     overrideEpAssetApplicationDomainName?: string;
     prefixEpApplicationDomainName?: string;
+    overrideBrokerType?: string,
+    overrideChannelDelimiter?: string,
   }): Promise<EpAsyncApiDocument> => {
     // take a copy of the spec
     const originalApiSpecJson = JSON.parse(JSON.stringify(anySpec));
@@ -77,7 +97,9 @@ export class EpAsyncApiDocumentServiceClass {
       asyncApiDocument, 
       overrideEpApplicationDomainName, 
       overrideEpAssetApplicationDomainName, 
-      prefixEpApplicationDomainName
+      prefixEpApplicationDomainName,
+      overrideBrokerType,
+      overrideChannelDelimiter
     );
     return epAsyncApiDocument;
   }

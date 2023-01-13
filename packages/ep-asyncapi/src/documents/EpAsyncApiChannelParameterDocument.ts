@@ -14,7 +14,8 @@ export class EpAsyncApiChannelParameterDocument {
 
   public validate(): void {
     // no validation
-  }
+  }    
+
   public validate_BestPractices(): void {
     // no validation
   }

@@ -28,10 +28,12 @@
     "api management"
   ],
   "scripts": {
+    "compile": "tsc",
     "build": "tsup src/cli.ts --format cjs",
     "clean": "rm -rf dist && rm -rf test/logs && rm -rf .turbo",
     "build:test": "yarn build",
     "test": "yarn build:test && . ./test/source.env.sh && nyc mocha --config test/.mocharc.yml test/**/**.spec.ts && unset_source_env",
+    "dev:watch": "yarn build --watch",
     "lint": "eslint .",
     "lint:deprecated": "yarn lint | grep deprecated",
     "start:dev": "ts-node src/cli.ts",

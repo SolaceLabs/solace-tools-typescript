@@ -33,23 +33,22 @@ class CliAsyncApiDocumentService {
     applicationDomainName,
     assetApplicationDomainName,
     applicationDomainNamePrefix,
+    overrideBrokerType,
+    overrideChannelDelimiter
   }: {
     apiFile: string;
     applicationDomainName: string | undefined;
     assetApplicationDomainName: string | undefined;
     applicationDomainNamePrefix: string | undefined;
+    overrideBrokerType: string | undefined;
+    overrideChannelDelimiter: string | undefined;
   }): Promise<EpAsyncApiDocument> => {
     const funcName = "parse_and_validate";
     const logName = `${CliAsyncApiDocumentService.name}.${funcName}()`;
 
-    CliLogger.debug(
-      CliLogger.createLogEntry(logName, {
-        code: ECliStatusCodes.IMPORTING_START_VALIDATING_API,
-        details: {
-          apiFile: apiFile,
-        },
-      })
-    );
+    CliLogger.debug(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.IMPORTING_START_VALIDATING_API, details: {
+      apiFile: apiFile,
+    }}));
 
     try {
       // parse spec
@@ -59,6 +58,8 @@ class CliAsyncApiDocumentService {
           overrideEpApplicationDomainName: applicationDomainName,
           overrideEpAssetApplicationDomainName: assetApplicationDomainName,
           prefixEpApplicationDomainName: applicationDomainNamePrefix,
+          overrideBrokerType: overrideBrokerType,
+          overrideChannelDelimiter: overrideChannelDelimiter
         });
       // validate best practices
       epAsyncApiDocument.validate_BestPractices();

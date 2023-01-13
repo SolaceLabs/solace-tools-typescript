@@ -42,11 +42,16 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
+      - name: Compile
+        run: yarn compile
+
       - name: Lint
         run: yarn lint
 
       - name: Build
-        run: yarn build
+        run: |
+          yarn clean
+          yarn build
 
       - name: Test
         run: |

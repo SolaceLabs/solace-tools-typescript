@@ -6,6 +6,7 @@
   "license": "Apache-2.0",
   "private": true,
   "scripts": {
+    "compile": "tsc",
     "build": "tsc",
     "clean": "rm -rf dist && rm -rf .turbo",
     "build:test": "yarn build"

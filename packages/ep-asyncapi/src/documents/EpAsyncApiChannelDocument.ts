@@ -1,13 +1,20 @@
 import { Channel, ChannelParameter } from "@asyncapi/parser";
 import { $Event, $EventVersion } from "@solace-labs/ep-openapi-node";
 import { Validator, ValidatorResult } from "jsonschema";
-import { EpAsyncApiInternalError, EpAsyncApiValidationError } from "../utils";
+import { 
+  EpAsyncApiInternalError, 
+  EpAsyncApiValidationError 
+} from "../utils";
 import {
   EpAsynApiChannelPublishOperation,
   EpAsyncApiChannelSubscribeOperation,
 } from "./EpAsyncApiChannelOperation";
-import { EpAsyncApiChannelParameterDocument } from "./EpAsyncApiChannelParameterDocument";
+import { 
+  EpAsyncApiChannelParameterDocument 
+} from "./EpAsyncApiChannelParameterDocument";
 import {
+  EBrokerTypes,
+  EChannelDelimiters,
   EpAsyncApiDocument,
   T_EpAsyncApiChannelParameterDocumentMap,
 } from "./EpAsyncApiDocument";
@@ -34,12 +41,8 @@ export class EpAsyncApiChannelDocument {
   }
 
   private get_X_EpEventName(): string | undefined {
-    if (
-      this.asyncApiChannel.hasExtension(E_EpAsyncApiExtensions.X_EP_EVENT_NAME)
-    )
-      return this.asyncApiChannel.extension(
-        E_EpAsyncApiExtensions.X_EP_EVENT_NAME
-      );
+    if (this.asyncApiChannel.hasExtension(E_EpAsyncApiExtensions.X_EP_EVENT_NAME))
+      return this.asyncApiChannel.extension(E_EpAsyncApiExtensions.X_EP_EVENT_NAME);
     return undefined;
   }
   private createEpEventName() {
@@ -113,20 +116,14 @@ export class EpAsyncApiChannelDocument {
       epEventVersionName,
       schema
     );
-    if (!validateResult.valid)
-      throw new EpAsyncApiValidationError(
-        logName,
-        this.constructor.name,
-        undefined,
-        {
-          asyncApiSpecTitle: this.epAsyncApiDocument.getTitle(),
-          issues: validateResult.errors,
-          value: {
-            epEventVersionName: epEventVersionName,
-            length: epEventVersionName.length,
-          },
-        }
-      );
+    if (!validateResult.valid) throw new EpAsyncApiValidationError(logName, this.constructor.name, undefined, {
+      asyncApiSpecTitle: this.epAsyncApiDocument.getTitle(),
+      issues: validateResult.errors,
+      value: {
+        epEventVersionName: epEventVersionName,
+        length: epEventVersionName.length,
+      },
+    });
     return epEventVersionName;
   };
 
@@ -149,33 +146,40 @@ export class EpAsyncApiChannelDocument {
     );
 
     if (!validateResult.valid)
-      throw new EpAsyncApiValidationError(
-        logName,
-        this.constructor.name,
-        undefined,
-        {
-          asyncApiSpecTitle: this.epAsyncApiDocument.getTitle(),
-          issues: validateResult.errors,
-          value: {
-            epEventVersionName: this.epEventVersionName,
-          },
-        }
-      );
+      throw new EpAsyncApiValidationError(logName, this.constructor.name, undefined, {
+        asyncApiSpecTitle: this.epAsyncApiDocument.getTitle(),
+        issues: validateResult.errors,
+        value: {
+          epEventVersionName: this.epEventVersionName,
+        },
+      });
   };
+
+  public validate_BrokerType(): void {
+    const funcName = "validate_BrokerType";
+    const logName = `${EpAsyncApiChannelDocument.name}.${funcName}()`;
+    if(this.getBrokerType() !== EBrokerTypes.KAFKA) return;
+    const epAsyncApiChannelParameterDocumentMap: T_EpAsyncApiChannelParameterDocumentMap | undefined = this.getEpAsyncApiChannelParameterDocumentMap();
+    if(epAsyncApiChannelParameterDocumentMap !== undefined && epAsyncApiChannelParameterDocumentMap.size > 0) {
+      throw new EpAsyncApiValidationError(logName, this.constructor.name, undefined, {
+        asyncApiSpecTitle: this.epAsyncApiDocument.getTitle(),
+        issues: "channel parameters cannot be used for brokerType=kafka ",
+        value: {
+          channel: this.getAsyncApiChannelKey(),
+        },
+      });  
+    }
+  }
 
   public validate(): void {
     // this doc
     this.validate_EpName();
     this.validate_EpEventVersionName();
+    this.validate_BrokerType();
     // channel parameters
-    const epAsyncApiChannelParameterDocumentMap:
-      | T_EpAsyncApiChannelParameterDocumentMap
-      | undefined = this.getEpAsyncApiChannelParameterDocumentMap();
+    const epAsyncApiChannelParameterDocumentMap: T_EpAsyncApiChannelParameterDocumentMap | undefined = this.getEpAsyncApiChannelParameterDocumentMap();
     if (epAsyncApiChannelParameterDocumentMap !== undefined) {
-      for (const [
-        parameterName,
-        epAsyncApiChannelParameterDocument,
-      ] of epAsyncApiChannelParameterDocumentMap) {
+      for (const [parameterName, epAsyncApiChannelParameterDocument ] of epAsyncApiChannelParameterDocumentMap) {
         parameterName;
         epAsyncApiChannelParameterDocument.validate();
       }
@@ -275,31 +279,23 @@ export class EpAsyncApiChannelDocument {
     return this.epAsyncApiDocument.getAssetsApplicationDomainName();
   }
 
-  public getEpAsyncApiChannelParameterDocumentMap():
-    | T_EpAsyncApiChannelParameterDocumentMap
-    | undefined {
+  public getEpAsyncApiChannelParameterDocumentMap(): T_EpAsyncApiChannelParameterDocumentMap | undefined {
     if (!this.asyncApiChannel.hasParameters()) return undefined;
-
-    const paramRecords: Record<string, ChannelParameter> =
-      this.asyncApiChannel.parameters();
-    const epAsyncApiChannelParameterDocumentMap: T_EpAsyncApiChannelParameterDocumentMap =
-      new Map<string, EpAsyncApiChannelParameterDocument>();
+    const paramRecords: Record<string, ChannelParameter> = this.asyncApiChannel.parameters();
+    const epAsyncApiChannelParameterDocumentMap: T_EpAsyncApiChannelParameterDocumentMap = new Map<string, EpAsyncApiChannelParameterDocument>();
     for (const [name, parameter] of Object.entries(paramRecords)) {
-      const epAsyncApiChannelParameterDocument =
-        new EpAsyncApiChannelParameterDocument(name, parameter);
-      epAsyncApiChannelParameterDocumentMap.set(
-        name,
-        epAsyncApiChannelParameterDocument
-      );
+      const epAsyncApiChannelParameterDocument = new EpAsyncApiChannelParameterDocument(name, parameter);
+      epAsyncApiChannelParameterDocumentMap.set(name, epAsyncApiChannelParameterDocument);
     }
     return epAsyncApiChannelParameterDocumentMap;
   }
 
-  public getEpAsyncApiChannelPublishOperation():
-    | EpAsynApiChannelPublishOperation
-    | undefined {
-    if (this.asyncApiChannel.hasPublish()) {
-      return new EpAsynApiChannelPublishOperation(
+  public getBrokerType(): EBrokerTypes { return this.epAsyncApiDocument.getBrokerType(); }
+
+  public getChannelDelimiter(): EChannelDelimiters { return this.epAsyncApiDocument.getChannelDelimiter(); }
+  
+  public getEpAsyncApiChannelPublishOperation(): EpAsynApiChannelPublishOperation | undefined {
+    if (this.asyncApiChannel.hasPublish()) { return new EpAsynApiChannelPublishOperation(
         this.epAsyncApiDocument,
         this,
         this.asyncApiChannel.publish()
@@ -308,9 +304,7 @@ export class EpAsyncApiChannelDocument {
     return undefined;
   }
 
-  public getEpAsyncApiChannelSubscribeOperation():
-    | EpAsyncApiChannelSubscribeOperation
-    | undefined {
+  public getEpAsyncApiChannelSubscribeOperation(): EpAsyncApiChannelSubscribeOperation | undefined {
     if (this.asyncApiChannel.hasSubscribe()) {
       return new EpAsyncApiChannelSubscribeOperation(
         this.epAsyncApiDocument,

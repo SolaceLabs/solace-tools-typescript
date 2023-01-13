@@ -63,10 +63,10 @@ describe(`${scriptName}`, () => {
       const testApiSpecRecordList: Array<TTestApiSpecRecord> =
         await TestService.createTestApiSpecRecordList({
           apiFileList: FileList,
-          overrideApplicationDomainName:
-            CliConfig.getCliImporterManagerOptions().applicationDomainName,
-          overrideAssetApplicationDomainName:
-            CliConfig.getCliImporterManagerOptions().assetApplicationDomainName,
+          overrideApplicationDomainName: CliConfig.getCliImporterManagerOptions().applicationDomainName,
+          overrideAssetApplicationDomainName: CliConfig.getCliImporterManagerOptions().assetApplicationDomainName,
+          overrideBrokerType: CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_BrokerType,
+          overrideChannelDelimiter: CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_ChannelDelimiter,  
         });
       // ensure all app domains are absent
       const xvoid: void = await TestService.absent_ApplicationDomains(false);

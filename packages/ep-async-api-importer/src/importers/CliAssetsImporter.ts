@@ -65,8 +65,7 @@ export interface ICliAssetsImporterRunPresentOptions
   extends ICliImporterRunPresentOptions {
   epAsyncApiDocument: EpAsyncApiDocument;
 }
-export interface ICliAssetsImporterRunPresentReturn
-  extends ICliImporterRunPresentReturn {
+export interface ICliAssetsImporterRunPresentReturn extends ICliImporterRunPresentReturn {
   assetApplicationDomainId: string;
 }
 export interface ICliAssetsImporterRunOptions extends ICliImporterRunOptions {}
@@ -97,28 +96,20 @@ export abstract class CliAssetsImporter extends CliImporter {
     const funcName = "run_present_event_version";
     const logName = `${CliAssetsImporter.name}.${funcName}()`;
 
-    CliLogger.trace(
-      CliLogger.createLogEntry(logName, {
-        code: ECliStatusCodes.IMPORTING_API_CHANNEL_MESSAGE,
-        details: {
-          eventObject: eventObject,
-          specVersion: specVersion,
-          epAsyncApiMessageDocument: epAsyncApiMessageDocument,
-        },
-      })
-    );
+    CliLogger.trace(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.IMPORTING_API_CHANNEL_MESSAGE, details: {
+      eventObject: eventObject,
+      specVersion: specVersion,
+      epAsyncApiMessageDocument: epAsyncApiMessageDocument,
+    }}));
 
     /* istanbul ignore next */
-    if (eventObject.id === undefined)
-      throw new CliEPApiContentError(logName, "eventObject.id === undefined", {
+    if (eventObject.id === undefined) throw new CliEPApiContentError(logName, "eventObject.id === undefined", {
         eventObject: eventObject,
       });
 
     const eventId: string = eventObject.id;
-    const eventVersionDisplayName: string =
-      epAsyncApiChannelDocument.getEpEventName();
-    const channelTopic: string =
-      epAsyncApiChannelDocument.getAsyncApiChannelKey();
+    const eventVersionDisplayName: string = epAsyncApiChannelDocument.getEpEventName();
+    const channelTopic: string = epAsyncApiChannelDocument.getAsyncApiChannelKey();
 
     const epSdkEpEventVersionTask = new EpSdkEpEventVersionTask({
       epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
@@ -127,33 +118,27 @@ export abstract class CliAssetsImporter extends CliImporter {
       versionString: specVersion,
       versionStrategy: this.get_EEpSdk_VersionTaskStrategy(),
       topicString: channelTopic,
+      topicDelimiter: epAsyncApiChannelDocument.getChannelDelimiter(),
       eventVersionSettings: {
         description: epAsyncApiMessageDocument.getDescription(),
         displayName: eventVersionDisplayName,
         schemaVersionId: schemaVersionId,
         stateId: this.get_EpSdkTask_StateId(),
+        brokerType: epAsyncApiChannelDocument.getBrokerType()
       },
       epSdkTask_TransactionConfig: this.get_IEpSdkTask_TransactionConfig(),
       checkmode: checkmode,
     });
-    const epSdkEpEventVersionTask_ExecuteReturn: IEpSdkEpEventVersionTask_ExecuteReturn =
-      await this.executeTask({
-        epSdkTask: epSdkEpEventVersionTask,
-        expectNoAction: checkmode,
-      });
-    CliLogger.trace(
-      CliLogger.createLogEntry(logName, {
-        code: ECliStatusCodes.IMPORTING_EP_EVENT_VERSION,
-        details: {
-          epSdkEpEventVersionTask_ExecuteReturn:
-            epSdkEpEventVersionTask_ExecuteReturn,
-        },
-      })
-    );
+    const epSdkEpEventVersionTask_ExecuteReturn: IEpSdkEpEventVersionTask_ExecuteReturn = await this.executeTask({
+      epSdkTask: epSdkEpEventVersionTask,
+      expectNoAction: checkmode,
+    });
+    CliLogger.trace(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.IMPORTING_EP_EVENT_VERSION, details: {
+      epSdkEpEventVersionTask_ExecuteReturn: epSdkEpEventVersionTask_ExecuteReturn,
+    }}));
     // summary
     CliRunSummary.processedEventVersion({
-      epSdkEpEventVersionTask_ExecuteReturn:
-        epSdkEpEventVersionTask_ExecuteReturn,
+      epSdkEpEventVersionTask_ExecuteReturn: epSdkEpEventVersionTask_ExecuteReturn,
     });
   };
 

@@ -1,6 +1,6 @@
 {
   "name": "@solace-labs/solace-tools-typescript",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "private": true,
   "workspaces": [
     "packages/*"
@@ -9,6 +9,7 @@
     "node": "16"
   },
   "scripts": {
+    "compile": "turbo run compile",
     "build:force": "turbo run build --force && yarn build",
     "build": "turbo run build && yarn typedoc && ./docs/make.sh",
     "build:test": "turbo run build:test",

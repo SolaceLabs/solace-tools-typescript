@@ -129,6 +129,7 @@ export class EpAsyncApiBestPracticesError extends EpAsyncApiError {
 }
 
 export type T_EpAsyncApiXtensionErrorDetails = {
+  issue: any;
   asyncApiSpecTitle: string;
   xtensionKey: string;
 }
@@ -140,5 +141,3 @@ export class EpAsyncApiXtensionError extends EpAsyncApiError {
     this.details = details;
   }
 }
-
-

@@ -28,6 +28,7 @@ export interface ICliApiFileRunContext extends Partial<ICliRunContext> {
 export interface ICliApiRunContext extends Partial<ICliApiFileRunContext> {
   apiTitle: string;
   apiVersion: string;
+  apiBrokerType: string;
   applicationDomainName: string;
   assetApplicationDomainName: string;
 }

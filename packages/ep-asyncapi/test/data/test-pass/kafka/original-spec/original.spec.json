@@ -25,17 +25,11 @@
             },
             {
               "name": "event_type",
-              "type": [
-                "string",
-                "null"
-              ]
+              "type": ["string", "null"]
             },
             {
               "name": "product_type",
-              "type": [
-                "string",
-                "null"
-              ]
+              "type": ["string", "null"]
             },
             {
               "name": "userid",

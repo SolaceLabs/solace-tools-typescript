@@ -44,11 +44,13 @@ describe(`${scriptName}`, () => {
       const testApiSpecRecordList: Array<TTestApiSpecRecord> = await TestService.createTestApiSpecRecordList({
         apiFileList: FileList,
         overrideApplicationDomainName: CliConfig.getCliImporterManagerOptions().applicationDomainName,
-        overrideAssetApplicationDomainName: CliConfig.getCliImporterManagerOptions().assetApplicationDomainName
+        overrideAssetApplicationDomainName: CliConfig.getCliImporterManagerOptions().assetApplicationDomainName,
         // prefixApplicationDomainName: CliImporterManager.createApplicationDomainPrefix({
         //   appName: CliConfig.getCliImporterManagerOptions().appName,
         //   runId: CliConfig.getCliImporterManagerOptions().runId
         // })
+        overrideBrokerType: CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_BrokerType,
+        overrideChannelDelimiter: CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_ChannelDelimiter,  
       });
       const xvoid: void = await TestService.absent_ApplicationDomains(false);
     } catch(e) {

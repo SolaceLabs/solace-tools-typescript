@@ -24,10 +24,14 @@ export class TestService {
     apiFileList,
     overrideApplicationDomainName,
     overrideAssetApplicationDomainName,
+    overrideBrokerType,
+    overrideChannelDelimiter
   }: {
     apiFileList: Array<string>;
     overrideApplicationDomainName?: string;
     overrideAssetApplicationDomainName?: string;
+    overrideBrokerType: string | undefined;
+    overrideChannelDelimiter: string | undefined;
   }): Promise<Array<TTestApiSpecRecord>> => {
     const funcName = "createTestApiSpecRecordList";
     const logName = `${TestService.name}.${funcName}()`;
@@ -47,6 +51,8 @@ export class TestService {
           applicationDomainName: overrideApplicationDomainName,
           assetApplicationDomainName: overrideAssetApplicationDomainName,
           applicationDomainNamePrefix: undefined,
+          overrideBrokerType: overrideBrokerType,
+          overrideChannelDelimiter: overrideChannelDelimiter 
         });
       TestService.testApiSpecRecordList.push({
         apiFile: apiFile,

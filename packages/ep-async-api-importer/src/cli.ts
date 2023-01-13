@@ -52,31 +52,21 @@ async function main() {
   const funcName = "main";
   const logName = `${ComponentName}.${funcName}()`;
 
-  CliLogger.trace(
-    CliLogger.createLogEntry(logName, {
-      code: ECliStatusCodes.INFO,
-      message: "starting...",
-      details: {
-        cliConfig: CliConfig.getCliConfig(),
-      },
-    })
-  );
+  CliLogger.trace(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.INFO, message: "starting...",
+    details: {
+      cliConfig: CliConfig.getCliConfig(),
+    },
+  }));
 
-  const cliImporterManager = new CliImporterManager(
-    CliConfig.getCliImporterManagerOptions()
-  );
+  const cliImporterManager = new CliImporterManager(CliConfig.getCliImporterManagerOptions());
   const xvoid: void = await cliImporterManager.run();
   /* istanbul ignore next */
   xvoid;
-  CliLogger.trace(
-    CliLogger.createLogEntry(logName, {
-      code: ECliStatusCodes.INFO,
-      message: "finished.",
-      details: {
-        cliConfig: CliConfig.getCliConfig(),
-      },
-    })
-  );
+  CliLogger.trace(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.INFO, message: "finished.",
+    details: {
+      cliConfig: CliConfig.getCliConfig(),
+    },
+  }));
 }
 
 function initialize(commandLineOptionValues: OptionValues) {
