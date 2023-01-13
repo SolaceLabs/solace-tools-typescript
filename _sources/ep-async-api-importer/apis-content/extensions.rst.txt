@@ -18,6 +18,12 @@ The importer uses the following extensions:
 
        Defaults to `$.x-ep-application-domain` if omitted.
 
+   * - $.x-ep-broker-type
+     - The broker type the api 'runs on'. Options: ['solace', 'kafka']. Default: 'solace'.
+
+   * - $.x-ep-channel-delimiter
+     - The channel delimiter used in the spec to determine topic elements. Options: ['/', '.', '_', '-']. Default: '/'.
+
    * - $.channels.{topic}.x-ep-event-name
      - The name to use for Event Portal Events and Event Versions.
 
