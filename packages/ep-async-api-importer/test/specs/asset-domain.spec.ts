@@ -41,13 +41,14 @@ const initializeGlobals = () => {
   FileList.push(AsyncApiSpecFile);
   // set test specific importer options
   CliConfig.getCliImporterManagerOptions().asyncApiFileList = FileList;
-  CliConfig.getCliImporterManagerOptions().cliImporterManagerMode =
-    ECliImporterManagerMode.RELEASE_MODE;
+  CliConfig.getCliImporterManagerOptions().cliImporterManagerMode = ECliImporterManagerMode.RELEASE_MODE;
   // CliConfig.getCliImporterManagerOptions().runId = scriptName;
   // // DEBUG
   // CliConfig.getCliImporterManagerOptions().cliImporterManagerMode = ECliImporterManagerMode.TEST_MODE_KEEP;
   // CliConfig.getCliImporterManagerOptions().applicationDomainName = 'release_mode';
   CliConfig.getCliImporterManagerOptions().createEventApiApplication = false;
+  CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_BrokerType = undefined;
+  CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_ChannelDelimiter = undefined;
 };
 
 describe(`${scriptName}`, () => {

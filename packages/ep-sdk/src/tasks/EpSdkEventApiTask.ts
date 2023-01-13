@@ -68,17 +68,15 @@ export interface IEpSdkEventApiTask_ExecuteReturn
 
 /** @category Tasks */
 export class EpSdkEventApiTask extends EpSdkTask {
-  private readonly Empty_IEpSdkEventApiTask_GetFuncReturn: IEpSdkEventApiTask_GetFuncReturn =
-    {
-      epObjectKeys: this.getDefaultEpObjectKeys(),
-      epObject: undefined,
-      epObjectExists: false,
-    };
-  private readonly Default_TEpSdkEventApiTask_Settings: TEpSdkEventApiTask_Settings =
-    {
-      shared: true,
-      brokerType: EventApi.brokerType.SOLACE,
-    };
+  private readonly Empty_IEpSdkEventApiTask_GetFuncReturn: IEpSdkEventApiTask_GetFuncReturn = {
+    epObjectKeys: this.getDefaultEpObjectKeys(),
+    epObject: undefined,
+    epObjectExists: false,
+  };
+  private readonly Default_TEpSdkEventApiTask_Settings: TEpSdkEventApiTask_Settings = {
+    shared: true,
+    brokerType: EventApi.brokerType.SOLACE,
+  };
   private getTaskConfig(): IEpSdkEventApiTask_Config {
     return this.epSdkTask_Config as IEpSdkEventApiTask_Config;
   }

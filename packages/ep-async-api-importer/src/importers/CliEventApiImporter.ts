@@ -315,7 +315,7 @@ export class CliEventApiImporter extends CliAssetsImporter {
       eventApiName: epAsyncApiDocument.getTitle(),
       eventApiObjectSettings: {
         shared: true,
-        brokerType: this.cliImporterOptions.cliAssetImport_BrokerType as unknown as EventApi.brokerType,
+        brokerType: epAsyncApiDocument.getBrokerType() as unknown as EventApi.brokerType,
       },
       epSdkTask_TransactionConfig: this.get_IEpSdkTask_TransactionConfig(),
       checkmode: checkmode,

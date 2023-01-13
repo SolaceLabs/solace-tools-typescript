@@ -348,7 +348,7 @@ export class EpAsyncApiDocument {
     this.validate_ChannelDelimiter();
     // cascade validation to all elements
     const epAsyncApiChannelDocumentMap: T_EpAsyncApiChannelDocumentMap = this.getEpAsyncApiChannelDocumentMap();
-    for (const [topic, epAsyncApiChannelDocument,] of epAsyncApiChannelDocumentMap) {
+    for (const [topic, epAsyncApiChannelDocument] of epAsyncApiChannelDocumentMap) {
       topic;
       epAsyncApiChannelDocument.validate();
     }

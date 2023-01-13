@@ -1,12 +1,17 @@
 import { Channel, ChannelParameter } from "@asyncapi/parser";
 import { $Event, $EventVersion } from "@solace-labs/ep-openapi-node";
 import { Validator, ValidatorResult } from "jsonschema";
-import { EpAsyncApiInternalError, EpAsyncApiValidationError } from "../utils";
+import { 
+  EpAsyncApiInternalError, 
+  EpAsyncApiValidationError 
+} from "../utils";
 import {
   EpAsynApiChannelPublishOperation,
   EpAsyncApiChannelSubscribeOperation,
 } from "./EpAsyncApiChannelOperation";
-import { EpAsyncApiChannelParameterDocument } from "./EpAsyncApiChannelParameterDocument";
+import { 
+  EpAsyncApiChannelParameterDocument 
+} from "./EpAsyncApiChannelParameterDocument";
 import {
   EBrokerTypes,
   EChannelDelimiters,
@@ -111,20 +116,14 @@ export class EpAsyncApiChannelDocument {
       epEventVersionName,
       schema
     );
-    if (!validateResult.valid)
-      throw new EpAsyncApiValidationError(
-        logName,
-        this.constructor.name,
-        undefined,
-        {
-          asyncApiSpecTitle: this.epAsyncApiDocument.getTitle(),
-          issues: validateResult.errors,
-          value: {
-            epEventVersionName: epEventVersionName,
-            length: epEventVersionName.length,
-          },
-        }
-      );
+    if (!validateResult.valid) throw new EpAsyncApiValidationError(logName, this.constructor.name, undefined, {
+      asyncApiSpecTitle: this.epAsyncApiDocument.getTitle(),
+      issues: validateResult.errors,
+      value: {
+        epEventVersionName: epEventVersionName,
+        length: epEventVersionName.length,
+      },
+    });
     return epEventVersionName;
   };
 
@@ -147,33 +146,40 @@ export class EpAsyncApiChannelDocument {
     );
 
     if (!validateResult.valid)
-      throw new EpAsyncApiValidationError(
-        logName,
-        this.constructor.name,
-        undefined,
-        {
-          asyncApiSpecTitle: this.epAsyncApiDocument.getTitle(),
-          issues: validateResult.errors,
-          value: {
-            epEventVersionName: this.epEventVersionName,
-          },
-        }
-      );
+      throw new EpAsyncApiValidationError(logName, this.constructor.name, undefined, {
+        asyncApiSpecTitle: this.epAsyncApiDocument.getTitle(),
+        issues: validateResult.errors,
+        value: {
+          epEventVersionName: this.epEventVersionName,
+        },
+      });
   };
+
+  public validate_BrokerType(): void {
+    const funcName = "validate_BrokerType";
+    const logName = `${EpAsyncApiChannelDocument.name}.${funcName}()`;
+    if(this.getBrokerType() !== EBrokerTypes.KAFKA) return;
+    const epAsyncApiChannelParameterDocumentMap: T_EpAsyncApiChannelParameterDocumentMap | undefined = this.getEpAsyncApiChannelParameterDocumentMap();
+    if(epAsyncApiChannelParameterDocumentMap !== undefined && epAsyncApiChannelParameterDocumentMap.size > 0) {
+      throw new EpAsyncApiValidationError(logName, this.constructor.name, undefined, {
+        asyncApiSpecTitle: this.epAsyncApiDocument.getTitle(),
+        issues: "channel parameters cannot be used for brokerType=kafka ",
+        value: {
+          channel: this.getAsyncApiChannelKey(),
+        },
+      });  
+    }
+  }
 
   public validate(): void {
     // this doc
     this.validate_EpName();
     this.validate_EpEventVersionName();
+    this.validate_BrokerType();
     // channel parameters
-    const epAsyncApiChannelParameterDocumentMap:
-      | T_EpAsyncApiChannelParameterDocumentMap
-      | undefined = this.getEpAsyncApiChannelParameterDocumentMap();
+    const epAsyncApiChannelParameterDocumentMap: T_EpAsyncApiChannelParameterDocumentMap | undefined = this.getEpAsyncApiChannelParameterDocumentMap();
     if (epAsyncApiChannelParameterDocumentMap !== undefined) {
-      for (const [
-        parameterName,
-        epAsyncApiChannelParameterDocument,
-      ] of epAsyncApiChannelParameterDocumentMap) {
+      for (const [parameterName, epAsyncApiChannelParameterDocument ] of epAsyncApiChannelParameterDocumentMap) {
         parameterName;
         epAsyncApiChannelParameterDocument.validate();
       }
