@@ -98,8 +98,6 @@ const DEFAULT_CLI_IMPORT_ASSETS_TARGET_LIFECYLE_STATE = ECliAssetImport_TargetLi
 const DEFAULT_CLI_IMPORT_ASSETS_TARGET_VERSION_STRATEGY = ECliAssetImport_TargetVersionStrategy.BUMP_PATCH;
 const DEFAULT_CLI_IMPORT_ASSET_OUTPUT_DIR = "./tmp/output";
 const DEFAULT_CLI_IMPORT_CREATE_API_APPLICATION = false;
-const DEFAULT_CLI_IMPORT_BROKER_TYPE = EBrokerTypes.SOLACE;
-const DEFAULT_CLI_IMPORT_CHANNEL_DELIMITER = EChannelDelimiters.SLASH;
 const DEFAULT_CLI_TEST_SETUP_DOMAINS_FOR_APIS = false;
 
 const CliConfigEnvVarConfigList: Array<TCliConfigEnvVarConfig> = [
@@ -224,14 +222,14 @@ const CliConfigEnvVarConfigList: Array<TCliConfigEnvVarConfig> = [
     envVarName: ECliConfigEnvVarNames.CLI_IMPORT_BROKER_TYPE,
     description: `The broker type setting for all imported objects. Overrides broker type specified in the spec, extension: ${E_EpAsyncApiExtensions.X_EP_BROKER_TYPE}`,
     required: false,
-    default: DEFAULT_CLI_IMPORT_BROKER_TYPE,
+    default: 'none',
     options: Object.values(EBrokerTypes) as Array<string>,
   },
   {
     envVarName: ECliConfigEnvVarNames.CLI_IMPORT_CHANNEL_DELIMITER,
     description: `The channel delimiter used in the spec. Global setting for all imported objects. Overrides channel delimiter specified in the spec, extension: ${E_EpAsyncApiExtensions.X_EP_CHANNEL_DELIMITER}`,
     required: false,
-    default: DEFAULT_CLI_IMPORT_CHANNEL_DELIMITER,
+    default: 'none',
     options: Object.values(EChannelDelimiters) as Array<string>,
   },
   {
@@ -354,6 +352,24 @@ class CliConfig {
     const logName = `${CliConfig.name}.${funcName}()`;
     const value: string | undefined = process.env[envVarName];
     if (value === undefined) return defaultValue;
+    if (!options.includes(value.toLowerCase()))
+      throw new CliConfigInvalidEnvVarValueOptionError(
+        logName,
+        envVarName,
+        value,
+        options
+      );
+    return value.toLowerCase();
+  };
+
+  private getOptionalEnvVarValueAsString_From_Options = ( 
+    envVarName: string, 
+    options: Array<string>
+  ): string | undefined => {
+    const funcName = "getOptionalEnvVarValueAsString_From_Options";
+    const logName = `${CliConfig.name}.${funcName}()`;
+    const value: string | undefined = process.env[envVarName];
+    if (value === undefined) return undefined;
     if (!options.includes(value.toLowerCase()))
       throw new CliConfigInvalidEnvVarValueOptionError(
         logName,
@@ -504,16 +520,14 @@ class CliConfig {
               DEFAULT_CLI_IMPORT_ASSETS_TARGET_VERSION_STRATEGY as unknown as string
             ) as unknown as ECliAssetImport_TargetVersionStrategy,
           cliAssetImport_BrokerType:
-            this.getOptionalEnvVarValueAsString_From_Options_WithDefault(
+            this.getOptionalEnvVarValueAsString_From_Options(
               ECliConfigEnvVarNames.CLI_IMPORT_BROKER_TYPE,
               Object.values(EBrokerTypes) as Array<string>,
-              DEFAULT_CLI_IMPORT_BROKER_TYPE
             ) as EBrokerTypes,
           cliAssetImport_ChannelDelimiter:
-            this.getOptionalEnvVarValueAsString_From_Options_WithDefault(
+            this.getOptionalEnvVarValueAsString_From_Options(
               ECliConfigEnvVarNames.CLI_IMPORT_CHANNEL_DELIMITER,
               Object.values(EChannelDelimiters) as Array<string>,
-              DEFAULT_CLI_IMPORT_CHANNEL_DELIMITER
             ) as EChannelDelimiters,
           assetOutputDir: importAssetOutputDir,
         },

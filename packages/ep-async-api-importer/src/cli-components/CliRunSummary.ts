@@ -94,6 +94,7 @@ export interface ICliRunSummary_Api extends ICliRunSummary_Base {
   type: ECliRunSummary_Type.Api;
   apiName: string;
   apiVersion: string;
+  apiBrokerType: string;
   applicationDomainName: string;
   assetApplicationDomain: string;
 }
@@ -134,17 +135,14 @@ export interface ICliRunSummary_Task_VersionObject extends ICliRunSummary_Task {
   displayName?: string;
   version?: string;
   state?: string;
+  brokerType?: string;
   epObjectType: EEpSdkObjectTypes;
 }
-export interface ICliRunSummary_Task_VersionObject_Check
-  extends ICliRunSummary_Task,
-    Omit<ICliRunSummary_Task_VersionObject, "type"> {
+export interface ICliRunSummary_Task_VersionObject_Check extends ICliRunSummary_Task, Omit<ICliRunSummary_Task_VersionObject, "type"> {
   type: ECliRunSummary_Type.VersionObjectCheck;
   exactTargetVersion: string;
 }
-interface ICliRunSummary_Task_VersionObject_WarningError_Base
-  extends ICliRunSummary_Task,
-    Omit<ICliRunSummary_Task_VersionObject, "type"> {
+interface ICliRunSummary_Task_VersionObject_WarningError_Base extends ICliRunSummary_Task, Omit<ICliRunSummary_Task_VersionObject, "type"> {
   existingVersion: string;
   existingVersionState: string;
   targetVersion: string;
@@ -153,12 +151,10 @@ interface ICliRunSummary_Task_VersionObject_WarningError_Base
   newVersionState: string;
   requestedUpdates: any;
 }
-interface ICliRunSummary_Task_VersionObject_Warning
-  extends ICliRunSummary_Task_VersionObject_WarningError_Base {
+interface ICliRunSummary_Task_VersionObject_Warning extends ICliRunSummary_Task_VersionObject_WarningError_Base {
   type: ECliRunSummary_Type.VersionObjectWarning;
 }
-interface ICliRunSummary_Task_VersionObject_Error
-  extends ICliRunSummary_Task_VersionObject_WarningError_Base {
+interface ICliRunSummary_Task_VersionObject_Error extends ICliRunSummary_Task_VersionObject_WarningError_Base {
   type: ECliRunSummary_Type.EventApiVersioningError;
 }
 export interface ICliImportSummary extends ICliRunSummary_LogBase {
@@ -366,25 +362,17 @@ Start Run: ${cliRunSummary_StartRun.runMode} ------------------------
     );
   };
 
-  public processingApi = ({
-    cliRunSummary_Api,
-  }: {
+  public processingApi = ({cliRunSummary_Api,}: {
     cliRunSummary_Api: ICliRunSummary_Api;
   }): void => {
     const consoleOutput = `
->>> Processing Api: ${cliRunSummary_Api.apiName}@${cliRunSummary_Api.apiVersion}
+>>> Processing Api: ${cliRunSummary_Api.apiName}@${cliRunSummary_Api.apiVersion} (${cliRunSummary_Api.apiBrokerType})
       Application Domain: ${cliRunSummary_Api.applicationDomainName}
       Asset Application Domain: ${cliRunSummary_Api.assetApplicationDomain}
     `;
-    this.log(
-      ECliSummaryStatusCodes.PROCESSING_API,
-      this.addRun(cliRunSummary_Api),
-      consoleOutput
-    );
+    this.log(ECliSummaryStatusCodes.PROCESSING_API, this.addRun(cliRunSummary_Api), consoleOutput);
   };
-  public processingApiChannel = ({
-    cliRunSummary_ApiChannel,
-  }: {
+  public processingApiChannel = ({ cliRunSummary_ApiChannel, }: {
     cliRunSummary_ApiChannel: ICliRunSummary_ApiChannel;
   }): void => {
     const consoleOutput = `
@@ -491,81 +479,48 @@ Start Run: ${cliRunSummary_StartRun.runMode} ------------------------
     );
   };
 
-  private processedVersionObject = (
-    code: ECliSummaryStatusCodes,
-    epSdkTask_ExecuteReturn: IEpSdkTask_ExecuteReturn
-  ): void => {
-    const cliRunSummary_Task_VersionObject: ICliRunSummary_Task_VersionObject =
-      {
-        type: ECliRunSummary_Type.VersionObject,
-        action:
-          epSdkTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action,
-        epObjectType:
-          epSdkTask_ExecuteReturn.epSdkTask_TransactionLogData.epObjectKeys
-            .epObjectType,
-        displayName: epSdkTask_ExecuteReturn.epObject.displayName,
-        version: epSdkTask_ExecuteReturn.epObject.version,
-        state: epSdkTask_ExecuteReturn.epObject.stateId,
-        applicationDomainName: this.assetApplicationDomainName,
-      };
-    // const consoleOutput = `
-    //   Application Domain: ${this.applicationDomainName}
-    //     ${cliRunSummary_Task_VersionObject.epObjectType}:
-    //       ${cliRunSummary_Task_VersionObject.displayName}@${cliRunSummary_Task_VersionObject.version}, state=${cliRunSummary_Task_VersionObject.state} (${cliRunSummary_Task_VersionObject.action})
-    // `;
+  private processedVersionObject = (code: ECliSummaryStatusCodes, epSdkTask_ExecuteReturn: IEpSdkTask_ExecuteReturn, brokerType?: string): void => {
+    const cliRunSummary_Task_VersionObject: ICliRunSummary_Task_VersionObject = {
+      type: ECliRunSummary_Type.VersionObject,
+      action: epSdkTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action,
+      epObjectType: epSdkTask_ExecuteReturn.epSdkTask_TransactionLogData.epObjectKeys.epObjectType,
+      displayName: epSdkTask_ExecuteReturn.epObject.displayName,
+      version: epSdkTask_ExecuteReturn.epObject.version,
+      state: epSdkTask_ExecuteReturn.epObject.stateId,
+      brokerType: epSdkTask_ExecuteReturn.epObject.brokerType,
+      applicationDomainName: this.assetApplicationDomainName,
+    };
+    const brokerTypeOutput = brokerType ? `, brokerType=${brokerType}` : '';
     const consoleOutput = `
         ${cliRunSummary_Task_VersionObject.epObjectType}:
-          ${cliRunSummary_Task_VersionObject.displayName}@${cliRunSummary_Task_VersionObject.version}, state=${cliRunSummary_Task_VersionObject.state} (${cliRunSummary_Task_VersionObject.action})
+          ${cliRunSummary_Task_VersionObject.displayName}@${cliRunSummary_Task_VersionObject.version}, state=${cliRunSummary_Task_VersionObject.state}${brokerTypeOutput} (${cliRunSummary_Task_VersionObject.action})
     `;
-    this.log(
-      code,
-      this.addTaskElements(cliRunSummary_Task_VersionObject),
-      consoleOutput
-    );
+    this.log(code, this.addTaskElements(cliRunSummary_Task_VersionObject), consoleOutput);
   };
 
-  public processedEnumVersion = ({
-    epSdkEnumVersionTask_ExecuteReturn,
-  }: {
+  public processedEnumVersion = ({epSdkEnumVersionTask_ExecuteReturn,}: {
     epSdkEnumVersionTask_ExecuteReturn: IEpSdkEnumVersionTask_ExecuteReturn;
   }): void => {
-    this.processedVersionObject(
-      ECliSummaryStatusCodes.PROCESSED_ENUM_VERSION,
-      epSdkEnumVersionTask_ExecuteReturn
-    );
+    this.processedVersionObject(ECliSummaryStatusCodes.PROCESSED_ENUM_VERSION, epSdkEnumVersionTask_ExecuteReturn);
   };
 
-  public processedSchemaVersion = ({
-    epSdkSchemaVersionTask_ExecuteReturn,
-  }: {
+  public processedSchemaVersion = ({epSdkSchemaVersionTask_ExecuteReturn,}: {
     epSdkSchemaVersionTask_ExecuteReturn: IEpSdkSchemaVersionTask_ExecuteReturn;
   }): void => {
-    this.processedVersionObject(
-      ECliSummaryStatusCodes.PROCESSED_SCHEMA_VERSION,
-      epSdkSchemaVersionTask_ExecuteReturn
-    );
+    this.processedVersionObject(ECliSummaryStatusCodes.PROCESSED_SCHEMA_VERSION, epSdkSchemaVersionTask_ExecuteReturn);
   };
 
-  public processedEventVersion = ({
-    epSdkEpEventVersionTask_ExecuteReturn,
-  }: {
+  public processedEventVersion = ({ epSdkEpEventVersionTask_ExecuteReturn, }: {
     epSdkEpEventVersionTask_ExecuteReturn: IEpSdkEpEventVersionTask_ExecuteReturn;
   }): void => {
-    this.processedVersionObject(
-      ECliSummaryStatusCodes.PROCESSED_EVENT_VERSION,
-      epSdkEpEventVersionTask_ExecuteReturn
-    );
+    const brokerType = epSdkEpEventVersionTask_ExecuteReturn.epObject.deliveryDescriptor?.brokerType;
+    this.processedVersionObject(ECliSummaryStatusCodes.PROCESSED_EVENT_VERSION, epSdkEpEventVersionTask_ExecuteReturn, brokerType);
   };
 
-  public processedEventApiVersion = ({
-    epSdkEventApiVersionTask_ExecuteReturn,
-  }: {
+  public processedEventApiVersion = ({epSdkEventApiVersionTask_ExecuteReturn,}: {
     epSdkEventApiVersionTask_ExecuteReturn: IEpSdkEventApiVersionTask_ExecuteReturn;
   }): void => {
-    this.processedVersionObject(
-      ECliSummaryStatusCodes.PROCESSED_EVENT_API_VERSION,
-      epSdkEventApiVersionTask_ExecuteReturn
-    );
+    this.processedVersionObject(ECliSummaryStatusCodes.PROCESSED_EVENT_API_VERSION, epSdkEventApiVersionTask_ExecuteReturn);
   };
 
   public processedEventApiVersionWithError = ({
@@ -581,17 +536,11 @@ Start Run: ${cliRunSummary_StartRun.runMode} ------------------------
     latestExistingEventApiVersionObjectBefore: EventApiVersion;
     requestedUpdates: any;
   }): void => {
-    const cliRunSummary_Task_VersionObject_Error: ICliRunSummary_Task_VersionObject_Error =
-      {
+    const cliRunSummary_Task_VersionObject_Error: ICliRunSummary_Task_VersionObject_Error = {
         type: ECliRunSummary_Type.EventApiVersioningError,
-        action:
-          epSdkEventApiVersionTask_ExecuteReturn.epSdkTask_TransactionLogData
-            .epSdkTask_Action,
-        epObjectType:
-          epSdkEventApiVersionTask_ExecuteReturn.epSdkTask_TransactionLogData
-            .epObjectKeys.epObjectType,
-        displayName:
-          epSdkEventApiVersionTask_ExecuteReturn.epObject.displayName,
+        action: epSdkEventApiVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action,
+        epObjectType: epSdkEventApiVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epObjectKeys.epObjectType,
+        displayName: epSdkEventApiVersionTask_ExecuteReturn.epObject.displayName,
         existingVersion: latestExistingEventApiVersionObjectBefore.version
           ? latestExistingEventApiVersionObjectBefore.version
           : "undefined",

@@ -33,8 +33,8 @@ export interface ICliImporterOptions {
   assetOutputDir: string;
   cliAssetImport_TargetLifecycleState: ECliAssetImport_TargetLifecycleState;
   cliAssetImport_TargetVersionStrategy: ECliAssetImport_TargetVersionStrategy;
-  cliAssetImport_BrokerType: EBrokerTypes;
-  cliAssetImport_ChannelDelimiter: EChannelDelimiters;
+  cliAssetImport_BrokerType?: EBrokerTypes;
+  cliAssetImport_ChannelDelimiter?: EChannelDelimiters;
 }
 export interface ICliImporterGenerateAssetsOptions {}
 export interface ICliImporterGenerateAssetsReturn {
@@ -49,6 +49,8 @@ export interface ICliImporterRunOptions {
   applicationDomainName: string | undefined;
   assetApplicationDomainName: string | undefined;
   applicationDomainNamePrefix: string | undefined;
+  overrideBrokerType: string | undefined;
+  overrideChannelDelimiter: string | undefined;
   checkmode: boolean;
 }
 export interface ICliImporterRunReturn {
@@ -114,13 +116,12 @@ export abstract class CliImporter {
     }
   };
 
-  protected get_IEpSdkTask_TransactionConfig =
-    (): IEpSdkTask_TransactionConfig => {
-      return {
-        groupTransactionId: this.cliImporterOptions.runId,
-        parentTransactionId: this.importerTransactionId,
-      };
+  protected get_IEpSdkTask_TransactionConfig = (): IEpSdkTask_TransactionConfig => {
+    return {
+      groupTransactionId: this.cliImporterOptions.runId,
+      parentTransactionId: this.importerTransactionId,
     };
+  };
 
   protected async executeTask({
     epSdkTask,
