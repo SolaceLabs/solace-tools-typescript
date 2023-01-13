@@ -500,56 +500,36 @@ export class CliEventApiImporter extends CliAssetsImporter {
         epAsyncApiDocument.getTitleAsFileName("json");
       const asyncApiSpecFileNameYaml =
         assetOutputRootDir + "/" + epAsyncApiDocument.getTitleAsFileName("yml");
-      CliLogger.trace(
-        CliLogger.createLogEntry(logName, {
-          code: ECliStatusCodes.GENERATING_ASSETS_OUTPUT,
-          details: {
-            applicationDomainNameAsFilePath: applicationDomainNameAsFilePath,
-            apiTitleAsFilePath: apiTitleAsFilePath,
-            assetOutputRootDir: assetOutputRootDir,
-            schemasOutputDir: schemasOutputDir,
-            asyncApiSpecFileNameJson: asyncApiSpecFileNameJson,
-            asyncApiSpecFileNameYaml: asyncApiSpecFileNameYaml,
-          },
-        })
-      );
+      CliLogger.trace(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.GENERATING_ASSETS_OUTPUT, details: {
+        applicationDomainNameAsFilePath: applicationDomainNameAsFilePath,
+        apiTitleAsFilePath: apiTitleAsFilePath,
+        assetOutputRootDir: assetOutputRootDir,
+        schemasOutputDir: schemasOutputDir,
+        asyncApiSpecFileNameJson: asyncApiSpecFileNameJson,
+        asyncApiSpecFileNameYaml: asyncApiSpecFileNameYaml,
+      }}));
 
-      cliEventApiImporterGenerateAssetsReturn.assetOutputRootDir =
-        assetOutputRootDir;
-      cliEventApiImporterGenerateAssetsReturn.asyncApiSpecFileNameJson =
-        asyncApiSpecFileNameJson;
-      cliEventApiImporterGenerateAssetsReturn.asyncApiSpecFileNameYaml =
-        asyncApiSpecFileNameYaml;
-      cliEventApiImporterGenerateAssetsReturn.schemasOutputDir =
-        schemasOutputDir;
+      cliEventApiImporterGenerateAssetsReturn.assetOutputRootDir = assetOutputRootDir;
+      cliEventApiImporterGenerateAssetsReturn.asyncApiSpecFileNameJson = asyncApiSpecFileNameJson;
+      cliEventApiImporterGenerateAssetsReturn.asyncApiSpecFileNameYaml = asyncApiSpecFileNameYaml;
+      cliEventApiImporterGenerateAssetsReturn.schemasOutputDir = schemasOutputDir;
 
-      CliRunSummary.generatingApiOutput({
-        cliRunSummary_GenerateApiOutput: {
-          type: ECliRunSummary_Type.ApiOutput,
-          apiName: epAsyncApiDocument.getTitle(),
-          apiVersion: epAsyncApiDocument.getVersion(),
-          outputDir: assetOutputRootDir,
-        },
-      });
+      CliRunSummary.generatingApiOutput({ cliRunSummary_GenerateApiOutput: {
+        type: ECliRunSummary_Type.ApiOutput,
+        apiName: epAsyncApiDocument.getTitle(),
+        apiVersion: epAsyncApiDocument.getVersion(),
+        outputDir: assetOutputRootDir,
+      }});
 
-      CliLogger.trace(
-        CliLogger.createLogEntry(logName, {
-          code: ECliStatusCodes.GENERATING_ASSETS_OUTPUT,
-          details: {
-            asyncApiSpecFileNameJson: asyncApiSpecFileNameJson,
-            asyncApiSpecFileNameYaml: asyncApiSpecFileNameYaml,
-            schemasOutputDir: schemasOutputDir,
-          },
-        })
-      );
+      CliLogger.trace(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.GENERATING_ASSETS_OUTPUT, details: {
+        asyncApiSpecFileNameJson: asyncApiSpecFileNameJson,
+        asyncApiSpecFileNameYaml: asyncApiSpecFileNameYaml,
+        schemasOutputDir: schemasOutputDir,
+      }}));
 
       CliUtils.saveContents2File({
         filePath: asyncApiSpecFileNameJson,
-        content: JSON.stringify(
-          epAsyncApiDocument.getOriginalSpecAsJson(),
-          null,
-          2
-        ),
+        content: JSON.stringify(epAsyncApiDocument.getOriginalSpecAsJson(), null, 2 ),
       });
       // save spec as yaml file
       CliUtils.saveContents2File({
@@ -558,99 +538,49 @@ export class CliEventApiImporter extends CliAssetsImporter {
       });
 
       // save all channel message schemas to files
-      const epAsyncApiChannelDocumentMap: T_EpAsyncApiChannelDocumentMap =
-        epAsyncApiDocument.getEpAsyncApiChannelDocumentMap();
-      for (const [
-        topic,
-        epAsyncApiChannelDocument,
-      ] of epAsyncApiChannelDocumentMap) {
+      const epAsyncApiChannelDocumentMap: T_EpAsyncApiChannelDocumentMap = epAsyncApiDocument.getEpAsyncApiChannelDocumentMap();
+      for (const [topic, epAsyncApiChannelDocument ] of epAsyncApiChannelDocumentMap) {
         /* istanbul ignore next */
         topic;
-        const epAsynApiChannelPublishOperation:
-          | EpAsynApiChannelPublishOperation
-          | undefined =
-          epAsyncApiChannelDocument.getEpAsyncApiChannelPublishOperation();
+        const epAsynApiChannelPublishOperation: EpAsynApiChannelPublishOperation | undefined = epAsyncApiChannelDocument.getEpAsyncApiChannelPublishOperation();
         if (epAsynApiChannelPublishOperation !== undefined) {
-          const epAsyncApiMessageDocument: EpAsyncApiMessageDocument =
-            epAsynApiChannelPublishOperation.getEpAsyncApiMessageDocument();
-          if (
-            epAsyncApiMessageDocument.getContentType() !==
-            E_EpAsyncApiContentTypes.APPLICATION_JSON
-          )
-            throw new CliAsyncApiSpecFeatureNotSupportedError(
-              logName,
-              "unsupported message content type",
-              {
-                messageName: epAsyncApiMessageDocument.getMessageName(),
-                contentType: epAsyncApiMessageDocument.getContentType(),
-                supportedContentTypes:
-                  epAsyncApiDocument.getSupportedContentTypes(),
-              }
-            );
+          const epAsyncApiMessageDocument: EpAsyncApiMessageDocument = epAsynApiChannelPublishOperation.getEpAsyncApiMessageDocument();
+          if(epAsyncApiMessageDocument.getContentType() !== E_EpAsyncApiContentTypes.APPLICATION_JSON)
+            throw new CliAsyncApiSpecFeatureNotSupportedError(logName, "unsupported message content type", {
+              messageName: epAsyncApiMessageDocument.getMessageName(),
+              contentType: epAsyncApiMessageDocument.getContentType(),
+              supportedContentTypes:
+                epAsyncApiDocument.getSupportedContentTypes(),
+            });
 
-          const schemaFilePath =
-            schemasOutputDir +
-            "/" +
-            CliUtils.convertStringToFilePath(
-              epAsyncApiMessageDocument.getSchemaFileName()
-            );
+          const schemaFilePath = schemasOutputDir + "/" + CliUtils.convertStringToFilePath(epAsyncApiMessageDocument.getSchemaFileName());
           CliUtils.saveContents2File({
             filePath: schemaFilePath,
-            content: JSON.stringify(
-              epAsyncApiMessageDocument.getSchemaAsSanitizedJson(),
-              null,
-              2
-            ),
+            content: JSON.stringify(epAsyncApiMessageDocument.getSchemaAsSanitizedJson(), null, 2),
           });
         }
-        const epAsyncApiChannelSubscribeOperation:
-          | EpAsyncApiChannelSubscribeOperation
-          | undefined =
-          epAsyncApiChannelDocument.getEpAsyncApiChannelSubscribeOperation();
+        const epAsyncApiChannelSubscribeOperation: EpAsyncApiChannelSubscribeOperation | undefined = epAsyncApiChannelDocument.getEpAsyncApiChannelSubscribeOperation();
         if (epAsyncApiChannelSubscribeOperation !== undefined) {
-          const epAsyncApiMessageDocument: EpAsyncApiMessageDocument =
-            epAsyncApiChannelSubscribeOperation.getEpAsyncApiMessageDocument();
-          if (
-            epAsyncApiMessageDocument.getContentType() !==
-            E_EpAsyncApiContentTypes.APPLICATION_JSON
-          )
-            throw new CliAsyncApiSpecFeatureNotSupportedError(
-              logName,
-              "unsupported message content type",
-              {
-                messageName: epAsyncApiMessageDocument.getMessageName(),
-                contentType: epAsyncApiMessageDocument.getContentType(),
-                supportedContentTypes:
-                  epAsyncApiDocument.getSupportedContentTypes(),
-              }
-            );
+          const epAsyncApiMessageDocument: EpAsyncApiMessageDocument = epAsyncApiChannelSubscribeOperation.getEpAsyncApiMessageDocument();
+          if (epAsyncApiMessageDocument.getContentType() !== E_EpAsyncApiContentTypes.APPLICATION_JSON)
+            throw new CliAsyncApiSpecFeatureNotSupportedError(logName, "unsupported message content type", {
+              messageName: epAsyncApiMessageDocument.getMessageName(),
+              contentType: epAsyncApiMessageDocument.getContentType(),
+              supportedContentTypes:
+                epAsyncApiDocument.getSupportedContentTypes(),
+            });
 
-          const schemaFilePath =
-            schemasOutputDir +
-            "/" +
-            CliUtils.convertStringToFilePath(
-              epAsyncApiMessageDocument.getSchemaFileName()
-            );
+          const schemaFilePath = schemasOutputDir + "/" + CliUtils.convertStringToFilePath(epAsyncApiMessageDocument.getSchemaFileName());
           CliUtils.saveContents2File({
             filePath: schemaFilePath,
-            content: JSON.stringify(
-              epAsyncApiMessageDocument.getSchemaAsSanitizedJson(),
-              null,
-              2
-            ),
+            content: JSON.stringify(epAsyncApiMessageDocument.getSchemaAsSanitizedJson(), null, 2),
           });
         }
       }
 
-      CliLogger.info(
-        CliLogger.createLogEntry(logName, {
-          code: ECliStatusCodes.GENERATING_ASSETS_OUTPUT_DONE,
-          details: {
-            cliEventApiImporterGenerateAssetsReturn:
-              cliEventApiImporterGenerateAssetsReturn,
-          },
-        })
-      );
+      CliLogger.info(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.GENERATING_ASSETS_OUTPUT_DONE, details: {
+        cliEventApiImporterGenerateAssetsReturn: cliEventApiImporterGenerateAssetsReturn,
+      }}));
     } catch (e: any) {
       cliEventApiImporterGenerateAssetsReturn.error =
         CliErrorFactory.createCliError({
