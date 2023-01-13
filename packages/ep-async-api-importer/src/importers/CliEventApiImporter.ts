@@ -546,6 +546,7 @@ export class CliEventApiImporter extends CliAssetsImporter {
         if (epAsynApiChannelPublishOperation !== undefined) {
           const epAsyncApiMessageDocument: EpAsyncApiMessageDocument = epAsynApiChannelPublishOperation.getEpAsyncApiMessageDocument();
           if(epAsyncApiMessageDocument.getContentType() !== E_EpAsyncApiContentTypes.APPLICATION_JSON)
+            /* istanbul ignore next */
             throw new CliAsyncApiSpecFeatureNotSupportedError(logName, "unsupported message content type", {
               messageName: epAsyncApiMessageDocument.getMessageName(),
               contentType: epAsyncApiMessageDocument.getContentType(),
@@ -563,6 +564,7 @@ export class CliEventApiImporter extends CliAssetsImporter {
         if (epAsyncApiChannelSubscribeOperation !== undefined) {
           const epAsyncApiMessageDocument: EpAsyncApiMessageDocument = epAsyncApiChannelSubscribeOperation.getEpAsyncApiMessageDocument();
           if (epAsyncApiMessageDocument.getContentType() !== E_EpAsyncApiContentTypes.APPLICATION_JSON)
+            /* istanbul ignore next */
             throw new CliAsyncApiSpecFeatureNotSupportedError(logName, "unsupported message content type", {
               messageName: epAsyncApiMessageDocument.getMessageName(),
               contentType: epAsyncApiMessageDocument.getContentType(),
@@ -582,21 +584,14 @@ export class CliEventApiImporter extends CliAssetsImporter {
         cliEventApiImporterGenerateAssetsReturn: cliEventApiImporterGenerateAssetsReturn,
       }}));
     } catch (e: any) {
-      cliEventApiImporterGenerateAssetsReturn.error =
-        CliErrorFactory.createCliError({
-          logName: logName,
-          e: e,
-        });
+      /* istanbul ignore next */
+      cliEventApiImporterGenerateAssetsReturn.error = CliErrorFactory.createCliError({ logName: logName, e: e });
     } finally {
       if (cliEventApiImporterGenerateAssetsReturn.error !== undefined) {
-        CliLogger.error(
-          CliLogger.createLogEntry(logName, {
-            code: ECliStatusCodes.GENERATING_ASSETS_OUTPUT_ERROR,
-            details: {
-              error: cliEventApiImporterGenerateAssetsReturn.error,
-            },
-          })
-        );
+        /* istanbul ignore next */
+        CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.GENERATING_ASSETS_OUTPUT_ERROR, details: {
+          error: cliEventApiImporterGenerateAssetsReturn.error,
+        }}));
       }
       CliRunContext.pop();
       //eslint-disable-next-line
