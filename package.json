@@ -9,6 +9,7 @@
     "node": "16"
   },
   "scripts": {
+    "compile": "turbo run compile",
     "build:force": "turbo run build --force && yarn build",
     "build": "turbo run build && yarn typedoc && ./docs/make.sh",
     "build:test": "turbo run build:test",

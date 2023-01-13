@@ -17,7 +17,7 @@ import {
   EpAsyncApiChannelSubscribeOperation,
 } from "./EpAsyncApiChannelOperation";
 
-enum E_EpAsyncApiExtensions {
+export enum E_EpAsyncApiExtensions {
   X_EP_APPLICATION_DOMAIN_NAME = "x-ep-application-domain-name",
   X_EP_ASSETS_APPLICATION_DOMAIN_NAME = "x-ep-assets-application-domain-name",
   X_EP_BROKER_TYPE = "x-ep-broker-type",

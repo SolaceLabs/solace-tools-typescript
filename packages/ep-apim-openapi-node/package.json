@@ -27,6 +27,7 @@
     "event portal api"
   ],
   "scripts": {
+    "compile": "yarn build:src && tsc",
     "build:src": "ts-node bin/build-src.ts",
     "build": "yarn build:src && tsup generated-src/index.ts --format esm,cjs, --dts",
     "clean": "rm -rf generated-src && rm -rf dist && rm -rf test/logs && rm -rf .turbo",

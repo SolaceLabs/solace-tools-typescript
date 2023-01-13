@@ -1,12 +1,12 @@
 
-export enum ECliAssetImport_BrokerType {
-  // KAFKA = "kafka", - issue with EP API for now
-  SOLACE = "solace"
-}
+// export enum ECliAssetImport_BrokerType {
+//   // KAFKA = "kafka", - issue with EP API for now
+//   SOLACE = "solace"
+// }
 
-class CliEPBrokerTypeService {
+// class CliEPBrokerTypeService {
 
-}
+// }
 
-export default new CliEPBrokerTypeService();
+// export default new CliEPBrokerTypeService();
 

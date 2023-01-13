@@ -1,10 +1,16 @@
+import { 
+  EBrokerTypes, 
+  EChannelDelimiters, 
+  E_EpAsyncApiExtensions 
+} from '@solace-labs/ep-asyncapi';
 import { EpSdkClient } from "@solace-labs/ep-sdk";
 import { DefaultAppName } from "../constants";
 import {
   ECliAssetImport_TargetLifecycleState,
-  ECliAssetImport_BrokerType,
 } from "../services";
-import { ECliAssetImport_TargetVersionStrategy } from "../importers";
+import { 
+  ECliAssetImport_TargetVersionStrategy 
+} from "../importers";
 import {
   CliConfigInvalidEnvVarValueOptionError,
   CliConfigInvalidUrlEnvVarError,
@@ -21,12 +27,15 @@ import {
   ObjectValues_TCliLogger_EpSdkLogLevel,
   TCliLogger_EpSdkLogLevel,
 } from "./CliLogger";
-import { CliUtils } from "./CliUtils";
+import { 
+  CliUtils 
+} from "./CliUtils";
 import {
   ECliImporterManagerMode,
   getCliImporterManagerModeObjectValues4Config,
   ICliImporterManagerOptions,
 } from "./CliImporterManager";
+
 
 enum ECliConfigBooleanOptions {
   TRUE = "true",
@@ -68,6 +77,7 @@ enum ECliConfigEnvVarNames {
   CLI_IMPORT_ASSETS_OUTPUT_DIR = "CLI_IMPORT_ASSETS_OUTPUT_DIR",
   CLI_IMPORT_CREATE_API_APPLICATION = "CLI_IMPORT_CREATE_API_APPLICATION",
   CLI_IMPORT_BROKER_TYPE = "CLI_IMPORT_BROKER_TYPE",
+  CLI_IMPORT_CHANNEL_DELIMITER = "CLI_IMPORT_CHANNEL_DELIMITER",
   CLI_TEST_SETUP_DOMAINS_FOR_APIS = "CLI_TEST_SETUP_DOMAINS_FOR_APIS",
 }
 
@@ -77,22 +87,19 @@ const DEFAULT_CLI_EP_API_BASE_URL = EpSdkClient.DEFAULT_EP_API_BASE_URL;
 
 const DEFAULT_CLI_LOGGER_LOG_LEVEL = ECliLogger_LogLevel.INFO;
 const DEFAULT_CLI_LOGGER_LOG_FILE = `./tmp/logs/${DefaultAppName}.log`;
-const create_DEFAULT_CLI_LOGGER_LOG_FILE = (appName: string) => {
-  return `./tmp/logs/${appName}.log`;
-};
+const create_DEFAULT_CLI_LOGGER_LOG_FILE = (appName: string) => { return `./tmp/logs/${appName}.log`; };
 // const DEFAULT_CLI_LOGGER_LOG_DIR = `./tmp/logs`;
 const DEFAULT_CLI_LOGGER_LOG_TO_STDOUT = false;
 const DEFAULT_CLI_LOGGER_EP_SDK_LOG_LEVEL = ECliLogger_EpSdkLogLevel.SILENT;
 const DEFAULT_CLI_LOGGER_PRETTY_PRINT = false;
 const DEFAULT_CLI_LOGGER_LOG_SUMMARY_TO_CONSOLE = true;
 
-const DEFAULT_CLI_IMPORT_ASSETS_TARGET_LIFECYLE_STATE =
-  ECliAssetImport_TargetLifecycleState.RELEASED;
-const DEFAULT_CLI_IMPORT_ASSETS_TARGET_VERSION_STRATEGY =
-  ECliAssetImport_TargetVersionStrategy.BUMP_PATCH;
+const DEFAULT_CLI_IMPORT_ASSETS_TARGET_LIFECYLE_STATE = ECliAssetImport_TargetLifecycleState.RELEASED;
+const DEFAULT_CLI_IMPORT_ASSETS_TARGET_VERSION_STRATEGY = ECliAssetImport_TargetVersionStrategy.BUMP_PATCH;
 const DEFAULT_CLI_IMPORT_ASSET_OUTPUT_DIR = "./tmp/output";
 const DEFAULT_CLI_IMPORT_CREATE_API_APPLICATION = false;
-const DEFAULT_CLI_IMPORT_BROKER_TYPE = ECliAssetImport_BrokerType.SOLACE;
+const DEFAULT_CLI_IMPORT_BROKER_TYPE = EBrokerTypes.SOLACE;
+const DEFAULT_CLI_IMPORT_CHANNEL_DELIMITER = EChannelDelimiters.SLASH;
 const DEFAULT_CLI_TEST_SETUP_DOMAINS_FOR_APIS = false;
 
 const CliConfigEnvVarConfigList: Array<TCliConfigEnvVarConfig> = [
@@ -215,10 +222,10 @@ const CliConfigEnvVarConfigList: Array<TCliConfigEnvVarConfig> = [
   },
   {
     envVarName: ECliConfigEnvVarNames.CLI_IMPORT_BROKER_TYPE,
-    description: "The broker type setting for all imported objects.",
+    description: `The broker type setting for all imported objects. Overrides broker type specified in the spec, extension: ${E_EpAsyncApiExtensions.X_EP_BROKER_TYPE}`,
     required: false,
     default: DEFAULT_CLI_IMPORT_BROKER_TYPE as unknown as string,
-    options: Object.values(ECliAssetImport_BrokerType) as Array<string>,
+    options: Object.values(EBrokerTypes) as Array<string>,
   },
   {
     envVarName: ECliConfigEnvVarNames.CLI_TEST_SETUP_DOMAINS_FOR_APIS,
