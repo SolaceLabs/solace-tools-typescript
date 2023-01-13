@@ -1,5 +1,11 @@
 # @solace-labs/ep-openapi-node
 
+## 2.51.1
+
+### Patch Changes
+
+- d4065b0: upgrade dependencies
+
 ## 2.51.0
 
 ### Minor Changes

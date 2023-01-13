@@ -1,5 +1,35 @@
 # @solace-labs/ep-asyncapi
 
+## 0.51.0
+
+### Minor Changes
+
+- 23af202: added brokerType and channelDelimiter
+
+  **New Features:**
+
+  - **EpAsyncApiDocument**
+    - **brokerType**
+      - extension:
+        - `$.x-ep-broker-type`
+        - options: [`kafka`, `solace`]
+        - default: `solace`
+      - method: `getBrokerType()`
+      - constructor: `overrideBrokerType`
+    - **channelDelimiter**
+      - describes the channel delimiter used to parse the topic into elements
+      - extension:
+        - `$.x-ep-channel-delimiter`
+        - options: ['.', '_', '-', '/']
+        - default: `/`
+      - method: `getChannelDelimiter()`
+      - constructor: `overrideChannelDelimiter`
+
+### Patch Changes
+
+- Updated dependencies [d4065b0]
+  - @solace-labs/ep-openapi-node@2.51.1
+
 ## 0.50.2
 
 ### Patch Changes
