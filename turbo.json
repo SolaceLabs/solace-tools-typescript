@@ -43,9 +43,14 @@
       "cache": false
     },
     "compile": {
-      "dependsOn": ["^clean", "^compile"],
+      "dependsOn": ["^compile"],
       "outputs": ["dist/**", "generated-src/**/*.ts"],
-      "cache": false
+      "inputs": [
+        "bin/**/*.ts",
+        "src/**/*.ts",
+        "openapi-spec/openapi-spec.json"
+      ],
+      "cache": true
     }
   }
 }

@@ -27,6 +27,7 @@
     "api management"
   ],
   "scripts": {
+    "compile": "tsc && yarn build:examples",
     "build:examples": "tsc --project examples/tsconfig.json",
     "build": "tsup src/index.ts --format esm,cjs, --dts && yarn build:examples",
     "clean": "rm -rf dist && rm -rf test/logs && rm -rf .turbo && rm -rf examples/dist",

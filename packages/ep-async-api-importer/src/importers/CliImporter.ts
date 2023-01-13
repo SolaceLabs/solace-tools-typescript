@@ -7,6 +7,10 @@ import {
   IEpSdkTask_ExecuteReturn,
   IEpSdkTask_TransactionConfig,
 } from "@solace-labs/ep-sdk";
+import { 
+  EBrokerTypes, 
+  EChannelDelimiters, 
+} from '@solace-labs/ep-asyncapi';
 import {
   CliEPApiContentError,
   CliImporterTestRunAssetsInconsistencyError,
@@ -15,7 +19,6 @@ import {
   CliUtils,
 } from "../cli-components";
 import {
-  ECliAssetImport_BrokerType,
   CliEPStatesService,
   ECliAssetImport_TargetLifecycleState,
 } from "../services";
@@ -30,7 +33,8 @@ export interface ICliImporterOptions {
   assetOutputDir: string;
   cliAssetImport_TargetLifecycleState: ECliAssetImport_TargetLifecycleState;
   cliAssetImport_TargetVersionStrategy: ECliAssetImport_TargetVersionStrategy;
-  cliAssetImport_BrokerType: ECliAssetImport_BrokerType;
+  cliAssetImport_BrokerType: EBrokerTypes;
+  cliAssetImport_ChannelDelimiter: EChannelDelimiters;
 }
 export interface ICliImporterGenerateAssetsOptions {}
 export interface ICliImporterGenerateAssetsReturn {

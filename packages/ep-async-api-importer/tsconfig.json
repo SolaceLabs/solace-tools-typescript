@@ -21,7 +21,7 @@
     "sourceMap": true,
     "strictPropertyInitialization":false,
     "resolveJsonModule": true,
-    "rootDir": "src"
+    "rootDir": "."
   },
   "include": [
     "src/**/*.ts"

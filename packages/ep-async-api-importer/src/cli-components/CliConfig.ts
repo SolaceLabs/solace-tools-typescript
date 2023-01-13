@@ -224,8 +224,15 @@ const CliConfigEnvVarConfigList: Array<TCliConfigEnvVarConfig> = [
     envVarName: ECliConfigEnvVarNames.CLI_IMPORT_BROKER_TYPE,
     description: `The broker type setting for all imported objects. Overrides broker type specified in the spec, extension: ${E_EpAsyncApiExtensions.X_EP_BROKER_TYPE}`,
     required: false,
-    default: DEFAULT_CLI_IMPORT_BROKER_TYPE as unknown as string,
+    default: DEFAULT_CLI_IMPORT_BROKER_TYPE,
     options: Object.values(EBrokerTypes) as Array<string>,
+  },
+  {
+    envVarName: ECliConfigEnvVarNames.CLI_IMPORT_CHANNEL_DELIMITER,
+    description: `The channel delimiter used in the spec. Global setting for all imported objects. Overrides channel delimiter specified in the spec, extension: ${E_EpAsyncApiExtensions.X_EP_CHANNEL_DELIMITER}`,
+    required: false,
+    default: DEFAULT_CLI_IMPORT_CHANNEL_DELIMITER,
+    options: Object.values(EChannelDelimiters) as Array<string>,
   },
   {
     envVarName: ECliConfigEnvVarNames.CLI_TEST_SETUP_DOMAINS_FOR_APIS,
@@ -499,9 +506,15 @@ class CliConfig {
           cliAssetImport_BrokerType:
             this.getOptionalEnvVarValueAsString_From_Options_WithDefault(
               ECliConfigEnvVarNames.CLI_IMPORT_BROKER_TYPE,
-              Object.values(ECliAssetImport_BrokerType) as Array<string>,
-              DEFAULT_CLI_IMPORT_BROKER_TYPE as unknown as string
-            ) as unknown as ECliAssetImport_BrokerType,
+              Object.values(EBrokerTypes) as Array<string>,
+              DEFAULT_CLI_IMPORT_BROKER_TYPE
+            ) as EBrokerTypes,
+          cliAssetImport_ChannelDelimiter:
+            this.getOptionalEnvVarValueAsString_From_Options_WithDefault(
+              ECliConfigEnvVarNames.CLI_IMPORT_CHANNEL_DELIMITER,
+              Object.values(EChannelDelimiters) as Array<string>,
+              DEFAULT_CLI_IMPORT_CHANNEL_DELIMITER
+            ) as EChannelDelimiters,
           assetOutputDir: importAssetOutputDir,
         },
       },

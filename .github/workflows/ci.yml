@@ -49,7 +49,9 @@ jobs:
         run: yarn lint
 
       - name: Build
-        run: yarn build
+        run: |
+          yarn clean
+          yarn build
 
       - name: Test
         run: |
