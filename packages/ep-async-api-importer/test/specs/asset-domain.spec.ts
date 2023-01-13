@@ -37,11 +37,7 @@ let AsyncApiSpecFile_X_EpApplicationDomainName: string;
 let AsyncApiSpecFile_X_EpAssetApplicationDomainName: string;
 
 const initializeGlobals = () => {
-  AsyncApiSpecFile = TestService.validateFilePathWithReadPermission(
-    `${
-      TestConfig.getConfig().dataRootDir
-    }/individual-tests/asset-domain/asset-domain-1.spec.yml`
-  );
+  AsyncApiSpecFile = TestService.validateFilePathWithReadPermission(`${TestConfig.getConfig().dataRootDir}/individual-tests/asset-domain/asset-domain-1.spec.yml`);
   FileList.push(AsyncApiSpecFile);
   // set test specific importer options
   CliConfig.getCliImporterManagerOptions().asyncApiFileList = FileList;
@@ -63,14 +59,14 @@ describe(`${scriptName}`, () => {
       const testApiSpecRecordList: Array<TTestApiSpecRecord> =
         await TestService.createTestApiSpecRecordList({
           apiFileList: FileList,
-          overrideApplicationDomainName:
-            CliConfig.getCliImporterManagerOptions().applicationDomainName,
-          overrideAssetApplicationDomainName:
-            CliConfig.getCliImporterManagerOptions().assetApplicationDomainName,
+          overrideApplicationDomainName: CliConfig.getCliImporterManagerOptions().applicationDomainName,
+          overrideAssetApplicationDomainName: CliConfig.getCliImporterManagerOptions().assetApplicationDomainName,
           // prefixApplicationDomainName: CliImporterManager.createApplicationDomainPrefix({
           //   appName: CliConfig.getCliImporterManagerOptions().appName,
           //   runId: CliConfig.getCliImporterManagerOptions().runId
           // })
+          overrideBrokerType: CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_BrokerType,
+          overrideChannelDelimiter: CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_ChannelDelimiter,
         });
       // ensure all app domains are absent
       const xvoid: void = await TestService.absent_ApplicationDomains(false);
