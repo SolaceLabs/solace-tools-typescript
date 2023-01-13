@@ -75,19 +75,6 @@ export class EpAsyncApiSpecError extends EpAsyncApiError {
   }
 }
 
-export type T_EpAsyncApiSpecXtensionErrorDetails = {
-  asyncApiSpecTitle: string;
-  xtension: string;
-  details: any;
-}
-export class EpAsyncApiSpecXtensionError extends EpAsyncApiError {
-  private details: T_EpAsyncApiSpecXtensionErrorDetails;
-  constructor(internalLogName: string, internalModuleName: string, internalMessage: string, details: T_EpAsyncApiSpecXtensionErrorDetails) {
-    super(internalLogName, internalModuleName, internalMessage);
-    this.details = details;
-  }
-}
-
 export type T_EpAsyncApiChannelOperationDetails = {
   issue: string;
   asyncApiSpecTitle: string;
@@ -142,6 +129,7 @@ export class EpAsyncApiBestPracticesError extends EpAsyncApiError {
 }
 
 export type T_EpAsyncApiXtensionErrorDetails = {
+  issue: any;
   asyncApiSpecTitle: string;
   xtensionKey: string;
 }
@@ -153,5 +141,3 @@ export class EpAsyncApiXtensionError extends EpAsyncApiError {
     this.details = details;
   }
 }
-
-

@@ -125,11 +125,12 @@ describe(`${scriptName}`, () => {
         const epAsyncApiDocument: EpAsyncApiDocument = await EpAsyncApiDocumentService.createFromFile({
           filePath: AsyncApiSpecFile,
           overrideBrokerType: EBrokerTypes.KAFKA,
-          overrideChannelDelimiter: EChannelDelimiters.UNDERSCORE
+          overrideChannelDelimiter: EChannelDelimiters.DOT,
+          overrideEpApplicationDomainName: 'kafa+avro+json'
         });
         // DEBUG
         expect(epAsyncApiDocument.getBrokerType(), 'failed').to.eq('kafka');
-        expect(epAsyncApiDocument.getChannelDelimiter(), 'failed').to.eq('_');
+        expect(epAsyncApiDocument.getChannelDelimiter(), 'failed').to.eq('.');
       } catch(e) {
         expect(e instanceof EpAsyncApiError, TestLogger.createNotEpAsyncApiErrorMessage(e)).to.be.true;
         expect(false, TestLogger.createEpAsyncApiTestFailMessage('failed', e)).to.be.true;
@@ -145,7 +146,8 @@ describe(`${scriptName}`, () => {
         const epAsyncApiDocument: EpAsyncApiDocument = await EpAsyncApiDocumentService.createFromFile({
           filePath: AsyncApiSpecFile,
           overrideBrokerType: EBrokerTypes.KAFKA,
-          overrideChannelDelimiter: EChannelDelimiters.UNDERSCORE
+          overrideChannelDelimiter: EChannelDelimiters.UNDERSCORE,
+          overrideEpApplicationDomainName: 'kafa+avro+json'
         });
         // DEBUG
         expect(epAsyncApiDocument.getBrokerType(), 'failed').to.eq('kafka');

@@ -8,7 +8,6 @@ import {
   EpAsyncApiSpecError,
   EpAsyncApiValidationError,
   EpAsyncApiXtensionError,
-  EpAsyncApiSpecXtensionError,
 } from "../utils";
 import { EpAsyncApiMessageDocument } from "./EpAsyncApiMessageDocument";
 import { EpAsyncApiChannelDocument } from "./EpAsyncApiChannelDocument";
@@ -122,16 +121,11 @@ export class EpAsyncApiDocument {
       if (specAppDomainName === undefined) appDomainName = undefined;
       else appDomainName = specAppDomainName;
     }
-    if (appDomainName === undefined)
-      throw new EpAsyncApiXtensionError(
-        logName,
-        this.constructor.name,
-        "no application domain name defined",
-        {
-          asyncApiSpecTitle: this.getTitle(),
-          xtensionKey: E_EpAsyncApiExtensions.X_EP_APPLICATION_DOMAIN_NAME,
-        }
-      );
+    if (appDomainName === undefined) throw new EpAsyncApiXtensionError(logName, this.constructor.name, undefined,{
+      asyncApiSpecTitle: this.getTitle(),
+      xtensionKey: E_EpAsyncApiExtensions.X_EP_APPLICATION_DOMAIN_NAME,
+      issue: "no application domain name defined"
+    });
     // add the prefix
     if (prefix !== undefined) appDomainName = `${prefix}/${appDomainName}`;
     return appDomainName;

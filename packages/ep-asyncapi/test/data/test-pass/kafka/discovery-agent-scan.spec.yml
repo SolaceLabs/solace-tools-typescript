@@ -53,4 +53,3 @@ info:
   version: 0.1.0
   x-ep-state-id: '2'
   x-ep-event-api-version-id: od5pemy9iez
-  x-ep-application-domain-name: ep-asyncapi-importer/test/passing/misc/avro-schema.spec
