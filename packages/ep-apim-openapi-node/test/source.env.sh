@@ -7,6 +7,7 @@
 unset_source_env() {
     # env vars for tests
     unset TEST_EP_APIM_OPEN_API_NODE_ENABLE_API_CALL_LOGGING
+    unset TEST_EP_APIM_OPEN_API_NODE_SOLACE_CLOUD_API_BASE_URL
     # unset this function
     unset -f unset_source_env
 }
@@ -15,6 +16,7 @@ unset_source_env() {
 
 # here
 export TEST_EP_APIM_OPEN_API_NODE_ENABLE_API_CALL_LOGGING=true
+export TEST_EP_APIM_OPEN_API_NODE_SOLACE_CLOUD_API_BASE_URL="https://apim-devportal-api.solace-labs.io"
 # external
 NOLOG_TEST_EP_APIM_OPEN_API_NODE_SOLACE_CLOUD_TOKEN=$TEST_EP_APIM_OPEN_API_NODE_SOLACE_CLOUD_TOKEN
 export TEST_EP_APIM_OPEN_API_NODE_SOLACE_CLOUD_TOKEN="***"

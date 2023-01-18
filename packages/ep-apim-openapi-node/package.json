@@ -3,7 +3,7 @@
   "version": "1.0.2",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "description": "Solace Event Portal APIM OpenAPI Client for NodeJS (Typescript), v2.0.0",
+  "description": "Solace Event Portal APIM OpenAPI Client for NodeJS (Typescript), v2.0.0-ea.5",
   "license": "Apache-2.0",
   "private": true,
   "repository": {
@@ -32,7 +32,8 @@
     "build": "yarn build:src && tsup generated-src/index.ts --format esm,cjs, --dts",
     "clean": "rm -rf generated-src && rm -rf dist && rm -rf test/logs && rm -rf .turbo",
     "build:test": "yarn build:src && yarn tsc",
-    "test": "yarn build:test && . ./test/source.env.sh && nyc mocha --config test/.mocharc.yml test/**/**.spec.ts && unset_source_env"
+    "test": "yarn build:test && . ./test/source.env.sh && nyc mocha --config test/.mocharc.yml test/**/**.spec.ts && unset_source_env",
+    "test:x": "yarn build:test && . ./test/source.env.sh && nyc mocha --config test/.mocharc.yml test/**/**.x-spec.ts && unset_source_env"
   },
   "typedoc": {
     "entryPoint": "./generated-src/index.ts",

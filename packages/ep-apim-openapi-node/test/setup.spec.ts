@@ -56,7 +56,7 @@ describe(`${scriptName}`, () => {
     it(`${scriptName}: should initialize OpenAPI client`, async () => {
       try {
         const base: URL = new URL(TestConfig.getConfig().apiBaseUrl);
-        OpenAPI.BASE = TestConfig.getConfig().apiBaseUrl;
+        OpenAPI.BASE = `${TestConfig.getConfig().apiBaseUrl}${OpenAPI.BASE}`;
         OpenAPI.WITH_CREDENTIALS = true;
         OpenAPI.CREDENTIALS = "include";
         OpenAPI.TOKEN = TestConfig.getSolaceCloudToken();
