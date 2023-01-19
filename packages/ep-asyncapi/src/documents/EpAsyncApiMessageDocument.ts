@@ -1,5 +1,5 @@
 import { Message, Schema } from '@asyncapi/parser';
-import { EpAsyncApiUtils, EpAsyncApiMessageError } from '../utils';
+import { EpAsyncApiUtils, EpAsyncApiMessageError, EpAsyncApiValidationError, EpAsyncApiBestPracticesError } from '../utils';
 import { EpAsyncApiChannelDocument } from './EpAsyncApiChannelDocument';
 import { 
   EpAsyncApiDocument, 
@@ -18,7 +18,9 @@ export class EpAsyncApiMessageDocument {
   private asyncApiMessage: Message;
   private contentType: E_EpAsyncApiContentTypes;
   private schemaFormatType: E_EpAsyncApiSchemaFormatType;
-  public static ContentTypeIssue = 'contentType === undefined, neither message has a contentType nor api has a defaultContentType';
+  public static readonly ContentTypeIssue = 'contentType === undefined, neither message has a contentType nor api has a defaultContentType';
+  public static readonly MissingMessagePayloadSchemaIssue ="Missing message payload schema.";
+
   
   private determineContentType(): E_EpAsyncApiContentTypes {
     const funcName = 'determineContentType';
@@ -88,13 +90,21 @@ export class EpAsyncApiMessageDocument {
   }
 
   public validate(): void {
-    // validate content type
-    // content type already determined in constructor
-    // this.determineContentType();    
   }
 
   public validate_BestPractices(): void {
-    // add specific validations
+    const funcName = "validate_BestPractices";
+    const logName = `${EpAsyncApiMessageDocument.name}.${funcName}()`;
+    if(this.asyncApiMessage.originalPayload() === undefined || this.asyncApiMessage.originalPayload() === null) {
+      throw new EpAsyncApiBestPracticesError(logName, this.constructor.name, undefined, {
+        asyncApiSpecTitle: this.epAsyncApiDocument.getTitle(),
+        issues: EpAsyncApiMessageDocument.MissingMessagePayloadSchemaIssue,
+        value: {
+          channel: this.epAsyncApiChannelDocument.getAsyncApiChannelKey(),
+          message: this.asyncApiMessageKey
+        }
+      });
+    }
   }
 
   public getMessageKey(): string { return this.asyncApiMessageKey; }
@@ -149,6 +159,9 @@ export class EpAsyncApiMessageDocument {
   public getPayloadSchema(): any {
     const funcName = 'getPayloadSchema';
     const logName = `${EpAsyncApiMessageDocument.name}.${funcName}()`;
+    if(this.asyncApiMessage.originalPayload() === undefined || this.asyncApiMessage.originalPayload() === null) {
+      return {};
+    }
     switch(this.schemaFormatType) {
       case E_EpAsyncApiSchemaFormatType.APPLICATION_JSON:
         return this.asyncApiMessage.payload().json();
