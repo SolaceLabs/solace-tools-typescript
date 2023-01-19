@@ -1,5 +1,5 @@
 ---
-"@solace-labs/ep-asyncapi": patch
+"@solace-labs/ep-asyncapi": minor
 ---
 
 added best practices validation to message document
