@@ -121,7 +121,7 @@ export class EpAsyncApiValidationError extends EpAsyncApiError {
 }
 export class EpAsyncApiBestPracticesError extends EpAsyncApiError {
   protected static DefaultDescription = 'EP Async Api Best Practices Error';
-  private details: T_EpAsyncApiValidationErrorDetails;
+  public details: T_EpAsyncApiValidationErrorDetails;
   constructor(internalLogName: string, internalModuleName: string, internalMessage: string = EpAsyncApiBestPracticesError.DefaultDescription, details: T_EpAsyncApiValidationErrorDetails) {
     super(internalLogName, internalModuleName, internalMessage);
     this.details = details;

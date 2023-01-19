@@ -245,28 +245,17 @@ export abstract class CliAssetsImporter extends CliImporter {
     const funcName = "run_present_schema_version";
     const logName = `${CliAssetsImporter.name}.${funcName}()`;
 
-    CliLogger.debug(
-      CliLogger.createLogEntry(logName, {
-        code: ECliStatusCodes.IMPORTING_API_CHANNEL_MESSAGE,
-        details: {},
-      })
-    );
-    CliLogger.trace(
-      CliLogger.createLogEntry(logName, {
-        code: ECliStatusCodes.IMPORTING_API_CHANNEL_MESSAGE,
-        details: {
-          schemaObject: schemaObject,
-          specVersion: specVersion,
-          epAsyncApiMessageDocument: epAsyncApiMessageDocument,
-        },
-      })
-    );
+    CliLogger.debug(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.IMPORTING_API_CHANNEL_MESSAGE, details: {}}));
+    CliLogger.trace(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.IMPORTING_API_CHANNEL_MESSAGE, details: {
+      schemaObject: schemaObject,
+      specVersion: specVersion,
+      epAsyncApiMessageDocument: epAsyncApiMessageDocument,
+    }}));
 
     /* istanbul ignore next */
-    if (schemaObject.id === undefined)
-      throw new CliEPApiContentError(logName, "schemaObject.id === undefined", {
-        schemaObject: schemaObject,
-      });
+    if (schemaObject.id === undefined) throw new CliEPApiContentError(logName, "schemaObject.id === undefined", {
+      schemaObject: schemaObject,
+    });
 
     const epSdkSchemaVersionTask = new EpSdkSchemaVersionTask({
       epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
@@ -274,10 +263,8 @@ export abstract class CliAssetsImporter extends CliImporter {
       schemaId: schemaObject.id,
       versionString: specVersion,
       versionStrategy: this.get_EEpSdk_VersionTaskStrategy(),
-      schemaVersionSettings: {
-        content: JSON.stringify(
-          epAsyncApiMessageDocument.getSchemaAsSanitizedJson()
-        ),
+      schemaVersionSettings: { 
+        content: JSON.stringify(epAsyncApiMessageDocument.getSchemaAsSanitizedJson()),
         description: epAsyncApiMessageDocument.getDescription(),
         displayName: epAsyncApiMessageDocument.getMessageName(),
         stateId: this.get_EpSdkTask_StateId(),
@@ -285,24 +272,16 @@ export abstract class CliAssetsImporter extends CliImporter {
       epSdkTask_TransactionConfig: this.get_IEpSdkTask_TransactionConfig(),
       checkmode: checkmode,
     });
-    const epSdkSchemaVersionTask_ExecuteReturn: IEpSdkSchemaVersionTask_ExecuteReturn =
-      await this.executeTask({
-        epSdkTask: epSdkSchemaVersionTask,
-        expectNoAction: checkmode,
-      });
-    CliLogger.trace(
-      CliLogger.createLogEntry(logName, {
-        code: ECliStatusCodes.IMPORTING_EP_SCHEMA_VERSION,
-        details: {
-          epSdkSchemaVersionTask_ExecuteReturn:
-            epSdkSchemaVersionTask_ExecuteReturn,
-        },
-      })
-    );
+    const epSdkSchemaVersionTask_ExecuteReturn: IEpSdkSchemaVersionTask_ExecuteReturn = await this.executeTask({
+      epSdkTask: epSdkSchemaVersionTask,
+      expectNoAction: checkmode,
+    });
+    CliLogger.trace(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.IMPORTING_EP_SCHEMA_VERSION, details: {
+      epSdkSchemaVersionTask_ExecuteReturn: epSdkSchemaVersionTask_ExecuteReturn,
+    }}));
     // summary
     CliRunSummary.processedSchemaVersion({
-      epSdkSchemaVersionTask_ExecuteReturn:
-        epSdkSchemaVersionTask_ExecuteReturn,
+      epSdkSchemaVersionTask_ExecuteReturn: epSdkSchemaVersionTask_ExecuteReturn,
     });
     return epSdkSchemaVersionTask_ExecuteReturn;
   };

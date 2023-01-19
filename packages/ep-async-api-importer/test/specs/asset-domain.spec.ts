@@ -68,24 +68,16 @@ describe(`${scriptName}`, () => {
           // })
           overrideBrokerType: CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_BrokerType,
           overrideChannelDelimiter: CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_ChannelDelimiter,
+          validateBestPractices: CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliValidateApiSpecBestPractices
         });
       // ensure all app domains are absent
       const xvoid: void = await TestService.absent_ApplicationDomains(false);
-      expect(
-        testApiSpecRecordList.length,
-        "expecting only 1 api file"
-      ).to.equal(1);
-      AsyncApiSpecFile_X_EpApplicationDomainName =
-        testApiSpecRecordList[0].epAsyncApiDocument.getApplicationDomainName();
-      AsyncApiSpecFile_X_EpAssetApplicationDomainName =
-        testApiSpecRecordList[0].epAsyncApiDocument.getAssetsApplicationDomainName();
+      expect(testApiSpecRecordList.length, "expecting only 1 api file").to.equal(1);
+      AsyncApiSpecFile_X_EpApplicationDomainName = testApiSpecRecordList[0].epAsyncApiDocument.getApplicationDomainName();
+      AsyncApiSpecFile_X_EpAssetApplicationDomainName = testApiSpecRecordList[0].epAsyncApiDocument.getAssetsApplicationDomainName();
     } catch (e) {
-      expect(
-        e instanceof CliError,
-        TestLogger.createNotCliErrorMesssage(e.message)
-      ).to.be.true;
-      expect(false, TestLogger.createTestFailMessageWithCliError("failed", e))
-        .to.be.true;
+      expect( e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
+      expect(false, TestLogger.createTestFailMessageWithCliError("failed", e)).to.be.true;
     }
   });
 
@@ -104,13 +96,9 @@ describe(`${scriptName}`, () => {
       err = e;
     } finally {
       // ensure all app domains are absent
-      const xvoid: void = await TestService.absent_ApplicationDomains(
-        CliConfig.getCliImporterManagerOptions().cliImporterManagerMode ===
-          ECliImporterManagerMode.TEST_MODE_KEEP
-      );
+      const xvoid: void = await TestService.absent_ApplicationDomains(CliConfig.getCliImporterManagerOptions().cliImporterManagerMode === ECliImporterManagerMode.TEST_MODE_KEEP);
     }
-    expect(err, TestLogger.createNotCliErrorMesssage(JSON.stringify(err))).to.be
-      .undefined;
+    expect(err, TestLogger.createNotCliErrorMesssage(JSON.stringify(err))).to.be.undefined;
   });
 
   it(`${scriptName}: should import spec`, async () => {
@@ -124,12 +112,8 @@ describe(`${scriptName}`, () => {
       // DEBUG
       // expect(false, JSON.stringify(cliRunSummaryList, null, 2)).to.be.true;
     } catch (e) {
-      expect(
-        e instanceof CliError,
-        TestLogger.createNotCliErrorMesssage(e.message)
-      ).to.be.true;
-      expect(false, TestLogger.createTestFailMessageWithCliError("failed", e))
-        .to.be.true;
+      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
+      expect(false, TestLogger.createTestFailMessageWithCliError("failed", e)).to.be.true;
     }
   });
 

@@ -58,10 +58,8 @@ import {
   ICliAssetsImporterRunReturn,
 } from "./CliAssetsImporter";
 
-export interface ICliEventApiImporterOptions
-  extends ICliAssetsImporterOptions {}
-export interface ICliEventApiImporterGenerateAssetsOptions
-  extends ICliImporterGenerateAssetsOptions {
+export interface ICliEventApiImporterOptions extends ICliAssetsImporterOptions {}
+export interface ICliEventApiImporterGenerateAssetsOptions extends ICliImporterGenerateAssetsOptions {
   cliEventApiImporterRunOptions: ICliEventApiImporterRunOptions;
   applicationDomainId: string;
   eventApiId: string;
@@ -69,19 +67,16 @@ export interface ICliEventApiImporterGenerateAssetsOptions
   applicationDomainName?: string;
   apiTitle?: string;
 }
-export interface ICliEventApiImporterGenerateAssetsReturn
-  extends ICliImporterGenerateAssetsReturn {
+export interface ICliEventApiImporterGenerateAssetsReturn extends ICliImporterGenerateAssetsReturn {
   assetOutputRootDir: string | undefined;
   asyncApiSpecFileNameJson: string | undefined;
   asyncApiSpecFileNameYaml: string | undefined;
   schemasOutputDir: string | undefined;
 }
-export interface ICliEventApiImporterRunPresentOptions
-  extends ICliImporterRunPresentOptions {
+export interface ICliEventApiImporterRunPresentOptions extends ICliImporterRunPresentOptions {
   epAsyncApiDocument: EpAsyncApiDocument;
 }
-export interface ICliEventApiImporterRunPresentReturn
-  extends ICliAssetsImporterRunPresentReturn {
+export interface ICliEventApiImporterRunPresentReturn extends ICliAssetsImporterRunPresentReturn {
   applicationDomainId: string;
   eventApiId: string;
   eventApiVersionId: string;
@@ -585,7 +580,7 @@ export class CliEventApiImporter extends CliAssetsImporter {
       }}));
     } catch (e: any) {
       /* istanbul ignore next */
-      cliEventApiImporterGenerateAssetsReturn.error = CliErrorFactory.createCliError({ logName: logName, e: e });
+      cliEventApiImporterGenerateAssetsReturn.error = CliErrorFactory.createCliError({ logName: logName, error: e });
     } finally {
       if (cliEventApiImporterGenerateAssetsReturn.error !== undefined) {
         /* istanbul ignore next */
@@ -626,7 +621,8 @@ export class CliEventApiImporter extends CliAssetsImporter {
         assetApplicationDomainName: cliImporterRunOptions.assetApplicationDomainName,
         applicationDomainNamePrefix: cliImporterRunOptions.applicationDomainNamePrefix,
         overrideBrokerType: cliImporterRunOptions.overrideBrokerType,
-        overrideChannelDelimiter: cliImporterRunOptions.overrideChannelDelimiter
+        overrideChannelDelimiter: cliImporterRunOptions.overrideChannelDelimiter,
+        validateBestPractices: this.cliImporterOptions.cliValidateApiSpecBestPractices,
       });
       cliEventApiImporterRunImportReturn.apiTitle = epAsyncApiDocument.getTitle();
       cliEventApiImporterRunImportReturn.applicationDomainName = epAsyncApiDocument.getApplicationDomainName();
@@ -644,7 +640,7 @@ export class CliEventApiImporter extends CliAssetsImporter {
         cliEventApiImporterRunPresentReturn: cliEventApiImporterRunPresentReturn,
       }}));
     } catch (e: any) {
-      cliEventApiImporterRunImportReturn.error = CliErrorFactory.createCliError({logName: logName, e: e,});
+      cliEventApiImporterRunImportReturn.error = CliErrorFactory.createCliError({logName: logName, error: e,});
     } finally {
       if (cliEventApiImporterRunImportReturn.error !== undefined) {
         CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.IMPORTING_ERROR_API, details: {

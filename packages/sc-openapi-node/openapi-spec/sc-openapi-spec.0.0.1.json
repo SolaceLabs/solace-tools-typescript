@@ -1,0 +1,1249 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Solace Cloud API",
+    "description": "Solace Cloud API",
+    "version": "0.0.1"
+  },
+  "servers": [
+    {
+      "url": "https://api.solace.cloud/api/v0"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    },
+    "parameters": {
+      "service_id": {
+        "name": "service_id",
+        "description": "the id of a cloud service",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "request_id": {
+        "name": "request_id",
+        "description": "the id of a cloud request",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "withProgress": {
+        "name": "withProgress",
+        "description": "if response should contain progress information",
+        "in": "query",
+        "schema": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "schemas": {
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "An error occurred"
+          },
+          "errorId": {
+            "type": "string",
+            "example": "123e4567-e89b-12d3-a456-426655440000"
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "example": "'object': { 'field': 'description' }"
+            },
+            "example": "'object': { 'field': 'description' }"
+          }
+        }
+      },
+      "Service": {
+        "type": "object",
+        "required": [
+          "adminProgress",
+          "adminState",
+          "creationState",
+          "datacenterId",
+          "datacenterProvider",
+          "messagingProtocols",
+          "msgVpnName",
+          "name",
+          "serviceClassDisplayedAttributes",
+          "msgVpnAttributes",
+          "serviceTypeId",
+          "serviceId",
+          "serviceClassId",
+          "messagingStorage"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "integer"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "serviceId": {
+            "type": "string",
+            "example": "1i5g7tif6z9h"
+          },
+          "infrastructureId": {
+            "type": "string",
+            "example": "1i5g7tif6z9h"
+          },
+          "name": {
+            "type": "string",
+            "example": "GW-DEV"
+          },
+          "msgVpnName": {
+            "type": "string",
+            "example": "default"
+          },
+          "datacenterId": {
+            "type": "string",
+            "example": "aws-eu-central-1a"
+          },
+          "datacenterProvider": {
+            "type": "string",
+            "example": "aws"
+          },
+          "serviceTypeId": {
+            "type": "string",
+            "example": "developer"
+          },
+          "serviceClassId": {
+            "type": "string"
+          },
+          "adminState": {
+            "type": "string",
+            "example": "start"
+          },
+          "adminProgress": {
+            "type": "string",
+            "example": "completed"
+          },
+          "created": {
+            "type": "integer",
+            "example": 1610703520719
+          },
+          "creationState": {
+            "type": "string",
+            "example": "completed"
+          },
+          "messagingProtocols": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "username": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                },
+                "endPoints": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "transport": {
+                        "type": "string"
+                      },
+                      "uris": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "secured": {
+                        "type": "string"
+                      },
+                      "compressed": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "transport",
+                      "uris",
+                      "secured",
+                      "compressed"
+                    ]
+                  }
+                },
+                "limits": {
+                  "type": "object"
+                }
+              },
+              "required": ["name", "username", "password", "endPoints"]
+            }
+          },
+          "managementProtocols": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "username": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                },
+                "endPoints": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "uris": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "secured": {
+                        "type": "string"
+                      },
+                      "authenticated": {
+                        "type": "string"
+                      }
+                    },
+                    "required": ["name", "uris", "secured"]
+                  }
+                },
+                "limits": {
+                  "type": "object"
+                }
+              },
+              "required": ["name", "username", "password", "endPoints"]
+            }
+          },
+          "msgVpnAttributes": {
+            "type": "object",
+            "properties": {
+              "vpnEventLargeMsgThreshold": {
+                "type": "string"
+              },
+              "authenticationClientCertValidateDateEnabled": {
+                "type": "string"
+              },
+              "vpnMaxConnectionCount": {
+                "type": "string"
+              },
+              "vpnAdminUsername": {
+                "type": "string"
+              },
+              "vpnMaxTransactedSessionCount": {
+                "type": "string"
+              },
+              "subDomainName": {
+                "type": "string"
+              },
+              "vmrVersion": {
+                "type": "string"
+              },
+              "vpnAdminPassword": {
+                "type": "string"
+              },
+              "vpnName": {
+                "type": "string"
+              },
+              "vpnMaxTransactionCount": {
+                "type": "string"
+              },
+              "vpnMaxMsgSpoolUsage": {
+                "type": "string"
+              },
+              "vpnMaxEndpointCount": {
+                "type": "string"
+              },
+              "vpnMaxEgressFlowCount": {
+                "type": "string"
+              },
+              "vpnMaxSubscriptionCount": {
+                "type": "string"
+              },
+              "authenticationClientCertEnabled": {
+                "type": "string"
+              },
+              "vpnEnabled": {
+                "type": "string"
+              },
+              "truststoreUri": {
+                "type": "string"
+              },
+              "authenticationBasicEnabled": {
+                "type": "string"
+              },
+              "vpnMaxIngressFlowCount": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "authenticationClientCertEnabled",
+              "authenticationBasicEnabled"
+            ]
+          },
+          "locked": {
+            "type": "boolean"
+          },
+          "messagingStorage": {
+            "type": "integer"
+          },
+          "serviceStage": {
+            "type": "string"
+          },
+          "servicePackageId": {
+            "type": "string"
+          },
+          "serviceClassDisplayedAttributes": {
+            "type": "object",
+            "properties": {
+              "High Availability": {
+                "type": "string"
+              },
+              "Network Speed": {
+                "type": "string"
+              },
+              "Storage": {
+                "type": "string"
+              },
+              "Message Broker Tenancy": {
+                "type": "string"
+              },
+              "Queues": {
+                "type": "string"
+              },
+              "Clients": {
+                "type": "string"
+              },
+              "Network Usage": {
+                "type": "string"
+              }
+            },
+            "required": ["High Availability", "Storage", "Queues", "Clients"]
+          },
+          "accountingLimits": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                },
+                "unit": {
+                  "type": "string"
+                },
+                "thresholds": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string"
+                      },
+                      "value": {
+                        "type": "string"
+                      }
+                    },
+                    "required": ["type", "value"]
+                  }
+                }
+              },
+              "required": ["id", "value", "unit"]
+            }
+          },
+          "certificateAuthorities": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "clientProfiles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "cluster": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "password": {
+                "type": "string"
+              },
+              "remoteAddress": {
+                "type": "string"
+              },
+              "primaryRouterName": {
+                "type": "string"
+              },
+              "supportedAuthenticationMode": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "redundancyGroupSslEnabled": {
+            "type": "boolean"
+          },
+          "configSyncSslEnabled": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ServicesResponse": {
+        "type": "object",
+        "required": ["data"],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Service"
+            }
+          },
+          "meta": {
+            "type": "object",
+            "properties": {
+              "currentTime": {
+                "type": "number",
+                "example": 1605548717294
+              },
+              "pages": {
+                "type": "object",
+                "properties": {
+                  "next-page": {
+                    "type": "number",
+                    "example": 1
+                  },
+                  "total-pages": {
+                    "type": "number",
+                    "example": 1
+                  }
+                }
+              },
+              "pageNumber": {
+                "type": "number",
+                "example": 0
+              },
+              "count": {
+                "type": "number",
+                "example": 3
+              },
+              "pageSize": {
+                "type": "number",
+                "example": 100
+              }
+            }
+          }
+        }
+      },
+      "ServiceResponse": {
+        "type": "object",
+        "required": ["data"],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Service"
+          },
+          "meta": {
+            "type": "object",
+            "properties": {
+              "currentTime": {
+                "type": "number",
+                "example": 1605548717294
+              }
+            }
+          }
+        }
+      },
+      "ClientProfileRequest": {
+        "type": "object",
+        "properties": {
+          "clientProfile": {
+            "$ref": "#/components/schemas/MsgVpnClientProfile"
+          },
+          "operation": {
+            "$ref": "#/components/schemas/CloudRequestType"
+          }
+        },
+        "required": ["clientProfile", "operation"]
+      },
+      "CloudRequestType": {
+        "type": "string",
+        "enum": ["create"]
+      },
+      "CloudRequestStatusResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "creationTimestamp": {
+                "type": "number"
+              },
+              "operation": {
+                "$ref": "#/components/schemas/CloudRequestType"
+              },
+              "type": {
+                "type": "string"
+              },
+              "adminProgress": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "MsgVpnClientProfile": {
+        "properties": {
+          "allowBridgeConnectionsEnabled": {
+            "description": "Enable or disable allowing Bridge clients using the Client Profile to connect. Changing this setting does not affect existing Bridge client connections. The default value is `false`.",
+            "type": "boolean"
+          },
+          "allowCutThroughForwardingEnabled": {
+            "description": "Enable or disable allowing clients using the Client Profile to bind to endpoints with the cut-through forwarding delivery mode. Changing this value does not affect existing client connections. The default value is `false`.",
+            "type": "boolean"
+          },
+          "allowGuaranteedEndpointCreateDurability": {
+            "description": "The types of Queues and Topic Endpoints that clients using the client-profile can create. Changing this value does not affect existing client connections. The default value is `\"all\"`. The allowed values and their meaning are:\n\n<pre>\n\"all\" - Client can create any type of endpoint.\n\"durable\" - Client can create only durable endpoints.\n\"non-durable\" - Client can create only non-durable endpoints.\n</pre>\n Available since 2.14.",
+            "enum": ["all", "durable", "non-durable"],
+            "type": "string"
+          },
+          "allowGuaranteedEndpointCreateEnabled": {
+            "description": "Enable or disable allowing clients using the Client Profile to create topic endponts or queues. Changing this value does not affect existing client connections. The default value is `false`.",
+            "type": "boolean"
+          },
+          "allowGuaranteedMsgReceiveEnabled": {
+            "description": "Enable or disable allowing clients using the Client Profile to receive guaranteed messages. Changing this setting does not affect existing client connections. The default value is `false`.",
+            "type": "boolean"
+          },
+          "allowGuaranteedMsgSendEnabled": {
+            "description": "Enable or disable allowing clients using the Client Profile to send guaranteed messages. Changing this setting does not affect existing client connections. The default value is `false`.",
+            "type": "boolean"
+          },
+          "allowSharedSubscriptionsEnabled": {
+            "description": "Enable or disable allowing shared subscriptions. Changing this setting does not affect existing subscriptions. The default value is `false`. Available since 2.11.",
+            "type": "boolean"
+          },
+          "allowTransactedSessionsEnabled": {
+            "description": "Enable or disable allowing clients using the Client Profile to establish transacted sessions. Changing this setting does not affect existing client connections. The default value is `false`.",
+            "type": "boolean"
+          },
+          "apiQueueManagementCopyFromOnCreateName": {
+            "description": "The name of a queue to copy settings from when a new queue is created by a client using the Client Profile. The referenced queue must exist in the Message VPN. The default value is `\"\"`. Deprecated since 2.14. This attribute has been replaced with `apiQueueManagementCopyFromOnCreateTemplateName`.",
+            "type": "string"
+          },
+          "apiQueueManagementCopyFromOnCreateTemplateName": {
+            "description": "The name of a queue template to copy settings from when a new queue is created by a client using the Client Profile. If the referenced queue template does not exist, queue creation will fail when it tries to resolve this template. The default value is `\"\"`. Available since 2.14.",
+            "type": "string"
+          },
+          "apiTopicEndpointManagementCopyFromOnCreateName": {
+            "description": "The name of a topic endpoint to copy settings from when a new topic endpoint is created by a client using the Client Profile. The referenced topic endpoint must exist in the Message VPN. The default value is `\"\"`. Deprecated since 2.14. This attribute has been replaced with `apiTopicEndpointManagementCopyFromOnCreateTemplateName`.",
+            "type": "string"
+          },
+          "apiTopicEndpointManagementCopyFromOnCreateTemplateName": {
+            "description": "The name of a topic endpoint template to copy settings from when a new topic endpoint is created by a client using the Client Profile. If the referenced topic endpoint template does not exist, topic endpoint creation will fail when it tries to resolve this template. The default value is `\"\"`. Available since 2.14.",
+            "type": "string"
+          },
+          "clientProfileName": {
+            "description": "The name of the Client Profile.",
+            "type": "string"
+          },
+          "compressionEnabled": {
+            "description": "Enable or disable allowing clients using the Client Profile to use compression. The default value is `true`. Available since 2.10.",
+            "type": "boolean"
+          },
+          "elidingDelay": {
+            "description": "The amount of time to delay the delivery of messages to clients using the Client Profile after the initial message has been delivered (the eliding delay interval), in milliseconds. A value of 0 means there is no delay in delivering messages to clients. The default value is `0`.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "elidingEnabled": {
+            "description": "Enable or disable message eliding for clients using the Client Profile. The default value is `false`.",
+            "type": "boolean"
+          },
+          "elidingMaxTopicCount": {
+            "description": "The maximum number of topics tracked for message eliding per client connection using the Client Profile. The default value is `256`.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "eventClientProvisionedEndpointSpoolUsageThreshold": {
+            "$ref": "#/components/schemas/EventThresholdByPercent"
+          },
+          "eventConnectionCountPerClientUsernameThreshold": {
+            "$ref": "#/components/schemas/EventThreshold"
+          },
+          "eventEgressFlowCountThreshold": {
+            "$ref": "#/components/schemas/EventThreshold"
+          },
+          "eventEndpointCountPerClientUsernameThreshold": {
+            "$ref": "#/components/schemas/EventThreshold"
+          },
+          "eventIngressFlowCountThreshold": {
+            "$ref": "#/components/schemas/EventThreshold"
+          },
+          "eventServiceSmfConnectionCountPerClientUsernameThreshold": {
+            "$ref": "#/components/schemas/EventThreshold"
+          },
+          "eventServiceWebConnectionCountPerClientUsernameThreshold": {
+            "$ref": "#/components/schemas/EventThreshold"
+          },
+          "eventSubscriptionCountThreshold": {
+            "$ref": "#/components/schemas/EventThreshold"
+          },
+          "eventTransactedSessionCountThreshold": {
+            "$ref": "#/components/schemas/EventThreshold"
+          },
+          "eventTransactionCountThreshold": {
+            "$ref": "#/components/schemas/EventThreshold"
+          },
+          "maxConnectionCountPerClientUsername": {
+            "description": "The maximum number of client connections per Client Username using the Client Profile. The default is the maximum value supported by the platform.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "maxEgressFlowCount": {
+            "description": "The maximum number of transmit flows that can be created by one client using the Client Profile. The default value is `1000`.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "maxEndpointCountPerClientUsername": {
+            "description": "The maximum number of queues and topic endpoints that can be created by clients with the same Client Username using the Client Profile. The default value is `1000`.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "maxIngressFlowCount": {
+            "description": "The maximum number of receive flows that can be created by one client using the Client Profile. The default value is `1000`.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "maxSubscriptionCount": {
+            "description": "The maximum number of subscriptions per client using the Client Profile. This limit is not enforced when a client adds a subscription to an endpoint, except for MQTT QoS 1 subscriptions. In addition, this limit is not enforced when a subscription is added using a management interface, such as CLI or SEMP. The default varies by platform.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "maxTransactedSessionCount": {
+            "description": "The maximum number of transacted sessions that can be created by one client using the Client Profile. The default value is `10`.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "maxTransactionCount": {
+            "description": "The maximum number of transactions that can be created by one client using the Client Profile. The default varies by platform.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "msgVpnName": {
+            "description": "The name of the Message VPN.",
+            "type": "string"
+          },
+          "queueControl1MaxDepth": {
+            "description": "The maximum depth of the \"Control 1\" (C-1) priority queue, in work units. Each work unit is 2048 bytes of message data. The default value is `20000`.",
+            "format": "int32",
+            "type": "integer"
+          },
+          "queueControl1MinMsgBurst": {
+            "description": "The number of messages that are always allowed entry into the \"Control 1\" (C-1) priority queue, regardless of the `queueControl1MaxDepth` value. The default value is `4`.",
+            "format": "int32",
+            "type": "integer"
+          },
+          "queueDirect1MaxDepth": {
+            "description": "The maximum depth of the \"Direct 1\" (D-1) priority queue, in work units. Each work unit is 2048 bytes of message data. The default value is `20000`.",
+            "format": "int32",
+            "type": "integer"
+          },
+          "queueDirect1MinMsgBurst": {
+            "description": "The number of messages that are always allowed entry into the \"Direct 1\" (D-1) priority queue, regardless of the `queueDirect1MaxDepth` value. The default value is `4`.",
+            "format": "int32",
+            "type": "integer"
+          },
+          "queueDirect2MaxDepth": {
+            "description": "The maximum depth of the \"Direct 2\" (D-2) priority queue, in work units. Each work unit is 2048 bytes of message data. The default value is `20000`.",
+            "format": "int32",
+            "type": "integer"
+          },
+          "queueDirect2MinMsgBurst": {
+            "description": "The number of messages that are always allowed entry into the \"Direct 2\" (D-2) priority queue, regardless of the `queueDirect2MaxDepth` value. The default value is `4`.",
+            "format": "int32",
+            "type": "integer"
+          },
+          "queueDirect3MaxDepth": {
+            "description": "The maximum depth of the \"Direct 3\" (D-3) priority queue, in work units. Each work unit is 2048 bytes of message data. The default value is `20000`.",
+            "format": "int32",
+            "type": "integer"
+          },
+          "queueDirect3MinMsgBurst": {
+            "description": "The number of messages that are always allowed entry into the \"Direct 3\" (D-3) priority queue, regardless of the `queueDirect3MaxDepth` value. The default value is `4`.",
+            "format": "int32",
+            "type": "integer"
+          },
+          "queueGuaranteed1MaxDepth": {
+            "description": "The maximum depth of the \"Guaranteed 1\" (G-1) priority queue, in work units. Each work unit is 2048 bytes of message data. The default value is `20000`.",
+            "format": "int32",
+            "type": "integer"
+          },
+          "queueGuaranteed1MinMsgBurst": {
+            "description": "The number of messages that are always allowed entry into the \"Guaranteed 1\" (G-3) priority queue, regardless of the `queueGuaranteed1MaxDepth` value. The default value is `255`.",
+            "format": "int32",
+            "type": "integer"
+          },
+          "rejectMsgToSenderOnNoSubscriptionMatchEnabled": {
+            "description": "Enable or disable the sending of a negative acknowledgement (NACK) to a client using the Client Profile when discarding a guaranteed message due to no matching subscription found. The default value is `false`. Available since 2.2.",
+            "type": "boolean"
+          },
+          "replicationAllowClientConnectWhenStandbyEnabled": {
+            "description": "Enable or disable allowing clients using the Client Profile to connect to the Message VPN when its replication state is standby. The default value is `false`.",
+            "type": "boolean"
+          },
+          "serviceMinKeepaliveTimeout": {
+            "description": "The minimum client keepalive timeout which will be enforced for client connections. The default value is `30`. Available since 2.19.",
+            "format": "int32",
+            "type": "integer"
+          },
+          "serviceSmfMaxConnectionCountPerClientUsername": {
+            "description": "The maximum number of SMF client connections per Client Username using the Client Profile. The default is the maximum value supported by the platform.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "serviceSmfMinKeepaliveEnabled": {
+            "description": "Enable or disable the enforcement of a minimum keepalive timeout for SMF clients. The default value is `false`. Available since 2.19.",
+            "type": "boolean"
+          },
+          "serviceWebInactiveTimeout": {
+            "description": "The timeout for inactive Web Transport client sessions using the Client Profile, in seconds. The default value is `30`.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "serviceWebMaxConnectionCountPerClientUsername": {
+            "description": "The maximum number of Web Transport client connections per Client Username using the Client Profile. The default is the maximum value supported by the platform.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "serviceWebMaxPayload": {
+            "description": "The maximum Web Transport payload size before fragmentation occurs for clients using the Client Profile, in bytes. The size of the header is not included. The default value is `1000000`.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "tcpCongestionWindowSize": {
+            "description": "The TCP initial congestion window size for clients using the Client Profile, in multiples of the TCP Maximum Segment Size (MSS). Changing the value from its default of 2 results in non-compliance with RFC 2581. Contact Solace Support before changing this value. The default value is `2`.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "tcpKeepaliveCount": {
+            "description": "The number of TCP keepalive retransmissions to a client using the Client Profile before declaring that it is not available. The default value is `5`.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "tcpKeepaliveIdleTime": {
+            "description": "The amount of time a client connection using the Client Profile must remain idle before TCP begins sending keepalive probes, in seconds. The default value is `3`.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "tcpKeepaliveInterval": {
+            "description": "The amount of time between TCP keepalive retransmissions to a client using the Client Profile when no acknowledgement is received, in seconds. The default value is `1`.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "tcpMaxSegmentSize": {
+            "description": "The TCP maximum segment size for clients using the Client Profile, in bytes. Changes are applied to all existing connections. The default value is `1460`.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "tcpMaxWindowSize": {
+            "description": "The TCP maximum window size for clients using the Client Profile, in kilobytes. Changes are applied to all existing connections. The default value is `256`.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "tlsAllowDowngradeToPlainTextEnabled": {
+            "description": "Enable or disable allowing a client using the Client Profile to downgrade an encrypted connection to plain text. The default value is `true`. Available since 2.8.",
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "EventThreshold": {
+        "properties": {
+          "clearPercent": {
+            "description": "The clear threshold for the value of this counter as a percentage of its maximum value. Falling below this value will trigger a corresponding event. This attribute may not be returned in a GET.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "clearValue": {
+            "description": "The clear threshold for the absolute value of this counter. Falling below this value will trigger a corresponding event. This attribute may not be returned in a GET.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "setPercent": {
+            "description": "The set threshold for the value of this counter as a percentage of its maximum value. Exceeding this value will trigger a corresponding event. This attribute may not be returned in a GET.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "setValue": {
+            "description": "The set threshold for the absolute value of this counter. Exceeding this value will trigger a corresponding event. This attribute may not be returned in a GET.",
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "EventThresholdByPercent": {
+        "properties": {
+          "clearPercent": {
+            "description": "The clear threshold for the value of this counter as a percentage of its maximum value. Falling below this value will trigger a corresponding event.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "setPercent": {
+            "description": "The set threshold for the value of this counter as a percentage of its maximum value. Exceeding this value will trigger a corresponding event.",
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      }
+    }
+  },
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/services": {
+      "get": {
+        "operationId": "listServices",
+        "tags": ["services"],
+        "responses": {
+          "200": {
+            "description": "list of services",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServicesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "Gateway Timeout.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/services/{service_id}": {
+      "get": {
+        "operationId": "getService",
+        "tags": ["services"],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/service_id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "service",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "Gateway Timeout.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/services/{service_id}/requests/clientProfileRequests": {
+      "post": {
+        "operationId": "sendClientProfileRequest",
+        "tags": ["services"],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/service_id"
+          }
+        ],
+        "requestBody": {
+          "description": "Client Profile Request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClientProfileRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "service",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CloudRequestStatusResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "Gateway Timeout.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/services/{service_id}/requests/{request_id}": {
+      "get": {
+        "operationId": "trackCloudRequestStatus",
+        "tags": ["services"],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/service_id"
+          },
+          {
+            "$ref": "#/components/parameters/request_id"
+          },
+          {
+            "$ref": "#/components/parameters/withProgress"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "service",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CloudRequestStatusResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "Gateway Timeout.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

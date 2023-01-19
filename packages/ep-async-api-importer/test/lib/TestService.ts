@@ -25,13 +25,15 @@ export class TestService {
     overrideApplicationDomainName,
     overrideAssetApplicationDomainName,
     overrideBrokerType,
-    overrideChannelDelimiter
+    overrideChannelDelimiter,
+    validateBestPractices
   }: {
     apiFileList: Array<string>;
     overrideApplicationDomainName?: string;
     overrideAssetApplicationDomainName?: string;
     overrideBrokerType: string | undefined;
     overrideChannelDelimiter: string | undefined;
+    validateBestPractices: boolean;
   }): Promise<Array<TTestApiSpecRecord>> => {
     const funcName = "createTestApiSpecRecordList";
     const logName = `${TestService.name}.${funcName}()`;
@@ -45,15 +47,15 @@ export class TestService {
 
     TestService.testApiSpecRecordList = [];
     for (const apiFile of apiFileList) {
-      const epAsyncApiDocument: EpAsyncApiDocument =
-        await CliAsyncApiDocumentService.parse_and_validate({
-          apiFile: apiFile,
-          applicationDomainName: overrideApplicationDomainName,
-          assetApplicationDomainName: overrideAssetApplicationDomainName,
-          applicationDomainNamePrefix: undefined,
-          overrideBrokerType: overrideBrokerType,
-          overrideChannelDelimiter: overrideChannelDelimiter 
-        });
+      const epAsyncApiDocument: EpAsyncApiDocument = await CliAsyncApiDocumentService.parse_and_validate({
+        apiFile: apiFile,
+        applicationDomainName: overrideApplicationDomainName,
+        assetApplicationDomainName: overrideAssetApplicationDomainName,
+        applicationDomainNamePrefix: undefined,
+        overrideBrokerType: overrideBrokerType,
+        overrideChannelDelimiter: overrideChannelDelimiter,
+        validateBestPractices: validateBestPractices
+      });
       TestService.testApiSpecRecordList.push({
         apiFile: apiFile,
         epAsyncApiDocument: epAsyncApiDocument,

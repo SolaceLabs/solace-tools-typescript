@@ -11,6 +11,9 @@ import {
 import { TestContext } from "@internal/tools/src";
 import { TestConfig, TestLogger } from "./lib";
 import { CliConfig, CliLogger, CliError } from "../src/cli-components";
+// import { OptionValues } from "commander";
+import { DefaultAppName, packageJson } from "../src/constants";
+
 
 // ensure any unhandled exception cause exit = 1
 function onUncaught(err: any) {
@@ -79,12 +82,16 @@ describe(`${scriptName}`, () => {
         CliLogger.initialize({
           cliLoggerOptions: CliConfig.getDefaultLoggerOptions(),
         });
+        // const commandLineOptionValues: OptionValues = {
+
+        // };
         CliConfig.initialize({
           defaultAppName: TestConfig.getAppId(),
           fileList: [],
+          commandLineOptionValues: {},
+          cliVersion: packageJson.version
         });
-        if (TestConfig.isCi())
-          CliConfig.getCliLoggerOptions().logSummary2Console = false;
+        if (TestConfig.isCi()) CliConfig.getCliLoggerOptions().logSummary2Console = false;
         CliLogger.initialize({
           cliLoggerOptions: CliConfig.getCliLoggerOptions(),
         });

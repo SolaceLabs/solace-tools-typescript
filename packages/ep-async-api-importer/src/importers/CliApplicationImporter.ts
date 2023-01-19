@@ -39,18 +39,13 @@ import {
 export interface ICliApplicationImporterOptions extends ICliImporterOptions {
   applicationDomainName: string;
 }
-export interface ICliApplicationImporterGenerateAssetsOptions
-  extends ICliImporterGenerateAssetsOptions {}
-export interface ICliApplicationImporterRunPresentOptions
-  extends ICliImporterRunPresentOptions {
+export interface ICliApplicationImporterGenerateAssetsOptions extends ICliImporterGenerateAssetsOptions {}
+export interface ICliApplicationImporterRunPresentOptions extends ICliImporterRunPresentOptions {
   epAsyncApiDocument: EpAsyncApiDocument;
 }
-export interface ICliApplicationImporterRunPresentReturn
-  extends ICliImporterRunPresentReturn {}
-export interface ICliApplicationImporterRunOptions
-  extends ICliImporterRunOptions {}
-export interface ICliApplicationImporterRunReturn
-  extends ICliImporterRunReturn {}
+export interface ICliApplicationImporterRunPresentReturn extends ICliImporterRunPresentReturn {}
+export interface ICliApplicationImporterRunOptions extends ICliImporterRunOptions {}
+export interface ICliApplicationImporterRunReturn extends ICliImporterRunReturn {}
 
 export class CliApplicationImporter extends CliImporter {
   constructor(cliApplicationImporterOptions: ICliApplicationImporterOptions) {
@@ -297,9 +292,7 @@ export class CliApplicationImporter extends CliImporter {
     return cliApplicationImporterRunPresentReturn;
   }
 
-  public async run({
-    cliImporterRunOptions,
-  }: {
+  public async run({cliImporterRunOptions}: {
     cliImporterRunOptions: ICliApplicationImporterRunOptions;
   }): Promise<ICliApplicationImporterRunReturn> {
     const funcName = "run";
@@ -332,7 +325,8 @@ export class CliApplicationImporter extends CliImporter {
         assetApplicationDomainName: cliImporterRunOptions.assetApplicationDomainName,
         applicationDomainNamePrefix: cliImporterRunOptions.applicationDomainNamePrefix,
         overrideBrokerType: cliImporterRunOptions.overrideBrokerType,
-        overrideChannelDelimiter: cliImporterRunOptions.overrideChannelDelimiter  
+        overrideChannelDelimiter: cliImporterRunOptions.overrideChannelDelimiter,
+        validateBestPractices: this.cliImporterOptions.cliValidateApiSpecBestPractices
       });
       cliApplicationImporterRunReturn.applicationDomainName = epAsyncApiDocument.getApplicationDomainName();
       cliApplicationImporterRunReturn.assetApplicationDomainName = epAsyncApiDocument.getAssetsApplicationDomainName();
@@ -352,7 +346,7 @@ export class CliApplicationImporter extends CliImporter {
 
       CliLogger.debug(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.IMPORTING_DONE_APPLICATION, details: {} }));
     } catch (e: any) {
-      cliApplicationImporterRunReturn.error = CliErrorFactory.createCliError({ logName: logName, e: e });
+      cliApplicationImporterRunReturn.error = CliErrorFactory.createCliError({ logName: logName, error: e });
     } finally {
       if (cliApplicationImporterRunReturn.error !== undefined) {
         CliLogger.error( CliLogger.createLogEntry(logName, { code: ECliStatusCodes.IMPORTING_ERROR_APPLICATION, details: {
