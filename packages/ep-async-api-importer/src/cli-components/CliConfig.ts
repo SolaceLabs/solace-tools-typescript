@@ -1,3 +1,4 @@
+import { OptionValues } from 'commander';
 import { 
   EBrokerTypes, 
   EChannelDelimiters, 
@@ -54,6 +55,7 @@ export type TCliConfigEnvVarConfig = {
   required: boolean;
   options?: Array<string>;
   hidden?: boolean; // placeholder, to hide a config option
+  secret?: boolean; 
 };
 
 enum ECliConfigEnvVarNames {
@@ -105,6 +107,7 @@ const CliConfigEnvVarConfigList: Array<TCliConfigEnvVarConfig> = [
     envVarName: ECliConfigEnvVarNames.CLI_SOLACE_CLOUD_TOKEN,
     description: "Solace Cloud API Token.",
     required: true,
+    secret: true,
   },
   {
     envVarName: ECliConfigEnvVarNames.CLI_APP_NAME,
@@ -253,33 +256,50 @@ export type TCliConfig = {
   cliImporterConfig: TCliImporterConfig;
 };
 
+type TCliConfigRegisteredEnvVar = {
+  envVarName: string;
+  value: any;
+}
+
 class CliConfig {
+  private cliVersion: string;
+  private commandLineOptionValues: OptionValues;
+  private envVarValues: Array<TCliConfigRegisteredEnvVar> = [];
   private config: TCliConfig;
   private solaceCloudToken: string;
 
-  public validate_CliConfigEnvVarConfigList = () => {
-    const funcName = "validate_CliConfigEnvVarConfigList";
+  private getEnvVarConfig = (envVarName: string): TCliConfigEnvVarConfig => {
+    const funcName = "getEnvVarConfig";
     const logName = `${CliConfig.name}.${funcName}()`;
+    const found: TCliConfigEnvVarConfig | undefined = CliConfigEnvVarConfigList.find((cliConfigEnvVarConfig: TCliConfigEnvVarConfig) => {
+      return cliConfigEnvVarConfig.envVarName === envVarName;
+    });
+    if (found === undefined) throw new CliInternalCodeInconsistencyError(logName, {
+      error: "cannot find env var details in list",
+      envVarName: envVarName,
+      CliConfigEnvVarConfigList: JSON.stringify(CliConfigEnvVarConfigList, null, 2),
+    });
+    return found;
+  }
 
-    for (const envVarName of Object.values(ECliConfigEnvVarNames)) {
-      const found: TCliConfigEnvVarConfig | undefined =
-        CliConfigEnvVarConfigList.find(
-          (cliConfigEnvVarConfig: TCliConfigEnvVarConfig) => {
-            return cliConfigEnvVarConfig.envVarName === envVarName;
-          }
-        );
-      if (found === undefined)
-        throw new CliInternalCodeInconsistencyError(logName, {
-          error: "cannot find env var details in list",
-          envVarName: envVarName,
-          CliConfigEnvVarConfigList: JSON.stringify(
-            CliConfigEnvVarConfigList,
-            null,
-            2
-          ),
-        });
-    }
+  public validate_CliConfigEnvVarConfigList = () => {
+    for (const envVarName of Object.values(ECliConfigEnvVarNames)) this.getEnvVarConfig(envVarName);
   };
+
+  private registerEnvVarAndValue = ({ envVarName, value, defaultValue }:{
+    envVarName: string;
+    value: any;
+    defaultValue: any;
+  }): any => {
+    const envVarConfig = this.getEnvVarConfig(envVarName);
+    const isSecret: boolean = envVarConfig.secret !== undefined ? (envVarConfig.secret === true ? true : false) : false;
+    const registerValue = value ? (isSecret ? '***' : value) : 'undefined';
+    this.envVarValues.push({
+      envVarName: envVarName,
+      value: registerValue,
+    });
+    return value ? value : defaultValue;
+  }
 
   private assertIsInitialized = () => {
     if (!this.config || !this.solaceCloudToken)
@@ -298,15 +318,13 @@ class CliConfig {
     )}-${pad(d.getUTCMilliseconds(), 3)}`;
   };
 
-  public get_CliConfigEnvVarConfigList4HelpDisplay =
-    (): Array<TCliConfigEnvVarConfig> => {
-      this.validate_CliConfigEnvVarConfigList();
-      return CliConfigEnvVarConfigList.filter(
-        (cliConfigEnvVarConfig: TCliConfigEnvVarConfig) => {
-          return !cliConfigEnvVarConfig.hidden;
-        }
-      );
-    };
+  public get_CliConfigEnvVarConfigList4HelpDisplay = (): Array<TCliConfigEnvVarConfig> => {
+    this.validate_CliConfigEnvVarConfigList();
+    return CliConfigEnvVarConfigList.filter((cliConfigEnvVarConfig: TCliConfigEnvVarConfig) => {
+      return !cliConfigEnvVarConfig.hidden;
+    });
+  };
+
   private getOptionalEnvVarValueAsUrlWithDefault = (
     envVarName: string,
     defaultValue: string
@@ -314,13 +332,13 @@ class CliConfig {
     const funcName = "getOptionalEnvVarValueAsUrlWithDefault";
     const logName = `${CliConfig.name}.${funcName}()`;
     const value: string | undefined = process.env[envVarName];
-    if (!value) return defaultValue;
+    if (!value) return this.registerEnvVarAndValue({ envVarName: envVarName, value: value, defaultValue: defaultValue });
     // check if value is a valid Url
     try {
       const valueUrl: URL = new URL(value);
       /* istanbul ignore next */
       valueUrl;
-      return value;
+      return this.registerEnvVarAndValue({ envVarName: envVarName, value: value, defaultValue: defaultValue });
     } catch (e: any) {
       throw new CliConfigInvalidUrlEnvVarError(logName, envVarName, value, e);
     }
@@ -331,7 +349,7 @@ class CliConfig {
     const logName = `${CliConfig.name}.${funcName}()`;
     const value: string | undefined = process.env[envVarName];
     if (!value) throw new CliConfigMissingEnvVarError(logName, envVarName);
-    return value;
+    return this.registerEnvVarAndValue({ envVarName: envVarName, value: value, defaultValue: undefined });
   };
 
   private getOptionalEnvVarValueAsStringWithDefault = (
@@ -339,8 +357,7 @@ class CliConfig {
     defaultValue: string
   ): string => {
     const value: string | undefined = process.env[envVarName];
-    if (value === undefined) return defaultValue;
-    return value;
+    return this.registerEnvVarAndValue({ envVarName: envVarName, value: value, defaultValue: defaultValue });
   };
 
   private getOptionalEnvVarValueAsString_From_Options_WithDefault = (
@@ -351,15 +368,9 @@ class CliConfig {
     const funcName = "getOptionalEnvVarValueAsString_From_Options_WithDefault";
     const logName = `${CliConfig.name}.${funcName}()`;
     const value: string | undefined = process.env[envVarName];
-    if (value === undefined) return defaultValue;
-    if (!options.includes(value.toLowerCase()))
-      throw new CliConfigInvalidEnvVarValueOptionError(
-        logName,
-        envVarName,
-        value,
-        options
-      );
-    return value.toLowerCase();
+    if (value === undefined) return this.registerEnvVarAndValue({ envVarName: envVarName, value: value, defaultValue: defaultValue });
+    if (!options.includes(value.toLowerCase())) throw new CliConfigInvalidEnvVarValueOptionError( logName, envVarName, value, options );
+    return this.registerEnvVarAndValue({ envVarName: envVarName, value: value.toLowerCase(), defaultValue: defaultValue });
   };
 
   private getOptionalEnvVarValueAsString_From_Options = ( 
@@ -369,15 +380,9 @@ class CliConfig {
     const funcName = "getOptionalEnvVarValueAsString_From_Options";
     const logName = `${CliConfig.name}.${funcName}()`;
     const value: string | undefined = process.env[envVarName];
-    if (value === undefined) return undefined;
-    if (!options.includes(value.toLowerCase()))
-      throw new CliConfigInvalidEnvVarValueOptionError(
-        logName,
-        envVarName,
-        value,
-        options
-      );
-    return value.toLowerCase();
+    if (value === undefined) return this.registerEnvVarAndValue({ envVarName: envVarName, value: value, defaultValue: undefined });
+    if (!options.includes(value.toLowerCase())) throw new CliConfigInvalidEnvVarValueOptionError(logName, envVarName, value, options );
+    return this.registerEnvVarAndValue({ envVarName: envVarName, value: value.toLowerCase(), defaultValue: undefined });
   };
 
   private getOptionalEnvVarValueAsBoolean_WithDefault = (
@@ -387,32 +392,30 @@ class CliConfig {
     const funcName = "getOptionalEnvVarValueAsBoolean_WithDefault";
     const logName = `${CliConfig.name}.${funcName}()`;
     const value: string | undefined = process.env[envVarName];
-    if (value === undefined) return defaultValue;
+    if (value === undefined) return this.registerEnvVarAndValue({ envVarName: envVarName, value: value, defaultValue: defaultValue });
     const options: Array<string> = Object.values(ECliConfigBooleanOptions);
-    if (!options.includes(value.toLowerCase()))
-      throw new CliConfigInvalidEnvVarValueOptionError(
-        logName,
-        envVarName,
-        value,
-        options
-      );
-    return value.toLowerCase() === ECliConfigBooleanOptions.TRUE;
+    if(!options.includes(value.toLowerCase())) throw new CliConfigInvalidEnvVarValueOptionError(logName, envVarName, value, options);
+    return this.registerEnvVarAndValue({ envVarName: envVarName, value: value.toLowerCase() === ECliConfigBooleanOptions.TRUE, defaultValue: defaultValue });
   };
 
   public initialize = ({
+    cliVersion,
     defaultAppName,
     fileList,
     applicationDomainName,
     assetApplicationDomainName,
+    commandLineOptionValues,
   }: {
+    cliVersion: string;
+    commandLineOptionValues: OptionValues;
     defaultAppName: string;
     fileList: Array<string>;
     applicationDomainName?: string;
     assetApplicationDomainName?: string;
   }): void => {
-    this.solaceCloudToken = this.getMandatoryEnvVarValueAsString(
-      ECliConfigEnvVarNames.CLI_SOLACE_CLOUD_TOKEN
-    );
+    this.cliVersion = cliVersion;
+    this.commandLineOptionValues = commandLineOptionValues;
+    this.solaceCloudToken = this.getMandatoryEnvVarValueAsString(ECliConfigEnvVarNames.CLI_SOLACE_CLOUD_TOKEN);
     const appName: string = this.getOptionalEnvVarValueAsStringWithDefault(
       ECliConfigEnvVarNames.CLI_APP_NAME,
       defaultAppName
@@ -485,50 +488,39 @@ class CliConfig {
         appName: appName,
         runId: runId,
         asyncApiFileList: fileList,
-        cliImporterManagerMode:
-          this.getOptionalEnvVarValueAsString_From_Options_WithDefault(
+        cliImporterManagerMode: this.getOptionalEnvVarValueAsString_From_Options_WithDefault(
             ECliConfigEnvVarNames.CLI_MODE,
             Object.values(ECliImporterManagerMode),
             DEFAULT_CLI_MODE
           ) as ECliImporterManagerMode,
         applicationDomainName: applicationDomainName,
         assetApplicationDomainName: assetApplicationDomainName,
-        createEventApiApplication:
-          this.getOptionalEnvVarValueAsBoolean_WithDefault(
+        createEventApiApplication: this.getOptionalEnvVarValueAsBoolean_WithDefault(
             ECliConfigEnvVarNames.CLI_IMPORT_CREATE_API_APPLICATION,
             DEFAULT_CLI_IMPORT_CREATE_API_APPLICATION
           ),
-        cliTestSetupDomainsForApis:
-          this.getOptionalEnvVarValueAsBoolean_WithDefault(
+        cliTestSetupDomainsForApis: this.getOptionalEnvVarValueAsBoolean_WithDefault(
             ECliConfigEnvVarNames.CLI_TEST_SETUP_DOMAINS_FOR_APIS,
             DEFAULT_CLI_TEST_SETUP_DOMAINS_FOR_APIS
           ),
         cliImporterOptions: {
           runId: runId,
-          cliAssetImport_TargetLifecycleState:
-            this.getOptionalEnvVarValueAsString_From_Options_WithDefault(
+          cliAssetImport_TargetLifecycleState: this.getOptionalEnvVarValueAsString_From_Options_WithDefault(
               ECliConfigEnvVarNames.CLI_IMPORT_ASSETS_TARGET_LIFECYLE_STATE,
               Object.values(ECliAssetImport_TargetLifecycleState),
               DEFAULT_CLI_IMPORT_ASSETS_TARGET_LIFECYLE_STATE
             ) as ECliAssetImport_TargetLifecycleState,
-          cliAssetImport_TargetVersionStrategy:
-            this.getOptionalEnvVarValueAsString_From_Options_WithDefault(
+          cliAssetImport_TargetVersionStrategy: this.getOptionalEnvVarValueAsString_From_Options_WithDefault(
               ECliConfigEnvVarNames.CLI_IMPORT_ASSETS_TARGET_VERSION_STRATEGY,
-              Object.values(
-                ECliAssetImport_TargetVersionStrategy
-              ) as Array<string>,
+              Object.values(ECliAssetImport_TargetVersionStrategy) as Array<string>,
               DEFAULT_CLI_IMPORT_ASSETS_TARGET_VERSION_STRATEGY as unknown as string
             ) as unknown as ECliAssetImport_TargetVersionStrategy,
-          cliAssetImport_BrokerType:
-            this.getOptionalEnvVarValueAsString_From_Options(
-              ECliConfigEnvVarNames.CLI_IMPORT_BROKER_TYPE,
-              Object.values(EBrokerTypes) as Array<string>,
-            ) as EBrokerTypes,
-          cliAssetImport_ChannelDelimiter:
-            this.getOptionalEnvVarValueAsString_From_Options(
-              ECliConfigEnvVarNames.CLI_IMPORT_CHANNEL_DELIMITER,
-              Object.values(EChannelDelimiters) as Array<string>,
-            ) as EChannelDelimiters,
+          cliAssetImport_BrokerType: this.getOptionalEnvVarValueAsString_From_Options(
+            ECliConfigEnvVarNames.CLI_IMPORT_BROKER_TYPE, 
+            Object.values(EBrokerTypes) as Array<string>) as EBrokerTypes,
+          cliAssetImport_ChannelDelimiter: this.getOptionalEnvVarValueAsString_From_Options(
+            ECliConfigEnvVarNames.CLI_IMPORT_CHANNEL_DELIMITER, 
+            Object.values(EChannelDelimiters) as Array<string>) as EChannelDelimiters,
           assetOutputDir: importAssetOutputDir,
         },
       },
@@ -540,13 +532,12 @@ class CliConfig {
     const logName = `${CliConfig.name}.${funcName}()`;
     this.assertIsInitialized();
     console.log(`\nLog file: ${this.config.cliLoggerConfig.logFile}\n`);
-    CliLogger.debug(
-      CliLogger.createLogEntry(logName, {
-        code: ECliStatusCodes.INITIALIZING,
-        message: "config",
-        details: this.config,
-      })
-    );
+    CliLogger.info(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.INITIALIZED, message: "config", details: {
+      cliVerion: this.cliVersion,
+      commandLineOptionValues: this.commandLineOptionValues ? this.commandLineOptionValues : 'undefined',
+      environment: this.envVarValues,
+      config: this.config 
+    }}));
   };
 
   public getAppName = (): string => {

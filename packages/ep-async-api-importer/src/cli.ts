@@ -52,7 +52,7 @@ async function main() {
   const funcName = "main";
   const logName = `${ComponentName}.${funcName}()`;
 
-  CliLogger.trace(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.INFO, message: "starting...",
+  CliLogger.debug(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.INFO, message: "starting...",
     details: {
       cliConfig: CliConfig.getCliConfig(),
     },
@@ -71,12 +71,12 @@ async function main() {
 
 function initialize(commandLineOptionValues: OptionValues) {
   // initialize with default values so we can log until initialized
-  CliLogger.initialize({
-    cliLoggerOptions: CliConfig.getDefaultLoggerOptions(),
-  });
+  CliLogger.initialize({ cliLoggerOptions: CliConfig.getDefaultLoggerOptions() });
   const filePattern = commandLineOptionValues.filePattern;
   const fileList = CliUtils.createFileList(filePattern);
   CliConfig.initialize({
+    cliVersion: packageJson.version,
+    commandLineOptionValues: commandLineOptionValues,
     fileList: fileList,
     applicationDomainName: commandLineOptionValues.domain,
     assetApplicationDomainName: commandLineOptionValues.assetDomain,
@@ -92,8 +92,7 @@ function initialize(commandLineOptionValues: OptionValues) {
 }
 
 function getCliConfigEnvVarHelp(): string {
-  const cliConfigEnvVarConfigList: Array<TCliConfigEnvVarConfig> =
-    CliConfig.get_CliConfigEnvVarConfigList4HelpDisplay();
+  const cliConfigEnvVarConfigList: Array<TCliConfigEnvVarConfig> = CliConfig.get_CliConfigEnvVarConfigList4HelpDisplay();
   return `
 Environment Variables:
   Set env vars, use .env file, or a combination of both.
