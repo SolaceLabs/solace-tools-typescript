@@ -1,6 +1,15 @@
-import { Message, Schema } from '@asyncapi/parser';
-import { EpAsyncApiUtils, EpAsyncApiMessageError, EpAsyncApiValidationError, EpAsyncApiBestPracticesError } from '../utils';
-import { EpAsyncApiChannelDocument } from './EpAsyncApiChannelDocument';
+import { 
+  Message, 
+  Schema 
+} from '@asyncapi/parser';
+import { 
+  EpAsyncApiUtils, 
+  EpAsyncApiMessageError, 
+  EpAsyncApiBestPracticesError 
+} from '../utils';
+import { 
+  EpAsyncApiChannelDocument 
+} from './EpAsyncApiChannelDocument';
 import { 
   EpAsyncApiDocument, 
   E_EpAsyncApiContentTypes 
