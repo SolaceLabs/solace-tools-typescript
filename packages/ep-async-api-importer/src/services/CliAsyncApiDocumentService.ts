@@ -34,7 +34,8 @@ class CliAsyncApiDocumentService {
     assetApplicationDomainName,
     applicationDomainNamePrefix,
     overrideBrokerType,
-    overrideChannelDelimiter
+    overrideChannelDelimiter,
+    validateBestPractices
   }: {
     apiFile: string;
     applicationDomainName: string | undefined;
@@ -42,6 +43,7 @@ class CliAsyncApiDocumentService {
     applicationDomainNamePrefix: string | undefined;
     overrideBrokerType: string | undefined;
     overrideChannelDelimiter: string | undefined;
+    validateBestPractices: boolean;
   }): Promise<EpAsyncApiDocument> => {
     const funcName = "parse_and_validate";
     const logName = `${CliAsyncApiDocumentService.name}.${funcName}()`;
@@ -52,31 +54,23 @@ class CliAsyncApiDocumentService {
 
     try {
       // parse spec
-      const epAsyncApiDocument: EpAsyncApiDocument =
-        await EpAsyncApiDocumentService.createFromFile({
-          filePath: apiFile,
-          overrideEpApplicationDomainName: applicationDomainName,
-          overrideEpAssetApplicationDomainName: assetApplicationDomainName,
-          prefixEpApplicationDomainName: applicationDomainNamePrefix,
-          overrideBrokerType: overrideBrokerType,
-          overrideChannelDelimiter: overrideChannelDelimiter
-        });
+      const epAsyncApiDocument: EpAsyncApiDocument = await EpAsyncApiDocumentService.createFromFile({
+        filePath: apiFile,
+        overrideEpApplicationDomainName: applicationDomainName,
+        overrideEpAssetApplicationDomainName: assetApplicationDomainName,
+        prefixEpApplicationDomainName: applicationDomainNamePrefix,
+        overrideBrokerType: overrideBrokerType,
+        overrideChannelDelimiter: overrideChannelDelimiter
+      });
       // validate best practices
-      epAsyncApiDocument.validate_BestPractices();
+      if(validateBestPractices) epAsyncApiDocument.validate_BestPractices();
 
-      CliLogger.debug(
-        CliLogger.createLogEntry(logName, {
-          code: ECliStatusCodes.IMPORTING_DONE_VALIDATING_API,
-          details: {
-            title: epAsyncApiDocument.getTitle(),
-            version: epAsyncApiDocument.getVersion(),
-            applicationDomainName:
-              epAsyncApiDocument.getApplicationDomainName(),
-            assetApplicationDomainName:
-              epAsyncApiDocument.getAssetsApplicationDomainName(),
-          },
-        })
-      );
+      CliLogger.debug(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.IMPORTING_DONE_VALIDATING_API, details: {
+        title: epAsyncApiDocument.getTitle(),
+        version: epAsyncApiDocument.getVersion(),
+        applicationDomainName: epAsyncApiDocument.getApplicationDomainName(),
+        assetApplicationDomainName: epAsyncApiDocument.getAssetsApplicationDomainName(),
+      }}));
       return epAsyncApiDocument;
     } catch (e: any) {
       const cliError = CliErrorFactory.createCliError({logName: logName, error: e });

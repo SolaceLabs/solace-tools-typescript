@@ -621,7 +621,8 @@ export class CliEventApiImporter extends CliAssetsImporter {
         assetApplicationDomainName: cliImporterRunOptions.assetApplicationDomainName,
         applicationDomainNamePrefix: cliImporterRunOptions.applicationDomainNamePrefix,
         overrideBrokerType: cliImporterRunOptions.overrideBrokerType,
-        overrideChannelDelimiter: cliImporterRunOptions.overrideChannelDelimiter
+        overrideChannelDelimiter: cliImporterRunOptions.overrideChannelDelimiter,
+        validateBestPractices: this.cliImporterOptions.cliValidateApiSpecBestPractices,
       });
       cliEventApiImporterRunImportReturn.apiTitle = epAsyncApiDocument.getTitle();
       cliEventApiImporterRunImportReturn.applicationDomainName = epAsyncApiDocument.getApplicationDomainName();

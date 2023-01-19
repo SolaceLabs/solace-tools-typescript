@@ -35,6 +35,7 @@ export interface ICliImporterOptions {
   cliAssetImport_TargetVersionStrategy: ECliAssetImport_TargetVersionStrategy;
   cliAssetImport_BrokerType?: EBrokerTypes;
   cliAssetImport_ChannelDelimiter?: EChannelDelimiters;
+  cliValidateApiSpecBestPractices: boolean;
 }
 export interface ICliImporterGenerateAssetsOptions {}
 export interface ICliImporterGenerateAssetsReturn {

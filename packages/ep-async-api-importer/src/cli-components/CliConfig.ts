@@ -81,6 +81,7 @@ enum ECliConfigEnvVarNames {
   CLI_IMPORT_BROKER_TYPE = "CLI_IMPORT_BROKER_TYPE",
   CLI_IMPORT_CHANNEL_DELIMITER = "CLI_IMPORT_CHANNEL_DELIMITER",
   CLI_TEST_SETUP_DOMAINS_FOR_APIS = "CLI_TEST_SETUP_DOMAINS_FOR_APIS",
+  CLI_VALIDATE_API_BEST_PRACTICES = "CLI_VALIDATE_API_BEST_PRACTICES"
 }
 
 const DEFAULT_CLI_MODE = ECliImporterManagerMode.RELEASE_MODE;
@@ -101,6 +102,7 @@ const DEFAULT_CLI_IMPORT_ASSETS_TARGET_VERSION_STRATEGY = ECliAssetImport_Target
 const DEFAULT_CLI_IMPORT_ASSET_OUTPUT_DIR = "./tmp/output";
 const DEFAULT_CLI_IMPORT_CREATE_API_APPLICATION = false;
 const DEFAULT_CLI_TEST_SETUP_DOMAINS_FOR_APIS = false;
+const DEFAULT_CLI_VALIDATE_API_BEST_PRACTICES = true;
 
 const CliConfigEnvVarConfigList: Array<TCliConfigEnvVarConfig> = [
   {
@@ -237,10 +239,16 @@ const CliConfigEnvVarConfigList: Array<TCliConfigEnvVarConfig> = [
   },
   {
     envVarName: ECliConfigEnvVarNames.CLI_TEST_SETUP_DOMAINS_FOR_APIS,
-    description:
-      "Flag to deep copy latest version of existing Event API(s) into test domain(s).",
+    description: "Flag to deep copy latest version of existing Event API(s) into test domain(s).",
     required: false,
     default: String(DEFAULT_CLI_TEST_SETUP_DOMAINS_FOR_APIS),
+    options: Object.values(ECliConfigBooleanOptions),
+  },
+  {
+    envVarName: ECliConfigEnvVarNames.CLI_VALIDATE_API_BEST_PRACTICES,
+    description: "Flag to run 'best practices' validation on API(s).",
+    required: false,
+    default: String(DEFAULT_CLI_VALIDATE_API_BEST_PRACTICES),
     options: Object.values(ECliConfigBooleanOptions),
   },
 ];
@@ -293,12 +301,12 @@ class CliConfig {
   }): any => {
     const envVarConfig = this.getEnvVarConfig(envVarName);
     const isSecret: boolean = envVarConfig.secret !== undefined ? (envVarConfig.secret === true ? true : false) : false;
-    const registerValue = value ? (isSecret ? '***' : value) : 'undefined';
+    const registerValue = value !== undefined ? (isSecret ? '***' : value) : 'undefined';
     this.envVarValues.push({
       envVarName: envVarName,
       value: registerValue,
     });
-    return value ? value : defaultValue;
+    return value !== undefined ? value : defaultValue;
   }
 
   private assertIsInitialized = () => {
@@ -488,21 +496,11 @@ class CliConfig {
         appName: appName,
         runId: runId,
         asyncApiFileList: fileList,
-        cliImporterManagerMode: this.getOptionalEnvVarValueAsString_From_Options_WithDefault(
-            ECliConfigEnvVarNames.CLI_MODE,
-            Object.values(ECliImporterManagerMode),
-            DEFAULT_CLI_MODE
-          ) as ECliImporterManagerMode,
+        cliImporterManagerMode: this.getOptionalEnvVarValueAsString_From_Options_WithDefault(ECliConfigEnvVarNames.CLI_MODE, Object.values(ECliImporterManagerMode), DEFAULT_CLI_MODE) as ECliImporterManagerMode,
         applicationDomainName: applicationDomainName,
         assetApplicationDomainName: assetApplicationDomainName,
-        createEventApiApplication: this.getOptionalEnvVarValueAsBoolean_WithDefault(
-            ECliConfigEnvVarNames.CLI_IMPORT_CREATE_API_APPLICATION,
-            DEFAULT_CLI_IMPORT_CREATE_API_APPLICATION
-          ),
-        cliTestSetupDomainsForApis: this.getOptionalEnvVarValueAsBoolean_WithDefault(
-            ECliConfigEnvVarNames.CLI_TEST_SETUP_DOMAINS_FOR_APIS,
-            DEFAULT_CLI_TEST_SETUP_DOMAINS_FOR_APIS
-          ),
+        createEventApiApplication: this.getOptionalEnvVarValueAsBoolean_WithDefault(ECliConfigEnvVarNames.CLI_IMPORT_CREATE_API_APPLICATION, DEFAULT_CLI_IMPORT_CREATE_API_APPLICATION),
+        cliTestSetupDomainsForApis: this.getOptionalEnvVarValueAsBoolean_WithDefault(ECliConfigEnvVarNames.CLI_TEST_SETUP_DOMAINS_FOR_APIS, DEFAULT_CLI_TEST_SETUP_DOMAINS_FOR_APIS),
         cliImporterOptions: {
           runId: runId,
           cliAssetImport_TargetLifecycleState: this.getOptionalEnvVarValueAsString_From_Options_WithDefault(
@@ -511,17 +509,14 @@ class CliConfig {
               DEFAULT_CLI_IMPORT_ASSETS_TARGET_LIFECYLE_STATE
             ) as ECliAssetImport_TargetLifecycleState,
           cliAssetImport_TargetVersionStrategy: this.getOptionalEnvVarValueAsString_From_Options_WithDefault(
-              ECliConfigEnvVarNames.CLI_IMPORT_ASSETS_TARGET_VERSION_STRATEGY,
-              Object.values(ECliAssetImport_TargetVersionStrategy) as Array<string>,
-              DEFAULT_CLI_IMPORT_ASSETS_TARGET_VERSION_STRATEGY as unknown as string
-            ) as unknown as ECliAssetImport_TargetVersionStrategy,
-          cliAssetImport_BrokerType: this.getOptionalEnvVarValueAsString_From_Options(
-            ECliConfigEnvVarNames.CLI_IMPORT_BROKER_TYPE, 
-            Object.values(EBrokerTypes) as Array<string>) as EBrokerTypes,
-          cliAssetImport_ChannelDelimiter: this.getOptionalEnvVarValueAsString_From_Options(
-            ECliConfigEnvVarNames.CLI_IMPORT_CHANNEL_DELIMITER, 
-            Object.values(EChannelDelimiters) as Array<string>) as EChannelDelimiters,
+            ECliConfigEnvVarNames.CLI_IMPORT_ASSETS_TARGET_VERSION_STRATEGY,
+            Object.values(ECliAssetImport_TargetVersionStrategy) as Array<string>,
+            DEFAULT_CLI_IMPORT_ASSETS_TARGET_VERSION_STRATEGY as unknown as string
+          ) as unknown as ECliAssetImport_TargetVersionStrategy,
+          cliAssetImport_BrokerType: this.getOptionalEnvVarValueAsString_From_Options(ECliConfigEnvVarNames.CLI_IMPORT_BROKER_TYPE, Object.values(EBrokerTypes) as Array<string>) as EBrokerTypes,
+          cliAssetImport_ChannelDelimiter: this.getOptionalEnvVarValueAsString_From_Options(ECliConfigEnvVarNames.CLI_IMPORT_CHANNEL_DELIMITER, Object.values(EChannelDelimiters) as Array<string>) as EChannelDelimiters,
           assetOutputDir: importAssetOutputDir,
+          cliValidateApiSpecBestPractices: this.getOptionalEnvVarValueAsBoolean_WithDefault(ECliConfigEnvVarNames.CLI_VALIDATE_API_BEST_PRACTICES, DEFAULT_CLI_VALIDATE_API_BEST_PRACTICES),
         },
       },
     };

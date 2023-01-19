@@ -155,19 +155,16 @@ export class CliImporterManager {
     CliRunContext.pop();
   };
 
-  private run_test_mode = async ({
-    cleanUp,
-  }: {
+  private run_test_mode = async ({ cleanUp }: {
     cleanUp: boolean;
   }): Promise<void> => {
     const funcName = "run_test_mode";
     const logName = `${CliImporterManager.name}.${funcName}()`;
 
-    const applicationDomainNamePrefix =
-      CliImporterManager.createApplicationDomainPrefix4TestMode({
-        appName: this.cliImporterManagerOptions.appName,
-        runId: this.cliImporterManagerOptions.runId,
-      });
+    const applicationDomainNamePrefix = CliImporterManager.createApplicationDomainPrefix4TestMode({
+      appName: this.cliImporterManagerOptions.appName,
+      runId: this.cliImporterManagerOptions.runId,
+    });
 
     const applicationDomainNameList: Array<string> = [];
     const assetApplicationDomainNameList: Array<string> = [];
@@ -207,7 +204,8 @@ export class CliImporterManager {
           assetApplicationDomainName: this.cliImporterManagerOptions.assetApplicationDomainName,
           applicationDomainNamePrefix: applicationDomainNamePrefix,
           overrideBrokerType: this.cliImporterManagerOptions.cliImporterOptions.cliAssetImport_BrokerType,
-          overrideChannelDelimiter: this.cliImporterManagerOptions.cliImporterOptions.cliAssetImport_ChannelDelimiter
+          overrideChannelDelimiter: this.cliImporterManagerOptions.cliImporterOptions.cliAssetImport_ChannelDelimiter,
+          validateBestPractices: this.cliImporterManagerOptions.cliImporterOptions.cliValidateApiSpecBestPractices
         });
         applicationDomainNameList.push(epAsyncApiDocument.getApplicationDomainName());
         assetApplicationDomainNameList.push(epAsyncApiDocument.getAssetsApplicationDomainName());
@@ -444,9 +442,7 @@ export class CliImporterManager {
         case ECliImporterManagerMode.TEST_MODE:
         case ECliImporterManagerMode.TEST_MODE_KEEP:
           await this.run_test_mode({
-            cleanUp:
-              this.cliImporterManagerOptions.cliImporterManagerMode ===
-              ECliImporterManagerMode.TEST_MODE,
+            cleanUp: this.cliImporterManagerOptions.cliImporterManagerMode === ECliImporterManagerMode.TEST_MODE,
           });
           break;
         case ECliImporterManagerMode.RELEASE_MODE:
@@ -461,14 +457,9 @@ export class CliImporterManager {
       CliRunSummary.processedImport(logName, this.cliImporterManagerOptions);
     } catch (e) {
       CliRunSummary.processedImport(logName, this.cliImporterManagerOptions);
-      CliLogger.info(
-        CliLogger.createLogEntry(logName, {
-          code: ECliStatusCodes.TRANSACTION_LOG,
-          details: {
-            transactionLog: CliRunExecuteReturnLog.get(),
-          },
-        })
-      );
+      CliLogger.info(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.TRANSACTION_LOG, details: {
+        transactionLog: CliRunExecuteReturnLog.get(),
+      }}));
       throw e;
     }
   };
