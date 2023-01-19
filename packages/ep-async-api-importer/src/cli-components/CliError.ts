@@ -10,34 +10,31 @@ import CliConfig from "./CliConfig";
 import { CliLogger, ECliStatusCodes } from "./CliLogger";
 
 export class CliErrorFactory {
-  public static createCliError = ({
-    logName,
-    e,
-  }: {
+  public static createCliError = ({logName, error}: {
     logName: string;
-    e: Error;
+    error: Error;
   }): CliError => {
     let cliError: CliError;
 
-    if (e instanceof CliConfigError) {
+    if (error instanceof CliConfigError) {
       // console.log('\n\n\nINSTANCE OF CliConfigMissingEnvVarError\n\n\n\n')
       cliError = CliErrorFactory.createCliUsageErrorFromCliConfigError({
         logName: logName,
-        cliConfigError: e,
+        cliConfigError: error,
       });
-    } else if (e instanceof CliError) {
+    } else if (error instanceof CliError) {
       // console.log(`\n\n\nINSTANCE OF CliError: ${e.constructor.name}\n\n\n\n`)
-      return e;
-    } else if (e instanceof EpAsyncApiError) {
-      cliError = new CliErrorFromEpAsyncApiError(logName, e);
-    } else if (e instanceof EpAsyncApiParserError) {
-      cliError = new CliAsyncApiParserError(logName, e);
-    } else if (e instanceof EpSdkError) {
-      cliError = new CliErrorFromEpSdkError(logName, e);
-    } else if (e instanceof ApiError) {
-      cliError = new CliErrorFromEPApiError(logName, e);
+      return error;
+    } else if (error instanceof EpAsyncApiError) {
+      cliError = new CliErrorFromEpAsyncApiError(logName, error);
+    } else if (error instanceof EpAsyncApiParserError) {
+      cliError = new CliAsyncApiParserError(logName, error);
+    } else if (error instanceof EpSdkError) {
+      cliError = new CliErrorFromEpSdkError(logName, error);
+    } else if (error instanceof ApiError) {
+      cliError = new CliErrorFromEPApiError(logName, error);
     } else {
-      cliError = new CliErrorFromError(logName, e);
+      cliError = new CliErrorFromError(logName, error);
     }
     return cliError;
   };
@@ -86,7 +83,7 @@ export class CliError extends Error {
   protected appName: string;
   private readonly baseName: string = CliError.name;
 
-  private createArrayFromStack = (stack: any): Array<string> => {
+  protected createArrayFromStack = (stack: any): Array<string> => {
     return stack.split("\n");
   };
 
@@ -131,7 +128,12 @@ export class CliErrorFromError extends CliError {
   private originalError: any;
   constructor(internalLogName: string, originalError: Error) {
     super(internalLogName, originalError.message);
-    this.originalError = `${originalError.name}: ${originalError.message}`;
+    // this.originalError = `${originalError.name}: ${originalError.message}`;
+    this.originalError = {
+      name: originalError.name ? originalError.name : 'undefined',
+      message: originalError.message ? originalError.message : 'undefined',
+      stack: this.createArrayFromStack(originalError.stack)
+    }
   }
 }
 

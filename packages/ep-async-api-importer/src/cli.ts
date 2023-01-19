@@ -30,7 +30,7 @@ process.on("uncaughtException", (err: Error) => {
   const logName = `${ComponentName}.${funcName}()`;
   const cliError: CliError = CliErrorFactory.createCliError({
     logName: logName,
-    e: err,
+    error: err,
   });
   if (!(err instanceof CliError)) {
     const cliLogEntry = CliLogger.createLogEntry(logName, {

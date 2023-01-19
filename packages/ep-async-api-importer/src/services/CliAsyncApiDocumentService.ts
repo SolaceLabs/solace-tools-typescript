@@ -79,18 +79,10 @@ class CliAsyncApiDocumentService {
       );
       return epAsyncApiDocument;
     } catch (e: any) {
-      const cliError = CliErrorFactory.createCliError({
-        logName: logName,
-        e: e,
-      });
-      CliLogger.error(
-        CliLogger.createLogEntry(logName, {
-          code: ECliStatusCodes.IMPORTING_ERROR_VALIDATING_API,
-          details: {
-            error: cliError,
-          },
-        })
-      );
+      const cliError = CliErrorFactory.createCliError({logName: logName, error: e });
+      CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.IMPORTING_ERROR_VALIDATING_API, details: {
+        error: cliError,
+      }}));
       throw cliError;
     }
   };

@@ -352,7 +352,7 @@ export class CliApplicationImporter extends CliImporter {
 
       CliLogger.debug(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.IMPORTING_DONE_APPLICATION, details: {} }));
     } catch (e: any) {
-      cliApplicationImporterRunReturn.error = CliErrorFactory.createCliError({ logName: logName, e: e });
+      cliApplicationImporterRunReturn.error = CliErrorFactory.createCliError({ logName: logName, error: e });
     } finally {
       if (cliApplicationImporterRunReturn.error !== undefined) {
         CliLogger.error( CliLogger.createLogEntry(logName, { code: ECliStatusCodes.IMPORTING_ERROR_APPLICATION, details: {
