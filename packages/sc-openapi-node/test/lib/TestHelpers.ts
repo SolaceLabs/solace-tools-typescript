@@ -1,9 +1,9 @@
-import { 
-  EventApiProduct, 
-  EventApiProductsResponse, 
-  EventApiProductsService,
-  EventApiProductState,
-} from '../../generated-src';
+// import { 
+//   EventApiProduct, 
+//   EventApiProductsResponse, 
+//   EventApiProductsService,
+//   EventApiProductState,
+// } from '../../generated-src';
 
 export class TestHelpers {
 

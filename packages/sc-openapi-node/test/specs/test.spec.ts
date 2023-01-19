@@ -10,8 +10,6 @@ import {
 } from '../lib';
 import {
   ApiError, 
-  EventApiProductsResponse, 
-  EventApiProductsService, 
 } from '../../generated-src';
 
 const scriptName: string = path.basename(__filename);
