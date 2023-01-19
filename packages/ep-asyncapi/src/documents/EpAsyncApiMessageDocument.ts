@@ -99,6 +99,7 @@ export class EpAsyncApiMessageDocument {
   }
 
   public validate(): void {
+    // no validation
   }
 
   public validate_BestPractices(): void {
