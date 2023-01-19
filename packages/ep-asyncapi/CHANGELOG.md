@@ -1,5 +1,16 @@
 # @solace-labs/ep-asyncapi
 
+## 0.52.0
+
+### Minor Changes
+
+- 42b4280: added best practices validation to message document
+
+  **New Features:**
+
+  - **EpAsyncApiMessageDocument.validate_BestPractices()**
+    - validates if message has a payload schema defined
+
 ## 0.51.0
 
 ### Minor Changes
