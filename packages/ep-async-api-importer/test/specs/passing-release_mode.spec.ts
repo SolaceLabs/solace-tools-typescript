@@ -51,6 +51,7 @@ describe(`${scriptName}`, () => {
         // })
         overrideBrokerType: CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_BrokerType,
         overrideChannelDelimiter: CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_ChannelDelimiter,  
+        validateBestPractices: CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliValidateApiSpecBestPractices
       });
       const xvoid: void = await TestService.absent_ApplicationDomains(false);
     } catch(e) {
