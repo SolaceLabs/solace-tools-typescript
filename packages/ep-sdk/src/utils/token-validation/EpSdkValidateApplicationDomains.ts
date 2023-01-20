@@ -100,6 +100,7 @@ export class EpSdkValidateApplicationDomainsClass extends EpSdkValidationClass {
       if(error) throw error;
       const writeAccess = EpSdkValidationLog.getValidationPermissionResultAccess(TEpSdkPermissionResources.ApplicationDomains, EEpSdkPermissions.WRITE);
       const deleteAccess = EpSdkValidationLog.getValidationPermissionResultAccess(TEpSdkPermissionResources.ApplicationDomains, EEpSdkPermissions.DELETE);
+      // eslint-disable-next-line
       return writeAccess && deleteAccess;
     }
   }
