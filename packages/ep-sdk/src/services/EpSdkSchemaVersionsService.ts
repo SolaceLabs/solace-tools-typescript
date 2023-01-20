@@ -33,19 +33,12 @@ export class EpSdkSchemaVersionsServiceClass extends EpSdkVersionServiceClass {
     const funcName = "getVersionByVersion";
     const logName = `${EpSdkSchemaVersionsServiceClass.name}.${funcName}()`;
 
-    const schemaVersionList: Array<SchemaVersion> =
-      await this.getVersionsForSchemaId({ schemaId: schemaId });
+    const schemaVersionList: Array<SchemaVersion> = await this.getVersionsForSchemaId({ schemaId: schemaId });
     return schemaVersionList.find((schemaVersion: SchemaVersion) => {
       /* istanbul ignore next */
-      if (schemaVersion.version === undefined)
-        throw new EpSdkApiContentError(
-          logName,
-          this.constructor.name,
-          "schemaVersion.version === undefined",
-          {
-            schemaVersion: schemaVersion,
-          }
-        );
+      if (schemaVersion.version === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "schemaVersion.version === undefined", {
+        schemaVersion: schemaVersion,
+      });
       return schemaVersion.version === schemaVersionString;
     });
   };

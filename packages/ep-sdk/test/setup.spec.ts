@@ -52,13 +52,7 @@ describe(`${scriptName}`, () => {
         EpSdkLogger.initialize({ epSdkLoggerInstance: epSdkConsoleLogger });
         EpSdkConfig.initialize(TestConfig.getAppId());
       } catch (e) {
-        expect(
-          false,
-          TestLogger.createTestFailMessageForError(
-            "intitializing test config failed",
-            e
-          )
-        ).to.be.true;
+        expect(false, TestLogger.createTestFailMessageForError("intitializing test config failed",e)).to.be.true;
       }
     });
 
@@ -70,10 +64,7 @@ describe(`${scriptName}`, () => {
           baseUrl: TestConfig.getConfig().apiBaseUrl,
         });
       } catch (e) {
-        expect(
-          false,
-          TestLogger.createTestFailMessageForError("initializing ep client", e)
-        ).to.be.true;
+        expect(false, TestLogger.createTestFailMessageForError("initializing ep client", e)).to.be.true;
       }
     });
   });

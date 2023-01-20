@@ -1,4 +1,5 @@
 import {
+  CancelablePromise,
   OpenAPI,
   OpenAPIConfig
 } from '@solace-labs/ep-openapi-node';
@@ -8,7 +9,7 @@ import {
  * @category Utils
  */
 export class EpSdkClient {
-
+  private static token: string;
   public static readonly DEFAULT_EP_API_BASE_URL = "https://api.solace.cloud";
 
   /**
@@ -41,18 +42,33 @@ export class EpSdkClient {
     globalOpenAPI.WITH_CREDENTIALS = true;
     globalOpenAPI.CREDENTIALS = "include";
     globalOpenAPI.TOKEN = token;
-
     // this allows to use ep-sdk as npm link during development as well
     // two instances of ep-openapi-node in this case
     OpenAPI.BASE = baseUrl;
     OpenAPI.WITH_CREDENTIALS = true;
     OpenAPI.CREDENTIALS = "include";
     OpenAPI.TOKEN = token;
-
+    // save the token
+    EpSdkClient.token = token;
     // // DEBUG:
     // console.log(`>>>>>>>>\n\n${logName}:\n\n>>>>> globalOpenAPI=${JSON.stringify(globalOpenAPI, null, 2)}\n\n<<<<<<<<<<<`);
 
     return globalOpenAPI;
+  }
+
+  public static setToken = ({ globalOpenAPI, token }:{
+    globalOpenAPI: OpenAPIConfig;
+    token: string;
+  }): void => {
+    globalOpenAPI.TOKEN = token;
+    OpenAPI.TOKEN = token;
+  }
+
+  public static resetToken = ({ globalOpenAPI }:{
+    globalOpenAPI: OpenAPIConfig;
+  }): void => {
+    globalOpenAPI.TOKEN = EpSdkClient.token;
+    OpenAPI.TOKEN = EpSdkClient.token;
   }
 
 }

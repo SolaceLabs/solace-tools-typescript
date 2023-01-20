@@ -6,3 +6,4 @@ export * from './EpSdkConsoleLogger';
 export * from './EpSdkLoggerCodes';
 export * from './EpSdkSemVerUtils';
 export * from './EpSdkConfig';
+export * from './token-validation';
