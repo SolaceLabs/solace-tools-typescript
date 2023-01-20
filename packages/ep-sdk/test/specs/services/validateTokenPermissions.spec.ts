@@ -87,8 +87,8 @@ describe(`${scriptName}`, () => {
       const permissionResult: TEpSdkPermissionResult | undefined = EpSdkValidationLog.getValidationPermissionResult(TEpSdkPermissionResources.ApplicationDomains, EEpSdkPermissions.READ);
       expect(permissionResult, TestLogger.createLogMessage('permissionResult', logEntry)).to.not.be.undefined;
       expect(permissionResult.access, TestLogger.createLogMessage('permissionResult.access', logEntry)).to.be.false;
-      // // DEBUG
-      // expect(false, TestLogger.createLogMessage('debug', { validationLog: EpSdkValidateTokenPermissionsService.getValidationLog()})).to.be.true;
+      // DEBUG
+      expect(false, TestLogger.createLogMessage('debug', { validationLog: EpSdkValidationLog.getValidationLog()})).to.be.true;
     } catch (e) {
       if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed", e)).to.be.true;
       expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
