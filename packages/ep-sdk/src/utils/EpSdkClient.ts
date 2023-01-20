@@ -1,5 +1,4 @@
 import {
-  CancelablePromise,
   OpenAPI,
   OpenAPIConfig
 } from '@solace-labs/ep-openapi-node';
