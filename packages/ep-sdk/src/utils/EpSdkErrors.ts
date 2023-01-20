@@ -10,6 +10,13 @@ enum ELoggerCodes {
   EP_SDK_INTERNAL_ERROR = "EP_SDK_INTERNAL_ERROR"
 }
 
+export function isEpPermissionsError(error: any): boolean {
+  if(error instanceof ApiError) {
+    const apiError: ApiError = error;
+    return apiError.status === 401 || apiError.status === 403;
+  } else return false;
+}
+
 /** @category Errors */
 export class EpSdkError extends Error {
   private internalStack: Array<string>;

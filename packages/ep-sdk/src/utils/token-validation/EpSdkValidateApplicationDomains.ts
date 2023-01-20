@@ -6,6 +6,7 @@ import {
 import {
   EpSdkApiContentError,
   EpSdkClient,
+  isEpPermissionsError,
 } from '../../utils';
 import { 
   EpSdkValidationClass 
@@ -42,14 +43,17 @@ export class EpSdkValidateApplicationDomainsClass extends EpSdkValidationClass {
         await ApplicationDomainsService.getApplicationDomains({ pageSize: 1 });
         EpSdkValidationLog.addValidationToLog({ resource: TEpSdkPermissionResources.ApplicationDomains, permissionResult: { permission: EEpSdkPermissions.READ, access: true }});
       } catch(e) {
-        if(this.isAuthorizationError(e)) EpSdkValidationLog.addValidationToLog({ resource: TEpSdkPermissionResources.ApplicationDomains, permissionResult: { permission: EEpSdkPermissions.READ, access: false }});
+        if(isEpPermissionsError(e)) EpSdkValidationLog.addValidationToLog({ resource: TEpSdkPermissionResources.ApplicationDomains, permissionResult: { permission: EEpSdkPermissions.READ, access: false }});
+        /* istanbul ignore next */
         else throw e;
       }
     } catch (e) { 
+      /* istanbul ignore next */
       error = e;
     } finally {
       EpSdkClient.resetToken({globalOpenAPI: globalOpenAPI});
     }
+    /* istanbul ignore next */
     if(error) throw error;
   }
   /**
@@ -81,7 +85,7 @@ export class EpSdkValidateApplicationDomainsClass extends EpSdkValidationClass {
         if(applicationDomainResponse.data.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'applicationDomainResponse.data.id === undefined', {});
         applicationDomainId = applicationDomainResponse.data.id;
       } catch(e) {
-        if(this.isAuthorizationError(e)) EpSdkValidationLog.addValidationToLog({ resource: TEpSdkPermissionResources.ApplicationDomains, permissionResult: { permission: EEpSdkPermissions.WRITE, access: false }});
+        if(isEpPermissionsError(e)) EpSdkValidationLog.addValidationToLog({ resource: TEpSdkPermissionResources.ApplicationDomains, permissionResult: { permission: EEpSdkPermissions.WRITE, access: false }});
         else throw e;
       }
       try { 
@@ -90,14 +94,17 @@ export class EpSdkValidateApplicationDomainsClass extends EpSdkValidationClass {
         await ApplicationDomainsService.deleteApplicationDomain({ id: applicationDomainId });
         EpSdkValidationLog.addValidationToLog({ resource: TEpSdkPermissionResources.ApplicationDomains, permissionResult: { permission: EEpSdkPermissions.DELETE, access: true }});
       } catch(e) {
-        if(this.isAuthorizationError(e)) EpSdkValidationLog.addValidationToLog({ resource: TEpSdkPermissionResources.ApplicationDomains, permissionResult: { permission: EEpSdkPermissions.DELETE, access: false }});
+        if(isEpPermissionsError(e)) EpSdkValidationLog.addValidationToLog({ resource: TEpSdkPermissionResources.ApplicationDomains, permissionResult: { permission: EEpSdkPermissions.DELETE, access: false }});
+        /* istanbul ignore next */
         else throw e;
       }
     } catch (e) { 
+      /* istanbul ignore next */
       error = e;
     } finally {
       EpSdkClient.resetToken({globalOpenAPI: globalOpenAPI});
     }
+    /* istanbul ignore next */
     if(error) throw error;
     const writeAccess = EpSdkValidationLog.getValidationPermissionResultAccess(TEpSdkPermissionResources.ApplicationDomains, EEpSdkPermissions.WRITE);
     const deleteAccess = EpSdkValidationLog.getValidationPermissionResultAccess(TEpSdkPermissionResources.ApplicationDomains, EEpSdkPermissions.DELETE);

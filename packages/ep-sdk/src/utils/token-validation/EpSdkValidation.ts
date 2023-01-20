@@ -10,12 +10,5 @@ export class EpSdkValidationClass {
     return EpSdkUtils.getUUID();
   }
 
-  protected isAuthorizationError(error: any): boolean {
-    if(error instanceof ApiError) {
-      const apiError: ApiError = error;
-      return apiError.status === 401 || apiError.status === 403;
-    } else return false;
-  }
-
 }
 

@@ -3,7 +3,8 @@ import {
   OpenAPIConfig,
 } from '@solace-labs/ep-openapi-node';
 import {
-  EpSdkClient,
+  EpSdkClient, 
+  isEpPermissionsError,
 } from '../../utils';
 import { 
   EpSdkValidationClass 
@@ -35,14 +36,16 @@ export class EpSdkValidateEventsClass extends EpSdkValidationClass {
         await EventsService.getEvents({ pageSize: 1 });
         EpSdkValidationLog.addValidationToLog({ resource: TEpSdkPermissionResources.Events, permissionResult: { permission: EEpSdkPermissions.READ, access: true }});
       } catch(e) {
-        if(this.isAuthorizationError(e)) EpSdkValidationLog.addValidationToLog({ resource: TEpSdkPermissionResources.Events, permissionResult: { permission: EEpSdkPermissions.READ, access: false }});
+        if(isEpPermissionsError(e)) EpSdkValidationLog.addValidationToLog({ resource: TEpSdkPermissionResources.Events, permissionResult: { permission: EEpSdkPermissions.READ, access: false }});
         else throw e;
       }
     } catch (e) { 
+      /* istanbul ignore next */
       error = e;
     } finally {
       EpSdkClient.resetToken({globalOpenAPI: globalOpenAPI});
     }
+    /* istanbul ignore next */
     if(error) throw error;
   }
 
