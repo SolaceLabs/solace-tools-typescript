@@ -42,8 +42,8 @@ export class EpSdkValidateEventsClass extends EpSdkValidationClass {
       error = e;
     } finally {
       EpSdkClient.resetToken({globalOpenAPI: globalOpenAPI});
-      if(error) throw error;
     }
+    if(error) throw error;
   }
 
 }

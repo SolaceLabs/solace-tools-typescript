@@ -49,8 +49,8 @@ export class EpSdkValidateApplicationDomainsClass extends EpSdkValidationClass {
       error = e;
     } finally {
       EpSdkClient.resetToken({globalOpenAPI: globalOpenAPI});
-      if(error) throw error;
     }
+    if(error) throw error;
   }
   /**
    * Tests if token has permissions to create & delete application domains.
@@ -97,12 +97,11 @@ export class EpSdkValidateApplicationDomainsClass extends EpSdkValidationClass {
       error = e;
     } finally {
       EpSdkClient.resetToken({globalOpenAPI: globalOpenAPI});
-      if(error) throw error;
-      const writeAccess = EpSdkValidationLog.getValidationPermissionResultAccess(TEpSdkPermissionResources.ApplicationDomains, EEpSdkPermissions.WRITE);
-      const deleteAccess = EpSdkValidationLog.getValidationPermissionResultAccess(TEpSdkPermissionResources.ApplicationDomains, EEpSdkPermissions.DELETE);
-      // eslint-disable-next-line
-      return writeAccess && deleteAccess;
     }
+    if(error) throw error;
+    const writeAccess = EpSdkValidationLog.getValidationPermissionResultAccess(TEpSdkPermissionResources.ApplicationDomains, EEpSdkPermissions.WRITE);
+    const deleteAccess = EpSdkValidationLog.getValidationPermissionResultAccess(TEpSdkPermissionResources.ApplicationDomains, EEpSdkPermissions.DELETE);
+    return writeAccess && deleteAccess;
   }
 
 }
