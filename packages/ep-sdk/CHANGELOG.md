@@ -1,5 +1,16 @@
 # @solace-labs/ep-sdk
 
+## 0.52.0
+
+### Minor Changes
+
+- 8d61447: added experimental token validation classes
+
+  **New Features:**
+
+  - **utils/token-validation**
+    - contains experimental classes to validate a token's permissions
+
 ## 0.51.2
 
 ### Patch Changes
