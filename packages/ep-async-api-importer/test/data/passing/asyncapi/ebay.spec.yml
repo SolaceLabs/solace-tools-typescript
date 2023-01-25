@@ -1,6 +1,6 @@
 asyncapi: 2.0.0
-x-ep-application-domain-name: ep-asyncapi-importer/test/passing/asyncapi/ebay.spec
 info:
+  x-ep-application-domain-name: ep-asyncapi-importer/test/passing/asyncapi/ebay.spec
   title: eBay Notifications
   version: 1.0.0
   description: This contract defines eBay notification for event subsciptions

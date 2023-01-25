@@ -1,6 +1,6 @@
 asyncapi: '2.4.0'
-x-ep-application-domain-name: ep-asyncapi/test
 info:
+  x-ep-application-domain-name: ep-asyncapi/test
   title: "very-long-event-name.spec"
   version: '1.2.0'
 defaultContentType: application/json

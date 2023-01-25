@@ -1,6 +1,6 @@
 asyncapi: 2.4.0
-x-ep-application-domain-name: ep-asyncapi-importer/test/passing/misc/avro+json-schema.spec
 info:
+  x-ep-application-domain-name: ep-asyncapi-importer/test/passing/misc/avro+json-schema.spec
   title: Avro & JSON Schema API
   version: 0.1.0
 

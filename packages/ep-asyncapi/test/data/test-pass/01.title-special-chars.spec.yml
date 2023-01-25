@@ -1,6 +1,6 @@
 asyncapi: '2.4.0'
-x-ep-application-domain-name: solace-labs/ep-asyncapi/test
 info:
+  x-ep-application-domain-name: solace-labs/ep-asyncapi/test
   title: "slash=/,amp;=&,star=*,quotes=''"
   version: '1.2.9'
   license:

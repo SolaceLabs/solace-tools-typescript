@@ -1,6 +1,6 @@
 asyncapi: '2.4.0'
-x-ep-application-domain-name: test/fail/two-specs-same-event-different-schemas
 info:
+  x-ep-application-domain-name: test/fail/two-specs-same-event-different-schemas
   title: Second Spec with Event A
   version: '1.0.0'
   description: |

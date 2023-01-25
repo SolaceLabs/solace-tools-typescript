@@ -105,7 +105,7 @@ function getCommandLineOptionValues(): OptionValues {
 
   const domainOption: Option = Program.createOption(
     "-d, --domain <value>",
-    "Application Domain Name. Overrides the application domain name extracted from each in Async API file, path=$.x-ep-application-domain-name."
+    "Application Domain Name. Overrides the application domain name extracted from each in Async API file, path=$info.x-ep-application-domain-name."
   );
   const assetDomainOption: Option = Program.createOption(
     "-ad, --assetDomain <value>",

@@ -1,6 +1,6 @@
 asyncapi: '2.4.0'
-x-ep-application-domain-name: ep-asyncapi-importer/test/single-tests/two-channels-same-message.spec
 info:
+  x-ep-application-domain-name: ep-asyncapi-importer/test/single-tests/two-channels-same-message.spec
   title: "two channels same message"
   version: '1.1.1'
   # description: |

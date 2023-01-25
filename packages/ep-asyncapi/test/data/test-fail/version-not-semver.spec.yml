@@ -1,6 +1,6 @@
 asyncapi: '2.4.0'
-x-ep-application-domain-name: ep-asyncapi/test
 info:
+  x-ep-application-domain-name: ep-asyncapi/test
   title: "version-not-semver.spec"
   version: '1'
 channels:

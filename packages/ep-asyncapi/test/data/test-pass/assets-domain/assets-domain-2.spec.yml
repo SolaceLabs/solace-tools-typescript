@@ -1,7 +1,7 @@
 asyncapi: '2.4.0'
-x-ep-application-domain-name: solace-labs/ep-asyncapi/test/asset-domain/app-domain-2
 x-ep-assets-application-domain-name: solace-labs/ep-asyncapi/test/asset-domain/assets
 info:
+  x-ep-application-domain-name: solace-labs/ep-asyncapi/test/asset-domain/app-domain-2
   title: Asset Domain 2
   version: '1.0.0'
 

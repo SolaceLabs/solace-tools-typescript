@@ -1,6 +1,6 @@
 asyncapi: '2.4.0'
-x-ep-application-domain-name: ep-asyncapi-importer/test/passing/misc/non-alpha-title.spec
 info:
+  x-ep-application-domain-name: ep-asyncapi-importer/test/passing/misc/non-alpha-title.spec
   title: b slash=/,amp;=&,star=*,quotes="" e
   version: '1.2.9'
   # description: |

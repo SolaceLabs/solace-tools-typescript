@@ -1,6 +1,6 @@
 asyncapi: '2.4.0'
-x-ep-application-domain-name: ep-asyncapi-importer/test/single-tests/same-api-version-removed-channel
 info:
+  x-ep-application-domain-name: ep-asyncapi-importer/test/single-tests/same-api-version-removed-channel
   title: fail same api version removed channels
   version: '1.0.0'
 

@@ -1,7 +1,7 @@
 asyncapi: '2.4.0'
-x-ep-application-domain-name: solace-labs/ep-asyncapi/test/file-refs/app-domain
 x-ep-assets-application-domain-name: solace-labs/ep-asyncapi/test/file-refs/assets
 info:
+  x-ep-application-domain-name: solace-labs/ep-asyncapi/test/file-refs/app-domain
   title: File Refs 1
   version: '1.0.0'
 

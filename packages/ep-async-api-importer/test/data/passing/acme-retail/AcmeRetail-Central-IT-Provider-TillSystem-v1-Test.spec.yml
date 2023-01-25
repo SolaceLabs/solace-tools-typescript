@@ -1,6 +1,6 @@
 asyncapi: '2.4.0'
-x-ep-application-domain-name: ep-asyncapi-importer/test/passing/acme-retail/AcmeRetail-Central-IT-Provider-TillSystem-v1-Test.spec
 info:
+  x-ep-application-domain-name: ep-asyncapi-importer/test/passing/acme-retail/AcmeRetail-Central-IT-Provider-TillSystem-v1-Test.spec
   title: Central-IT-Provider-TillSystem-v1-Test
   version: '1.2.5'
   description: |

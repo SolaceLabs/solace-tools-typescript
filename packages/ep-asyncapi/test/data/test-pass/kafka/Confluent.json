@@ -78,8 +78,8 @@
         }
     },
     "asyncapi": "2.2.0",
-    "x-ep-application-domain-name": "Discovery",
     "info": {
+        "x-ep-application-domain-name": "Discovery",
         "description": "Discovery Agent Scan",
         "title": "Confluent16-1",
         "version": "0.1.0"

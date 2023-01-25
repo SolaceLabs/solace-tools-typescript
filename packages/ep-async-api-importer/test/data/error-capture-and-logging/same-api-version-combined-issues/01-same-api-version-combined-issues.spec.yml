@@ -1,6 +1,6 @@
 asyncapi: '2.4.0'
-x-ep-application-domain-name: ep-asyncapi-importer/test/single-tests/same-api-version-combined-issues
 info:
+  x-ep-application-domain-name: ep-asyncapi-importer/test/single-tests/same-api-version-combined-issues
   title: Test fail same api version many issues
   version: '1.0.0'
 

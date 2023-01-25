@@ -1,6 +1,6 @@
 asyncapi: '2.4.0'
-x-ep-application-domain-name: ep-asyncapi-importer/test/single-tests/warning-event-api-version.spec
 info:
+  x-ep-application-domain-name: ep-asyncapi-importer/test/single-tests/warning-event-api-version.spec
   title: warning-event-api-version.spec
   version: '1.1.1'
 

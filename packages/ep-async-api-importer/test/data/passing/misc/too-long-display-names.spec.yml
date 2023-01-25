@@ -1,6 +1,6 @@
 asyncapi: '2.4.0'
-x-ep-application-domain-name: ep-asyncapi-importer/test/single-tests/too-long-display-names.spec
 info:
+  x-ep-application-domain-name: ep-asyncapi-importer/test/single-tests/too-long-display-names.spec
   title: too-long-display-names.spec
   version: '3.1.1'
 

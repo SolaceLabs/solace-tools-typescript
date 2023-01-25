@@ -1,10 +1,10 @@
 asyncapi: 2.4.0
-x-ep-application-domain-name: ep-asyncapi-importer/test/kafka/avro-schema.spec
 
 x-ep-broker-type: kafka
 x-ep-channel-delimiter: _
 
 info:
+  x-ep-application-domain-name: ep-asyncapi-importer/test/kafka/avro-schema.spec
   title: Avro Schema API
   version: 0.1.0
   description: Discovery Agent Scan

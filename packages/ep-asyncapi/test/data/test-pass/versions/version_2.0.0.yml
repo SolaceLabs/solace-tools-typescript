@@ -11,8 +11,8 @@ channels:
       message:
         $ref: '#/components/messages/ExampleTopic'
 asyncapi: 2.0.0
-x-ep-application-domain-name: x-ep-application-domain-name
 x-ep-assets-application-domain-name: x-ep-assets-application-domain-name
 info:
+  x-ep-application-domain-name: x-ep-application-domain-name
   title: Version 2.0.0
   version: 0.1.0

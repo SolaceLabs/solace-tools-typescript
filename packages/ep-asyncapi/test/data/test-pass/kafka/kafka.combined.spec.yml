@@ -1,9 +1,9 @@
 asyncapi: 2.4.0
-x-ep-application-domain-name: ep-asyncapi/test-pass/kafka
 x-ep-assets-application-domain-name: ep-asyncapi/test-pass/kafka/assets
 x-ep-broker-type: kafka
 x-ep-channel-delimiter: "."
 info:
+  x-ep-application-domain-name: ep-asyncapi/test-pass/kafka
   title: Kafka Avro & JSON Schema API
   description: |
     - Test broker type

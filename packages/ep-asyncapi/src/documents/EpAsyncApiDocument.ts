@@ -97,8 +97,7 @@ export class EpAsyncApiDocument {
   }
 
   private get_X_EpApplicationDomainName(): string | undefined {
-    // TODO: there should be a parser method to get this
-    return this.asyncApiDocumentJson[E_EpAsyncApiExtensions.X_EP_APPLICATION_DOMAIN_NAME];
+    return this.asyncApiDocument.info().extensions()[E_EpAsyncApiExtensions.X_EP_APPLICATION_DOMAIN_NAME];
   }
   private get_X_EpAssetsApplicationDomainName(): string | undefined {
     return this.asyncApiDocumentJson[E_EpAsyncApiExtensions.X_EP_ASSETS_APPLICATION_DOMAIN_NAME];

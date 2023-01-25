@@ -1,6 +1,6 @@
 asyncapi: '2.4.0'
-x-ep-application-domain-name: ep-asyncapi-importer/test/single-tests/new-event-same-version.spec
 info:
+  x-ep-application-domain-name: ep-asyncapi-importer/test/single-tests/new-event-same-version.spec
   title: Test fail new event same version
   version: '1.0.0'
   description: |

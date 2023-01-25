@@ -1,6 +1,6 @@
 asyncapi: '2.4.0'
-x-ep-application-domain-name: ep-asyncapi-importer/test/single-tests/same-api-version-remove-enum
 info:
+  x-ep-application-domain-name: ep-asyncapi-importer/test/single-tests/same-api-version-remove-enum
   title: Test fail same api version remove enum
   version: '1.0.0'
 
