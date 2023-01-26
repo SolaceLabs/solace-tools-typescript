@@ -4,7 +4,7 @@ Generated Typescript APIM Open API Client for [Solace Event Portal](https://sola
 
 ---
 
-**Event Portal APIM OpenAPI Version: 2.0.0-ea.5**
+**Event Portal APIM OpenAPI Version: 2.0.0-ea.6**
 
 ---
 

@@ -11,12 +11,12 @@ import {
 import {
   ApiError, 
   EventApiProduct, 
+  EventApiProductHistoryResponse, 
   EventApiProductResponse, 
   EventApiProductsResponse, 
   EventApiProductsService,
   EventApiProductState,
-  EventApiProductVersionsResponse,
-  EventApiProductVersionSummary, 
+  EventApiProductSummary,
 } from '../../generated-src';
 import { TestHelpers } from '../lib/TestHelpers';
 
@@ -78,7 +78,7 @@ describe(`${scriptName}`, () => {
           // // DEBUG
           // expect(false,TestLogger.createLogMessage('meta', meta)).to.be.true;
           // expect(meta.pagination.nextPage,TestLogger.createApiTestFailMessage(TestLogger.createLogMessage('meta', meta))).to.be.greaterThan(0);
-          nextPage = meta.pagination.nextPage > 0 ? meta.pagination.nextPage : null;
+          nextPage = meta.pagination.nextPage;
           eventApiProductList.push(...eventApiProductsResponse.data);
           // // DEBUG
           // expect(false,TestLogger.createLogMessage('incremental list', eventApiProductList)).to.be.true;
@@ -124,19 +124,19 @@ describe(`${scriptName}`, () => {
     it(`${scriptName}: should get versions for each event api product and each single version`, async () => {
       try {
         for(const listedEventApiProduct of EventApiProductList) {
-          const eventApiProductVersionsResponse: EventApiProductVersionsResponse = await EventApiProductsService.getEventApiProductRevisions({
+          const eventApiProductHistoryResponse: EventApiProductHistoryResponse = await EventApiProductsService.getEventApiProductHistory({
             eventApiProductId: listedEventApiProduct.id
           });
-          const eventApiProductVersionSummaryList: Array<EventApiProductVersionSummary>  = eventApiProductVersionsResponse.data;          
+          const eventApiProductSummaryList: Array<EventApiProductSummary>  = eventApiProductHistoryResponse.data;          
           // // DEBUG
           // expect(false, TestLogger.createLogMessage('eventApiProductVersionSummaryList', eventApiProductVersionSummaryList)).to.be.true;
-          for(const eventApiProductVersionSummary of eventApiProductVersionSummaryList) {
+          for(const eventApiProductSummary of eventApiProductSummaryList) {
             const eventApiProductResponse: EventApiProductResponse = await EventApiProductsService.getEventApiProductRevision({
               eventApiProductId: listedEventApiProduct.id,
-              version: eventApiProductVersionSummary.version
+              version: eventApiProductSummary.version
             });
             const eventApiProduct: EventApiProduct = eventApiProductResponse.data;
-            expect(eventApiProduct.version, 'version mismatch').to.equal(eventApiProductVersionSummary.version);
+            expect(eventApiProduct.version, 'version mismatch').to.equal(eventApiProductSummary.version);
             expect(TestHelpers.getEventApiProductStateValueList(), 'state failed').to.include(eventApiProduct.state);
           }
         }
