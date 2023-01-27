@@ -1595,6 +1595,25 @@
   dependencies:
     esquery "^1.0.1"
 
+"@rsql/ast@^1.5.2":
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/@rsql/ast/-/ast-1.5.2.tgz#fb330eb4d64440272c53c36a81a4ffe10b5a6c16"
+  integrity sha512-fuExw1QQpILA7FrCmJ/OySadP/5uOr+N7lsQBvIOwaF742FAGiNvkzjpHn+FkYrAJkfE8yvMrEHlF5L+MuVnpA==
+
+"@rsql/builder@^1.5.2":
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/@rsql/builder/-/builder-1.5.2.tgz#129dd63124089da1289854dae54985f5c5bc9e9c"
+  integrity sha512-0l/VZljl+CFFrBl+XeuWxdd3s0gkvJJbYYvPmR+7w63U2xSynVS2qjSf06Z0SkBSXo0oqjUrFUPHwbAzoSCqPQ==
+  dependencies:
+    "@rsql/ast" "^1.5.2"
+
+"@rsql/emitter@^1.5.2":
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/@rsql/emitter/-/emitter-1.5.2.tgz#a9ef96f9514d3e6a968664f7907b913123b0a465"
+  integrity sha512-L6Gk92ZC25R1xw+i80FrcYqjVxfT3AWlbaMdOH0TeLogI+EcOww7bGlvTBL6sQ590GrKq9nntfJLnGre7RBqdQ==
+  dependencies:
+    "@rsql/ast" "^1.5.2"
+
 "@sinonjs/commons@^1.6.0", "@sinonjs/commons@^1.7.0", "@sinonjs/commons@^1.8.3":
   version "1.8.6"
   resolved "https://registry.yarnpkg.com/@sinonjs/commons/-/commons-1.8.6.tgz#80c516a4dc264c2a69115e7578d62581ff455ed9"
