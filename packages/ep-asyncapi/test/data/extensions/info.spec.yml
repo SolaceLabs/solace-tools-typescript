@@ -1,0 +1,33 @@
+components:
+  messages:
+    ExampleTopic:
+      payload:
+        type: string
+      contentType: application/vnd.apache.avro+json
+channels:
+  ExampleTopic:
+    x-ep-event-name: x-ep-event-name
+    publish:
+      message:
+        $ref: '#/components/messages/ExampleTopic'
+asyncapi: 2.0.0
+x-ep-application-domain-name: top/x-ep-application-domain-name
+x-ep-assets-application-domain-name: top/x-ep-assets-application-domain-name
+x-ep-broker-type: "solace"
+x-ep-channel-delimiter: '_'
+info:
+  title: info extensions
+  version: 0.1.0
+  x-ep-application-domain-name: "info/x-ep-application-domain-name"
+  x-ep-assets-application-domain-name: "info/x-ep-assets-application-domain-name"
+  x-ep-broker-type: "kafka"
+  x-ep-channel-delimiter: '.'
+  # x-ep-event-api-version: "1.0.0"
+  # x-ep-event-api-id: "h96388c6tk3"
+  # x-ep-displayname: "Material"
+  # x-ep-state-name: "RELEASED"
+  # x-ep-application-domain-id: "bpgli1jzier"
+  # x-ep-state-id: "2"
+  # x-ep-event-api-version-id: "pp6qtfm3jgw"
+
+ 

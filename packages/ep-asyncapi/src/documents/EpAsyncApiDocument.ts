@@ -1,5 +1,5 @@
 import yaml from "js-yaml";
-import { AsyncAPIDocument, Message, Channel } from "@asyncapi/parser";
+import { AsyncAPIDocument, Message, Channel, Info } from "@asyncapi/parser";
 import { Validator, ValidatorResult } from "jsonschema";
 import { $EventApi, $EventApiVersion } from "@solace-labs/ep-openapi-node";
 import {
@@ -96,18 +96,30 @@ export class EpAsyncApiDocument {
     return anyDoc["_json"];
   }
 
-  private get_X_EpApplicationDomainName(): string | undefined {
+  private get_X_EpApplicationDomainNameTopLevel(): string | undefined {
     // TODO: there should be a parser method to get this
     return this.asyncApiDocumentJson[E_EpAsyncApiExtensions.X_EP_APPLICATION_DOMAIN_NAME];
   }
-  private get_X_EpAssetsApplicationDomainName(): string | undefined {
+  private get_X_EpApplicationDomainNameInfoLevel(): string | undefined {
+    return this.asyncApiDocument.info().extension(E_EpAsyncApiExtensions.X_EP_APPLICATION_DOMAIN_NAME);
+  }
+  private get_X_EpAssetsApplicationDomainNameTopLevel(): string | undefined {
     return this.asyncApiDocumentJson[E_EpAsyncApiExtensions.X_EP_ASSETS_APPLICATION_DOMAIN_NAME];
   }
-  private get_X_EpBrokerType(): string | undefined {
+  private get_X_EpAssetsApplicationDomainNameInfoLevel(): string | undefined {
+    return this.asyncApiDocument.info().extension(E_EpAsyncApiExtensions.X_EP_ASSETS_APPLICATION_DOMAIN_NAME);
+  }
+  private get_X_EpBrokerTypeTopLevel(): string | undefined {
     return this.asyncApiDocumentJson[E_EpAsyncApiExtensions.X_EP_BROKER_TYPE];
   }
-  private get_X_EpChannelDelimiter(): string | undefined {
+  private get_X_EpBrokerTypeInfoLevel(): string | undefined {
+    return this.asyncApiDocument.info().extension(E_EpAsyncApiExtensions.X_EP_BROKER_TYPE);
+  }
+  private get_X_EpChannelDelimiterTopLevel(): string | undefined {
     return this.asyncApiDocumentJson[E_EpAsyncApiExtensions.X_EP_CHANNEL_DELIMITER];
+  }
+  private get_X_EpChannelDelimiterInfoLevel(): string | undefined {
+    return this.asyncApiDocument.info().extension(E_EpAsyncApiExtensions.X_EP_CHANNEL_DELIMITER);
   }
 
   private createApplicationDomainName(prefix?: string): string {
@@ -117,7 +129,10 @@ export class EpAsyncApiDocument {
     let appDomainName: string | undefined =
       this.overrideEpApplicationDomainName;
     if (appDomainName === undefined) {
-      const specAppDomainName = this.get_X_EpApplicationDomainName();
+      // try info level first
+      let specAppDomainName: string | undefined = this.get_X_EpApplicationDomainNameInfoLevel();
+      // try top level if undefined
+      if(specAppDomainName === undefined) specAppDomainName = this.get_X_EpApplicationDomainNameTopLevel();
       if (specAppDomainName === undefined) appDomainName = undefined;
       else appDomainName = specAppDomainName;
     }
@@ -135,28 +150,28 @@ export class EpAsyncApiDocument {
     // const funcName = 'createAssetApplicationDomainName';
     // const logName = `${EpAsyncApiDocument.name}.${funcName}()`;
     const appDomainNameNoPrefix = this.createApplicationDomainName(undefined);
-    let assetsAppDomainName: string | undefined =
-      this.overrideEpAssetsApplicationDomainName;
+    let assetsAppDomainName: string | undefined = this.overrideEpAssetsApplicationDomainName;
     if (assetsAppDomainName === undefined) {
-      const specAssetAppDomainName = this.get_X_EpAssetsApplicationDomainName();
+      let specAssetAppDomainName = this.get_X_EpAssetsApplicationDomainNameInfoLevel();
+      if(specAssetAppDomainName === undefined) specAssetAppDomainName = this.get_X_EpAssetsApplicationDomainNameTopLevel();
       if (specAssetAppDomainName === undefined) assetsAppDomainName = undefined;
       else assetsAppDomainName = specAssetAppDomainName;
     }
-    if (assetsAppDomainName === undefined)
-      assetsAppDomainName = appDomainNameNoPrefix;
+    if (assetsAppDomainName === undefined) assetsAppDomainName = appDomainNameNoPrefix;
     // add the prefix
-    if (prefix !== undefined)
-      assetsAppDomainName = `${prefix}/${assetsAppDomainName}`;
+    if (prefix !== undefined) assetsAppDomainName = `${prefix}/${assetsAppDomainName}`;
     return assetsAppDomainName;
   }
   private createBrokerType(): EBrokerTypes {
-    let brokerType: string | undefined = this.get_X_EpBrokerType();
+    let brokerType: string | undefined = this.get_X_EpBrokerTypeInfoLevel();
+    if(brokerType === undefined) brokerType = this.get_X_EpBrokerTypeTopLevel();
     if(this.overrideBrokerType !== undefined) brokerType = this.overrideBrokerType;
     if(brokerType === undefined) brokerType = EpAsyncApiDocument.DefaultBrokerType;
     return brokerType as EBrokerTypes;
   }
   private createChannelDelimiter(): EChannelDelimiters {
-    let channelDelimiter: string | undefined = this.get_X_EpChannelDelimiter();
+    let channelDelimiter: string | undefined = this.get_X_EpChannelDelimiterInfoLevel();
+    if(channelDelimiter === undefined) channelDelimiter = this.get_X_EpChannelDelimiterTopLevel();
     if(this.overrideChannelDelimiter !== undefined) channelDelimiter = this.overrideChannelDelimiter;
     if(channelDelimiter === undefined) channelDelimiter = EpAsyncApiDocument.DefaultChannelDelimiter;
     return channelDelimiter as EChannelDelimiters;
