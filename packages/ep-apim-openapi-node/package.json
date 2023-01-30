@@ -3,7 +3,7 @@
   "version": "1.1.0",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "description": "Solace Event Portal APIM OpenAPI Client for NodeJS (Typescript), v2.0.0-ea.6",
+  "description": "Solace Event Portal APIM OpenAPI Client for NodeJS (Typescript), v2.0.0-ea.7",
   "license": "Apache-2.0",
   "private": true,
   "repository": {
@@ -33,7 +33,8 @@
     "clean": "rm -rf generated-src && rm -rf dist && rm -rf test/logs && rm -rf .turbo",
     "build:test": "yarn build:src && yarn tsc",
     "test": "yarn build:test && . ./test/source.env.sh && nyc mocha --config test/.mocharc.yml test/**/**.spec.ts && unset_source_env",
-    "test:x": "yarn build:test && . ./test/source.env.sh && nyc mocha --config test/.mocharc.yml test/**/**.x-spec.ts && unset_source_env"
+    "test:x": "yarn build:test && . ./test/source.env.sh && nyc mocha --config test/.mocharc.yml test/**/**.x-spec.ts && unset_source_env",
+    "dev:watch": "npm run build --watch"
   },
   "typedoc": {
     "entryPoint": "./generated-src/index.ts",
@@ -59,6 +60,7 @@
     "@internal/tools": "*",
     "@rsql/builder": "^1.5.2",
     "@rsql/emitter": "^1.5.2",
-    "openapi-typescript-codegen": "^0.19.0"
+    "openapi-typescript-codegen": "^0.19.0",
+    "@solace-labs/ep-asyncapi": "^0.52.0"
   }
 }

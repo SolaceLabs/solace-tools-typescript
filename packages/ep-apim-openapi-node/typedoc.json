@@ -1,0 +1,9 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "extends": [ "@internal/tools/dist/config/typedoc.json" ],
+  "name": "Event Portal APIM OpenAPI Node",
+  "entryPoints": [
+    "./generated-src/index.ts",
+  ],
+  "out": "./docs/source/_generated/generated-ep-apim-openapi-node/tsdocs",
+}

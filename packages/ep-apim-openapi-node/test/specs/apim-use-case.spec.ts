@@ -6,21 +6,26 @@ import { emit } from "@rsql/emitter";
 import {
   TestContext,
 } from '@internal/tools/src';
+import {
+  EpAsyncApiDocument,
+  EpAsyncApiDocumentService,
+  EpAsyncApiError,
+} from "@solace-labs/ep-asyncapi";
 import { 
   TestLogger,
   TestConfig,
 } from '../lib';
 import {
   ApiError, 
-  Attribute, 
+  BrokerType, 
   EventApiProduct, 
   EventApiProductResponse, 
   EventApiProductsResponse, 
   EventApiProductsService,
   EventApiProductState,
+  GatewayResponse,
   GatewaysService,
   MessagingService,
-  MessagingServiceResponse,
 } from '../../generated-src';
 import { TestHelpers } from '../lib/TestHelpers';
 
@@ -40,6 +45,14 @@ function encodeRFC3986URIComponent(str: string): string {
   return encodeURIComponent(str)
     .replace(
       /[!'()*]/g,
+      (c) => `%${c.charCodeAt(0).toString(16).toUpperCase()}`
+    );
+}
+
+function encode4ApimURIComponent(str: string): string {
+  return encodeURIComponent(str)
+    .replace(
+      /[*]/g,
       (c) => `%${c.charCodeAt(0).toString(16).toUpperCase()}`
     );
 }
@@ -100,7 +113,7 @@ describe(`${scriptName}`, () => {
     });
 
     // TODO: server returns internal server error, fix server
-    xit(`${scriptName}: should list event api products with correct publish_destinations attribute using the query language`, async () => {
+    it(`${scriptName}: should list event api products with correct publish_destinations attribute using the query language`, async () => {
       try {
 
         // // https://github.com/piotr-oles/rsql#readme
@@ -130,12 +143,8 @@ describe(`${scriptName}`, () => {
 
         // const query = emit(ast);
 
-        const attributeQueryAst = builder.comparison(`attributes.name[${PublishDestiationsAttributeName}].value`, '=elem=', `${PublishDestinationValue}.*`);
-        const attributeQuery = encodeRFC3986URIComponent(emit(attributeQueryAst));
-        // const attributeQuery = `attributes.name[${PublishDestiationsAttributeName}].value=elem=${PublishDestinationValue}.*`;
-
-
-        
+        const attributeQueryAst = builder.comparison(`customAttributes.name[${PublishDestiationsAttributeName}].value`, '=elem=', `.*${PublishDestinationValue}.*`);
+        const attributeQuery = emit(attributeQueryAst);
         const eventApiProductList: Array<EventApiProduct> = [];
         let nextPage: number | null = 1;
         while(nextPage !== null) {
@@ -152,8 +161,9 @@ describe(`${scriptName}`, () => {
           // // DEBUG
           // expect(false,TestLogger.createLogMessage('incremental list', eventApiProductList)).to.be.true;
         }
-        // DEBUG
-        expect(false, TestLogger.createLogMessage('full list', eventApiProductList)).to.be.true;
+        // // DEBUG
+        // expect(false, TestLogger.createLogMessage('full list', eventApiProductList)).to.be.true;
+        expect(eventApiProductList.length, TestLogger.createLogMessage('eventApiProductList', eventApiProductList)).to.equal(1);
       } catch(e) {
         expect(e instanceof ApiError, TestLogger.createNotApiErrorMessage(e.message)).to.be.true;
         expect(false, TestLogger.createApiTestFailMessage('failed', e)).to.be.true;
@@ -171,12 +181,52 @@ describe(`${scriptName}`, () => {
         expect(eventApiProduct.solaceMessagingServices.length, TestLogger.createLogMessage('eventApiProduct.solaceMessagingServices.length', eventApiProduct.solaceMessagingServices.length)).to.be.greaterThanOrEqual(1);
         for(const solaceMessagingService of eventApiProduct.solaceMessagingServices) {
           // get the gateway
-          const messagingServiceResponse: MessagingServiceResponse = await GatewaysService.getGateway({ gatewayId: solaceMessagingService.messagingServiceId });
-          const messagingService: MessagingService = messagingServiceResponse.data;
-          expect(messagingService.messagingServiceType, TestLogger.createLogMessage('messagingService.messagingServiceType', messagingService.messagingServiceType)).to.equal('solacexx');
-
+          const gatewayResponse: GatewayResponse = await GatewaysService.getGateway({ messagingServiceId: solaceMessagingService.messagingServiceId });
+          const messagingService: MessagingService = gatewayResponse.data;
+          expect(messagingService.brokerType, TestLogger.createLogMessage('messagingService.brokerType', messagingService.brokerType)).to.equal(BrokerType.SOLACE);
+          // // DEBUG
+          // expect(false,TestLogger.createLogMessage('messagingService', messagingService)).to.be.true;
         }
+        // TODO: test for content
+      } catch(e) {
+        expect(e instanceof ApiError, TestLogger.createNotApiErrorMessage(e.message)).to.be.true;
+        expect(false, TestLogger.createApiTestFailMessage('failed', e)).to.be.true;
+      }
+    });
 
+    it(`${scriptName}: should get all async api apis for the event api product`, async () => {
+      expect(EventApiProductId, TestLogger.createLogMessage('EventApiProductId', EventApiProductId)).to.not.be.undefined;
+      try {
+        if(EventApiProductId === undefined) throw new Error('EventApiProductId === undefined');
+        const eventApiProductResponse: EventApiProductResponse = await EventApiProductsService.getEventApiProduct({ 
+          eventApiProductId: EventApiProductId,
+        });
+        const eventApiProduct: EventApiProduct = eventApiProductResponse.data;
+        // plans
+        expect(eventApiProduct.plans.length, TestLogger.createLogMessage('eventApiProduct.plans', eventApiProduct.plans)).to.be.greaterThanOrEqual(1);
+        // eventApis
+        expect(eventApiProduct.apis.length, TestLogger.createLogMessage('eventApiProduct.apis', eventApiProduct.apis)).to.be.greaterThanOrEqual(1);
+        // get all async api specs for each plan/eventApi 
+        for(const plan of eventApiProduct.plans) {
+          for(const eventApiVersion of eventApiProduct.apis) {
+            const asyncApiObject = await EventApiProductsService.getEventApiProductPlanApi({
+              eventApiProductId: EventApiProductId,
+              planId: plan.id,
+              eventApiId: eventApiVersion.id,
+              apiFormat: "application/json",
+              asyncApiVersion: '2.5.0'
+            });
+            // DEBUG
+            // expect(false,TestLogger.createLogMessage('asyncApiObject', asyncApiObject)).to.be.true;
+            // parse it
+
+            TODO
+            const epAsyncApiDocument: EpAsyncApiDocument = await EpAsyncApiDocumentService.createFromAny({
+              anySpec: asyncApiObject,
+              // overrideEpApplicationDomainName: eventApiProduct.applicationDomainName
+            });
+          }
+        }
       } catch(e) {
         expect(e instanceof ApiError, TestLogger.createNotApiErrorMessage(e.message)).to.be.true;
         expect(false, TestLogger.createApiTestFailMessage('failed', e)).to.be.true;
