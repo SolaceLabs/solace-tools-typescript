@@ -9,11 +9,9 @@ import {
 import {
   EpAsyncApiDocument,
   EpAsyncApiDocumentService,
-  EpAsyncApiError,
 } from "@solace-labs/ep-asyncapi";
 import { 
   TestLogger,
-  TestConfig,
 } from '../lib';
 import {
   ApiError, 
@@ -25,13 +23,10 @@ import {
   EventApiProductResponse, 
   EventApiProductsResponse, 
   EventApiProductsService,
-  EventApiProductState,
   GatewayResponse,
   GatewaysService,
   MessagingService,
 } from '../../generated-src';
-import { TestHelpers } from '../lib/TestHelpers';
-import { create } from 'domain';
 
 const scriptName: string = path.basename(__filename);
 TestLogger.logMessage(scriptName, ">>> starting ...");
