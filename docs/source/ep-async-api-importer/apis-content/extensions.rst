@@ -11,17 +11,17 @@ The importer uses the following extensions:
 
    * - Async Api Extension
      - Description
-   * - $.x-ep-application-domain
+   * - $.info.x-ep-application-domain
      - The Event Portal application domain for Event APIs and Applications.
-   * - $.x-ep-assets-application-domain-name
+   * - $.info.x-ep-assets-application-domain-name
      - The Event Portal application domain for re-usable Assets: Events, Schemas, Enums.
 
-       Defaults to `$.x-ep-application-domain` if omitted.
+       Defaults to `$.info.x-ep-application-domain` if omitted.
 
-   * - $.x-ep-broker-type
+   * - $.info.x-ep-broker-type
      - The broker type the api 'runs on'. Options: ['solace', 'kafka']. Default: 'solace'.
 
-   * - $.x-ep-channel-delimiter
+   * - $.info.x-ep-channel-delimiter
      - The channel delimiter used in the spec to determine topic elements. Options: ['/', '.', '_', '-']. Default: '/'.
 
    * - $.channels.{topic}.x-ep-event-name
