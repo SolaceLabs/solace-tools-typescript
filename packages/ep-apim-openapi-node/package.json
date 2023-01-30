@@ -3,9 +3,9 @@
   "version": "0.2.0",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "type": "commonjs",
   "description": "Solace Event Portal APIM OpenAPI Client for NodeJS (Typescript), v2.0.0-ea.7",
   "license": "Apache-2.0",
-  "private": true,
   "repository": {
     "type": "git",
     "url": "github:SolaceLabs/solace-tools",
@@ -24,7 +24,8 @@
   "keywords": [
     "solace",
     "event portal",
-    "event portal api"
+    "event portal api",
+    "api management"
   ],
   "scripts": {
     "compile": "yarn build:src && tsc",
