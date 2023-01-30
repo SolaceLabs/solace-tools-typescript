@@ -1,6 +1,6 @@
 {
   "name": "@solace-labs/ep-apim-openapi-node",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "description": "Solace Event Portal APIM OpenAPI Client for NodeJS (Typescript), v2.0.0-ea.7",
@@ -61,6 +61,6 @@
     "@rsql/builder": "^1.5.2",
     "@rsql/emitter": "^1.5.2",
     "openapi-typescript-codegen": "^0.19.0",
-    "@solace-labs/ep-asyncapi": "^0.52.0"
+    "@solace-labs/ep-asyncapi": "^0.53.0"
   }
 }
