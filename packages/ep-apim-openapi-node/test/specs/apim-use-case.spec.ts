@@ -17,6 +17,9 @@ import {
 } from '../lib';
 import {
   ApiError, 
+  Attribute, 
+  AttributeResponse, 
+  AttributesResponse, 
   BrokerType, 
   EventApiProduct, 
   EventApiProductResponse, 
@@ -28,6 +31,7 @@ import {
   MessagingService,
 } from '../../generated-src';
 import { TestHelpers } from '../lib/TestHelpers';
+import { create } from 'domain';
 
 const scriptName: string = path.basename(__filename);
 TestLogger.logMessage(scriptName, ">>> starting ...");
@@ -39,23 +43,8 @@ const PublishDestinationValue = 'TEST_APIM_API';
 const EventApiProductName = "EventApiProduct_1";
 let EventApiProductId: string | undefined = undefined;
 let EventApiProductList: Array<EventApiProduct> = [];
-
-
-function encodeRFC3986URIComponent(str: string): string {
-  return encodeURIComponent(str)
-    .replace(
-      /[!'()*]/g,
-      (c) => `%${c.charCodeAt(0).toString(16).toUpperCase()}`
-    );
-}
-
-function encode4ApimURIComponent(str: string): string {
-  return encodeURIComponent(str)
-    .replace(
-      /[*]/g,
-      (c) => `%${c.charCodeAt(0).toString(16).toUpperCase()}`
-    );
-}
+const AttributeName = "AttributeName";
+const AttributeValue = "https://my.image.server/images/image.png";
 
 
 describe(`${scriptName}`, () => {
@@ -219,11 +208,8 @@ describe(`${scriptName}`, () => {
             // DEBUG
             // expect(false,TestLogger.createLogMessage('asyncApiObject', asyncApiObject)).to.be.true;
             // parse it
-
-            TODO
             const epAsyncApiDocument: EpAsyncApiDocument = await EpAsyncApiDocumentService.createFromAny({
               anySpec: asyncApiObject,
-              // overrideEpApplicationDomainName: eventApiProduct.applicationDomainName
             });
           }
         }
@@ -232,6 +218,111 @@ describe(`${scriptName}`, () => {
         expect(false, TestLogger.createApiTestFailMessage('failed', e)).to.be.true;
       }
     });
+
+    it(`${scriptName}: should delete all attributes of event api product`, async () => {
+      expect(EventApiProductId, TestLogger.createLogMessage('EventApiProductId', EventApiProductId)).to.not.be.undefined;
+      try {
+        if(EventApiProductId === undefined) throw new Error('EventApiProductId === undefined');
+        const eventApiProductResponse: EventApiProductResponse = await EventApiProductsService.getEventApiProduct({ 
+          eventApiProductId: EventApiProductId,
+        });
+        const eventApiProduct: EventApiProduct = eventApiProductResponse.data;
+        // get all attributes
+        const attributesResponse: AttributesResponse = await EventApiProductsService.getEventApiProductAttributes({ 
+          eventApiProductId: EventApiProductId,
+          pageSize: 100,
+        });
+        const attributeList: Array<Attribute> = attributesResponse.data;
+        for(const attribute of attributeList) {
+          const x: void = await EventApiProductsService.deleteEventApiProductAttribute({ 
+            eventApiProductId: EventApiProductId,
+            attributeName: attribute.name
+          });
+        }
+      } catch(e) {
+        expect(e instanceof ApiError, TestLogger.createNotApiErrorMessage(e.message)).to.be.true;
+        expect(false, TestLogger.createApiTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
+    it(`${scriptName}: should create attribute for event api product`, async () => {
+      expect(EventApiProductId, TestLogger.createLogMessage('EventApiProductId', EventApiProductId)).to.not.be.undefined;
+      try {
+        if(EventApiProductId === undefined) throw new Error('EventApiProductId === undefined');
+        const attributeResponse: AttributeResponse = await EventApiProductsService.createEventApiProductAttribute({
+          eventApiProductId: EventApiProductId,
+          requestBody: {
+            name: AttributeName,
+            value: AttributeValue
+          }
+        });
+        const created = attributeResponse.data;
+        expect(created.name, TestLogger.createLogMessage('created.name', created.name)).to.equal(AttributeName);
+        expect(created.value, TestLogger.createLogMessage('created.value', created.value)).to.equal(AttributeValue);
+        // get the event api product and check the attributes
+        const eventApiProductResponse: EventApiProductResponse = await EventApiProductsService.getEventApiProduct({
+          eventApiProductId: EventApiProductId
+        });
+        const eventApiProduct = eventApiProductResponse.data;
+        expect(eventApiProduct.attributes.length, 'eventApiProduct.attributes.length').to.equal(1);
+        expect(eventApiProduct.attributes[0].name, 'eventApiProduct.attributes[0].name').to.equal(created.name);
+        expect(eventApiProduct.attributes[0].value, 'eventApiProduct.attributes[0].name').to.equal(created.value);
+      } catch(e) {
+        expect(e instanceof ApiError, TestLogger.createNotApiErrorMessage(e.message)).to.be.true;
+        expect(false, TestLogger.createApiTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
+    it(`${scriptName}: should patch attribute for event api product`, async () => {
+      expect(EventApiProductId, TestLogger.createLogMessage('EventApiProductId', EventApiProductId)).to.not.be.undefined;
+      try {
+        if(EventApiProductId === undefined) throw new Error('EventApiProductId === undefined');
+        const newAttributeValue = `patched-${AttributeValue}`;
+        const attributeResponse: AttributeResponse = await EventApiProductsService.updateEventApiProductAttribute({
+          eventApiProductId: EventApiProductId,
+          attributeName: AttributeName,
+          requestBody: {
+            value: newAttributeValue
+          }
+        });
+        const updated = attributeResponse.data;
+        expect(updated.name, TestLogger.createLogMessage('updated.name', updated.name)).to.equal(AttributeName);
+        expect(updated.value, TestLogger.createLogMessage('updated.value', updated.value)).to.equal(newAttributeValue);
+        // get the event api product and check the attributes
+        const eventApiProductResponse: EventApiProductResponse = await EventApiProductsService.getEventApiProduct({
+          eventApiProductId: EventApiProductId
+        });
+        const eventApiProduct = eventApiProductResponse.data;
+        expect(eventApiProduct.attributes.length, 'eventApiProduct.attributes.length').to.equal(1);
+        expect(eventApiProduct.attributes[0].name, 'eventApiProduct.attributes[0].name').to.equal(updated.name);
+        expect(eventApiProduct.attributes[0].value, 'eventApiProduct.attributes[0].name').to.equal(updated.value);
+      } catch(e) {
+        expect(e instanceof ApiError, TestLogger.createNotApiErrorMessage(e.message)).to.be.true;
+        expect(false, TestLogger.createApiTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
+    it(`${scriptName}: should delete attribute for event api product`, async () => {
+      expect(EventApiProductId, TestLogger.createLogMessage('EventApiProductId', EventApiProductId)).to.not.be.undefined;
+      try {
+        if(EventApiProductId === undefined) throw new Error('EventApiProductId === undefined');
+
+        const x: void = await EventApiProductsService.deleteEventApiProductAttribute({
+          eventApiProductId: EventApiProductId,
+          attributeName: AttributeName,
+        });
+        // get the event api product and check the attributes
+        const eventApiProductResponse: EventApiProductResponse = await EventApiProductsService.getEventApiProduct({
+          eventApiProductId: EventApiProductId
+        });
+        const eventApiProduct = eventApiProductResponse.data;
+        expect(eventApiProduct.attributes.length, 'eventApiProduct.attributes.length').to.equal(0);
+      } catch(e) {
+        expect(e instanceof ApiError, TestLogger.createNotApiErrorMessage(e.message)).to.be.true;
+        expect(false, TestLogger.createApiTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
 
 });
 
