@@ -1,5 +1,11 @@
 # @solace-labs/ep-apim-openapi-node
 
+## 0.2.0
+
+### Minor Changes
+
+- 9ee31c3: intial experimental release
+
 ## 1.1.0
 
 ### Minor Changes
