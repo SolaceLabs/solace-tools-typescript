@@ -12,6 +12,7 @@ import {
 } from "@solace-labs/ep-asyncapi";
 import { 
   TestLogger,
+  EpSdkRsqlQueryBuilder
 } from '../lib';
 import {
   ApiError, 
@@ -45,6 +46,7 @@ const AttributeValue = "https://my.image.server/images/image.png";
 
 const EventApiProductName_NoSmf = "NO_SMF";
 let EventApiProductId_NoSmf: string | undefined = undefined;
+
 
 describe(`${scriptName}`, () => {
     
@@ -150,7 +152,7 @@ describe(`${scriptName}`, () => {
         }
         // // DEBUG
         // expect(false, TestLogger.createLogMessage('full list', eventApiProductList)).to.be.true;
-        expect(eventApiProductList.length, TestLogger.createLogMessage('eventApiProductList', eventApiProductList)).to.equal(4);
+        expect(eventApiProductList.length, TestLogger.createLogMessage('eventApiProductList', eventApiProductList)).to.equal(5);
       } catch(e) {
         expect(e instanceof ApiError, TestLogger.createNotApiErrorMessage(e.message)).to.be.true;
         expect(false, TestLogger.createApiTestFailMessage('failed', e)).to.be.true;
@@ -325,15 +327,36 @@ describe(`${scriptName}`, () => {
       }
     });
 
-    it(`${scriptName}: should list only event api products with SMF plain enabled`, async () => {
+    it(`${scriptName}: should list only event api products with SMF enabled`, async () => {
       try {
-        const attributeQueryAst = builder.comparison(`customAttributes.name[${PublishDestiationsAttributeName}].value`, '=elem=', `.*${PublishDestinationValue}.*`);
-        const attributeQuery = emit(attributeQueryAst);
+        const attributeQueryAst = EpSdkRsqlQueryBuilder.attributeContains(PublishDestiationsAttributeName, PublishDestinationValue);
+        const name = 'solaceMessagingServices.supportedProtocols';
+        const smfQueryAst = EpSdkRsqlQueryBuilder.eq(name, 'smf');
+        const smfSecureQueryAst = EpSdkRsqlQueryBuilder.eq(name, 'smfs');
+
+
+        // TODO: wait for mock service to implement 'like' or 'regex' operator
+        // TODO: wait for mock service to give me enums for the protocols and build an or query instead
+
+        const queryAst = EpSdkRsqlQueryBuilder.and(
+          attributeQueryAst,
+          EpSdkRsqlQueryBuilder.or(
+            smfQueryAst,
+            smfSecureQueryAst
+          )
+        );
+        // workaround for like operator: =~ ==> not valid FIQL
+        // const query = `${emit(queryAst)};${name}=~smf`;
+        const query = emit(queryAst);
+        // // DEBUG
+        // expect(false, TestLogger.createLogMessage('query', query)).to.be.true;
+
         let nextPage: number | null = 1;
         while(nextPage !== null) {
           const eventApiProductsResponse: EventApiProductsResponse = await EventApiProductsService.listEventApiProducts({
             pageNumber: nextPage,
-            query: attributeQuery
+            pageSize: 100,
+            query: query
           });
           // check for SMF protocol
           const smfEventApiProductList = eventApiProductsResponse.data.filter( (eventApiProduct: EventApiProduct) => {
@@ -347,8 +370,9 @@ describe(`${scriptName}`, () => {
             if(foundSmfSolaceMessagingService !== undefined) return true;
             return false;
           });
-          // // DEBUG
+          // DEBUG
           // expect(false,TestLogger.createLogMessage('smfEventApiProductList', smfEventApiProductList)).to.be.true;
+          expect(false,TestLogger.createLogMessage('check the protocols')).to.be.true;
           expect(smfEventApiProductList.length, TestLogger.createApiTestFailMessage('smfEventApiProductList.length')).to.equal(3);
           nextPage = eventApiProductsResponse.meta.pagination.nextPage;
         }
@@ -360,11 +384,11 @@ describe(`${scriptName}`, () => {
 
     it(`${scriptName}: should list only event api products with state=DEPRECATED or RETIRED`, async () => {
       try {
+        // TestUtils.nameOf<EventApiProduct>('customAttributes')
+        // TestUtils.nameOf<Attribute>('name')
         const attributeQueryAst = builder.comparison(`customAttributes.name[${PublishDestiationsAttributeName}].value`, '=elem=', `.*${PublishDestinationValue}.*`);
         const queryAst = builder.and(
           builder.or(
-            // builder.comparison(`state`, '=', EventApiProductState.DEPRECATED),
-            // builder.comparison(`state`, '=', EventApiProductState.RETIRED),
             builder.eq(TestUtils.nameOf<EventApiProduct>('state'), EventApiProductState.DEPRECATED),
             builder.eq(TestUtils.nameOf<EventApiProduct>('state'), EventApiProductState.RETIRED),
           ),
