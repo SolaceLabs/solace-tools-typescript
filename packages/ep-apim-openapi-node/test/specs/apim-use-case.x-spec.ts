@@ -327,7 +327,7 @@ describe(`${scriptName}`, () => {
       }
     });
 
-    it(`${scriptName}: should list only event api products with SMF enabled`, async () => {
+    it(`${scriptName}: should list only event api products with SMF/S enabled`, async () => {
       try {
         const attributeQueryAst = EpSdkRsqlQueryBuilder.attributeContains(PublishDestiationsAttributeName, PublishDestinationValue);
         const name = 'solaceMessagingServices.supportedProtocols';
@@ -372,8 +372,8 @@ describe(`${scriptName}`, () => {
           });
           // DEBUG
           // expect(false,TestLogger.createLogMessage('smfEventApiProductList', smfEventApiProductList)).to.be.true;
-          expect(false,TestLogger.createLogMessage('check the protocols')).to.be.true;
-          expect(smfEventApiProductList.length, TestLogger.createApiTestFailMessage('smfEventApiProductList.length')).to.equal(3);
+          // expect(false,TestLogger.createLogMessage('check the protocols')).to.be.true;
+          expect(smfEventApiProductList.length, TestLogger.createApiTestFailMessage('smfEventApiProductList.length')).to.equal(4);
           nextPage = eventApiProductsResponse.meta.pagination.nextPage;
         }
       } catch(e) {
