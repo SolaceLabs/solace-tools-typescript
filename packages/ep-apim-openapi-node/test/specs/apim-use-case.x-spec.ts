@@ -335,6 +335,13 @@ describe(`${scriptName}`, () => {
         const smfSecureQueryAst = EpSdkRsqlQueryBuilder.eq(name, 'smfs');
 
 
+        // const graviteeQueryAst = EpSdkRsqlQueryBuilder.or(
+        //     smfQueryAst,
+        //     smfSecureQueryAst
+        //   );
+        // // DEBUG
+        // expect(false, TestLogger.createLogMessage('graviteeQueryAst', emit(graviteeQueryAst))).to.be.true;
+
         // TODO: wait for mock service to implement 'like' or 'regex' operator
         // TODO: wait for mock service to give me enums for the protocols and build an or query instead
 
