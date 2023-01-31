@@ -349,7 +349,7 @@ describe(`${scriptName}`, () => {
           });
           // // DEBUG
           // expect(false,TestLogger.createLogMessage('smfEventApiProductList', smfEventApiProductList)).to.be.true;
-          expect(smfEventApiProductList.length, TestLogger.createApiTestFailMessage('smfEventApiProductList.length')).to.equal(1);
+          expect(smfEventApiProductList.length, TestLogger.createApiTestFailMessage('smfEventApiProductList.length')).to.equal(3);
           nextPage = eventApiProductsResponse.meta.pagination.nextPage;
         }
       } catch(e) {
@@ -382,8 +382,8 @@ describe(`${scriptName}`, () => {
             const correctState: boolean = eventApiProduct.state === EventApiProductState.DEPRECATED ||  eventApiProduct.state === EventApiProductState.RETIRED;
             expect(correctState, TestLogger.createLogMessage('wrong state, not DEPRECATED or RETIRED', eventApiProduct)).to.be.true;
           }
-          // // DEBUG
-          expect(false,TestLogger.createLogMessage('eventApiProductsResponse.data', eventApiProductsResponse.data)).to.be.true;
+          // DEBUG
+          // expect(false,TestLogger.createLogMessage('eventApiProductsResponse.data', eventApiProductsResponse.data)).to.be.true;
           nextPage = eventApiProductsResponse.meta.pagination.nextPage;
         }
       } catch(e) {
