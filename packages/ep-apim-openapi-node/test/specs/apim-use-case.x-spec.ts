@@ -21,6 +21,7 @@ import {
   AttributesResponse, 
   BrokerType, 
   EventApiProduct, 
+  EventApiProductHistoryResponse, 
   EventApiProductResponse, 
   EventApiProductsResponse, 
   EventApiProductsService,
@@ -28,6 +29,7 @@ import {
   GatewayResponse,
   GatewaysService,
   MessagingService,
+  MessagingServiceProtocol,
   SolaceMessagingService,
 } from '../../generated-src';
 
@@ -47,6 +49,11 @@ const AttributeValue = "https://my.image.server/images/image.png";
 const EventApiProductName_NoSmf = "NO_SMF";
 let EventApiProductId_NoSmf: string | undefined = undefined;
 
+const EventApiProductName_ReleasedThenDraft = "RELEASED_THEN_DRAFT";
+let EventApiProductId_ReleasedThenDraft: string | undefined = undefined;
+
+const EventApiProductName_ReleasedThenDelete = "RELEASED_THEN_DELETE";
+let EventApiProductId_ReleasedThenDelete: string | undefined = undefined;
 
 describe(`${scriptName}`, () => {
     
@@ -79,7 +86,7 @@ describe(`${scriptName}`, () => {
         }
         // iterate through the list and check the attributes
         const filteredList: Array<EventApiProduct> = eventApiProductList.filter( (eventApiProduct: EventApiProduct) => {
-          if(eventApiProduct.customAttributes === undefined) return false;
+          if(eventApiProduct.customAttributes.length === 0) return false;
           const found = eventApiProduct.customAttributes.find( (x) => {
             return x.name === PublishDestiationsAttributeName;
           });
@@ -152,7 +159,7 @@ describe(`${scriptName}`, () => {
         }
         // // DEBUG
         // expect(false, TestLogger.createLogMessage('full list', eventApiProductList)).to.be.true;
-        expect(eventApiProductList.length, TestLogger.createLogMessage('eventApiProductList', eventApiProductList)).to.equal(5);
+        expect(eventApiProductList.length, TestLogger.createLogMessage('eventApiProductList', eventApiProductList)).to.be.greaterThanOrEqual(6);
       } catch(e) {
         expect(e instanceof ApiError, TestLogger.createNotApiErrorMessage(e.message)).to.be.true;
         expect(false, TestLogger.createApiTestFailMessage('failed', e)).to.be.true;
@@ -194,7 +201,7 @@ describe(`${scriptName}`, () => {
         // plans
         expect(eventApiProduct.plans.length, TestLogger.createLogMessage('eventApiProduct.plans', eventApiProduct.plans)).to.be.greaterThanOrEqual(1);
         // eventApis
-        if(eventApiProduct.apis === undefined) throw new Error('eventApiProduct.apis === undefined');
+        // if(eventApiProduct.apis === undefined) throw new Error('eventApiProduct.apis === undefined');
         expect(eventApiProduct.apis.length, TestLogger.createLogMessage('eventApiProduct.apis', eventApiProduct.apis)).to.be.greaterThanOrEqual(1);
         // get all async api specs for each plan/eventApi 
         for(const plan of eventApiProduct.plans) {
@@ -265,7 +272,7 @@ describe(`${scriptName}`, () => {
           eventApiProductId: EventApiProductId
         });
         const eventApiProduct = eventApiProductResponse.data;
-        if(eventApiProduct.attributes === undefined) throw new Error('eventApiProduct.attributes');
+        // if(eventApiProduct.attributes === undefined) throw new Error('eventApiProduct.attributes');
         expect(eventApiProduct.attributes.length, 'eventApiProduct.attributes.length').to.equal(1);
         expect(eventApiProduct.attributes[0].name, 'eventApiProduct.attributes[0].name').to.equal(created.name);
         expect(eventApiProduct.attributes[0].value, 'eventApiProduct.attributes[0].name').to.equal(created.value);
@@ -295,7 +302,7 @@ describe(`${scriptName}`, () => {
           eventApiProductId: EventApiProductId
         });
         const eventApiProduct = eventApiProductResponse.data;
-        if(eventApiProduct.attributes === undefined) throw new Error('eventApiProduct.attributes');
+        // if(eventApiProduct.attributes === undefined) throw new Error('eventApiProduct.attributes');
         expect(eventApiProduct.attributes.length, 'eventApiProduct.attributes.length').to.equal(1);
         expect(eventApiProduct.attributes[0].name, 'eventApiProduct.attributes[0].name').to.equal(updated.name);
         expect(eventApiProduct.attributes[0].value, 'eventApiProduct.attributes[0].name').to.equal(updated.value);
@@ -319,7 +326,7 @@ describe(`${scriptName}`, () => {
           eventApiProductId: EventApiProductId
         });
         const eventApiProduct = eventApiProductResponse.data;
-        if(eventApiProduct.attributes === undefined) throw new Error('eventApiProduct.attributes');
+        // if(eventApiProduct.attributes === undefined) throw new Error('eventApiProduct.attributes');
         expect(eventApiProduct.attributes.length, 'eventApiProduct.attributes.length').to.equal(0);
       } catch(e) {
         expect(e instanceof ApiError, TestLogger.createNotApiErrorMessage(e.message)).to.be.true;
@@ -331,6 +338,8 @@ describe(`${scriptName}`, () => {
       try {
         const attributeQueryAst = EpSdkRsqlQueryBuilder.attributeContains(PublishDestiationsAttributeName, PublishDestinationValue);
         const name = 'solaceMessagingServices.supportedProtocols';
+
+        const smfLikeQueryAst = EpSdkRsqlQueryBuilder.like(name, MessagingServiceProtocol.SMF);
         const smfQueryAst = EpSdkRsqlQueryBuilder.eq(name, 'smf');
         const smfSecureQueryAst = EpSdkRsqlQueryBuilder.eq(name, 'smfs');
 
@@ -339,6 +348,7 @@ describe(`${scriptName}`, () => {
         //     smfQueryAst,
         //     smfSecureQueryAst
         //   );
+        // const graviteeQueryAst = smfLikeQueryAst;
         // // DEBUG
         // expect(false, TestLogger.createLogMessage('graviteeQueryAst', emit(graviteeQueryAst))).to.be.true;
 
@@ -347,10 +357,11 @@ describe(`${scriptName}`, () => {
 
         const queryAst = EpSdkRsqlQueryBuilder.and(
           attributeQueryAst,
-          EpSdkRsqlQueryBuilder.or(
-            smfQueryAst,
-            smfSecureQueryAst
-          )
+          smfLikeQueryAst,
+          // EpSdkRsqlQueryBuilder.or(
+          //   smfQueryAst,
+          //   smfSecureQueryAst
+          // )
         );
         // workaround for like operator: =~ ==> not valid FIQL
         // const query = `${emit(queryAst)};${name}=~smf`;
@@ -423,6 +434,53 @@ describe(`${scriptName}`, () => {
       }
     });
 
+
+    it(`${scriptName}: should get released-then-draft event api product`, async () => {
+      try {
+        const queryAst = EpSdkRsqlQueryBuilder.eq(TestUtils.nameOf<EventApiProduct>('name'), EventApiProductName_ReleasedThenDraft);
+        const eventApiProductsResponse: EventApiProductsResponse = await EventApiProductsService.listEventApiProducts({
+          query: emit(queryAst)
+        });
+        expect(eventApiProductsResponse.data.length, TestLogger.createLogMessage('eventApiProductsResponse', eventApiProductsResponse)).to.equal(1);
+        const eventApiProduct = eventApiProductsResponse.data[0];
+        expect(eventApiProduct.name, TestLogger.createLogMessage('eventApiProduct.name', eventApiProduct.name)).to.equal(EventApiProductName_ReleasedThenDraft);
+        expect(eventApiProduct.state, TestLogger.createLogMessage('eventApiProduct.state', eventApiProduct.state)).to.equal(EventApiProductState.RELEASED);
+        // // DEBUG
+        // expect(false,TestLogger.createLogMessage('debug: eventApiProduct', eventApiProduct)).to.be.true;
+      } catch(e) {
+        expect(e instanceof ApiError, TestLogger.createNotApiErrorMessage(e.message)).to.be.true;
+        expect(false, TestLogger.createApiTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
+
+    it(`${scriptName}: should get released-then-delete event api product`, async () => {
+      try {
+        const queryAst = EpSdkRsqlQueryBuilder.eq(TestUtils.nameOf<EventApiProduct>('name'), EventApiProductName_ReleasedThenDelete);
+        const eventApiProductsResponse: EventApiProductsResponse = await EventApiProductsService.listEventApiProducts({
+          query: emit(queryAst)
+        });
+        expect(eventApiProductsResponse.data.length, TestLogger.createLogMessage('eventApiProductsResponse', eventApiProductsResponse)).to.equal(1);
+        const eventApiProduct = eventApiProductsResponse.data[0];
+        EventApiProductId_ReleasedThenDelete = eventApiProduct.id;
+        expect(eventApiProduct.name, TestLogger.createLogMessage('eventApiProduct.name', eventApiProduct.name)).to.equal(EventApiProductName_ReleasedThenDelete);
+        // // DEBUG
+        // expect(false,TestLogger.createLogMessage('debug: eventApiProduct', eventApiProduct)).to.be.true;
+        expect(eventApiProduct.state, TestLogger.createLogMessage('eventApiProduct.state', eventApiProduct.state)).to.equal(EventApiProductState.DELETED);
+        // now get the history
+        const eventApiProductHistoryResponse: EventApiProductHistoryResponse = await EventApiProductsService.getEventApiProductHistory({ 
+          eventApiProductId: EventApiProductId_ReleasedThenDelete
+        });
+        for(const eventApiProductSummary of eventApiProductHistoryResponse.data) {
+          TestLogger.logMessage(scriptName, TestLogger.createLogMessage('eventApiProductSummary', eventApiProductSummary));
+        }
+        // DEBUG
+        expect(false, 'check history').to.be.true;
+      } catch(e) {
+        expect(e instanceof ApiError, TestLogger.createNotApiErrorMessage(e.message)).to.be.true;
+        expect(false, TestLogger.createApiTestFailMessage('failed', e)).to.be.true;
+      }
+    });
 
 });
 

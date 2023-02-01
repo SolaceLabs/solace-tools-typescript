@@ -3,6 +3,9 @@
 Solace Event Portal APIM OpenAPI Client for NodeJS
 ==================================================
 
+.. warning::
+   Experimental. Please use with care.
+
 Requirements
 ++++++++++++
 
@@ -35,8 +38,8 @@ Example: Retrieve Event API Products
 .. code-block:: typescript
 
     import {
-      EventApiProduct, 
-      EventApiProductsResponse, 
+      EventApiProduct,
+      EventApiProductsResponse,
       EventApiProductsService,
     } from "@solace-labs/ep-apim-openapi-node";
 
