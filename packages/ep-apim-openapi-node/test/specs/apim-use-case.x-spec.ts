@@ -457,7 +457,7 @@ describe(`${scriptName}`, () => {
     });
 
 
-    xit(`${scriptName}: should get released-then-delete event api product`, async () => {
+    it(`${scriptName}: should get released-then-delete event api product`, async () => {
       try {
         const queryAst = EpSdkRsqlQueryBuilder.eq(TestUtils.nameOf<EventApiProduct>('name'), EventApiProductName_ReleasedThenDelete);
         const eventApiProductsResponse: EventApiProductsResponse = await EventApiProductsService.listEventApiProducts({
@@ -469,9 +469,6 @@ describe(`${scriptName}`, () => {
         expect(eventApiProduct.name, TestLogger.createLogMessage('eventApiProduct.name', eventApiProduct.name)).to.equal(EventApiProductName_ReleasedThenDelete);
         // // DEBUG
         // expect(false,TestLogger.createLogMessage('debug: eventApiProduct', eventApiProduct)).to.be.true;
-
-        // HERE: fails 
-
         expect(eventApiProduct.state, TestLogger.createLogMessage('eventApiProduct.state', eventApiProduct.state)).to.equal(EventApiProductState.DELETED);
         // now get the history
         const eventApiProductHistoryResponse: EventApiProductHistoryResponse = await EventApiProductsService.getEventApiProductHistory({ 
@@ -480,8 +477,8 @@ describe(`${scriptName}`, () => {
         for(const eventApiProductSummary of eventApiProductHistoryResponse.data) {
           TestLogger.logMessage(scriptName, TestLogger.createLogMessage('eventApiProductSummary', eventApiProductSummary));
         }
-        // DEBUG
-        expect(false, 'check history').to.be.true;
+        // // DEBUG
+        // expect(false, 'check history').to.be.true;
       } catch(e) {
         expect(e instanceof ApiError, TestLogger.createNotApiErrorMessage(e.message)).to.be.true;
         expect(false, TestLogger.createApiTestFailMessage('failed', e)).to.be.true;
@@ -499,8 +496,8 @@ describe(`${scriptName}`, () => {
         const eventApiProduct = eventApiProductsResponse.data[0];
         EventApiProductId_Filters = eventApiProduct.id;
         expect(eventApiProduct.name, TestLogger.createLogMessage('eventApiProduct.name', eventApiProduct.name)).to.equal(EventApiProductName_Filters);
-        // DEBUG
-        expect(false,TestLogger.createLogMessage('debug: eventApiProduct.filters', eventApiProduct.filters)).to.be.true;
+        // // DEBUG
+        // expect(false,TestLogger.createLogMessage('debug: eventApiProduct.filters', eventApiProduct.filters)).to.be.true;
       } catch(e) {
         expect(e instanceof ApiError, TestLogger.createNotApiErrorMessage(e.message)).to.be.true;
         expect(false, TestLogger.createApiTestFailMessage('failed', e)).to.be.true;
