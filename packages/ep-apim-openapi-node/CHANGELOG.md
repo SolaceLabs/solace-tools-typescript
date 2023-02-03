@@ -1,5 +1,11 @@
 # @solace-labs/ep-apim-openapi-node
 
+## 0.2.1
+
+### Patch Changes
+
+- 30c29d9: added more tests
+
 ## 0.2.0
 
 ### Minor Changes
