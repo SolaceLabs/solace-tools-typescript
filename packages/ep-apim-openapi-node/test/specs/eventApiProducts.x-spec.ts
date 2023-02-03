@@ -107,20 +107,6 @@ describe(`${scriptName}`, () => {
       }
     });
 
-    it(`${scriptName}: should query for event api products`, async () => {
-      try {
-        for(const listedEventApiProduct of EventApiProductList) {
-          // construct the query
-          expect(false, 'implement me').to.be.true;
-        }
-      } catch(e) {
-        expect(e instanceof ApiError, TestLogger.createNotApiErrorMessage(e.message)).to.be.true;
-        expect(false, TestLogger.createApiTestFailMessage('failed', e)).to.be.true;
-      }
-    });
-
-    
-
     it(`${scriptName}: should get versions for each event api product and each single version`, async () => {
       try {
         for(const listedEventApiProduct of EventApiProductList) {
