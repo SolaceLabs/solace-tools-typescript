@@ -1,5 +1,11 @@
 # @solace-labs/ep-apim-openapi-node
 
+## 0.2.2
+
+### Patch Changes
+
+- 02362d9a: update to ep apim api ea.10
+
 ## 0.2.1
 
 ### Patch Changes
