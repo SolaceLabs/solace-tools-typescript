@@ -10,7 +10,7 @@
 
 ---
 
-**Event Portal APIM OpenAPI Version: 2.0.0-ea.9**
+**Event Portal APIM OpenAPI Version: 2.0.0-ea.10**
 
 ---
 
