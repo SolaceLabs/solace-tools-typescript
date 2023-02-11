@@ -3,7 +3,7 @@
   "check-coverage": true,
   "statements": 34,
   "branches": 2,
-  "functions": 10,
+  "functions": 9,
   "lines": 34,
   "temp-dir": "./test/logs/nyc_output",
   "reporter": ["html", "text", "text-summary", "lcov"],

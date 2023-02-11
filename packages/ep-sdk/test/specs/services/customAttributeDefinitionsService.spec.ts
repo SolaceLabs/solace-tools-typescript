@@ -130,33 +130,25 @@ describe(`${scriptName}`, () => {
 
   it(`${scriptName}: should create custom attribute definition`, async () => {
     try {
-      const customAttributeDefinitionResponse: CustomAttributeDefinitionResponse =
-        await CustomAttributeDefinitionsService.createCustomAttributeDefinition(
-          {
-            requestBody: {
-              name: CustomAttributeDefinition_1_Name,
-              associatedEntityTypes: [EEpSdkCustomAttributeEntityTypes.ENUM],
-              valueType: CustomAttributeDefinition.valueType.STRING,
-            },
-          }
-        );
-      CustomAttributeDefinition_1_Id =
-        customAttributeDefinitionResponse.data.id;
+      const customAttributeDefinitionResponse: CustomAttributeDefinitionResponse = await CustomAttributeDefinitionsService.createCustomAttributeDefinition({
+        requestBody: {
+          name: CustomAttributeDefinition_1_Name,
+          associatedEntityTypes: [EEpSdkCustomAttributeEntityTypes.ENUM],
+          valueType: CustomAttributeDefinition.valueType.STRING,
+          scope: CustomAttributeDefinition.scope.ORGANIZATION
+        },
+      });
+      CustomAttributeDefinition_1_Id = customAttributeDefinitionResponse.data.id;
 
       // // DEBUG
       // expect(false, `customAttributeDefinitionResponse.data=\n${JSON.stringify(customAttributeDefinitionResponse.data, null, 2)}`).to.be.true;
 
       expect(customAttributeDefinitionResponse.data).to.not.be.undefined;
-      expect(
-        customAttributeDefinitionResponse.data.associatedEntityTypes.length
-      ).to.equal(1);
+      expect(customAttributeDefinitionResponse.data.associatedEntityTypes.length).to.equal(1);
     } catch (e) {
-      if (e instanceof ApiError)
-        expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
-        .to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
-        .true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 
@@ -185,102 +177,68 @@ describe(`${scriptName}`, () => {
 
   it(`${scriptName}: should add all entity types to custom attribute definition`, async () => {
     try {
-      const customAttributeDefinitionResponse: CustomAttributeDefinitionResponse =
-        await CustomAttributeDefinitionsService.updateCustomAttributeDefinition(
-          {
-            id: CustomAttributeDefinition_1_Id,
-            requestBody: {
-              associatedEntityTypes: Object.values(
-                EEpSdkCustomAttributeEntityTypes
-              ),
-            },
-          }
-        );
+      const customAttributeDefinitionResponse: CustomAttributeDefinitionResponse = await CustomAttributeDefinitionsService.updateCustomAttributeDefinition({
+        id: CustomAttributeDefinition_1_Id,
+        requestBody: {
+          associatedEntityTypes: Object.values(EEpSdkCustomAttributeEntityTypes),
+          scope: CustomAttributeDefinition.scope.ORGANIZATION
+      }});
     } catch (e) {
-      if (e instanceof ApiError)
-        expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
-        .to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
-        .true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 
   it(`${scriptName}: should get custom attribute definition by name with all entity types`, async () => {
     try {
-      const customAttributeDefinition: CustomAttributeDefinition | undefined =
-        await EpSdkCustomAttributeDefinitionsService.getByName({
-          attributeName: CustomAttributeDefinition_1_Name,
-        });
+      const customAttributeDefinition: CustomAttributeDefinition | undefined = await EpSdkCustomAttributeDefinitionsService.getByName({
+        attributeName: CustomAttributeDefinition_1_Name,
+      });
       for (const value of Object.values(EEpSdkCustomAttributeEntityTypes)) {
-        expect(
-          customAttributeDefinition.associatedEntityTypes,
-          `entity not included: ${value}`
-        ).to.include(value);
+        expect(customAttributeDefinition.associatedEntityTypes,`entity not included: ${value}`).to.include(value);
       }
     } catch (e) {
-      if (e instanceof ApiError)
-        expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
-        .to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
-        .true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 
   it(`${scriptName}: should create custom attribute definition list`, async () => {
     try {
       for (const name of CustomAttributeDefinition_NameList) {
-        const customAttributeDefinitionResponse: CustomAttributeDefinitionResponse =
-          await CustomAttributeDefinitionsService.createCustomAttributeDefinition(
-            {
-              requestBody: {
-                name: name,
-                associatedEntityTypes: Object.values(
-                  EEpSdkCustomAttributeEntityTypes
-                ),
-                valueType: CustomAttributeDefinition.valueType.STRING,
-              },
-            }
-          );
-        CustomAttributeDefinition_IdList.push(
-          customAttributeDefinitionResponse.data.id
-        );
+        const customAttributeDefinitionResponse: CustomAttributeDefinitionResponse = await CustomAttributeDefinitionsService.createCustomAttributeDefinition({
+          requestBody: {
+            name: name,
+            associatedEntityTypes: Object.values(EEpSdkCustomAttributeEntityTypes),
+            valueType: CustomAttributeDefinition.valueType.STRING,
+            scope: CustomAttributeDefinition.scope.ORGANIZATION
+          },
+        });
+        CustomAttributeDefinition_IdList.push(customAttributeDefinitionResponse.data.id);
       }
     } catch (e) {
-      if (e instanceof ApiError)
-        expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
-        .to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
-        .true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 
   it(`${scriptName}: should get custom attribute definition by name with pageSize=1`, async () => {
     try {
-      const customAttributeDefinition: CustomAttributeDefinition | undefined =
-        await EpSdkCustomAttributeDefinitionsService.getByName({
-          attributeName: CustomAttributeDefinition_1_Name,
-          pageSize: 1,
-        });
-      expect(
-        customAttributeDefinition,
-        `attribute ${CustomAttributeDefinition_1_Name} not found, undefined`
-      ).to.not.be.undefined;
+      const customAttributeDefinition: CustomAttributeDefinition | undefined = await EpSdkCustomAttributeDefinitionsService.getByName({
+        attributeName: CustomAttributeDefinition_1_Name,
+        pageSize: 1,
+      });
+      expect(customAttributeDefinition, `attribute ${CustomAttributeDefinition_1_Name} not found, undefined`).to.not.be.undefined;
       for (const value of Object.values(EEpSdkCustomAttributeEntityTypes)) {
-        expect(
-          customAttributeDefinition.associatedEntityTypes,
-          `entity not included: ${value}`
-        ).to.include(value);
+        expect(customAttributeDefinition.associatedEntityTypes,`entity not included: ${value}`).to.include(value);
       }
     } catch (e) {
-      if (e instanceof ApiError)
-        expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
-        .to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
-        .true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 
