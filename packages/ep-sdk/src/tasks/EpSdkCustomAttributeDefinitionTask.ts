@@ -25,12 +25,8 @@ import {
 } from "./EpSdkTask";
 
 /** @category Tasks */
-export type TEpSdkCustomAttributeDefinitionTask_Settings = Partial<
-  Pick<CustomAttributeDefinition, "valueType">
-> &
-  Required<Pick<CustomAttributeDefinition, "associatedEntityTypes">>;
-type TEpSdkCustomAttributeDefinitionTask_CompareObject =
-  TEpSdkCustomAttributeDefinitionTask_Settings;
+export type TEpSdkCustomAttributeDefinitionTask_Settings = Partial<Pick<CustomAttributeDefinition, "valueType" | "scope">> & Required<Pick<CustomAttributeDefinition, "associatedEntityTypes">>;
+type TEpSdkCustomAttributeDefinitionTask_CompareObject = TEpSdkCustomAttributeDefinitionTask_Settings;
 
 /** @category Tasks */
 export interface IEpSdkCustomAttributeDefinitionTask_Config
@@ -39,33 +35,27 @@ export interface IEpSdkCustomAttributeDefinitionTask_Config
   customAttributeDefinitionObjectSettings: TEpSdkCustomAttributeDefinitionTask_Settings;
 }
 /** @category Tasks */
-export interface IEpSdkCustomAttributeDefinitionTask_Keys
-  extends IEpSdkTask_Keys {
+export interface IEpSdkCustomAttributeDefinitionTask_Keys extends IEpSdkTask_Keys {
   attributeName: string;
 }
 /** @category Tasks */
-export interface IEpSdkCustomAttributeDefinitionTask_GetFuncReturn
-  extends Omit<IEpSdkTask_GetFuncReturn, "epObject"> {
+export interface IEpSdkCustomAttributeDefinitionTask_GetFuncReturn extends Omit<IEpSdkTask_GetFuncReturn, "epObject"> {
   epObject: CustomAttributeDefinition | undefined;
 }
 /** @category Tasks */
-export interface IEpSdkCustomAttributeDefinitionTask_CreateFuncReturn
-  extends Omit<IEpSdkTask_CreateFuncReturn, "epObject"> {
+export interface IEpSdkCustomAttributeDefinitionTask_CreateFuncReturn extends Omit<IEpSdkTask_CreateFuncReturn, "epObject"> {
   epObject: CustomAttributeDefinition;
 }
 /** @category Tasks */
-export interface IEpSdkCustomAttributeDefinitionTask_UpdateFuncReturn
-  extends Omit<IEpSdkTask_UpdateFuncReturn, "epObject"> {
+export interface IEpSdkCustomAttributeDefinitionTask_UpdateFuncReturn extends Omit<IEpSdkTask_UpdateFuncReturn, "epObject"> {
   epObject: CustomAttributeDefinition;
 }
 /** @category Tasks */
-export interface IEpSdkCustomAttributeDefinitionTask_DeleteFuncReturn
-  extends Omit<IEpSdkTask_DeleteFuncReturn, "epObject"> {
+export interface IEpSdkCustomAttributeDefinitionTask_DeleteFuncReturn extends Omit<IEpSdkTask_DeleteFuncReturn, "epObject"> {
   epObject: CustomAttributeDefinition;
 }
 /** @category Tasks */
-export interface IEpSdkCustomAttributeDefinitionTask_ExecuteReturn
-  extends Omit<IEpSdkTask_ExecuteReturn, "epObject"> {
+export interface IEpSdkCustomAttributeDefinitionTask_ExecuteReturn extends Omit<IEpSdkTask_ExecuteReturn, "epObject"> {
   epObject: CustomAttributeDefinition;
 }
 
@@ -85,6 +75,7 @@ export class EpSdkCustomAttributeDefinitionTask extends EpSdkTask {
   private readonly Default_TEpSdkCustomAttributeDefinitionTask_Settings: Required<TEpSdkCustomAttributeDefinitionTask_Settings> =
     {
       valueType: CustomAttributeDefinition.valueType.STRING,
+      scope: CustomAttributeDefinition.scope.ORGANIZATION,
       associatedEntityTypes: [],
     };
   private getTaskConfig(): IEpSdkCustomAttributeDefinitionTask_Config {
@@ -108,23 +99,15 @@ export class EpSdkCustomAttributeDefinitionTask extends EpSdkTask {
     };
   }
 
-  protected getEpObjectKeys(
-    epObject: CustomAttributeDefinition | undefined
-  ): IEpSdkTask_EpObjectKeys {
+  protected getEpObjectKeys(epObject: CustomAttributeDefinition | undefined): IEpSdkTask_EpObjectKeys {
     const funcName = "getEpObjectKeys";
     const logName = `${EpSdkCustomAttributeDefinitionTask.name}.${funcName}()`;
 
     if (epObject === undefined) return this.getDefaultEpObjectKeys();
     /* istanbul ignore next */
-    if (epObject.id === undefined)
-      throw new EpSdkApiContentError(
-        logName,
-        this.constructor.name,
-        "epObject.id === undefined",
-        {
-          epObject: epObject,
-        }
-      );
+    if (epObject.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "epObject.id === undefined", {
+      epObject: epObject,
+    });
     return {
       ...this.getDefaultEpObjectKeys(),
       epObjectId: epObject.id,
@@ -137,95 +120,55 @@ export class EpSdkCustomAttributeDefinitionTask extends EpSdkTask {
     };
   }
 
-  protected async getFunc(
-    epSdkCustomAttributeDefinitionTask_Keys: IEpSdkCustomAttributeDefinitionTask_Keys
-  ): Promise<IEpSdkCustomAttributeDefinitionTask_GetFuncReturn> {
+  protected async getFunc(epSdkCustomAttributeDefinitionTask_Keys: IEpSdkCustomAttributeDefinitionTask_Keys): Promise<IEpSdkCustomAttributeDefinitionTask_GetFuncReturn> {
     const funcName = "getFunc";
     const logName = `${EpSdkCustomAttributeDefinitionTask.name}.${funcName}()`;
 
-    EpSdkLogger.trace(
-      EpSdkLogger.createLogEntry(logName, {
-        code: EEpSdkLoggerCodes.TASK_EXECUTE_START_GET,
-        module: this.constructor.name,
-        details: {
-          epSdkCustomAttributeDefinitionTask_Keys:
-            epSdkCustomAttributeDefinitionTask_Keys,
-        },
-      })
-    );
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_START_GET, module: this.constructor.name, details: {
+      epSdkCustomAttributeDefinitionTask_Keys: epSdkCustomAttributeDefinitionTask_Keys,
+    }}));
 
-    const customAttributeDefinition: CustomAttributeDefinition | undefined =
-      await EpSdkCustomAttributeDefinitionsService.getByName({
-        attributeName: epSdkCustomAttributeDefinitionTask_Keys.attributeName,
-      });
+    const customAttributeDefinition: CustomAttributeDefinition | undefined = await EpSdkCustomAttributeDefinitionsService.getByName({
+      attributeName: epSdkCustomAttributeDefinitionTask_Keys.attributeName,
+    });
 
-    EpSdkLogger.trace(
-      EpSdkLogger.createLogEntry(logName, {
-        code: EEpSdkLoggerCodes.TASK_EXECUTE_API_GET,
-        module: this.constructor.name,
-        details: {
-          epSdkCustomAttributeDefinitionTask_Keys:
-            epSdkCustomAttributeDefinitionTask_Keys,
-          customAttributeDefinition: customAttributeDefinition
-            ? customAttributeDefinition
-            : "undefined",
-        },
-      })
-    );
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_API_GET, module: this.constructor.name, details: {
+      epSdkCustomAttributeDefinitionTask_Keys: epSdkCustomAttributeDefinitionTask_Keys,
+      customAttributeDefinition: customAttributeDefinition ? customAttributeDefinition : "undefined",
+    }}));
 
-    if (customAttributeDefinition === undefined)
-      return this.Empty_IEpSdkCustomAttributeDefinitionTask_GetFuncReturn;
+    if (customAttributeDefinition === undefined) return this.Empty_IEpSdkCustomAttributeDefinitionTask_GetFuncReturn;
 
-    const epSdkCustomAttributeDefinitionTask_GetFuncReturn: IEpSdkCustomAttributeDefinitionTask_GetFuncReturn =
-      {
-        epObjectKeys: this.getEpObjectKeys(customAttributeDefinition),
-        epObject: customAttributeDefinition,
-        epObjectExists: true,
-      };
+    const epSdkCustomAttributeDefinitionTask_GetFuncReturn: IEpSdkCustomAttributeDefinitionTask_GetFuncReturn = {
+      epObjectKeys: this.getEpObjectKeys(customAttributeDefinition),
+      epObject: customAttributeDefinition,
+      epObjectExists: true,
+    };
     return epSdkCustomAttributeDefinitionTask_GetFuncReturn;
   }
 
-  protected async isUpdateRequiredFunc(
-    epSdkCustomAttributeDefinitionTask_GetFuncReturn: IEpSdkCustomAttributeDefinitionTask_GetFuncReturn
-  ): Promise<IEpSdkTask_IsUpdateRequiredFuncReturn> {
+  protected async isUpdateRequiredFunc(epSdkCustomAttributeDefinitionTask_GetFuncReturn: IEpSdkCustomAttributeDefinitionTask_GetFuncReturn): Promise<IEpSdkTask_IsUpdateRequiredFuncReturn> {
     const funcName = "isUpdateRequiredFunc";
     const logName = `${EpSdkCustomAttributeDefinitionTask.name}.${funcName}()`;
 
-    EpSdkLogger.trace(
-      EpSdkLogger.createLogEntry(logName, {
-        code: EEpSdkLoggerCodes.TASK_EXECUTE_START_IS_UPDATE_REQUIRED,
-        module: this.constructor.name,
-        details: {
-          epSdkCustomAttributeDefinitionTask_GetFuncReturn:
-            epSdkCustomAttributeDefinitionTask_GetFuncReturn,
-        },
-      })
-    );
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_START_IS_UPDATE_REQUIRED, module: this.constructor.name, details: {
+      epSdkCustomAttributeDefinitionTask_GetFuncReturn: epSdkCustomAttributeDefinitionTask_GetFuncReturn,
+    }}));
 
-    if (epSdkCustomAttributeDefinitionTask_GetFuncReturn.epObject === undefined)
-      throw new EpSdkInternalTaskError(
-        logName,
-        this.constructor.name,
-        "epSdkCustomAttributeDefinitionTask_GetFuncReturn.epObject === undefined"
-      );
+    if (epSdkCustomAttributeDefinitionTask_GetFuncReturn.epObject === undefined) throw new EpSdkInternalTaskError(logName, this.constructor.name, "epSdkCustomAttributeDefinitionTask_GetFuncReturn.epObject === undefined");
 
-    const existingObject: CustomAttributeDefinition =
-      epSdkCustomAttributeDefinitionTask_GetFuncReturn.epObject;
-    const existingCompareObject: TEpSdkCustomAttributeDefinitionTask_CompareObject =
-      {
-        associatedEntityTypes: existingObject.associatedEntityTypes
-          ? existingObject.associatedEntityTypes
-          : [],
-        valueType: existingObject.valueType,
-      };
-    const requestedCompareObject: TEpSdkCustomAttributeDefinitionTask_CompareObject =
-      this.createObjectSettings();
+    const existingObject: CustomAttributeDefinition = epSdkCustomAttributeDefinitionTask_GetFuncReturn.epObject;
+    const existingCompareObject: TEpSdkCustomAttributeDefinitionTask_CompareObject = {
+      associatedEntityTypes: existingObject.associatedEntityTypes ? existingObject.associatedEntityTypes : [],
+      valueType: existingObject.valueType,
+      scope: existingObject.scope
+    };
+    const requestedCompareObject: TEpSdkCustomAttributeDefinitionTask_CompareObject = this.createObjectSettings();
 
-    const epSdkTask_IsUpdateRequiredFuncReturn: IEpSdkTask_IsUpdateRequiredFuncReturn =
-      this.create_IEpSdkTask_IsUpdateRequiredFuncReturn({
-        existingObject: existingCompareObject,
-        requestedObject: requestedCompareObject,
-      });
+    const epSdkTask_IsUpdateRequiredFuncReturn: IEpSdkTask_IsUpdateRequiredFuncReturn = this.create_IEpSdkTask_IsUpdateRequiredFuncReturn({
+      existingObject: existingCompareObject,
+      requestedObject: requestedCompareObject,
+    });
     // // DEBUG:
     // if(epSdkTask_IsUpdateRequiredFuncReturn.isUpdateRequired) {
     //   EpSdkLogger.debug(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_DONE_IS_UPDATE_REQUIRED, module: this.constructor.name, details: {
@@ -241,28 +184,17 @@ export class EpSdkCustomAttributeDefinitionTask extends EpSdkTask {
     const funcName = "createFunc";
     const logName = `${EpSdkCustomAttributeDefinitionTask.name}.${funcName}()`;
 
-    EpSdkLogger.trace(
-      EpSdkLogger.createLogEntry(logName, {
-        code: EEpSdkLoggerCodes.TASK_EXECUTE_START_CREATE,
-        module: this.constructor.name,
-      })
-    );
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_START_CREATE, module: this.constructor.name, }));
 
     const create: CustomAttributeDefinition = {
       ...this.createObjectSettings(),
       name: this.getTaskConfig().attributeName,
     };
 
-    EpSdkLogger.trace(
-      EpSdkLogger.createLogEntry(logName, {
-        code: EEpSdkLoggerCodes.TASK_EXECUTE_CREATE,
-        module: this.constructor.name,
-        details: {
-          epSdkApplicationTask_Config: this.getTaskConfig(),
-          create: create,
-        },
-      })
-    );
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_CREATE, module: this.constructor.name, details: {
+      epSdkApplicationTask_Config: this.getTaskConfig(),
+      create: create,
+    }}));
 
     if (this.isCheckmode()) {
       return {
@@ -275,174 +207,115 @@ export class EpSdkCustomAttributeDefinitionTask extends EpSdkTask {
       };
     }
 
-    const customAttributeDefinitionResponse: CustomAttributeDefinitionResponse =
-      await CustomAttributeDefinitionsService.createCustomAttributeDefinition({
-        requestBody: create,
-      });
+    const customAttributeDefinitionResponse: CustomAttributeDefinitionResponse = await CustomAttributeDefinitionsService.createCustomAttributeDefinition({
+      requestBody: create,
+    });
 
-    EpSdkLogger.trace(
-      EpSdkLogger.createLogEntry(logName, {
-        code: EEpSdkLoggerCodes.TASK_EXECUTE_CREATE,
-        module: this.constructor.name,
-        details: {
-          epSdkApplicationTask_Config: this.getTaskConfig(),
-          create: create,
-          customAttributeDefinitionResponse: customAttributeDefinitionResponse,
-        },
-      })
-    );
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_CREATE, module: this.constructor.name, details: {
+      epSdkApplicationTask_Config: this.getTaskConfig(),
+      create: create,
+      customAttributeDefinitionResponse: customAttributeDefinitionResponse,
+    }}));
 
     /* istanbul ignore next */
-    if (customAttributeDefinitionResponse.data === undefined)
-      throw new EpSdkApiContentError(
-        logName,
-        this.constructor.name,
-        "customAttributeDefinitionResponse.data === undefined",
-        {
-          epSdkCustomAttributeDefinitionTask_Config: this.getTaskConfig(),
-          create: create,
-          customAttributeDefinitionResponse: customAttributeDefinitionResponse,
-        }
-      );
+    if (customAttributeDefinitionResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "customAttributeDefinitionResponse.data === undefined", {
+      epSdkCustomAttributeDefinitionTask_Config: this.getTaskConfig(),
+      create: create,
+      customAttributeDefinitionResponse: customAttributeDefinitionResponse,
+    });
     return {
       epSdkTask_Action: this.getCreateFuncAction(),
       epObject: customAttributeDefinitionResponse.data,
-      epObjectKeys: this.getEpObjectKeys(
-        customAttributeDefinitionResponse.data
-      ),
+      epObjectKeys: this.getEpObjectKeys(customAttributeDefinitionResponse.data),
     };
   }
 
-  protected async updateFunc(
-    epSdkCustomAttributeDefinitionTask_GetFuncReturn: IEpSdkCustomAttributeDefinitionTask_GetFuncReturn
-  ): Promise<IEpSdkCustomAttributeDefinitionTask_UpdateFuncReturn> {
+  protected async updateFunc(epSdkCustomAttributeDefinitionTask_GetFuncReturn: IEpSdkCustomAttributeDefinitionTask_GetFuncReturn): Promise<IEpSdkCustomAttributeDefinitionTask_UpdateFuncReturn> {
     const funcName = "updateFunc";
     const logName = `${EpSdkCustomAttributeDefinitionTask.name}.${funcName}()`;
 
-    EpSdkLogger.trace(
-      EpSdkLogger.createLogEntry(logName, {
-        code: EEpSdkLoggerCodes.TASK_EXECUTE_START_UPDATE,
-        module: this.constructor.name,
-      })
-    );
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_START_UPDATE, module: this.constructor.name }));
 
-    if (epSdkCustomAttributeDefinitionTask_GetFuncReturn.epObject === undefined)
-      throw new EpSdkInternalTaskError(
-        logName,
-        this.constructor.name,
-        "epSdkCustomAttributeDefinitionTask_GetFuncReturn.epObject === undefined"
-      );
     /* istanbul ignore next */
-    if (
-      epSdkCustomAttributeDefinitionTask_GetFuncReturn.epObject.id === undefined
-    )
-      throw new EpSdkApiContentError(
-        logName,
-        this.constructor.name,
-        "epSdkCustomAttributeDefinitionTask_GetFuncReturn.epObject.id === undefined",
-        {
-          epObject: epSdkCustomAttributeDefinitionTask_GetFuncReturn.epObject,
-        }
-      );
+    if (epSdkCustomAttributeDefinitionTask_GetFuncReturn.epObject === undefined) throw new EpSdkInternalTaskError( logName, this.constructor.name, "epSdkCustomAttributeDefinitionTask_GetFuncReturn.epObject === undefined");
+    /* istanbul ignore next */
+    if (epSdkCustomAttributeDefinitionTask_GetFuncReturn.epObject.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "epSdkCustomAttributeDefinitionTask_GetFuncReturn.epObject.id === undefined", {
+      epObject: epSdkCustomAttributeDefinitionTask_GetFuncReturn.epObject,
+    });
 
     const update: CustomAttributeDefinition = {
       ...this.createObjectSettings(),
       name: this.getTaskConfig().attributeName,
     };
 
-    EpSdkLogger.trace(
-      EpSdkLogger.createLogEntry(logName, {
-        code: EEpSdkLoggerCodes.TASK_EXECUTE_UPDATE,
-        module: this.constructor.name,
-        details: {
-          epSdkCustomAttributeDefinitionTask_Config: this.getTaskConfig(),
-          update: update,
-        },
-      })
-    );
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_UPDATE, module: this.constructor.name, details: {
+      epSdkCustomAttributeDefinitionTask_Config: this.getTaskConfig(),
+      update: update,
+    }}));
 
     if (this.isCheckmode()) {
       const wouldBe_EpObject: CustomAttributeDefinition = {
         ...epSdkCustomAttributeDefinitionTask_GetFuncReturn.epObject,
         ...update,
       };
+      let epSdkTask_Action = this.getUpdateFuncAction();
+      let issue: any = undefined;
+      if(wouldBe_EpObject.scope !== epSdkCustomAttributeDefinitionTask_GetFuncReturn.epObject.scope) {
+        // check if scope is in update => that would fail
+        epSdkTask_Action = this.getUpdateFuncAction(true);
+        issue = {
+          message: "cannot update scope",
+          requestedUpdate: {
+            from: epSdkCustomAttributeDefinitionTask_GetFuncReturn.epObject.scope,
+            to: wouldBe_EpObject.scope
+          }
+        }
+      }
       return {
-        epSdkTask_Action: this.getUpdateFuncAction(),
+        issue: issue,
+        epSdkTask_Action: epSdkTask_Action,
         epObject: wouldBe_EpObject,
         epObjectKeys: this.getEpObjectKeys(wouldBe_EpObject),
       };
     }
 
-    const customAttributeDefinitionResponse: CustomAttributeDefinitionResponse =
-      await CustomAttributeDefinitionsService.updateCustomAttributeDefinition({
-        id: epSdkCustomAttributeDefinitionTask_GetFuncReturn.epObject.id,
-        requestBody: update,
-      });
+    const customAttributeDefinitionResponse: CustomAttributeDefinitionResponse = await CustomAttributeDefinitionsService.updateCustomAttributeDefinition({
+      id: epSdkCustomAttributeDefinitionTask_GetFuncReturn.epObject.id,
+      requestBody: update,
+    });
 
-    EpSdkLogger.trace(
-      EpSdkLogger.createLogEntry(logName, {
-        code: EEpSdkLoggerCodes.TASK_EXECUTE_UPDATE,
-        module: this.constructor.name,
-        details: {
-          epSdkApplicationDomainTask_Config: this.getTaskConfig(),
-          update: update,
-          customAttributeDefinitionResponse: customAttributeDefinitionResponse,
-        },
-      })
-    );
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_UPDATE, module: this.constructor.name, details: {
+      epSdkApplicationDomainTask_Config: this.getTaskConfig(),
+      update: update,
+      customAttributeDefinitionResponse: customAttributeDefinitionResponse,
+    }}));
 
     /* istanbul ignore next */
-    if (customAttributeDefinitionResponse.data === undefined)
-      throw new EpSdkApiContentError(
-        logName,
-        this.constructor.name,
-        "customAttributeDefinitionResponse.data === undefined",
-        {
-          customAttributeDefinitionResponse: customAttributeDefinitionResponse,
-        }
-      );
-    const epSdkCustomAttributeDefinitionTask_UpdateFuncReturn: IEpSdkCustomAttributeDefinitionTask_UpdateFuncReturn =
-      {
-        epSdkTask_Action: this.getUpdateFuncAction(),
-        epObject: customAttributeDefinitionResponse.data,
-        epObjectKeys: this.getEpObjectKeys(
-          customAttributeDefinitionResponse.data
-        ),
-      };
+    if (customAttributeDefinitionResponse.data === undefined) throw new EpSdkApiContentError( logName, this.constructor.name, "customAttributeDefinitionResponse.data === undefined", {
+      customAttributeDefinitionResponse: customAttributeDefinitionResponse,
+    });
+    const epSdkCustomAttributeDefinitionTask_UpdateFuncReturn: IEpSdkCustomAttributeDefinitionTask_UpdateFuncReturn = {
+      epSdkTask_Action: this.getUpdateFuncAction(),
+      epObject: customAttributeDefinitionResponse.data,
+      epObjectKeys: this.getEpObjectKeys(
+        customAttributeDefinitionResponse.data
+      ),
+    };
     return epSdkCustomAttributeDefinitionTask_UpdateFuncReturn;
   }
 
-  protected async deleteFunc(
-    epSdkCustomAttributeDefinitionTask_GetFuncReturn: IEpSdkCustomAttributeDefinitionTask_GetFuncReturn
-  ): Promise<IEpSdkCustomAttributeDefinitionTask_DeleteFuncReturn> {
+  protected async deleteFunc(epSdkCustomAttributeDefinitionTask_GetFuncReturn: IEpSdkCustomAttributeDefinitionTask_GetFuncReturn): Promise<IEpSdkCustomAttributeDefinitionTask_DeleteFuncReturn> {
     const funcName = "deleteFunc";
     const logName = `${EpSdkCustomAttributeDefinitionTask.name}.${funcName}()`;
 
-    EpSdkLogger.trace(
-      EpSdkLogger.createLogEntry(logName, {
-        code: EEpSdkLoggerCodes.TASK_EXECUTE_START_DELETE,
-        module: this.constructor.name,
-      })
-    );
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_START_DELETE, module: this.constructor.name, }));
 
-    if (epSdkCustomAttributeDefinitionTask_GetFuncReturn.epObject === undefined)
-      throw new EpSdkInternalTaskError(
-        logName,
-        this.constructor.name,
-        "epSdkCustomAttributeDefinitionTask_GetFuncReturn.epObject === undefined"
-      );
     /* istanbul ignore next */
-    if (
-      epSdkCustomAttributeDefinitionTask_GetFuncReturn.epObject.id === undefined
-    )
-      throw new EpSdkApiContentError(
-        logName,
-        this.constructor.name,
-        "epSdkCustomAttributeDefinitionTask_GetFuncReturn.epObject.id === undefined",
-        {
-          epObject: epSdkCustomAttributeDefinitionTask_GetFuncReturn.epObject,
-        }
-      );
+    if (epSdkCustomAttributeDefinitionTask_GetFuncReturn.epObject === undefined) throw new EpSdkInternalTaskError(logName, this.constructor.name, "epSdkCustomAttributeDefinitionTask_GetFuncReturn.epObject === undefined");
+    /* istanbul ignore next */
+    if (epSdkCustomAttributeDefinitionTask_GetFuncReturn.epObject.id === undefined) throw new EpSdkApiContentError( logName, this.constructor.name, "epSdkCustomAttributeDefinitionTask_GetFuncReturn.epObject.id === undefined", {
+      epObject: epSdkCustomAttributeDefinitionTask_GetFuncReturn.epObject,
+    });
 
     if (this.isCheckmode()) {
       return {
@@ -454,24 +327,20 @@ export class EpSdkCustomAttributeDefinitionTask extends EpSdkTask {
       };
     }
 
-    const customAttributeDefinition: CustomAttributeDefinition =
-      await EpSdkCustomAttributeDefinitionsService.deleteById({
-        customAttributeDefinitionId:
-          epSdkCustomAttributeDefinitionTask_GetFuncReturn.epObject.id,
-      });
+    const customAttributeDefinition: CustomAttributeDefinition = await EpSdkCustomAttributeDefinitionsService.deleteById({
+      customAttributeDefinitionId: epSdkCustomAttributeDefinitionTask_GetFuncReturn.epObject.id,
+    });
 
-    const epSdkCustomAttributeDefinitionTask_DeleteFuncReturn: IEpSdkCustomAttributeDefinitionTask_DeleteFuncReturn =
-      {
-        epSdkTask_Action: this.getDeleteFuncAction(),
-        epObject: customAttributeDefinition,
-        epObjectKeys: this.getEpObjectKeys(customAttributeDefinition),
-      };
+    const epSdkCustomAttributeDefinitionTask_DeleteFuncReturn: IEpSdkCustomAttributeDefinitionTask_DeleteFuncReturn = {
+      epSdkTask_Action: this.getDeleteFuncAction(),
+      epObject: customAttributeDefinition,
+      epObjectKeys: this.getEpObjectKeys(customAttributeDefinition),
+    };
     return epSdkCustomAttributeDefinitionTask_DeleteFuncReturn;
   }
 
   public async execute(): Promise<IEpSdkCustomAttributeDefinitionTask_ExecuteReturn> {
-    const epSdkTask_ExecuteReturn: IEpSdkCustomAttributeDefinitionTask_ExecuteReturn =
-      await super.execute();
+    const epSdkTask_ExecuteReturn: IEpSdkCustomAttributeDefinitionTask_ExecuteReturn = await super.execute();
     return epSdkTask_ExecuteReturn;
   }
 }
