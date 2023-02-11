@@ -225,7 +225,7 @@ export abstract class EpSdkTask {
 
   protected abstract updateFunc(epSdkTask_GetFuncReturn: IEpSdkTask_GetFuncReturn): Promise<IEpSdkTask_UpdateFuncReturn>;
 
-  protected getUpdateFuncAction(wouldFail: boolean = false): EEpSdkTask_Action {
+  protected getUpdateFuncAction(wouldFail = false): EEpSdkTask_Action {
     if (this.isCheckmode()) {
       if(wouldFail) return EEpSdkTask_Action.WOULD_FAIL_TO_UPDATE;
       return EEpSdkTask_Action.WOULD_UPDATE;
