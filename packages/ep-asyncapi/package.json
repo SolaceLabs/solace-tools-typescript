@@ -1,6 +1,6 @@
 {
   "name": "@solace-labs/ep-asyncapi",
-  "version": "0.53.0",
+  "version": "0.53.1",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "description": "Solace Event Portal AsyncAPI Library",
@@ -62,7 +62,7 @@
   "dependencies": {
     "@asyncapi/avro-schema-parser": "^1.1.0",
     "@asyncapi/parser": "^1.17.2",
-    "@solace-labs/ep-openapi-node": "^2.51.1",
+    "@solace-labs/ep-openapi-node": "^2.52.0",
     "js-yaml": "^4.1.0",
     "jsonschema": "^1.4.1",
     "lodash": "^4.17.21",

@@ -1,5 +1,11 @@
 # @solace-labs/ep-apim-openapi-node
 
+## 0.2.3
+
+### Patch Changes
+
+- d18e59f8: updated to v 2.0.0-ea.11
+
 ## 0.2.2
 
 ### Patch Changes
