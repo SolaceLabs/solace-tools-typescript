@@ -1,5 +1,11 @@
 # @solace-labs/ep-openapi-node
 
+## 2.52.0
+
+### Minor Changes
+
+- 20ea03f7: upgrade to ep api 2.0.12
+
 ## 2.51.1
 
 ### Patch Changes

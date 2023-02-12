@@ -1,5 +1,16 @@
 # @solace-labs/ep-sdk
 
+## 0.53.0
+
+### Minor Changes
+
+- 20ea03f7: added scope to custom attribute definition task
+
+### Patch Changes
+
+- Updated dependencies [20ea03f7]
+  - @solace-labs/ep-openapi-node@2.52.0
+
 ## 0.52.0
 
 ### Minor Changes

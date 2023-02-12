@@ -1,5 +1,13 @@
 # @solace-labs/ep-asyncapi
 
+## 0.53.1
+
+### Patch Changes
+
+- 523e55f1: fixed linter issues
+- Updated dependencies [20ea03f7]
+  - @solace-labs/ep-openapi-node@2.52.0
+
 ## 0.53.0
 
 ### Minor Changes

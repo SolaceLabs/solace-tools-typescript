@@ -1,6 +1,6 @@
 {
   "name": "@solace-labs/ep-openapi-node",
-  "version": "2.51.1",
+  "version": "2.52.0",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "type": "commonjs",
