@@ -1,5 +1,5 @@
 import yaml from "js-yaml";
-import { AsyncAPIDocument, Message, Channel, Info } from "@asyncapi/parser";
+import { AsyncAPIDocument, Message, Channel } from "@asyncapi/parser";
 import { Validator, ValidatorResult } from "jsonschema";
 import { $EventApi, $EventApiVersion } from "@solace-labs/ep-openapi-node";
 import {

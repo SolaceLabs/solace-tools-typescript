@@ -45,7 +45,8 @@ describe(`${scriptName}`, () => {
           requestBody: {
             name: CustomAttribtuteDefinitionName,
             valueType: CustomAttributeDefinition.valueType.STRING,
-            associatedEntityTypes: ['event', 'eventVersion']
+            associatedEntityTypes: ['event', 'eventVersion'],
+            scope: CustomAttributeDefinition.scope.ORGANIZATION
           }
         });
         const data: CustomAttributeDefinition | undefined = customAttributeDefinitionResponse.data;
