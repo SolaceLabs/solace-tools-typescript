@@ -1,5 +1,11 @@
 # @solace-labs/ep-sdk
 
+## 0.54.0
+
+### Minor Changes
+
+- 77a3f037: added Environment Service
+
 ## 0.53.0
 
 ### Minor Changes
