@@ -1,5 +1,11 @@
 # @internal/tools
 
+## 0.1.9
+
+### Patch Changes
+
+- ca107d11: added ep apim app registration tests
+
 ## 0.1.8
 
 ### Patch Changes

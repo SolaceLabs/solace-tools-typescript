@@ -1,5 +1,11 @@
 # @solace-labs/ep-apim-openapi-node
 
+## 0.2.4
+
+### Patch Changes
+
+- ca107d11: added ep apim app registration tests
+
 ## 0.2.3
 
 ### Patch Changes

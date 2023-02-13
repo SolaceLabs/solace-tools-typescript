@@ -1,6 +1,6 @@
 {
   "name": "@solace-labs/ep-apim-openapi-node",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "type": "commonjs",
