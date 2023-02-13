@@ -6,6 +6,9 @@ export { default as EpSdkApplicationsService } from './EpSdkApplicationsService'
 export * from './EpSdkApplicationDomainsService';
 export { default as EpSdkApplicationDomainsService } from './EpSdkApplicationDomainsService';
 
+export * from './EpSdkEnvironmentsService';
+export { default as EpSdkEnvironmentsService } from './EpSdkEnvironmentsService';
+
 export * from './EpSdkCustomAttributeDefinitionsService';
 export { default as EpSdkCustomAttributeDefinitionsService } from './EpSdkCustomAttributeDefinitionsService';
 
