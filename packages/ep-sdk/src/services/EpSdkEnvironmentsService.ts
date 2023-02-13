@@ -1,8 +1,4 @@
 import {
-  ApplicationDomain,
-  ApplicationDomainResponse,
-  ApplicationDomainsResponse,
-  ApplicationDomainsService,
   Environment,
   EnvironmentResponse,
   EnvironmentsResponse,
@@ -11,9 +7,6 @@ import {
 } from '@solace-labs/ep-openapi-node';
 import {
   EpSdkApiContentError,
-  EpSdkServiceError,
-  EpSdkLogger,
-  EEpSdkLoggerCodes,
 } from '../utils';
 import { 
   EpApiMaxPageSize 
