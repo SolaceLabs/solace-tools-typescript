@@ -12,5 +12,7 @@
     "build:test": "yarn build"
   },
   "dependencies": {},
-  "devDependencies": {}
+  "devDependencies": {
+    "short-uuid": "^4.2.2"
+  }
 }
