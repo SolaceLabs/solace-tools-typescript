@@ -285,8 +285,6 @@ describe(`${scriptName}`, () => {
     }
   });
 
-
-
   it(`${scriptName}: should list app registrations with paging`, async () => {
     const PageSize = 1;
     try {
