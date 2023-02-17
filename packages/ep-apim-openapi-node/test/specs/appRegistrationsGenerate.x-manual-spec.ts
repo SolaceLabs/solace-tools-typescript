@@ -7,7 +7,6 @@ import {
 } from '@internal/tools/src';
 import { 
   TestLogger,
-  TestConfig,
   EpSdkRsqlQueryBuilder,
 } from '../lib';
 import {
@@ -16,19 +15,13 @@ import {
   ApplicationRegistrationsResponse, 
   ApplicationRegistrationView, 
   Credentials, 
-  CredentialsResponse, 
   EventApiProduct, 
-  EventApiProductRegistration, 
   EventApiProductRegistrationResponse, 
-  EventApiProductRegistrationsResponse, 
   EventApiProductsResponse, 
   EventApiProductsService, 
-  EventApisResponse, 
-  EventApiVersion, 
   Plan, 
   RegistrationsService,
 } from '../../generated-src';
-import { TestHelpers } from '../lib/TestHelpers';
 
 const scriptName: string = path.basename(__filename);
 TestLogger.logMessage(scriptName, ">>> starting ...");
