@@ -38,6 +38,7 @@ const ApplicationDomainName = "TEST_APIM_API";
 const ApplicationDomainId = "gb2ila1uhoj";
 
 const ConsumerAppSource = "ep-devp-showcase";
+const ConsumerAppAnotherSource = 'another-dev-portal';
 const NumberOfConsumerApps = 10;
 const generateConsumerAppName = (rootName: string, i:number) => {
   return `${rootName}-${i}`;
@@ -130,20 +131,33 @@ describe(`${scriptName}`, () => {
   });
 
   it(`${scriptName}: should create consumer apps with different source`, async () => {
-    const NewSource = 'another-dev-portal';
     try {
       for(let i=0; i<NumberOfConsumerApps; i++) {
-        const consumerAppName = generateConsumerAppName(`ep-devp-consumer-app @ ${NewSource}`,i);
+        const consumerAppName = generateConsumerAppName(`ep-devp-consumer-app @ ${ConsumerAppAnotherSource}`,i);
         const applicationRegistrationResponse: ApplicationRegistrationResponse = await RegistrationsService.createAppRegistration({
           requestBody: {
             name: consumerAppName,
             registrationId: TestUtils.getShortUUID(),
-            source: NewSource,
+            source: ConsumerAppAnotherSource,
             applicationDomainId: ApplicationDomainId,
           }
         });
         ConsumerAppIds.set(consumerAppName, applicationRegistrationResponse.data.registrationId);
       }
+    } catch(e) {
+      expect(e instanceof ApiError, TestLogger.createNotApiErrorMessage(e.message)).to.be.true;
+      expect(false, TestLogger.createApiTestFailMessage('failed', e)).to.be.true;
+    }
+  });
+
+  it(`${scriptName}: should list consumer apps filtered by source`, async () => {
+    try {
+      const sourceQueryAst = EpSdkRsqlQueryBuilder.eq(TestUtils.nameOf<ApplicationRegistrationView>('source'), ConsumerAppSource);
+      const applicationRegistrationsResponse: ApplicationRegistrationsResponse = await RegistrationsService.listAppRegistrations({ 
+        query: emit(sourceQueryAst),
+        pageSize: 100
+      });
+      expect(applicationRegistrationsResponse.data.length, TestLogger.createApiTestFailMessage(`received ${applicationRegistrationsResponse.data.length} applicationRegistrations`)).to.equal(NumberOfConsumerApps);
     } catch(e) {
       expect(e instanceof ApiError, TestLogger.createNotApiErrorMessage(e.message)).to.be.true;
       expect(false, TestLogger.createApiTestFailMessage('failed', e)).to.be.true;
