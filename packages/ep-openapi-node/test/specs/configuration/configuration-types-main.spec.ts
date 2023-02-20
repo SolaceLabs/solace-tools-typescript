@@ -42,6 +42,7 @@ describe(`${scriptName}`, () => {
   it(`${scriptName}: should get list of configuration types`, async () => {
     try {
       const configurationTypesResponse: ConfigurationTypesResponse = await ConfigurationTypesService.getConfigurationTypes({
+        xContextId: 'xContextId',
         pageNumber: 1,
         pageSize: 100,
         // ids,

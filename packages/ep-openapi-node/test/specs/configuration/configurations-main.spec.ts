@@ -42,6 +42,7 @@ describe(`${scriptName}`, () => {
   it(`${scriptName}: should get list of configurations`, async () => {
     try {
       const configurationsResponse: ConfigurationsResponse = await ConfigurationsService.getConfigurations({
+        xContextId: 'xContextId',
         pageSize: 100,
         pageNumber:1,
         // messagingServiceIds,

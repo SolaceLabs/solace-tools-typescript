@@ -64,9 +64,11 @@ describe(`${scriptName}`, () => {
     TestContext.newItId();
     try {
       let xvoid: void = await ApplicationDomainsService.deleteApplicationDomain({
+        xContextId: 'xContextId',
         id: ApplicationDomainId
       });
       xvoid = await CustomAttributeDefinitionsService.deleteCustomAttributeDefinition({
+        xContextId: 'xContextId',
         id: CustomAttribtuteDefinitionId
       });
     } catch(e) {
@@ -78,6 +80,7 @@ describe(`${scriptName}`, () => {
   it(`${scriptName}: should create application domain`, async () => {
     try {
       const applicationDomainResponse: ApplicationDomainResponse = await ApplicationDomainsService.createApplicationDomain({
+        xContextId: 'xContextId',
         requestBody: {
           name: ApplicationDomainName,
         }
@@ -94,6 +97,7 @@ describe(`${scriptName}`, () => {
     try {
 
       const eventResponse: EventResponse = await EventsService.createEvent({
+        xContextId: 'xContextId',
         requestBody: {
           applicationDomainId: ApplicationDomainId,
           name: EventName,
@@ -116,6 +120,7 @@ describe(`${scriptName}`, () => {
         version: '1.0.0',
       };
       const eventVersionResponse: EventVersionResponse = await EventsService.createEventVersionForEvent({
+        xContextId: 'xContextId',
         eventId: EventId,
         requestBody: requestBody
       });
@@ -136,6 +141,7 @@ describe(`${scriptName}`, () => {
         version: '1.1.0',
       };
       const eventVersionResponse: EventVersionResponse = await EventsService.createEventVersion({
+        xContextId: 'xContextId',
         requestBody: requestBody
       });
       const data: EventVersion | undefined = eventVersionResponse.data;
@@ -151,6 +157,7 @@ describe(`${scriptName}`, () => {
   it(`${scriptName}: should create attribute definition`, async () => {
     try {
       const customAttributeDefinitionResponse: CustomAttributeDefinitionResponse = await CustomAttributeDefinitionsService.createCustomAttributeDefinition({
+        xContextId: 'xContextId',
         requestBody: {
           name: CustomAttribtuteDefinitionName,
           valueType: CustomAttributeDefinition.valueType.STRING,
@@ -176,6 +183,7 @@ describe(`${scriptName}`, () => {
         customAttributeDefinitionId: CustomAttribtuteDefinitionId
       };
       const eventResponse: EventResponse = await EventsService.createEvent({
+        xContextId: 'xContextId',
         requestBody: {
           applicationDomainId: ApplicationDomainId,
           name: EventNameAttributes,
@@ -199,6 +207,7 @@ describe(`${scriptName}`, () => {
         version: '1.0.0',
       };        
       const eventVersionResponse: EventVersionResponse = await EventsService.createEventVersionForEvent({
+        xContextId: 'xContextId',
         eventId: EventIdAttributes,
         requestBody: requestBody
       });

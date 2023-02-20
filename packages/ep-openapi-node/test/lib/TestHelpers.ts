@@ -15,12 +15,14 @@ export class TestHelpers {
     const logName = `${TestHelpers.name}.${funcName}()`;
     try {
       const applicationDomainsResponse: ApplicationDomainsResponse = await ApplicationDomainsService.getApplicationDomains({
+        xContextId: 'xContextId',
         name: applicationDomainName,
       });
       if(applicationDomainsResponse.data === undefined) throw new Error(`${logName}: applicationDomainsResponse.data`);
       if(applicationDomainsResponse.data.length > 1) throw new Error(`${logName}: applicationDomainsResponse.data.length > 1`);
       if(applicationDomainsResponse.data.length === 1) {
         const xvoid: void = await ApplicationDomainsService.deleteApplicationDomain({
+          xContextId: 'xContextId',
           id: applicationDomainsResponse.data[0].id,
         });  
       }

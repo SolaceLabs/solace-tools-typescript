@@ -260,7 +260,7 @@ class GenerateOpenApiService {
       // paths
       const paths: Record<string, any> = apiSpecJson.paths;
       for(const path in paths) {
-        console.log(`${logName}: path = ${JSON.stringify(path, null, 2)}`);
+        // console.log(`${logName}: path = ${JSON.stringify(path, null, 2)}`);
         const pathObject = paths[path];
         // console.log(`${logName}: pathObject = ${JSON.stringify(pathObject, null, 2)}`);
         let pathParameters: Array<any> | undefined = pathObject.parameters;

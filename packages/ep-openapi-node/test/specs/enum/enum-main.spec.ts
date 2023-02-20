@@ -63,6 +63,7 @@ describe(`${scriptName}`, () => {
   it(`${scriptName}: should create application domain`, async () => {
     try {
       const applicationDomainResponse: ApplicationDomainResponse = await ApplicationDomainsService.createApplicationDomain({
+        xContextId: 'xContextId',
         requestBody: {
           name: ApplicationDomainName,
         }
@@ -79,6 +80,7 @@ describe(`${scriptName}`, () => {
     try {
 
       const topicAddressEnumResponse: TopicAddressEnumResponse = await EnumsService.createEnum({
+        xContextId: 'xContextId',
           requestBody: {
             applicationDomainId: ApplicationDomainId,
             name: EnumName,
@@ -108,6 +110,7 @@ describe(`${scriptName}`, () => {
         values: values
       };
       const topicAddressEnumVersionResponse: TopicAddressEnumVersionResponse = await EnumsService.createEnumVersionForEnum({
+        xContextId: 'xContextId',
         enumId: EnumId,
         requestBody: requestBody,
       });
