@@ -26,7 +26,8 @@ import EpSdkCustomAttributesQueryService from './EpSdkCustomAttributesQueryServi
 /** @category Services */
 export class EpSdkEventApiProductsServiceClass extends EpSdkServiceClass {
 
-  private async updateEventApiProduct({ update }:{
+  private async updateEventApiProduct({ xContextId, update }:{
+    xContextId: string;
     update: EventApiProduct;
   }): Promise<EventApiProduct> {
     const funcName = 'updateEventApiProduct';
@@ -38,6 +39,7 @@ export class EpSdkEventApiProductsServiceClass extends EpSdkServiceClass {
     });
 
     const eventApiProductResponse: EventApiProductResponse = await EventApiProductsService.updateEventApiProduct({
+      xContextId,
       id: update.id,
       requestBody: update
     });
@@ -52,19 +54,23 @@ export class EpSdkEventApiProductsServiceClass extends EpSdkServiceClass {
    * Sets the custom attributes in the list on the event api product.
    * Creates attribute definitions / adds entity type 'eventApiProduct' if it doesn't exist.
    */
-  public async setCustomAttributes({ eventApiProductId, epSdkCustomAttributeList}:{
+  public async setCustomAttributes({ xContextId, eventApiProductId, epSdkCustomAttributeList}:{
+    xContextId: string;
     eventApiProductId: string;
     epSdkCustomAttributeList: TEpSdkCustomAttributeList;
   }): Promise<EventApiProduct> {
     const eventApiProduct: EventApiProduct = await this.getById({
+      xContextId,
       eventApiProductId: eventApiProductId,
     });
     const customAttributes: Array<CustomAttribute> = await EpSdkCustomAttributesService.createCustomAttributesWithNew({
+      xContextId,
       existingCustomAttributes: eventApiProduct.customAttributes,
       epSdkCustomAttributeList: epSdkCustomAttributeList,
       epSdkCustomAttributeEntityType: EEpSdkCustomAttributeEntityTypes.EVENT_API_PRODUCT
     });
     return await this.updateEventApiProduct({
+      xContextId,
       update: {
         ...eventApiProduct,
         customAttributes: customAttributes,  
@@ -76,11 +82,13 @@ export class EpSdkEventApiProductsServiceClass extends EpSdkServiceClass {
    * Unsets the custom attributes in the list on the event api product.
    * Leaves attibute definitions as-is.
    */
-  public async unsetCustomAttributes({ eventApiProductId, epSdkCustomAttributeList }:{
+  public async unsetCustomAttributes({ xContextId, eventApiProductId, epSdkCustomAttributeList }:{
+    xContextId: string;
     eventApiProductId: string;
     epSdkCustomAttributeList: TEpSdkCustomAttributeList;
   }): Promise<EventApiProduct> {
     const eventApiProduct: EventApiProduct = await this.getById({
+      xContextId,
       eventApiProductId: eventApiProductId,
     });
     const customAttributes: Array<CustomAttribute> = await EpSdkCustomAttributesService.createCustomAttributesExcluding({
@@ -88,6 +96,7 @@ export class EpSdkEventApiProductsServiceClass extends EpSdkServiceClass {
       epSdkCustomAttributeList: epSdkCustomAttributeList,
     });
     return await this.updateEventApiProduct({
+      xContextId,
       update: {
         ...eventApiProduct,
         customAttributes: customAttributes,  
@@ -95,11 +104,13 @@ export class EpSdkEventApiProductsServiceClass extends EpSdkServiceClass {
     });
   }
 
-  public async removeAssociatedEntityTypeFromCustomAttributeDefinitions({ customAttributeNames }: {
+  public async removeAssociatedEntityTypeFromCustomAttributeDefinitions({ xContextId, customAttributeNames }: {
+    xContextId: string;
     customAttributeNames: Array<string>;
   }): Promise<void> {
     for(const customAttributeName of customAttributeNames) {
       await EpSdkCustomAttributeDefinitionsService.removeAssociatedEntityTypeFromCustomAttributeDefinition({
+        xContextId,
         attributeName: customAttributeName,
         associatedEntityType: EEpSdkCustomAttributeEntityTypes.EVENT_API_PRODUCT,
       });
@@ -110,7 +121,8 @@ export class EpSdkEventApiProductsServiceClass extends EpSdkServiceClass {
    * Retrieves a list of all EventApiProducts without paging.
    * @param param0 
    */
-  public listAll = async({ applicationDomainIds, shared, brokerType, attributesQuery }:{
+  public listAll = async({ xContextId, applicationDomainIds, shared, brokerType, attributesQuery }:{
+    xContextId: string;
     applicationDomainIds?: Array<string>;
     shared: boolean;
     brokerType?: EpSdkBrokerTypes;
@@ -124,6 +136,7 @@ export class EpSdkEventApiProductsServiceClass extends EpSdkServiceClass {
     let nextPage: number | undefined | null = 1;
     while(nextPage !== undefined && nextPage !== null) {
       const eventApiProductsResponse: EventApiProductsResponse = await EventApiProductsService.getEventApiProducts({
+        xContextId,
         pageSize: 100,
         pageNumber: nextPage,
         // // sort=<field>:<asc|desc>
@@ -164,13 +177,15 @@ export class EpSdkEventApiProductsServiceClass extends EpSdkServiceClass {
     return  eventApiProductsResponse;
   }
 
-  public getById = async({ eventApiProductId }:{
+  public getById = async({ xContextId, eventApiProductId }:{
+    xContextId: string;
     eventApiProductId: string;
   }): Promise<EventApiProduct> => {
     const funcName = 'getById';
     const logName = `${EpSdkEventApiProductsServiceClass.name}.${funcName}()`;
 
     const eventApiProductResponse: EventApiProductResponse = await EventApiProductsService.getEventApiProduct({
+      xContextId,
       id: eventApiProductId
     });
 

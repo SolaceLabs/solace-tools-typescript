@@ -129,6 +129,7 @@ export class EpSdkCustomAttributeDefinitionTask extends EpSdkTask {
     }}));
 
     const customAttributeDefinition: CustomAttributeDefinition | undefined = await EpSdkCustomAttributeDefinitionsService.getByName({
+      xContextId: this.xContextId,
       attributeName: epSdkCustomAttributeDefinitionTask_Keys.attributeName,
     });
 
@@ -208,6 +209,7 @@ export class EpSdkCustomAttributeDefinitionTask extends EpSdkTask {
     }
 
     const customAttributeDefinitionResponse: CustomAttributeDefinitionResponse = await CustomAttributeDefinitionsService.createCustomAttributeDefinition({
+      xContextId: this.xContextId,
       requestBody: create,
     });
 
@@ -280,6 +282,7 @@ export class EpSdkCustomAttributeDefinitionTask extends EpSdkTask {
     }
 
     const customAttributeDefinitionResponse: CustomAttributeDefinitionResponse = await CustomAttributeDefinitionsService.updateCustomAttributeDefinition({
+      xContextId: this.xContextId,
       id: epSdkCustomAttributeDefinitionTask_GetFuncReturn.epObject.id,
       requestBody: update,
     });
@@ -328,6 +331,7 @@ export class EpSdkCustomAttributeDefinitionTask extends EpSdkTask {
     }
 
     const customAttributeDefinition: CustomAttributeDefinition = await EpSdkCustomAttributeDefinitionsService.deleteById({
+      xContextId: this.xContextId,
       customAttributeDefinitionId: epSdkCustomAttributeDefinitionTask_GetFuncReturn.epObject.id,
     });
 
@@ -339,8 +343,8 @@ export class EpSdkCustomAttributeDefinitionTask extends EpSdkTask {
     return epSdkCustomAttributeDefinitionTask_DeleteFuncReturn;
   }
 
-  public async execute(): Promise<IEpSdkCustomAttributeDefinitionTask_ExecuteReturn> {
-    const epSdkTask_ExecuteReturn: IEpSdkCustomAttributeDefinitionTask_ExecuteReturn = await super.execute();
+  public async execute(xContextId: string): Promise<IEpSdkCustomAttributeDefinitionTask_ExecuteReturn> {
+    const epSdkTask_ExecuteReturn: IEpSdkCustomAttributeDefinitionTask_ExecuteReturn = await super.execute(xContextId);
     return epSdkTask_ExecuteReturn;
   }
 }

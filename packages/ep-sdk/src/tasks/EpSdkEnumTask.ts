@@ -145,6 +145,7 @@ export class EpSdkEnumTask extends EpSdkTask {
 
     const enumObject: TopicAddressEnum | undefined =
       await EpSdkEnumsService.getByName({
+        xContextId: this.xContextId,
         enumName: epSdkEnumTask_Keys.enumName,
         applicationDomainId: epSdkEnumTask_Keys.applicationDomainId,
       });
@@ -257,22 +258,16 @@ export class EpSdkEnumTask extends EpSdkTask {
       };
     }
 
-    const topicAddressEnumResponse: TopicAddressEnumResponse =
-      await EnumsService.createEnum({
-        requestBody: create,
-      });
+    const topicAddressEnumResponse: TopicAddressEnumResponse = await EnumsService.createEnum({
+      xContextId: this.xContextId,
+      requestBody: create,
+    });
 
-    EpSdkLogger.trace(
-      EpSdkLogger.createLogEntry(logName, {
-        code: EEpSdkLoggerCodes.TASK_EXECUTE_CREATE,
-        module: this.constructor.name,
-        details: {
-          epSdkEnumTask_Config: this.getTaskConfig(),
-          create: create,
-          topicAddressEnumResponse: topicAddressEnumResponse,
-        },
-      })
-    );
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_CREATE, module: this.constructor.name, details: {
+      epSdkEnumTask_Config: this.getTaskConfig(),
+      create: create,
+      topicAddressEnumResponse: topicAddressEnumResponse,
+    }}));
 
     /* istanbul ignore next */
     if (topicAddressEnumResponse.data === undefined)
@@ -352,11 +347,11 @@ export class EpSdkEnumTask extends EpSdkTask {
       };
     }
 
-    const topicAddressEnumResponse: TopicAddressEnumResponse =
-      await EnumsService.updateEnum({
-        id: epSdkEnumTask_GetFuncReturn.epObject.id,
-        requestBody: update,
-      });
+    const topicAddressEnumResponse: TopicAddressEnumResponse = await EnumsService.updateEnum({
+      xContextId: this.xContextId,
+      id: epSdkEnumTask_GetFuncReturn.epObject.id,
+      requestBody: update,
+    });
 
     EpSdkLogger.trace(
       EpSdkLogger.createLogEntry(logName, {
@@ -428,11 +423,11 @@ export class EpSdkEnumTask extends EpSdkTask {
       };
     }
 
-    const topicAddressEnumResponse: TopicAddressEnum =
-      await EpSdkEnumsService.deleteById({
-        applicationDomainId: this.getTaskConfig().applicationDomainId,
-        enumId: epSdkEnumTask_GetFuncReturn.epObject.id,
-      });
+    const topicAddressEnumResponse: TopicAddressEnum = await EpSdkEnumsService.deleteById({
+      xContextId: this.xContextId,
+      applicationDomainId: this.getTaskConfig().applicationDomainId,
+      enumId: epSdkEnumTask_GetFuncReturn.epObject.id,
+    });
 
     const epSdkEnumTask_DeleteFuncReturn: IEpSdkEnumTask_DeleteFuncReturn = {
       epSdkTask_Action: this.getDeleteFuncAction(),
@@ -442,9 +437,9 @@ export class EpSdkEnumTask extends EpSdkTask {
     return epSdkEnumTask_DeleteFuncReturn;
   }
 
-  public async execute(): Promise<IEpSdkEnumTask_ExecuteReturn> {
+  public async execute(xContextId: string): Promise<IEpSdkEnumTask_ExecuteReturn> {
     const epSdkTask_ExecuteReturn: IEpSdkEnumTask_ExecuteReturn =
-      await super.execute();
+      await super.execute(xContextId);
     return epSdkTask_ExecuteReturn;
   }
 }

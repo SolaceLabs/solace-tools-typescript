@@ -47,11 +47,13 @@ export class EpSdkStatesServiceClass {
   private _deprecatedId = "3";
   private _retiredId = "4";
 
-  public validateStates = async (): Promise<void> => {
+  public validateStates = async({ xContextId }:{ 
+    xContextId: string;
+  }): Promise<void> => {
     const funcName = "validateStates";
     const logName = `${EpSdkStatesServiceClass.name}.${funcName}()`;
 
-    const stateResponse: StatesResponse = await StatesService.getStates();
+    const stateResponse: StatesResponse = await StatesService.getStates({ xContextId });
 
     EpSdkLogger.trace(
       EpSdkLogger.createLogEntry(logName, {

@@ -32,7 +32,8 @@ export class EpSdkValidateApplicationDomainsClass extends EpSdkValidationClass {
     return `${this.entityBaseName}/${super.createEntityName()}`;
   }
 
-  public validateReadPermissions = async({ globalOpenAPI, token }:{
+  public validateReadPermissions = async({ xContextId, globalOpenAPI, token }:{
+    xContextId: string;    
     globalOpenAPI: OpenAPIConfig;
     token: string;
   }): Promise<void> => {
@@ -40,7 +41,7 @@ export class EpSdkValidateApplicationDomainsClass extends EpSdkValidationClass {
     try {
       EpSdkClient.setToken({ globalOpenAPI: globalOpenAPI, token: token });
       try { 
-        await ApplicationDomainsService.getApplicationDomains({ pageSize: 1 });
+        await ApplicationDomainsService.getApplicationDomains({ xContextId: xContextId, pageSize: 1 });
         EpSdkValidationLog.addValidationToLog({ resource: TEpSdkPermissionResources.ApplicationDomains, permissionResult: { permission: EEpSdkPermissions.READ, access: true }});
       } catch(e) {
         if(isEpPermissionsError(e)) EpSdkValidationLog.addValidationToLog({ resource: TEpSdkPermissionResources.ApplicationDomains, permissionResult: { permission: EEpSdkPermissions.READ, access: false }});
@@ -65,7 +66,8 @@ export class EpSdkValidateApplicationDomainsClass extends EpSdkValidationClass {
    * 
    * @returns true if write & delete access, false otherwise. 
    */
-  public validateWriteDeletePermissions = async({ globalOpenAPI, token }:{
+  public validateWriteDeletePermissions = async({ xContextId, globalOpenAPI, token }:{
+    xContextId: string;
     globalOpenAPI: OpenAPIConfig;
     token: string;
   }): Promise<boolean> => {
@@ -77,7 +79,7 @@ export class EpSdkValidateApplicationDomainsClass extends EpSdkValidationClass {
       try { 
         // create
         EpSdkClient.setToken({ globalOpenAPI: globalOpenAPI, token: token });
-        const applicationDomainResponse: ApplicationDomainResponse = await ApplicationDomainsService.createApplicationDomain({ requestBody: { name: this.createEntityName() }});
+        const applicationDomainResponse: ApplicationDomainResponse = await ApplicationDomainsService.createApplicationDomain({ xContextId: xContextId, requestBody: { name: this.createEntityName() }});
         EpSdkValidationLog.addValidationToLog({ resource: TEpSdkPermissionResources.ApplicationDomains, permissionResult: { permission: EEpSdkPermissions.WRITE, access: true }});
         /* istanbul ignore next */
         if(applicationDomainResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'applicationDomainResponse.data === undefined', {});
@@ -91,7 +93,7 @@ export class EpSdkValidateApplicationDomainsClass extends EpSdkValidationClass {
       try { 
         // delete
         EpSdkClient.setToken({ globalOpenAPI: globalOpenAPI, token: token });
-        await ApplicationDomainsService.deleteApplicationDomain({ id: applicationDomainId });
+        await ApplicationDomainsService.deleteApplicationDomain({ xContextId: xContextId, id: applicationDomainId });
         EpSdkValidationLog.addValidationToLog({ resource: TEpSdkPermissionResources.ApplicationDomains, permissionResult: { permission: EEpSdkPermissions.DELETE, access: true }});
       } catch(e) {
         if(isEpPermissionsError(e)) EpSdkValidationLog.addValidationToLog({ resource: TEpSdkPermissionResources.ApplicationDomains, permissionResult: { permission: EEpSdkPermissions.DELETE, access: false }});

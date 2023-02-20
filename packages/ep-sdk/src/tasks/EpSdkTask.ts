@@ -100,6 +100,7 @@ export interface IEpSdkTaskDeepCompareResult extends IEpSdkDeepCompareResult {}
 
 /** @category Tasks */
 export abstract class EpSdkTask {
+  protected xContextId: string = '';
   protected epSdkTask_Config: IEpSdkTask_Config;
   private taskTransactionId: string;
   protected epSdkTask_TransactionLog: EpSdkTask_TransactionLog;
@@ -337,10 +338,12 @@ export abstract class EpSdkTask {
     // do nothing, override in derived class
   }
 
-  public async execute(): Promise<IEpSdkTask_ExecuteReturn> {
+  public async execute(xContextId: string): Promise<IEpSdkTask_ExecuteReturn> {
     const funcName = "execute";
     const logName = `${EpSdkTask.name}.${funcName}()`;
 
+    this.xContextId = xContextId;
+    
     try {
       EpSdkLogger.info(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_START, module: this.constructor.name, details: {
         epSdkTask_Config: this.epSdkTask_Config,

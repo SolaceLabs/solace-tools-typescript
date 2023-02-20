@@ -151,11 +151,11 @@ export class EpSdkSchemaTask extends EpSdkTask {
       })
     );
 
-    const schemaObject: SchemaObject | undefined =
-      await EpSdkSchemasService.getByName({
-        schemaName: epSdkSchemaTask_Keys.schemaName,
-        applicationDomainId: epSdkSchemaTask_Keys.applicationDomainId,
-      });
+    const schemaObject: SchemaObject | undefined = await EpSdkSchemasService.getByName({
+      xContextId: this.xContextId,
+      schemaName: epSdkSchemaTask_Keys.schemaName,
+      applicationDomainId: epSdkSchemaTask_Keys.applicationDomainId,
+    });
 
     EpSdkLogger.trace(
       EpSdkLogger.createLogEntry(logName, {
@@ -270,6 +270,7 @@ export class EpSdkSchemaTask extends EpSdkTask {
     }
 
     const schemaResponse: SchemaResponse = await SchemasService.createSchema({
+      xContextId: this.xContextId,
       requestBody: create,
     });
 
@@ -363,6 +364,7 @@ export class EpSdkSchemaTask extends EpSdkTask {
     }
 
     const schemaResponse: SchemaResponse = await SchemasService.updateSchema({
+      xContextId: this.xContextId,
       id: epSdkSchemaTask_GetFuncReturn.epObject.id,
       requestBody: update,
     });
@@ -439,6 +441,7 @@ export class EpSdkSchemaTask extends EpSdkTask {
     }
 
     const schemaObject: SchemaObject = await EpSdkSchemasService.deleteById({
+      xContextId: this.xContextId,
       applicationDomainId: this.getTaskConfig().applicationDomainId,
       schemaId: epSdkSchemaTask_GetFuncReturn.epObject.id,
     });
@@ -452,9 +455,8 @@ export class EpSdkSchemaTask extends EpSdkTask {
     return epSdkSchemaTask_DeleteFuncReturn;
   }
 
-  public async execute(): Promise<IEpSdkSchemaTask_ExecuteReturn> {
-    const epSdkTask_ExecuteReturn: IEpSdkSchemaTask_ExecuteReturn =
-      await super.execute();
+  public async execute(xContextId: string): Promise<IEpSdkSchemaTask_ExecuteReturn> {
+    const epSdkTask_ExecuteReturn: IEpSdkSchemaTask_ExecuteReturn = await super.execute(xContextId);
     return epSdkTask_ExecuteReturn;
   }
 }

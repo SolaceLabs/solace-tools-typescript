@@ -51,10 +51,11 @@ export type EpSdkApplicationAndVersionResponse = EpSdkApplicationAndVersion & {
 /** @category Services */
 export class EpSdkApplicationVersionsServiceClass extends EpSdkVersionServiceClass {
 
-  public getObjectAndVersionForApplicationId = async({ applicationId, stateId, versionString }:{
+  public getObjectAndVersionForApplicationId = async({ xContextId, applicationId, stateId, versionString }:{
     applicationId: string;
     stateId?: string;
     versionString?: string;
+    xContextId: string;
   }): Promise<EpSdkApplicationAndVersionResponse | undefined> => {
     const funcName = 'getObjectAndVersionForEventId';
     const logName = `${EpSdkApplicationVersionsServiceClass.name}.${funcName}()`;
@@ -62,12 +63,13 @@ export class EpSdkApplicationVersionsServiceClass extends EpSdkVersionServiceCla
     // get application
     let applicationResponse: ApplicationResponse;
     try {
-      applicationResponse = await ApplicationsService.getApplication({ id: applicationId });
+      applicationResponse = await ApplicationsService.getApplication({ xContextId: xContextId, id: applicationId });
     } catch(e) {
       return undefined;
     }
     // get all versions for selected stateId
     const applicationVersionList: Array<ApplicationVersion> = await this.getVersionsForApplicationId({
+      xContextId: xContextId,
       applicationId: applicationId,
       stateId: stateId,
     });
@@ -105,11 +107,13 @@ export class EpSdkApplicationVersionsServiceClass extends EpSdkVersionServiceCla
     }
   }
 
-  public getVersionByVersion = async ({ applicationId, applicationVersionString }: {
+  public getVersionByVersion = async ({ xContextId, applicationId, applicationVersionString }: {
+    xContextId: string;
     applicationId: string;
     applicationVersionString: string;
   }): Promise<ApplicationVersion | undefined> => {
     const applicationVersionList: Array<ApplicationVersion> = await this.getVersionsForApplicationId({
+      xContextId: xContextId,
       applicationId: applicationId
     });
     return applicationVersionList.find( (applicationVersion: ApplicationVersion) => {
@@ -117,7 +121,8 @@ export class EpSdkApplicationVersionsServiceClass extends EpSdkVersionServiceCla
     });
   }
 
-  public getVersionsForApplicationId = async ({ applicationId, stateId, pageSize = EpApiMaxPageSize }: {
+  public getVersionsForApplicationId = async ({ xContextId, applicationId, stateId, pageSize = EpApiMaxPageSize }: {
+    xContextId: string;
     applicationId: string;
     stateId?: string;
     pageSize?: number; /** for testing */
@@ -131,6 +136,7 @@ export class EpSdkApplicationVersionsServiceClass extends EpSdkVersionServiceCla
     while(nextPage !== undefined && nextPage !== null) {
 
       const applicationVersionsResponse: ApplicationVersionsResponse = await ApplicationsService.getApplicationVersions({
+        xContextId: xContextId,
         applicationIds: [applicationId],
         pageNumber: nextPage,
         pageSize: pageSize,
@@ -170,7 +176,8 @@ export class EpSdkApplicationVersionsServiceClass extends EpSdkVersionServiceCla
     return applicationVersionList;
   }
 
-  public getVersionsForApplicationName = async ({ applicationName, applicationDomainId }: {
+  public getVersionsForApplicationName = async ({ xContextId, applicationName, applicationDomainId }: {
+    xContextId: string;
     applicationDomainId: string;
     applicationName: string;
   }): Promise<Array<ApplicationVersion>> => {
@@ -178,6 +185,7 @@ export class EpSdkApplicationVersionsServiceClass extends EpSdkVersionServiceCla
     const logName = `${EpSdkApplicationVersionsServiceClass.name}.${funcName}()`;
 
     const applicationObject: Application | undefined = await EpSdkApplicationsService.getByName({
+      xContextId: xContextId,
       applicationDomainId: applicationDomainId,
       applicationName: applicationName
     });
@@ -186,17 +194,18 @@ export class EpSdkApplicationVersionsServiceClass extends EpSdkVersionServiceCla
     if (applicationObject.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'applicationObject.id === undefined', {
       applicationObject: applicationObject
     });
-    const applicationVersionList: Array<ApplicationVersion> = await this.getVersionsForApplicationId({ applicationId: applicationObject.id });
+    const applicationVersionList: Array<ApplicationVersion> = await this.getVersionsForApplicationId({ xContextId: xContextId, applicationId: applicationObject.id });
     return applicationVersionList;
   }
 
-  public getLatestVersionString = async ({ applicationId }: {
+  public getLatestVersionString = async ({ xContextId, applicationId }: {
+    xContextId: string;
     applicationId: string;
   }): Promise<string | undefined> => {
     const funcName = 'getLatestVersionString';
     const logName = `${EpSdkApplicationVersionsServiceClass.name}.${funcName}()`;
 
-    const applicationVersionList: Array<ApplicationVersion> = await this.getVersionsForApplicationId({ applicationId: applicationId });
+    const applicationVersionList: Array<ApplicationVersion> = await this.getVersionsForApplicationId({ xContextId: xContextId, applicationId: applicationId });
     // CliLogger.trace(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.SERVICE, details: {
     //   applicationVersionList: applicationVersionList
     // }}));
@@ -209,13 +218,15 @@ export class EpSdkApplicationVersionsServiceClass extends EpSdkVersionServiceCla
     return latestApplicationVersion.version;
   }
 
-  public getLatestVersionForApplicationId = async ({ applicationId, applicationDomainId, stateId }: {
+  public getLatestVersionForApplicationId = async ({ xContextId, applicationId, applicationDomainId, stateId }: {
+    xContextId: string;
     applicationDomainId?: string;
     applicationId: string;
     stateId?: string;
   }): Promise<ApplicationVersion | undefined> => {
     applicationDomainId;
     const applicationVersionList: Array<ApplicationVersion> = await this.getVersionsForApplicationId({
+      xContextId: xContextId,
       applicationId: applicationId,
       stateId: stateId,
     });
@@ -223,11 +234,13 @@ export class EpSdkApplicationVersionsServiceClass extends EpSdkVersionServiceCla
     return latestApplicationVersion;
   }
 
-  public getLatestVersionForApplicationName = async ({ applicationDomainId, applicationName }: {
+  public getLatestVersionForApplicationName = async ({ xContextId, applicationDomainId, applicationName }: {
+    xContextId: string;
     applicationDomainId: string;
     applicationName: string;
   }): Promise<ApplicationVersion | undefined> => {
     const applicationVersionList: Array<ApplicationVersion> = await this.getVersionsForApplicationName({
+      xContextId: xContextId,
       applicationName: applicationName,
       applicationDomainId: applicationDomainId
     });
@@ -235,7 +248,8 @@ export class EpSdkApplicationVersionsServiceClass extends EpSdkVersionServiceCla
     return latestApplicationVersion;
   }
 
-  public createApplicationVersion = async({ applicationDomainId, applicationId, applicationVersion, targetLifecycleStateId }:{
+  public createApplicationVersion = async({ xContextId, applicationDomainId, applicationId, applicationVersion, targetLifecycleStateId }:{
+    xContextId: string;
     applicationDomainId: string;
     applicationId: string;
     applicationVersion: ApplicationVersion;
@@ -246,6 +260,7 @@ export class EpSdkApplicationVersionsServiceClass extends EpSdkVersionServiceCla
 
     applicationDomainId;
     const applicationVersionResponse: ApplicationVersionResponse = await ApplicationsService.createApplicationVersion({
+      xContextId: xContextId,
       requestBody: {
         ...applicationVersion,
         applicationId: applicationId,
@@ -270,6 +285,7 @@ export class EpSdkApplicationVersionsServiceClass extends EpSdkVersionServiceCla
     });
     if(createdApplicationVersion.stateId !== targetLifecycleStateId) {
       const stateChangeRequestResponse: StateChangeRequestResponse = await ApplicationsService.updateApplicationVersionState({
+        xContextId: xContextId,
         versionId: createdApplicationVersion.id,
         requestBody: {
           ...applicationVersion,
@@ -278,6 +294,7 @@ export class EpSdkApplicationVersionsServiceClass extends EpSdkVersionServiceCla
       });
       stateChangeRequestResponse;
       const updatedApplicationVersion: ApplicationVersion | undefined = await this.getVersionByVersion({
+        xContextId: xContextId,
         applicationId: applicationId,
         applicationVersionString: createdApplicationVersion.version
       });
@@ -290,7 +307,8 @@ export class EpSdkApplicationVersionsServiceClass extends EpSdkVersionServiceCla
     return createdApplicationVersion;
   }
 
-  public listLatestVersions = async({ applicationDomainIds, stateId, pageNumber = 1, pageSize = 20, sortFieldName }:{
+  public listLatestVersions = async({ xContextId, applicationDomainIds, stateId, pageNumber = 1, pageSize = 20, sortFieldName }:{
+    xContextId: string;
     applicationDomainIds?: Array<string>;
     stateId?: string;
     pageNumber?: number;
@@ -303,6 +321,7 @@ export class EpSdkApplicationVersionsServiceClass extends EpSdkVersionServiceCla
     // get all applications:
     // - we may have applications without a version in the state requested
     const applicationsResponse: ApplicationsResponse = await EpSdkApplicationsService.listAll({
+      xContextId: xContextId,
       applicationDomainIds: applicationDomainIds,
       sortFieldName: sortFieldName
     });
@@ -317,6 +336,7 @@ export class EpSdkApplicationVersionsServiceClass extends EpSdkVersionServiceCla
       });
       // get the latest version in the requested state
       const latest_ApplicationVersion: ApplicationVersion | undefined = await this.getLatestVersionForApplicationId({
+        xContextId: xContextId,
         applicationId: application.id,
         stateId: stateId
       });

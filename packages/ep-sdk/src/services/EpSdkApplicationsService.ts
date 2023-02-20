@@ -23,7 +23,8 @@ import EpSdkCustomAttributeDefinitionsService from './EpSdkCustomAttributeDefini
 /** @category Services */
 export class EpSdkApplicationsServiceClass extends EpSdkServiceClass {
 
-  private listAllForApplicationDomainId = async({ applicationDomainId }:{
+  private listAllForApplicationDomainId = async({ xContextId, applicationDomainId }:{
+    xContextId: string;
     applicationDomainId?: string;
   }): Promise<ApplicationsResponse> => {
     const funcName = 'listAllForApplicationDomainId';
@@ -35,6 +36,7 @@ export class EpSdkApplicationsServiceClass extends EpSdkServiceClass {
     while(nextPage !== undefined && nextPage !== null) {
 
       const applicationsResponse: ApplicationsResponse = await ApplicationsService.getApplications({
+        xContextId: xContextId,
         applicationDomainId: applicationDomainId,
         pageSize: EpApiMaxPageSize,
         pageNumber: nextPage,
@@ -65,7 +67,8 @@ export class EpSdkApplicationsServiceClass extends EpSdkServiceClass {
     return applicationsResponse;
   }
 
-  private async updateApplication({ update }:{
+  private async updateApplication({ xContextId, update }:{
+    xContextId: string;
     update: Application;
   }): Promise<Application> {
     const funcName = 'updateApplication';
@@ -77,6 +80,7 @@ export class EpSdkApplicationsServiceClass extends EpSdkServiceClass {
     });
 
     const applicationResponse: ApplicationResponse = await ApplicationsService.updateApplication({
+      xContextId: xContextId,
       id: update.id,
       requestBody: update
     });
@@ -93,19 +97,23 @@ export class EpSdkApplicationsServiceClass extends EpSdkServiceClass {
    * @param param0 
    * @returns 
    */
-  public async setCustomAttributes({ applicationId, epSdkCustomAttributeList}:{
+  public async setCustomAttributes({ xContextId, applicationId, epSdkCustomAttributeList}:{
+    xContextId: string;
     applicationId: string;
     epSdkCustomAttributeList: TEpSdkCustomAttributeList;
   }): Promise<Application> {
     const application: Application = await this.getById({
+      xContextId: xContextId,
       applicationId: applicationId
     });
     const customAttributes: Array<CustomAttribute> = await EpSdkCustomAttributesService.createCustomAttributesWithNew({
+      xContextId: xContextId,
       existingCustomAttributes: application.customAttributes,
       epSdkCustomAttributeList: epSdkCustomAttributeList,
       epSdkCustomAttributeEntityType: EEpSdkCustomAttributeEntityTypes.APPLICATION
     });
     return await this.updateApplication({
+      xContextId: xContextId,
       update: {
         ...application,
         customAttributes: customAttributes,  
@@ -117,11 +125,13 @@ export class EpSdkApplicationsServiceClass extends EpSdkServiceClass {
    * Unsets the custom attributes in the list on the application.
    * Leaves attibute definitions as-is.
    */
-  public async unsetCustomAttributes({ applicationId, epSdkCustomAttributeList }:{
+  public async unsetCustomAttributes({ xContextId, applicationId, epSdkCustomAttributeList }:{
+    xContextId: string;
     applicationId: string;
     epSdkCustomAttributeList: TEpSdkCustomAttributeList;
   }): Promise<Application> {
     const application: Application = await this.getById({
+      xContextId: xContextId,
       applicationId: applicationId
     });
     const customAttributes: Array<CustomAttribute> = await EpSdkCustomAttributesService.createCustomAttributesExcluding({
@@ -129,6 +139,7 @@ export class EpSdkApplicationsServiceClass extends EpSdkServiceClass {
       epSdkCustomAttributeList: epSdkCustomAttributeList,
     });
     return await this.updateApplication({
+      xContextId: xContextId,
       update: {
         ...application,
         customAttributes: customAttributes,  
@@ -136,11 +147,13 @@ export class EpSdkApplicationsServiceClass extends EpSdkServiceClass {
     });
   }
 
-  public async removeAssociatedEntityTypeFromCustomAttributeDefinitions({ customAttributeNames }: {
+  public async removeAssociatedEntityTypeFromCustomAttributeDefinitions({ xContextId, customAttributeNames }: {
+    xContextId: string;
     customAttributeNames: Array<string>;
   }): Promise<void> {
     for(const customAttributeName of customAttributeNames) {
       await EpSdkCustomAttributeDefinitionsService.removeAssociatedEntityTypeFromCustomAttributeDefinition({
+        xContextId: xContextId,
         attributeName: customAttributeName,
         associatedEntityType: EEpSdkCustomAttributeEntityTypes.APPLICATION,
       });
@@ -151,7 +164,8 @@ export class EpSdkApplicationsServiceClass extends EpSdkServiceClass {
    * Retrieves a list of all Applications without paging.
    * @param param0 
    */
-  public listAll = async({ applicationDomainIds, sortFieldName }:{
+  public listAll = async({ xContextId, applicationDomainIds, sortFieldName }:{
+    xContextId: string;
     applicationDomainIds?: Array<string>;
     sortFieldName?: string;
   }): Promise<ApplicationsResponse> => {
@@ -159,12 +173,13 @@ export class EpSdkApplicationsServiceClass extends EpSdkServiceClass {
     if(applicationDomainIds) {
       for(const applicationDomainId of applicationDomainIds) {
         const applicationsResponse: ApplicationsResponse = await this.listAllForApplicationDomainId({
+          xContextId: xContextId,
           applicationDomainId: applicationDomainId
         });
         if(applicationsResponse.data) applicationList.push(...applicationsResponse.data);
       }
     } else {
-      const applicationsResponse: ApplicationsResponse = await this.listAllForApplicationDomainId({});
+      const applicationsResponse: ApplicationsResponse = await this.listAllForApplicationDomainId({ xContextId: xContextId });
       if(applicationsResponse.data) applicationList.push(...applicationsResponse.data);
     }
     // TODO: sort by sortFieldName
@@ -180,7 +195,8 @@ export class EpSdkApplicationsServiceClass extends EpSdkServiceClass {
     return applicationsResponse;
   }
 
-  public getByName = async ({ applicationName, applicationDomainId }: {
+  public getByName = async ({ xContextId, applicationName, applicationDomainId }: {
+    xContextId: string;
     applicationName: string;
     applicationDomainId: string;
   }): Promise<Application | undefined> => {
@@ -188,6 +204,7 @@ export class EpSdkApplicationsServiceClass extends EpSdkServiceClass {
     const logName = `${EpSdkApplicationsServiceClass.name}.${funcName}()`;
 
     const applicationsResponse: ApplicationsResponse = await ApplicationsService.getApplications({
+      xContextId: xContextId,
       applicationDomainId: applicationDomainId,
       name: applicationName
     });
@@ -206,7 +223,8 @@ export class EpSdkApplicationsServiceClass extends EpSdkServiceClass {
     return epApplication;
   }
 
-  public getById = async ({ applicationId, applicationDomainId }: {
+  public getById = async ({ xContextId, applicationId, applicationDomainId }: {
+    xContextId: string;
     applicationId: string;
     applicationDomainId?: string;
   }): Promise<Application> => {
@@ -215,6 +233,7 @@ export class EpSdkApplicationsServiceClass extends EpSdkServiceClass {
 
     applicationDomainId;
     const applicationResponse: ApplicationResponse = await ApplicationsService.getApplication({
+      xContextId: xContextId,
       id: applicationId
     });
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, {
@@ -231,22 +250,26 @@ export class EpSdkApplicationsServiceClass extends EpSdkServiceClass {
     return epApplication;
   }
 
-  public deleteById = async ({ applicationId, applicationDomainId }: {
+  public deleteById = async ({ xContextId, applicationId, applicationDomainId }: {
+    xContextId: string;
     applicationId: string;
     applicationDomainId: string;
   }): Promise<Application> => {
     const epApplication: Application = await this.getById({
+      xContextId: xContextId,
       applicationDomainId: applicationDomainId,
       applicationId: applicationId,
     });
     const xvoid: void = await ApplicationsService.deleteApplication({
+      xContextId: xContextId,
       id: applicationId,
     });
     xvoid;
     return epApplication;
   }
 
-  public deleteByName = async ({ applicationDomainId, applicationName }: {
+  public deleteByName = async ({ xContextId, applicationDomainId, applicationName }: {
+    xContextId: string;
     applicationName: string;
     applicationDomainId: string;
   }): Promise<Application> => {
@@ -254,6 +277,7 @@ export class EpSdkApplicationsServiceClass extends EpSdkServiceClass {
     const logName = `${EpSdkApplicationsServiceClass.name}.${funcName}()`;
 
     const epApplication: Application | undefined = await this.getByName({
+      xContextId: xContextId,
       applicationDomainId: applicationDomainId,
       applicationName: applicationName,
     });
@@ -266,6 +290,7 @@ export class EpSdkApplicationsServiceClass extends EpSdkServiceClass {
       epApplication: epApplication,
     });
     const epApplicationDeleted: Application = await this.deleteById({
+      xContextId: xContextId,
       applicationDomainId: applicationDomainId,
       applicationId: epApplication.id
     });

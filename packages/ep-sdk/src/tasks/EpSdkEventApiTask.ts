@@ -144,11 +144,11 @@ export class EpSdkEventApiTask extends EpSdkTask {
       })
     );
 
-    const eventApi: EventApi | undefined =
-      await EpSdkEventApisService.getByName({
-        eventApiName: epSdkEventApiTask_Keys.eventApiName,
-        applicationDomainId: epSdkEventApiTask_Keys.applicationDomainId,
-      });
+    const eventApi: EventApi | undefined = await EpSdkEventApisService.getByName({
+      xContextId: this.xContextId,
+      eventApiName: epSdkEventApiTask_Keys.eventApiName,
+      applicationDomainId: epSdkEventApiTask_Keys.applicationDomainId,
+    });
 
     EpSdkLogger.trace(
       EpSdkLogger.createLogEntry(logName, {
@@ -261,10 +261,10 @@ export class EpSdkEventApiTask extends EpSdkTask {
       };
     }
 
-    const eventApiResponse: EventApiResponse =
-      await EventApIsService.createEventApi({
-        requestBody: create,
-      });
+    const eventApiResponse: EventApiResponse = await EventApIsService.createEventApi({
+      xContextId: this.xContextId,
+      requestBody: create,
+    });
 
     EpSdkLogger.trace(
       EpSdkLogger.createLogEntry(logName, {
@@ -356,11 +356,11 @@ export class EpSdkEventApiTask extends EpSdkTask {
       };
     }
 
-    const eventApiResponse: EventApiResponse =
-      await EventApIsService.updateEventApi({
-        id: epSdkEventApiTask_GetFuncReturn.epObject.id,
-        requestBody: update,
-      });
+    const eventApiResponse: EventApiResponse = await EventApIsService.updateEventApi({
+      xContextId: this.xContextId,
+      id: epSdkEventApiTask_GetFuncReturn.epObject.id,
+      requestBody: update,
+    });
 
     EpSdkLogger.trace(
       EpSdkLogger.createLogEntry(logName, {
@@ -434,6 +434,7 @@ export class EpSdkEventApiTask extends EpSdkTask {
     }
 
     const eventApi: EventApi = await EpSdkEventApisService.deleteById({
+      xContextId: this.xContextId,
       applicationDomainId: this.getTaskConfig().applicationDomainId,
       eventApiId: epSdkEventApiTask_GetFuncReturn.epObject.id,
     });
@@ -447,9 +448,8 @@ export class EpSdkEventApiTask extends EpSdkTask {
     return epSdkEventApiTask_DeleteFuncReturn;
   }
 
-  public async execute(): Promise<IEpSdkEventApiTask_ExecuteReturn> {
-    const epSdkTask_ExecuteReturn: IEpSdkEventApiTask_ExecuteReturn =
-      await super.execute();
+  public async execute(xContextId: string): Promise<IEpSdkEventApiTask_ExecuteReturn> {
+    const epSdkTask_ExecuteReturn: IEpSdkEventApiTask_ExecuteReturn = await super.execute(xContextId);
     return epSdkTask_ExecuteReturn;
   }
 }

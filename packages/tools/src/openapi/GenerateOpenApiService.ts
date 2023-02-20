@@ -228,7 +228,7 @@ class GenerateOpenApiService {
         "name": "x-context-id",
         "description": "Optional context id the request is running.",
         "in": "header",
-        "required": true,
+        "required": false,
         "schema": {
           "type": "string",
           "pattern": "^[a-zA-Z0-9_-]*$",

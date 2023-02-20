@@ -68,7 +68,8 @@ export type EpSdkEpEventAndVersionResponse = EpSdkEpEventAndVersion & {
 /** @category Services */
 export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
 
-  public getObjectAndVersionForEventId = async({ eventId, stateIds, versionString }:{
+  public getObjectAndVersionForEventId = async({ xContextId,eventId, stateIds, versionString }:{
+    xContextId: string;
     eventId: string;
     stateIds?: Array<string>;
     versionString?: string;
@@ -79,12 +80,13 @@ export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
     // get event 
     let eventResponse: EventResponse;
     try {
-      eventResponse = await EventsService.getEvent({ id: eventId });
+      eventResponse = await EventsService.getEvent({ xContextId, id: eventId });
     } catch(e) {
       return undefined;
     }
     // get all versions for selected stateId
     const eventVersionList: Array<EventVersion> = await this.getVersionsForEventId({
+      xContextId,
       eventId: eventId,
       stateIds: stateIds,
     });
@@ -122,14 +124,15 @@ export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
     }
   }
 
-  public getVersionByVersion = async ({ eventId, eventVersionString }: {
+  public getVersionByVersion = async ({ xContextId, eventId, eventVersionString }: {
+    xContextId: string;
     eventId: string;
     eventVersionString: string;
   }): Promise<EventVersion | undefined> => {
     const funcName = 'getVersionByVersion';
     const logName = `${EpSdkEpEventVersionsServiceClass.name}.${funcName}()`;
 
-    const eventVersionList: Array<EventVersion> = await this.getVersionsForEventId({ eventId: eventId });
+    const eventVersionList: Array<EventVersion> = await this.getVersionsForEventId({ xContextId, eventId: eventId });
     const found: EventVersion | undefined = eventVersionList.find( (eventVersion: EventVersion ) => {
       /* istanbul ignore next */
       if(eventVersion.version === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'eventVersion.version === undefined', {
@@ -140,7 +143,8 @@ export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
     return found;
   }
 
-  public getVersionsForEventId = async ({ eventId, stateIds, pageSize = EpApiMaxPageSize }: {
+  public getVersionsForEventId = async ({ xContextId, eventId, stateIds, pageSize = EpApiMaxPageSize }: {
+    xContextId: string;
     eventId: string;
     stateIds?: Array<string>;
     pageSize?: number; /** for testing */
@@ -153,6 +157,7 @@ export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
 
     while(nextPage !== undefined && nextPage !== null) {
       const eventVersionsResponse: EventVersionsResponse = await EventsService.getEventVersions({
+        xContextId,
         eventIds: [eventId],
         pageNumber: nextPage,
         pageSize: pageSize,
@@ -188,7 +193,8 @@ export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
     return eventVersionList;
   }
 
-  public getVersionsForEventName = async ({ eventName, applicationDomainId }: {
+  public getVersionsForEventName = async ({ xContextId, eventName, applicationDomainId }: {
+    xContextId: string;
     applicationDomainId: string;
     eventName: string;
   }): Promise<Array<EventVersion>> => {
@@ -196,6 +202,7 @@ export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
     const logName = `${EpSdkEpEventVersionsServiceClass.name}.${funcName}()`;
 
     const epEvent: EpEvent | undefined = await EpSdkEpEventsService.getByName({
+      xContextId,
       applicationDomainId: applicationDomainId,
       eventName: eventName,
     });
@@ -205,17 +212,18 @@ export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
     if (epEvent.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'epEvent.id === undefined', {
       epEvent: epEvent
     });
-    const eventVersionList: Array<EventVersion> = await this.getVersionsForEventId({ eventId: epEvent.id });
+    const eventVersionList: Array<EventVersion> = await this.getVersionsForEventId({ xContextId, eventId: epEvent.id });
     return eventVersionList;
   }
 
-  public getLatestVersionString = async ({ eventId }: {
+  public getLatestVersionString = async ({ xContextId, eventId }: {
+    xContextId: string;
     eventId: string;
   }): Promise<string | undefined> => {
     const funcName = 'getLatestVersionString';
     const logName = `${EpSdkEpEventVersionsServiceClass.name}.${funcName}()`;
 
-    const eventVersionList: Array<EventVersion> = await this.getVersionsForEventId({ eventId: eventId });
+    const eventVersionList: Array<EventVersion> = await this.getVersionsForEventId({ xContextId, eventId: eventId });
     // CliLogger.trace(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.SERVICE, details: {
     //   enumVersionList: enumVersionList
     // }}));
@@ -228,13 +236,15 @@ export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
     return latestEventVersion.version;
   }
 
-  public getLatestVersionForEventId = async ({ eventId, applicationDomainId, stateIds }: {
+  public getLatestVersionForEventId = async ({ xContextId, eventId, applicationDomainId, stateIds }: {
+    xContextId: string;
     applicationDomainId?: string;
     eventId: string;
     stateIds?: Array<string>;
   }): Promise<EventVersion | undefined> => {
     applicationDomainId;
     const eventVersionList: Array<EventVersion> = await this.getVersionsForEventId({
+      xContextId,
       eventId: eventId,
       stateIds: stateIds,
     });
@@ -242,11 +252,13 @@ export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
     return latestEventVersion;
   }
 
-  public getLatestVersionForEventName = async ({ applicationDomainId, eventName }: {
+  public getLatestVersionForEventName = async ({ xContextId, applicationDomainId, eventName }: {
+    xContextId: string;
     applicationDomainId: string;
     eventName: string;
   }): Promise<EventVersion | undefined> => {
     const eventVersionList: Array<EventVersion> = await this.getVersionsForEventName({
+      xContextId,
       eventName: eventName,
       applicationDomainId: applicationDomainId
     });
@@ -254,7 +266,8 @@ export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
     return latestEventVersion;
   }
 
-  public createEventVersion = async({ applicationDomainId, eventId, eventVersion, targetLifecycleStateId }:{
+  public createEventVersion = async({ xContextId, applicationDomainId, eventId, eventVersion, targetLifecycleStateId }:{
+    xContextId: string;
     applicationDomainId: string;
     eventId: string;
     eventVersion: EventVersion;
@@ -265,6 +278,7 @@ export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
 
     applicationDomainId;
     const eventVersionResponse: EventVersionResponse = await EventsService.createEventVersion({
+      xContextId,
       requestBody: {
         ...eventVersion,
         eventId: eventId
@@ -289,6 +303,7 @@ export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
     });
     if(createdEventVersion.stateId !== targetLifecycleStateId) {
       const stateChangeRequestResponse: StateChangeRequestResponse = await EventsService.updateEventVersionState({
+        xContextId,
         id: createdEventVersion.id,
         requestBody: {
           ...createdEventVersion,
@@ -297,6 +312,7 @@ export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
       });
       stateChangeRequestResponse;
       const updatedEventVersion: EventVersion | undefined = await this.getVersionByVersion({
+        xContextId,
         eventId: eventId,
         eventVersionString: createdEventVersion.version
       });
@@ -335,7 +351,8 @@ export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
     return topicString;
   }
 
-  public deepCopyAddress = async({ address, fromApplicationDomainId, toApplicationDomainId }: {
+  public deepCopyAddress = async({ xContextId, address, fromApplicationDomainId, toApplicationDomainId }: {
+    xContextId: string;
     address: Address;
     fromApplicationDomainId: string;
     toApplicationDomainId: string;
@@ -351,6 +368,7 @@ export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
     for(const fromAddressLevel of fromAddressLevels) {
       if(fromAddressLevel.addressLevelType === AddressLevel.addressLevelType.VARIABLE && fromAddressLevel.enumVersionId !== undefined) {
         const targetEnumVersion: TopicAddressEnumVersion = await EpSdkEnumVersionsService.copyLastestVersionById_IfNotExists({
+          xContextId,
           enumVersionId: fromAddressLevel.enumVersionId,
           fromApplicationDomainId: fromApplicationDomainId,
           toApplicationDomainId: toApplicationDomainId,
@@ -380,7 +398,8 @@ export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
    * 
    * @returns existing or created event version
    */
-  public deepCopyLastestVersionById_IfNotExists = async({ eventVersionId, fromApplicationDomainId, toApplicationDomainId }: {
+  public deepCopyLastestVersionById_IfNotExists = async({ xContextId, eventVersionId, fromApplicationDomainId, toApplicationDomainId }: {
+    xContextId: string;
     eventVersionId: string;
     fromApplicationDomainId: string;
     toApplicationDomainId: string;
@@ -390,6 +409,7 @@ export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
 
     // get the source event version
     const fromEventVersionResponse: EventVersionResponse = await EventsService.getEventVersion({ 
+      xContextId,
       id: eventVersionId
     });
     /* istanbul ignore next */
@@ -407,11 +427,13 @@ export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
     });
     // get the source event object
     const fromEvent: EpEvent = await EpSdkEpEventsService.getById({
+      xContextId,
       eventId: fromEventVersion.eventId,
     });
 
     // copy the schema version
     const targetSchemaVersion: SchemaVersion = await EpSdkSchemaVersionsService.copyLastestVersionById_IfNotExists({
+      xContextId,
       schemaVersionId: fromEventVersion.schemaVersionId,
       fromApplicationDomainId: fromApplicationDomainId,
       toApplicationDomainId: toApplicationDomainId,
@@ -432,6 +454,7 @@ export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
     });
     const fromEventVersionDeliveryDescriptorAddress: Address = fromEventVersion.deliveryDescriptor.address;
     const targetEventVersionDeliveryDescriptorAddress: Address = await this.deepCopyAddress({
+      xContextId,
       address: fromEventVersionDeliveryDescriptorAddress,
       fromApplicationDomainId: fromApplicationDomainId,
       toApplicationDomainId: toApplicationDomainId,
@@ -446,10 +469,11 @@ export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
         shared: fromEvent.shared ? fromEvent.shared : true,
       },
     });
-    const epSdkEpEventTask_ExecuteReturn: IEpSdkEpEventTask_ExecuteReturn = await epSdkEpEventTask.execute();
+    const epSdkEpEventTask_ExecuteReturn: IEpSdkEpEventTask_ExecuteReturn = await epSdkEpEventTask.execute(xContextId);
     if(epSdkEpEventTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action === EEpSdkTask_Action.NO_ACTION) {
       // return the latest version
       const targetEventVersion: EventVersion | undefined = await this.getLatestVersionForEventId({
+        xContextId,
         applicationDomainId: toApplicationDomainId,
         eventId: epSdkEpEventTask_ExecuteReturn.epObjectKeys.epObjectId,
       });
@@ -470,13 +494,14 @@ export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
         schemaVersionId: targetSchemaVersion.id,
       },
     });
-    const epSdkEpEventVersionTask_ExecuteReturn: IEpSdkEpEventVersionTask_ExecuteReturn = await epSdkEpEventVersionTask.execute();
+    const epSdkEpEventVersionTask_ExecuteReturn: IEpSdkEpEventVersionTask_ExecuteReturn = await epSdkEpEventVersionTask.execute(xContextId);
     // must get the object again, otherwise not all properties are set correctly
     /* istanbul ignore next */
     if(epSdkEpEventVersionTask_ExecuteReturn.epObject.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'epSdkEpEventVersionTask_ExecuteReturn.epObject.id === undefined', {
       epSdkEpEventVersionTask_ExecuteReturn: epSdkEpEventVersionTask_ExecuteReturn
     });
     const eventVersionResponse: EventVersionResponse =  await EventsService.getEventVersion({
+      xContextId,
       id: epSdkEpEventVersionTask_ExecuteReturn.epObject.id
     });
     /* istanbul ignore next */
@@ -486,7 +511,8 @@ export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
     return eventVersionResponse.data;
   }
 
-  public listLatestVersions = async({ applicationDomainIds, shared, stateIds, pageNumber = 1, pageSize = 20, sortFieldName }:{
+  public listLatestVersions = async({ xContextId, applicationDomainIds, shared, stateIds, pageNumber = 1, pageSize = 20, sortFieldName }:{
+    xContextId: string;
     applicationDomainIds?: Array<string>;
     shared: boolean;
     stateIds?: Array<string>;
@@ -500,6 +526,7 @@ export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
     // get all events:
     // - we may have events without a version in the state requested
     const eventsResponse: EventsResponse = await EpSdkEpEventsService.listAll({
+      xContextId,
       applicationDomainIds: applicationDomainIds,
       shared: shared,
       sortFieldName: sortFieldName
@@ -515,6 +542,7 @@ export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
       });
       // get the latest version in the requested state
       const latest_EventVersion: EventVersion | undefined = await this.getLatestVersionForEventId({
+        xContextId,
         eventId: epEvent.id,
         stateIds: stateIds
       });      

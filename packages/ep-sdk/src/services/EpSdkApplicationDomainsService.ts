@@ -20,7 +20,8 @@ import { EpSdkServiceClass } from './EpSdkService';
 /** @category Services */
 export class EpSdkApplicationDomainsServiceClass extends EpSdkServiceClass {
 
-  public listAll = async({ pageSize = EpApiMaxPageSize }:{
+  public listAll = async({ pageSize = EpApiMaxPageSize, xContextId }:{
+    xContextId: string;
     pageSize?: number; /** for testing */
   }): Promise<ApplicationDomainsResponse> => {
     const funcName = 'listAll';
@@ -31,6 +32,7 @@ export class EpSdkApplicationDomainsServiceClass extends EpSdkServiceClass {
     let nextPage: number | undefined | null = 1;
     while(nextPage !== undefined && nextPage !== null) {
       const applicationDomainsResponse: ApplicationDomainsResponse = await ApplicationDomainsService.getApplicationDomains({
+        xContextId: xContextId,
         pageSize: pageSize,
         pageNumber: nextPage,
       });
@@ -67,13 +69,15 @@ export class EpSdkApplicationDomainsServiceClass extends EpSdkServiceClass {
    * @returns undefined - if not found
    * @throws {@link EpSdkApiContentError} - if more than 1 application domain exists with the same name
    */
-  public getByName = async ({ applicationDomainName }: {
+  public getByName = async ({ xContextId, applicationDomainName }: {
+    xContextId: string;
     applicationDomainName: string;
   }): Promise<ApplicationDomain | undefined> => {
     const funcName = 'getByName';
     const logName = `${EpSdkApplicationDomainsServiceClass.name}.${funcName}()`;
 
     const applicationDomainsResponse: ApplicationDomainsResponse = await ApplicationDomainsService.getApplicationDomains({
+      xContextId: xContextId,
       name: applicationDomainName
     });
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, {
@@ -97,13 +101,15 @@ export class EpSdkApplicationDomainsServiceClass extends EpSdkServiceClass {
    * @returns ApplicationDomain
    * @throws {@link EpSdkApiContentError} - if api response data is undefined
    */
-  public getById = async ({ applicationDomainId }: {
+  public getById = async ({ xContextId, applicationDomainId }: {
+    xContextId: string;
     applicationDomainId: string;
   }): Promise<ApplicationDomain> => {
     const funcName = 'getById';
     const logName = `${EpSdkApplicationDomainsServiceClass.name}.${funcName}()`;
 
     const applicationDomainResponse: ApplicationDomainResponse = await ApplicationDomainsService.getApplicationDomain({
+      xContextId: xContextId,
       id: applicationDomainId,
     });
     /* istanbul ignore next */
@@ -119,11 +125,16 @@ export class EpSdkApplicationDomainsServiceClass extends EpSdkServiceClass {
    * @param object 
    * @returns ApplicationDomain - the deleted application domain object
    */
-  public deleteById = async ({ applicationDomainId }: {
+  public deleteById = async ({ xContextId, applicationDomainId }: {
+    xContextId: string;
     applicationDomainId: string;
   }): Promise<ApplicationDomain> => {
-    const applicationDomain: ApplicationDomain = await this.getById({ applicationDomainId: applicationDomainId });
+    const applicationDomain: ApplicationDomain = await this.getById({ 
+      xContextId: xContextId,
+      applicationDomainId: applicationDomainId 
+    });
     await ApplicationDomainsService.deleteApplicationDomain({
+      xContextId: xContextId,
       id: applicationDomainId,
     });
     return applicationDomain;
@@ -135,13 +146,14 @@ export class EpSdkApplicationDomainsServiceClass extends EpSdkServiceClass {
    * @returns ApplicationDomain - the deleted application domain object
    * @throws {@link EpSdkServiceError} - if application domain does not exist
    */
-  public deleteByName = async ({ applicationDomainName }: {
+  public deleteByName = async ({ xContextId, applicationDomainName }: {
+    xContextId: string;
     applicationDomainName: string;
   }): Promise<ApplicationDomain> => {
     const funcName = 'deleteByName';
     const logName = `${EpSdkApplicationDomainsServiceClass.name}.${funcName}()`;
 
-    const applicationDomain: ApplicationDomain | undefined = await this.getByName({ applicationDomainName: applicationDomainName });
+    const applicationDomain: ApplicationDomain | undefined = await this.getByName({ xContextId: xContextId, applicationDomainName: applicationDomainName });
     if (applicationDomain === undefined) throw new EpSdkServiceError(logName, this.constructor.name, "applicationDomain === undefined", {
       applicationDomainName: applicationDomainName
     });
@@ -149,7 +161,7 @@ export class EpSdkApplicationDomainsServiceClass extends EpSdkServiceClass {
     if (applicationDomain.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'applicationDomain.id === undefined', {
       applicationDomain: applicationDomain,
     });
-    const applicationDomainDeleted: ApplicationDomain = await this.deleteById({ applicationDomainId: applicationDomain.id });
+    const applicationDomainDeleted: ApplicationDomain = await this.deleteById({ xContextId: xContextId, applicationDomainId: applicationDomain.id });
     return applicationDomainDeleted;
   }
 

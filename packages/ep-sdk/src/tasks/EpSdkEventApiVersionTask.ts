@@ -179,11 +179,11 @@ export class EpSdkEventApiVersionTask extends EpSdkVersionTask {
       })
     );
 
-    const eventApiVersion: EventApiVersion | undefined =
-      await EpSdkEventApiVersionsService.getLatestVersionForEventApiId({
-        applicationDomainId: epSdkEventApiVersionTask_Keys.applicationDomainId,
-        eventApiId: epSdkEventApiVersionTask_Keys.eventApiId,
-      });
+    const eventApiVersion: EventApiVersion | undefined = await EpSdkEventApiVersionsService.getLatestVersionForEventApiId({
+      xContextId: this.xContextId,
+      applicationDomainId: epSdkEventApiVersionTask_Keys.applicationDomainId,
+      eventApiId: epSdkEventApiVersionTask_Keys.eventApiId,
+    });
 
     EpSdkLogger.trace(
       EpSdkLogger.createLogEntry(logName, {
@@ -315,14 +315,13 @@ export class EpSdkEventApiVersionTask extends EpSdkVersionTask {
       };
     }
 
-    const eventApiVersion: EventApiVersion =
-      await EpSdkEventApiVersionsService.createEventApiVersion({
-        applicationDomainId: this.getTaskConfig().applicationDomainId,
-        eventApiId: this.getTaskConfig().eventApiId,
-        eventApiVersion: create,
-        targetLifecycleStateId:
-          this.getTaskConfig().eventApiVersionSettings.stateId,
-      });
+    const eventApiVersion: EventApiVersion = await EpSdkEventApiVersionsService.createEventApiVersion({
+      xContextId: this.xContextId,
+      applicationDomainId: this.getTaskConfig().applicationDomainId,
+      eventApiId: this.getTaskConfig().eventApiId,
+      eventApiVersion: create,
+      targetLifecycleStateId: this.getTaskConfig().eventApiVersionSettings.stateId,
+    });
 
     EpSdkLogger.trace(
       EpSdkLogger.createLogEntry(logName, {
@@ -442,14 +441,13 @@ export class EpSdkEventApiVersionTask extends EpSdkVersionTask {
       };
     }
 
-    const eventApiVersion: EventApiVersion =
-      await EpSdkEventApiVersionsService.createEventApiVersion({
-        applicationDomainId: this.getTaskConfig().applicationDomainId,
-        eventApiId: this.getTaskConfig().eventApiId,
-        eventApiVersion: update,
-        targetLifecycleStateId:
-          this.getTaskConfig().eventApiVersionSettings.stateId,
-      });
+    const eventApiVersion: EventApiVersion = await EpSdkEventApiVersionsService.createEventApiVersion({
+      xContextId: this.xContextId,
+      applicationDomainId: this.getTaskConfig().applicationDomainId,
+      eventApiId: this.getTaskConfig().eventApiId,
+      eventApiVersion: update,
+      targetLifecycleStateId: this.getTaskConfig().eventApiVersionSettings.stateId,
+    });
 
     EpSdkLogger.trace(
       EpSdkLogger.createLogEntry(logName, {
@@ -472,9 +470,9 @@ export class EpSdkEventApiVersionTask extends EpSdkVersionTask {
     return epSdkEventApiVersionTask_UpdateFuncReturn;
   }
 
-  public async execute(): Promise<IEpSdkEventApiVersionTask_ExecuteReturn> {
+  public async execute(xContextId: string): Promise<IEpSdkEventApiVersionTask_ExecuteReturn> {
     const epSdkTask_ExecuteReturn: IEpSdkEventApiVersionTask_ExecuteReturn =
-      await super.execute();
+      await super.execute(xContextId);
     return epSdkTask_ExecuteReturn;
   }
 }

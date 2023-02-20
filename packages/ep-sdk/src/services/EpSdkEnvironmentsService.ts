@@ -17,8 +17,9 @@ import { EpSdkServiceClass } from './EpSdkService';
 /** @category Services */
 export class EpSdkEnvironmentsServiceClass extends EpSdkServiceClass {
 
-  public listAll = async({ pageSize = EpApiMaxPageSize }:{
+  public listAll = async({ xContextId, pageSize = EpApiMaxPageSize }:{
     pageSize?: number; /** for testing */
+    xContextId: string;
   }): Promise<EnvironmentsResponse> => {
     const funcName = 'listAll';
     const logName = `${EpSdkEnvironmentsServiceClass.name}.${funcName}()`;
@@ -28,6 +29,7 @@ export class EpSdkEnvironmentsServiceClass extends EpSdkServiceClass {
     let nextPage: number | undefined | null = 1;
     while(nextPage !== undefined && nextPage !== null) {
       const environmentsResponse: EnvironmentsResponse = await EnvironmentsService.getEnvironments({
+        xContextId: xContextId,
         pageSize: pageSize,
         pageNumber: nextPage,
       });
@@ -62,13 +64,14 @@ export class EpSdkEnvironmentsServiceClass extends EpSdkServiceClass {
    * @returns Environment
    * @throws {@link EpSdkApiContentError} - if api response data is undefined
    */
-  public getById = async ({ environmentId }: {
+  public getById = async ({ xContextId, environmentId }: {
+    xContextId: string;
     environmentId: string;
   }): Promise<Environment> => {
     const funcName = 'getById';
     const logName = `${EpSdkEnvironmentsServiceClass.name}.${funcName}()`;
 
-    const environmentResponse: EnvironmentResponse = await EnvironmentsService.getEnvironment({ id: environmentId });
+    const environmentResponse: EnvironmentResponse = await EnvironmentsService.getEnvironment({ xContextId, id: environmentId });
     /* istanbul ignore next */
     if (environmentResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "environmentResponse.data === undefined", {
       environmentId: environmentId

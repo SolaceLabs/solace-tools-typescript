@@ -15,15 +15,8 @@ const main = async (): Promise<void> => {
       description: "my app domain",
     },
   });
-  const epSdkApplicationDomainTask_ExecuteReturn_Present: IEpSdkApplicationDomainTask_ExecuteReturn =
-    await epSdkApplicationDomainTaskPresent.execute();
-  console.log(
-    `epSdkApplicationDomainTask_ExecuteReturn_Present.epSdkTask_TransactionLogData = ${JSON.stringify(
-      epSdkApplicationDomainTask_ExecuteReturn_Present.epSdkTask_TransactionLogData,
-      null,
-      2
-    )}.`
-  );
+  const epSdkApplicationDomainTask_ExecuteReturn_Present: IEpSdkApplicationDomainTask_ExecuteReturn = await epSdkApplicationDomainTaskPresent.execute('my-context-id');
+  console.log(`epSdkApplicationDomainTask_ExecuteReturn_Present.epSdkTask_TransactionLogData = ${JSON.stringify( epSdkApplicationDomainTask_ExecuteReturn_Present.epSdkTask_TransactionLogData, null, 2)}.`);
 
   const applicationDomainId =
     epSdkApplicationDomainTask_ExecuteReturn_Present.epObject.id;
@@ -36,15 +29,8 @@ const main = async (): Promise<void> => {
     epSdkTask_TargetState: EEpSdkTask_TargetState.ABSENT,
     applicationDomainName: ApplicationDomainName,
   });
-  const epSdkApplicationDomainTask_ExecuteReturn_Absent: IEpSdkApplicationDomainTask_ExecuteReturn =
-    await epSdkApplicationDomainTaskAbsent.execute();
-  console.log(
-    `epSdkApplicationDomainTask_ExecuteReturn_Absent.epSdkTask_TransactionLogData = ${JSON.stringify(
-      epSdkApplicationDomainTask_ExecuteReturn_Absent.epSdkTask_TransactionLogData,
-      null,
-      2
-    )}.`
-  );
+  const epSdkApplicationDomainTask_ExecuteReturn_Absent: IEpSdkApplicationDomainTask_ExecuteReturn = await epSdkApplicationDomainTaskAbsent.execute('my-context-id');
+  console.log(`epSdkApplicationDomainTask_ExecuteReturn_Absent.epSdkTask_TransactionLogData = ${JSON.stringify(epSdkApplicationDomainTask_ExecuteReturn_Absent.epSdkTask_TransactionLogData, null, 2 )}.`);
 };
 
 main();
