@@ -437,7 +437,7 @@ export class EpSdkEnumTask extends EpSdkTask {
     return epSdkEnumTask_DeleteFuncReturn;
   }
 
-  public async execute(xContextId: string): Promise<IEpSdkEnumTask_ExecuteReturn> {
+  public async execute(xContextId?: string): Promise<IEpSdkEnumTask_ExecuteReturn> {
     const epSdkTask_ExecuteReturn: IEpSdkEnumTask_ExecuteReturn =
       await super.execute(xContextId);
     return epSdkTask_ExecuteReturn;

@@ -29,7 +29,7 @@ import { EpSdkVersionServiceClass } from "./EpSdkVersionService";
 export class EpSdkEnumVersionsServiceClass extends EpSdkVersionServiceClass {
 
   public getVersionByVersion = async ({ xContextId, enumId, enumVersionString }: {
-    xContextId: string;
+    xContextId?: string;
     enumId: string;
     enumVersionString: string;
   }): Promise<TopicAddressEnumVersion | undefined> => {
@@ -43,7 +43,7 @@ export class EpSdkEnumVersionsServiceClass extends EpSdkVersionServiceClass {
   }
 
   public getVersionsForEnumId = async ({ xContextId, enumId, pageSize = EpApiMaxPageSize }: {
-    xContextId: string;
+    xContextId?: string;
     enumId: string;
     pageSize?: number; /** for testing */
   }): Promise<Array<TopicAddressEnumVersion>> => {
@@ -84,7 +84,7 @@ export class EpSdkEnumVersionsServiceClass extends EpSdkVersionServiceClass {
   }
 
   public getVersionsForEnumName = async ({ xContextId, enumName, applicationDomainId }: {
-    xContextId: string;
+    xContextId?: string;
     applicationDomainId: string;
     enumName: string;
   }): Promise<Array<TopicAddressEnumVersion>> => {
@@ -106,7 +106,7 @@ export class EpSdkEnumVersionsServiceClass extends EpSdkVersionServiceClass {
   }
 
   public getLatestVersionString = async ({ xContextId, enumId }: {
-    xContextId: string;
+    xContextId?: string;
     enumId: string;
   }): Promise<string | undefined> => {
     const funcName = 'getLatestVersionString';
@@ -126,7 +126,7 @@ export class EpSdkEnumVersionsServiceClass extends EpSdkVersionServiceClass {
   }
 
   public getLatestVersionForEnumId = async ({ xContextId, enumId, applicationDomainId }: {
-    xContextId: string;
+    xContextId?: string;
     applicationDomainId: string;
     enumId: string;
   }): Promise<TopicAddressEnumVersion | undefined> => {
@@ -140,7 +140,7 @@ export class EpSdkEnumVersionsServiceClass extends EpSdkVersionServiceClass {
   }
 
   public getLatestVersionForEnumName = async ({ xContextId, applicationDomainId, enumName }: {
-    xContextId: string;
+    xContextId?: string;
     applicationDomainId: string;
     enumName: string;
   }): Promise<TopicAddressEnumVersion | undefined> => {
@@ -154,7 +154,7 @@ export class EpSdkEnumVersionsServiceClass extends EpSdkVersionServiceClass {
   }
 
   public createEnumVersion = async({ xContextId, enumId, topicAddressEnumVersion, targetLifecycleStateId }:{
-    xContextId: string;
+    xContextId?: string;
     enumId: string;
     topicAddressEnumVersion: TopicAddressEnumVersion;
     targetLifecycleStateId: string;
@@ -210,7 +210,7 @@ export class EpSdkEnumVersionsServiceClass extends EpSdkVersionServiceClass {
   }
 
   public copyLastestVersionById_IfNotExists = async({ xContextId, enumVersionId, fromApplicationDomainId, toApplicationDomainId }: {
-    xContextId: string;
+    xContextId?: string;
     enumVersionId: string;
     fromApplicationDomainId: string;
     toApplicationDomainId: string;

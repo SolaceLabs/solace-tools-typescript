@@ -472,7 +472,7 @@ export class EpSdkApplicationDomainTask extends EpSdkTask {
     return epSdkApplicationDomainTask_DeleteFuncReturn;
   }
 
-  public async execute(xContextId: string): Promise<IEpSdkApplicationDomainTask_ExecuteReturn> {
+  public async execute(xContextId?: string): Promise<IEpSdkApplicationDomainTask_ExecuteReturn> {
     const epSdkTask_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn = await super.execute(xContextId);
     return epSdkTask_ExecuteReturn;
   }

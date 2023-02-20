@@ -24,7 +24,7 @@ import EpSdkCustomAttributeDefinitionsService from './EpSdkCustomAttributeDefini
 export class EpSdkApplicationsServiceClass extends EpSdkServiceClass {
 
   private listAllForApplicationDomainId = async({ xContextId, applicationDomainId }:{
-    xContextId: string;
+    xContextId?: string;
     applicationDomainId?: string;
   }): Promise<ApplicationsResponse> => {
     const funcName = 'listAllForApplicationDomainId';
@@ -68,7 +68,7 @@ export class EpSdkApplicationsServiceClass extends EpSdkServiceClass {
   }
 
   private async updateApplication({ xContextId, update }:{
-    xContextId: string;
+    xContextId?: string;
     update: Application;
   }): Promise<Application> {
     const funcName = 'updateApplication';
@@ -98,7 +98,7 @@ export class EpSdkApplicationsServiceClass extends EpSdkServiceClass {
    * @returns 
    */
   public async setCustomAttributes({ xContextId, applicationId, epSdkCustomAttributeList}:{
-    xContextId: string;
+    xContextId?: string;
     applicationId: string;
     epSdkCustomAttributeList: TEpSdkCustomAttributeList;
   }): Promise<Application> {
@@ -126,7 +126,7 @@ export class EpSdkApplicationsServiceClass extends EpSdkServiceClass {
    * Leaves attibute definitions as-is.
    */
   public async unsetCustomAttributes({ xContextId, applicationId, epSdkCustomAttributeList }:{
-    xContextId: string;
+    xContextId?: string;
     applicationId: string;
     epSdkCustomAttributeList: TEpSdkCustomAttributeList;
   }): Promise<Application> {
@@ -148,7 +148,7 @@ export class EpSdkApplicationsServiceClass extends EpSdkServiceClass {
   }
 
   public async removeAssociatedEntityTypeFromCustomAttributeDefinitions({ xContextId, customAttributeNames }: {
-    xContextId: string;
+    xContextId?: string;
     customAttributeNames: Array<string>;
   }): Promise<void> {
     for(const customAttributeName of customAttributeNames) {
@@ -165,7 +165,7 @@ export class EpSdkApplicationsServiceClass extends EpSdkServiceClass {
    * @param param0 
    */
   public listAll = async({ xContextId, applicationDomainIds, sortFieldName }:{
-    xContextId: string;
+    xContextId?: string;
     applicationDomainIds?: Array<string>;
     sortFieldName?: string;
   }): Promise<ApplicationsResponse> => {
@@ -196,7 +196,7 @@ export class EpSdkApplicationsServiceClass extends EpSdkServiceClass {
   }
 
   public getByName = async ({ xContextId, applicationName, applicationDomainId }: {
-    xContextId: string;
+    xContextId?: string;
     applicationName: string;
     applicationDomainId: string;
   }): Promise<Application | undefined> => {
@@ -224,7 +224,7 @@ export class EpSdkApplicationsServiceClass extends EpSdkServiceClass {
   }
 
   public getById = async ({ xContextId, applicationId, applicationDomainId }: {
-    xContextId: string;
+    xContextId?: string;
     applicationId: string;
     applicationDomainId?: string;
   }): Promise<Application> => {
@@ -251,7 +251,7 @@ export class EpSdkApplicationsServiceClass extends EpSdkServiceClass {
   }
 
   public deleteById = async ({ xContextId, applicationId, applicationDomainId }: {
-    xContextId: string;
+    xContextId?: string;
     applicationId: string;
     applicationDomainId: string;
   }): Promise<Application> => {
@@ -269,7 +269,7 @@ export class EpSdkApplicationsServiceClass extends EpSdkServiceClass {
   }
 
   public deleteByName = async ({ xContextId, applicationDomainId, applicationName }: {
-    xContextId: string;
+    xContextId?: string;
     applicationName: string;
     applicationDomainId: string;
   }): Promise<Application> => {

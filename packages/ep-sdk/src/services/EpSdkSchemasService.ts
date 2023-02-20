@@ -25,7 +25,7 @@ export enum EEpSdkSchemaContentType {
 /** @category Services */
 export class EpSdkSchemasServiceClass extends EpSdkServiceClass {
   public getByName = async ({ xContextId, schemaName, applicationDomainId }: {
-    xContextId: string;
+    xContextId?: string;
     schemaName: string;
     applicationDomainId: string;
   }): Promise<SchemaObject | undefined> => {
@@ -69,7 +69,7 @@ export class EpSdkSchemasServiceClass extends EpSdkServiceClass {
     schemaId,
     applicationDomainId,
   }: {
-    xContextId: string;
+    xContextId?: string;
     schemaId: string;
     applicationDomainId: string;
   }): Promise<SchemaObject> => {
@@ -112,7 +112,7 @@ export class EpSdkSchemasServiceClass extends EpSdkServiceClass {
     schemaId,
     applicationDomainId,
   }: {
-    xContextId: string;
+    xContextId?: string;
     schemaId: string;
     applicationDomainId: string;
   }): Promise<SchemaObject> => {
@@ -134,7 +134,7 @@ export class EpSdkSchemasServiceClass extends EpSdkServiceClass {
     applicationDomainId,
     schemaName,
   }: {
-    xContextId: string;
+    xContextId?: string;
     schemaName: string;
     applicationDomainId: string;
   }): Promise<SchemaObject> => {

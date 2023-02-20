@@ -448,7 +448,7 @@ export class EpSdkEventApiTask extends EpSdkTask {
     return epSdkEventApiTask_DeleteFuncReturn;
   }
 
-  public async execute(xContextId: string): Promise<IEpSdkEventApiTask_ExecuteReturn> {
+  public async execute(xContextId?: string): Promise<IEpSdkEventApiTask_ExecuteReturn> {
     const epSdkTask_ExecuteReturn: IEpSdkEventApiTask_ExecuteReturn = await super.execute(xContextId);
     return epSdkTask_ExecuteReturn;
   }

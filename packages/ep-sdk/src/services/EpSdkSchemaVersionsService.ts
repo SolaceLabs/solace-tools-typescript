@@ -27,7 +27,7 @@ export class EpSdkSchemaVersionsServiceClass extends EpSdkVersionServiceClass {
     xContextId, schemaId,
     schemaVersionString,
   }: {
-    xContextId: string;
+    xContextId?: string;
     schemaId: string;
     schemaVersionString: string;
   }): Promise<SchemaVersion | undefined> => {
@@ -49,7 +49,7 @@ export class EpSdkSchemaVersionsServiceClass extends EpSdkVersionServiceClass {
     schemaId,
     pageSize = EpApiMaxPageSize,
   }: {
-    xContextId: string;
+    xContextId?: string;
     schemaId: string;
     pageSize?: number /** for testing */;
   }): Promise<Array<SchemaVersion>> => {
@@ -106,7 +106,7 @@ export class EpSdkSchemaVersionsServiceClass extends EpSdkVersionServiceClass {
     schemaName,
     applicationDomainId,
   }: {
-    xContextId: string;
+    xContextId?: string;
     applicationDomainId: string;
     schemaName: string;
   }): Promise<Array<SchemaVersion>> => {
@@ -138,7 +138,7 @@ export class EpSdkSchemaVersionsServiceClass extends EpSdkVersionServiceClass {
   public getLatestVersionString = async ({
     xContextId, schemaId,
   }: {
-    xContextId: string;
+    xContextId?: string;
     schemaId: string;
   }): Promise<string | undefined> => {
     const funcName = "getLatestVersionString";
@@ -171,7 +171,7 @@ export class EpSdkSchemaVersionsServiceClass extends EpSdkVersionServiceClass {
     xContextId, schemaId,
     applicationDomainId,
   }: {
-    xContextId: string;
+    xContextId?: string;
     applicationDomainId: string;
     schemaId: string;
   }): Promise<SchemaVersion | undefined> => {
@@ -192,7 +192,7 @@ export class EpSdkSchemaVersionsServiceClass extends EpSdkVersionServiceClass {
     xContextId, applicationDomainId,
     schemaName,
   }: {
-    xContextId: string;
+    xContextId?: string;
     applicationDomainId: string;
     schemaName: string;
   }): Promise<SchemaVersion | undefined> => {
@@ -216,7 +216,7 @@ export class EpSdkSchemaVersionsServiceClass extends EpSdkVersionServiceClass {
     schemaVersion,
     targetLifecycleStateId,
   }: {
-    xContextId: string;
+    xContextId?: string;
     applicationDomainId: string;
     schemaId: string;
     schemaVersion: SchemaVersion;
@@ -311,7 +311,7 @@ export class EpSdkSchemaVersionsServiceClass extends EpSdkVersionServiceClass {
     fromApplicationDomainId,
     toApplicationDomainId,
   }: {
-    xContextId: string;
+    xContextId?: string;
     schemaVersionId: string;
     fromApplicationDomainId: string;
     toApplicationDomainId: string;

@@ -48,7 +48,7 @@ export class EpSdkStatesServiceClass {
   private _retiredId = "4";
 
   public validateStates = async({ xContextId }:{ 
-    xContextId: string;
+    xContextId?: string;
   }): Promise<void> => {
     const funcName = "validateStates";
     const logName = `${EpSdkStatesServiceClass.name}.${funcName}()`;

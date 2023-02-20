@@ -51,7 +51,7 @@ export class EpSdkEventApiVersionsServiceClass extends EpSdkVersionServiceClass 
    * Retrieves Event API & Version object for a list of version ids.
    */
   public getObjectAndVersionListForEventApiVersionIds = async ({ xContextId, eventApiVersionIds }: {
-    xContextId: string;
+    xContextId?: string;
     eventApiVersionIds?: Array<string>;
   }): Promise<Array<EpSdkEventApiAndVersion>> => {
     const funcName = 'getObjectAndVersionListForEventApiVersionIds';
@@ -103,7 +103,7 @@ export class EpSdkEventApiVersionsServiceClass extends EpSdkVersionServiceClass 
   }
 
   public getVersionByVersion = async ({ xContextId, eventApiId, eventApiVersionString }: {
-    xContextId: string;
+    xContextId?: string;
     eventApiId: string;
     eventApiVersionString: string;
   }): Promise<EventApiVersion | undefined> => {
@@ -121,7 +121,7 @@ export class EpSdkEventApiVersionsServiceClass extends EpSdkVersionServiceClass 
   }
 
   public getVersionsForEventApiId = async ({ xContextId, eventApiId, pageSize = EpApiMaxPageSize }: {
-    xContextId: string;
+    xContextId?: string;
     eventApiId: string;
     pageSize?: number; /** for testing */
   }): Promise<Array<EventApiVersion>> => {
@@ -157,7 +157,7 @@ export class EpSdkEventApiVersionsServiceClass extends EpSdkVersionServiceClass 
   }
 
   public getVersionsForEventApiName = async ({ xContextId, eventApiName, applicationDomainId }: {
-    xContextId: string;
+    xContextId?: string;
     applicationDomainId: string;
     eventApiName: string;
   }): Promise<Array<EventApiVersion>> => {
@@ -180,7 +180,7 @@ export class EpSdkEventApiVersionsServiceClass extends EpSdkVersionServiceClass 
   }
 
   public getLatestVersionString = async ({ xContextId, eventApiId }: {
-    xContextId: string;
+    xContextId?: string;
     eventApiId: string;
   }): Promise<string | undefined> => {
     const funcName = 'getLatestVersionString';
@@ -200,7 +200,7 @@ export class EpSdkEventApiVersionsServiceClass extends EpSdkVersionServiceClass 
   }
 
   public getLatestVersionForEventApiId = async ({ xContextId, eventApiId, applicationDomainId }: {
-    xContextId: string;
+    xContextId?: string;
     applicationDomainId: string;
     eventApiId: string;
   }): Promise<EventApiVersion | undefined> => {
@@ -214,7 +214,7 @@ export class EpSdkEventApiVersionsServiceClass extends EpSdkVersionServiceClass 
   }
 
   public getLatestVersionForEventApiName = async ({ xContextId, applicationDomainId, eventApiName }: {
-    xContextId: string;
+    xContextId?: string;
     applicationDomainId: string;
     eventApiName: string;
   }): Promise<EventApiVersion | undefined> => {
@@ -228,7 +228,7 @@ export class EpSdkEventApiVersionsServiceClass extends EpSdkVersionServiceClass 
   }
 
   public createEventApiVersion = async({ xContextId, applicationDomainId, eventApiId, eventApiVersion, targetLifecycleStateId }:{
-    xContextId: string;
+    xContextId?: string;
     applicationDomainId: string;
     eventApiId: string;
     eventApiVersion: EventApiVersion;
@@ -299,7 +299,7 @@ export class EpSdkEventApiVersionsServiceClass extends EpSdkVersionServiceClass 
    * @returns undefined or created event api version
    */
   public deepCopyLastestVersionById_IfNotExists = async({ xContextId, eventApiName, fromApplicationDomainId, toApplicationDomainId, fromAssetsApplicationDomainId, toAssetsApplicationDomainId }:{
-    xContextId: string;
+    xContextId?: string;
     eventApiName: string; 
     fromApplicationDomainId: string;
     toApplicationDomainId: string;

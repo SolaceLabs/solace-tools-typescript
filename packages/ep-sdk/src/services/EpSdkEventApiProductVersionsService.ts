@@ -71,7 +71,7 @@ export class EpSdkEventApiProductVersionsServiceClass extends EpSdkVersionServic
     withAtLeastOnePlan = false,
     withAtLeastOneAMessagingService = false,
   }: {
-    xContextId: string;
+    xContextId?: string;
     eventApiProductId: string;
     stateIds?: Array<string>;
     withAtLeastOnePlan?: boolean;
@@ -151,7 +151,7 @@ export class EpSdkEventApiProductVersionsServiceClass extends EpSdkVersionServic
     withAtLeastOnePlan = false,
     withAtLeastOneAMessagingService = false,
   }: {
-    xContextId: string;
+    xContextId?: string;
     applicationDomainIds?: Array<string>;
     shared: boolean;
     brokerType?: EpSdkBrokerTypes;
@@ -210,7 +210,7 @@ export class EpSdkEventApiProductVersionsServiceClass extends EpSdkVersionServic
     withAtLeastOnePlan = false,
     withAtLeastOneAMessagingService = false,
   }: {
-    xContextId: string;
+    xContextId?: string;
     applicationDomainIds?: Array<string>;
     shared: boolean;
     brokerType?: EpSdkBrokerTypes;
@@ -258,7 +258,7 @@ export class EpSdkEventApiProductVersionsServiceClass extends EpSdkVersionServic
   }
 
   public getVersionsForEventApiProductId = async ({ xContextId, eventApiProductId, stateIds, withAtLeastOnePlan = false, withAtLeastOneAMessagingService = false, pageSize = EpApiMaxPageSize }: {
-    xContextId: string;
+    xContextId?: string;
     eventApiProductId: string;
     stateIds?: Array<string>;
     withAtLeastOnePlan?: boolean;
@@ -319,7 +319,7 @@ export class EpSdkEventApiProductVersionsServiceClass extends EpSdkVersionServic
    * If versionString is omitted, retrieves the latest version.
    */
   public getObjectAndVersionForEventApiProductId = async ({ xContextId, eventApiProductId, stateIds, versionString, withAtLeastOnePlan = false, withAtLeastOneAMessagingService = false }: {
-    xContextId: string;
+    xContextId?: string;
     eventApiProductId: string;
     stateIds?: Array<string>;
     versionString?: string;

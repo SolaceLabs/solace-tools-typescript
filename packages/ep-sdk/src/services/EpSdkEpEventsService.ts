@@ -33,7 +33,7 @@ import { EpSdkServiceClass } from './EpSdkService';
 export class EpSdkEpEventsServiceClass extends EpSdkServiceClass {
   
   private async updateEpEvent({ xContextId, update }:{
-    xContextId: string;
+    xContextId?: string;
     update: EpSdkEventUpdate;
   }): Promise<EpSdkEvent> {
     const funcName = 'updateEpEvent';
@@ -63,7 +63,7 @@ export class EpSdkEpEventsServiceClass extends EpSdkServiceClass {
    * @returns 
    */
   public async setCustomAttributes({ xContextId, eventId, epSdkCustomAttributeList}:{
-    xContextId: string;
+    xContextId?: string;
     eventId: string;
     epSdkCustomAttributeList: TEpSdkCustomAttributeList;
   }): Promise<EpSdkEvent> {
@@ -91,7 +91,7 @@ export class EpSdkEpEventsServiceClass extends EpSdkServiceClass {
    * Leaves attibute definitions as-is.
    */
   public async unsetCustomAttributes({ xContextId, eventId, epSdkCustomAttributeList }:{
-    xContextId: string;
+    xContextId?: string;
     eventId: string;
     epSdkCustomAttributeList: TEpSdkCustomAttributeList;
   }): Promise<EpSdkEvent> {
@@ -113,7 +113,7 @@ export class EpSdkEpEventsServiceClass extends EpSdkServiceClass {
   }
 
   public async removeAssociatedEntityTypeFromCustomAttributeDefinitions({ xContextId, customAttributeNames }: {
-    xContextId: string;
+    xContextId?: string;
     customAttributeNames: Array<string>;
   }): Promise<void> {
     for(const customAttributeName of customAttributeNames) {
@@ -130,7 +130,7 @@ export class EpSdkEpEventsServiceClass extends EpSdkServiceClass {
    * Filters are all AND.
    */
   public listAll = async({ xContextId, applicationDomainIds, shared, sortFieldName, brokerType, attributesQuery }:{
-    xContextId: string;
+    xContextId?: string;
     applicationDomainIds?: Array<string>;
     shared: boolean;
     brokerType?: EpSdkBrokerTypes;
@@ -196,7 +196,7 @@ export class EpSdkEpEventsServiceClass extends EpSdkServiceClass {
   }
 
   public getByName = async({ xContextId, eventName, applicationDomainId }:{
-    xContextId: string;
+    xContextId?: string;
     eventName: string;
     applicationDomainId: string;
   }): Promise<EpSdkEvent | undefined> => {
@@ -222,7 +222,7 @@ export class EpSdkEpEventsServiceClass extends EpSdkServiceClass {
   }
 
   public getById = async({ xContextId, eventId }:{
-    xContextId: string;
+    xContextId?: string;
     eventId: string;
   }): Promise<EpSdkEvent | undefined> => {
     const funcName = 'getById';
@@ -247,7 +247,7 @@ export class EpSdkEpEventsServiceClass extends EpSdkServiceClass {
   }
 
   public deleteById = async({ xContextId, eventId }:{
-    xContextId: string;
+    xContextId?: string;
     eventId: string;
   }): Promise<EpSdkEvent> => {
     const epSdkEvent: EpSdkEvent = await this.getById({ 
@@ -263,7 +263,7 @@ export class EpSdkEpEventsServiceClass extends EpSdkServiceClass {
   }
 
   public deleteByName = async({ xContextId, applicationDomainId, eventName }: {
-    xContextId: string;
+    xContextId?: string;
     eventName: string;
     applicationDomainId: string;
   }): Promise<EpSdkEvent> => {
@@ -290,7 +290,7 @@ export class EpSdkEpEventsServiceClass extends EpSdkServiceClass {
   }
 
   public createEvent = async({ xContextId, requestBody }:{
-    xContextId: string;
+    xContextId?: string;
     requestBody: EpSdkEventCreate;
   }): Promise<EpSdkEventResponse> => {
     const funcName = 'createEvent';
@@ -315,7 +315,7 @@ export class EpSdkEpEventsServiceClass extends EpSdkServiceClass {
   }
 
   public updateEvent = async({ xContextId, eventId, requestBody }:{
-    xContextId: string;
+    xContextId?: string;
     eventId: string;
     requestBody: EpSdkEventUpdate;
   }): Promise<EpSdkEventResponse> => {

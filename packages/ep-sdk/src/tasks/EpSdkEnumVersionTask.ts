@@ -496,7 +496,7 @@ export class EpSdkEnumVersionTask extends EpSdkVersionTask {
     return epSdkEnumVersionTask_UpdateFuncReturn;
   }
 
-  public async execute(xContextId: string): Promise<IEpSdkEnumVersionTask_ExecuteReturn> {
+  public async execute(xContextId?: string): Promise<IEpSdkEnumVersionTask_ExecuteReturn> {
     const epSdkTask_ExecuteReturn: IEpSdkEnumVersionTask_ExecuteReturn =
       await super.execute(xContextId);
     return epSdkTask_ExecuteReturn;

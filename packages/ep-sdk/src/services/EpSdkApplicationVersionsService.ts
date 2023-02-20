@@ -55,7 +55,7 @@ export class EpSdkApplicationVersionsServiceClass extends EpSdkVersionServiceCla
     applicationId: string;
     stateId?: string;
     versionString?: string;
-    xContextId: string;
+    xContextId?: string;
   }): Promise<EpSdkApplicationAndVersionResponse | undefined> => {
     const funcName = 'getObjectAndVersionForEventId';
     const logName = `${EpSdkApplicationVersionsServiceClass.name}.${funcName}()`;
@@ -108,7 +108,7 @@ export class EpSdkApplicationVersionsServiceClass extends EpSdkVersionServiceCla
   }
 
   public getVersionByVersion = async ({ xContextId, applicationId, applicationVersionString }: {
-    xContextId: string;
+    xContextId?: string;
     applicationId: string;
     applicationVersionString: string;
   }): Promise<ApplicationVersion | undefined> => {
@@ -122,7 +122,7 @@ export class EpSdkApplicationVersionsServiceClass extends EpSdkVersionServiceCla
   }
 
   public getVersionsForApplicationId = async ({ xContextId, applicationId, stateId, pageSize = EpApiMaxPageSize }: {
-    xContextId: string;
+    xContextId?: string;
     applicationId: string;
     stateId?: string;
     pageSize?: number; /** for testing */
@@ -177,7 +177,7 @@ export class EpSdkApplicationVersionsServiceClass extends EpSdkVersionServiceCla
   }
 
   public getVersionsForApplicationName = async ({ xContextId, applicationName, applicationDomainId }: {
-    xContextId: string;
+    xContextId?: string;
     applicationDomainId: string;
     applicationName: string;
   }): Promise<Array<ApplicationVersion>> => {
@@ -199,7 +199,7 @@ export class EpSdkApplicationVersionsServiceClass extends EpSdkVersionServiceCla
   }
 
   public getLatestVersionString = async ({ xContextId, applicationId }: {
-    xContextId: string;
+    xContextId?: string;
     applicationId: string;
   }): Promise<string | undefined> => {
     const funcName = 'getLatestVersionString';
@@ -219,7 +219,7 @@ export class EpSdkApplicationVersionsServiceClass extends EpSdkVersionServiceCla
   }
 
   public getLatestVersionForApplicationId = async ({ xContextId, applicationId, applicationDomainId, stateId }: {
-    xContextId: string;
+    xContextId?: string;
     applicationDomainId?: string;
     applicationId: string;
     stateId?: string;
@@ -235,7 +235,7 @@ export class EpSdkApplicationVersionsServiceClass extends EpSdkVersionServiceCla
   }
 
   public getLatestVersionForApplicationName = async ({ xContextId, applicationDomainId, applicationName }: {
-    xContextId: string;
+    xContextId?: string;
     applicationDomainId: string;
     applicationName: string;
   }): Promise<ApplicationVersion | undefined> => {
@@ -249,7 +249,7 @@ export class EpSdkApplicationVersionsServiceClass extends EpSdkVersionServiceCla
   }
 
   public createApplicationVersion = async({ xContextId, applicationDomainId, applicationId, applicationVersion, targetLifecycleStateId }:{
-    xContextId: string;
+    xContextId?: string;
     applicationDomainId: string;
     applicationId: string;
     applicationVersion: ApplicationVersion;
@@ -308,7 +308,7 @@ export class EpSdkApplicationVersionsServiceClass extends EpSdkVersionServiceCla
   }
 
   public listLatestVersions = async({ xContextId, applicationDomainIds, stateId, pageNumber = 1, pageSize = 20, sortFieldName }:{
-    xContextId: string;
+    xContextId?: string;
     applicationDomainIds?: Array<string>;
     stateId?: string;
     pageNumber?: number;

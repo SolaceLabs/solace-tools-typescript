@@ -31,7 +31,7 @@ export class EpSdkCustomAttributeDefinitionsServiceClass extends EpSdkServiceCla
    * Returns list of all associated enitity types.
    */
   public async presentAssociatedEntityType({ xContextId, attributeName, associatedEntityType}:{
-    xContextId: string;
+    xContextId?: string;
     attributeName: string;
     associatedEntityType: EEpSdkCustomAttributeEntityTypes;
   }): Promise<Array<EEpSdkCustomAttributeEntityTypes>> {
@@ -71,7 +71,7 @@ export class EpSdkCustomAttributeDefinitionsServiceClass extends EpSdkServiceCla
    * @returns The modified custom attribute definition or undefined if it has been deleted.
    */
   public async removeAssociatedEntityTypeFromCustomAttributeDefinition({ xContextId, attributeName, associatedEntityType }:{
-    xContextId: string;
+    xContextId?: string;
     attributeName: string;
     associatedEntityType: EEpSdkCustomAttributeEntityTypes;
   }): Promise<CustomAttributeDefinition | undefined> {
@@ -142,7 +142,7 @@ export class EpSdkCustomAttributeDefinitionsServiceClass extends EpSdkServiceCla
    * Get attribute definition by name. Name is unique.
    */
   public getByName = async ({ xContextId, attributeName, pageSize = EpApiMaxPageSize }: {
-    xContextId: string;
+    xContextId?: string;
     attributeName: string;
     pageSize?: number; /** for testing */
   }): Promise<CustomAttributeDefinition | undefined> => {
@@ -193,7 +193,7 @@ export class EpSdkCustomAttributeDefinitionsServiceClass extends EpSdkServiceCla
   }
 
   public getById = async ({ xContextId, customAttributeDefinitionId }: {
-    xContextId: string;
+    xContextId?: string;
     customAttributeDefinitionId: string;
   }): Promise<CustomAttributeDefinition> => {
     const funcName = 'getById';
@@ -218,7 +218,7 @@ export class EpSdkCustomAttributeDefinitionsServiceClass extends EpSdkServiceCla
   }
 
   public deleteById = async ({ xContextId, customAttributeDefinitionId }: {
-    xContextId: string;
+    xContextId?: string;
     customAttributeDefinitionId: string;
   }): Promise<CustomAttributeDefinition> => {
     const customAttributeDefinition: CustomAttributeDefinition = await this.getById({

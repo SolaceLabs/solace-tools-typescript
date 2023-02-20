@@ -17,7 +17,7 @@ import { EpSdkServiceClass } from './EpSdkService';
 export class EpSdkEnumsServiceClass extends EpSdkServiceClass {
 
   public getByName = async ({ xContextId, enumName, applicationDomainId }: {
-    xContextId: string;
+    xContextId?: string;
     enumName: string;
     applicationDomainId: string;
   }): Promise<TopicAddressEnum | undefined> => {
@@ -45,7 +45,7 @@ export class EpSdkEnumsServiceClass extends EpSdkServiceClass {
   }
 
   public getById = async ({ xContextId, enumId, applicationDomainId }: {
-    xContextId: string;
+    xContextId?: string;
     enumId: string;
     applicationDomainId: string;
   }): Promise<TopicAddressEnum> => {
@@ -74,7 +74,7 @@ export class EpSdkEnumsServiceClass extends EpSdkServiceClass {
   }
 
   public deleteById = async ({ xContextId, enumId, applicationDomainId }: {
-    xContextId: string;
+    xContextId?: string;
     enumId: string;
     applicationDomainId: string;
   }): Promise<TopicAddressEnum> => {
@@ -92,7 +92,7 @@ export class EpSdkEnumsServiceClass extends EpSdkServiceClass {
   }
 
   public deleteByName = async ({ xContextId, applicationDomainId, enumName }: {
-    xContextId: string;
+    xContextId?: string;
     enumName: string;
     applicationDomainId: string;
   }): Promise<TopicAddressEnum> => {

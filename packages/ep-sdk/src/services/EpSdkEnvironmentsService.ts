@@ -19,7 +19,7 @@ export class EpSdkEnvironmentsServiceClass extends EpSdkServiceClass {
 
   public listAll = async({ xContextId, pageSize = EpApiMaxPageSize }:{
     pageSize?: number; /** for testing */
-    xContextId: string;
+    xContextId?: string;
   }): Promise<EnvironmentsResponse> => {
     const funcName = 'listAll';
     const logName = `${EpSdkEnvironmentsServiceClass.name}.${funcName}()`;
@@ -65,7 +65,7 @@ export class EpSdkEnvironmentsServiceClass extends EpSdkServiceClass {
    * @throws {@link EpSdkApiContentError} - if api response data is undefined
    */
   public getById = async ({ xContextId, environmentId }: {
-    xContextId: string;
+    xContextId?: string;
     environmentId: string;
   }): Promise<Environment> => {
     const funcName = 'getById';

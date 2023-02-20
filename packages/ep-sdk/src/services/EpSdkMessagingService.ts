@@ -20,7 +20,7 @@ import { EpSdkServiceClass } from './EpSdkService';
 export class EpSdkMessagingServiceClass extends EpSdkServiceClass {
 
   public getById = async ({ xContextId, messagingServiceId }: {
-    xContextId: string;
+    xContextId?: string;
     messagingServiceId: string;
   }): Promise<MessagingService> => {
     const funcName = 'getById';
@@ -47,7 +47,7 @@ export class EpSdkMessagingServiceClass extends EpSdkServiceClass {
   }
 
   public listAll = async({ xContextId, idList, pageSize = EpApiMaxPageSize }:{
-    xContextId: string;
+    xContextId?: string;
     idList?: Array<string>;
     pageSize?: number; /** for testing */
   }): Promise<Array<MessagingService>> => {

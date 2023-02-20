@@ -470,7 +470,7 @@ export class EpSdkEventApiVersionTask extends EpSdkVersionTask {
     return epSdkEventApiVersionTask_UpdateFuncReturn;
   }
 
-  public async execute(xContextId: string): Promise<IEpSdkEventApiVersionTask_ExecuteReturn> {
+  public async execute(xContextId?: string): Promise<IEpSdkEventApiVersionTask_ExecuteReturn> {
     const epSdkTask_ExecuteReturn: IEpSdkEventApiVersionTask_ExecuteReturn =
       await super.execute(xContextId);
     return epSdkTask_ExecuteReturn;

@@ -21,7 +21,7 @@ import { EpSdkServiceClass } from './EpSdkService';
 export class EpSdkApplicationDomainsServiceClass extends EpSdkServiceClass {
 
   public listAll = async({ pageSize = EpApiMaxPageSize, xContextId }:{
-    xContextId: string;
+    xContextId?: string;
     pageSize?: number; /** for testing */
   }): Promise<ApplicationDomainsResponse> => {
     const funcName = 'listAll';
@@ -70,7 +70,7 @@ export class EpSdkApplicationDomainsServiceClass extends EpSdkServiceClass {
    * @throws {@link EpSdkApiContentError} - if more than 1 application domain exists with the same name
    */
   public getByName = async ({ xContextId, applicationDomainName }: {
-    xContextId: string;
+    xContextId?: string;
     applicationDomainName: string;
   }): Promise<ApplicationDomain | undefined> => {
     const funcName = 'getByName';
@@ -102,7 +102,7 @@ export class EpSdkApplicationDomainsServiceClass extends EpSdkServiceClass {
    * @throws {@link EpSdkApiContentError} - if api response data is undefined
    */
   public getById = async ({ xContextId, applicationDomainId }: {
-    xContextId: string;
+    xContextId?: string;
     applicationDomainId: string;
   }): Promise<ApplicationDomain> => {
     const funcName = 'getById';
@@ -126,7 +126,7 @@ export class EpSdkApplicationDomainsServiceClass extends EpSdkServiceClass {
    * @returns ApplicationDomain - the deleted application domain object
    */
   public deleteById = async ({ xContextId, applicationDomainId }: {
-    xContextId: string;
+    xContextId?: string;
     applicationDomainId: string;
   }): Promise<ApplicationDomain> => {
     const applicationDomain: ApplicationDomain = await this.getById({ 
@@ -147,7 +147,7 @@ export class EpSdkApplicationDomainsServiceClass extends EpSdkServiceClass {
    * @throws {@link EpSdkServiceError} - if application domain does not exist
    */
   public deleteByName = async ({ xContextId, applicationDomainName }: {
-    xContextId: string;
+    xContextId?: string;
     applicationDomainName: string;
   }): Promise<ApplicationDomain> => {
     const funcName = 'deleteByName';

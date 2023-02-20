@@ -26,7 +26,7 @@ import {
 export class EpSdkValidateEventsClass extends EpSdkValidationClass {
 
   public validateReadPermissions = async({ xContextId, globalOpenAPI, token }:{
-    xContextId: string;
+    xContextId?: string;
     globalOpenAPI: OpenAPIConfig;
     token: string;
   }): Promise<void> => {

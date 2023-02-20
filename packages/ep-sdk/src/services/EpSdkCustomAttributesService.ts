@@ -23,7 +23,7 @@ export class EpSdkCustomAttributesServiceClass {
    * Ensures any missing definitions are created or their entity types added.
    */
   public async createCustomAttributesWithNew({ xContextId, existingCustomAttributes, epSdkCustomAttributeList, epSdkCustomAttributeEntityType }:{
-    xContextId: string;
+    xContextId?: string;
     existingCustomAttributes?: Array<CustomAttribute>;
     epSdkCustomAttributeList: TEpSdkCustomAttributeList;
     epSdkCustomAttributeEntityType: EEpSdkCustomAttributeEntityTypes;

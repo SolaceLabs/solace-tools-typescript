@@ -33,7 +33,7 @@ export class EpSdkValidateApplicationDomainsClass extends EpSdkValidationClass {
   }
 
   public validateReadPermissions = async({ xContextId, globalOpenAPI, token }:{
-    xContextId: string;    
+    xContextId?: string;    
     globalOpenAPI: OpenAPIConfig;
     token: string;
   }): Promise<void> => {
@@ -67,7 +67,7 @@ export class EpSdkValidateApplicationDomainsClass extends EpSdkValidationClass {
    * @returns true if write & delete access, false otherwise. 
    */
   public validateWriteDeletePermissions = async({ xContextId, globalOpenAPI, token }:{
-    xContextId: string;
+    xContextId?: string;
     globalOpenAPI: OpenAPIConfig;
     token: string;
   }): Promise<boolean> => {

@@ -455,7 +455,7 @@ export class EpSdkSchemaTask extends EpSdkTask {
     return epSdkSchemaTask_DeleteFuncReturn;
   }
 
-  public async execute(xContextId: string): Promise<IEpSdkSchemaTask_ExecuteReturn> {
+  public async execute(xContextId?: string): Promise<IEpSdkSchemaTask_ExecuteReturn> {
     const epSdkTask_ExecuteReturn: IEpSdkSchemaTask_ExecuteReturn = await super.execute(xContextId);
     return epSdkTask_ExecuteReturn;
   }

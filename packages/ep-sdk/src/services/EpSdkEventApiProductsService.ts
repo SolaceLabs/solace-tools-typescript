@@ -27,7 +27,7 @@ import EpSdkCustomAttributesQueryService from './EpSdkCustomAttributesQueryServi
 export class EpSdkEventApiProductsServiceClass extends EpSdkServiceClass {
 
   private async updateEventApiProduct({ xContextId, update }:{
-    xContextId: string;
+    xContextId?: string;
     update: EventApiProduct;
   }): Promise<EventApiProduct> {
     const funcName = 'updateEventApiProduct';
@@ -55,7 +55,7 @@ export class EpSdkEventApiProductsServiceClass extends EpSdkServiceClass {
    * Creates attribute definitions / adds entity type 'eventApiProduct' if it doesn't exist.
    */
   public async setCustomAttributes({ xContextId, eventApiProductId, epSdkCustomAttributeList}:{
-    xContextId: string;
+    xContextId?: string;
     eventApiProductId: string;
     epSdkCustomAttributeList: TEpSdkCustomAttributeList;
   }): Promise<EventApiProduct> {
@@ -83,7 +83,7 @@ export class EpSdkEventApiProductsServiceClass extends EpSdkServiceClass {
    * Leaves attibute definitions as-is.
    */
   public async unsetCustomAttributes({ xContextId, eventApiProductId, epSdkCustomAttributeList }:{
-    xContextId: string;
+    xContextId?: string;
     eventApiProductId: string;
     epSdkCustomAttributeList: TEpSdkCustomAttributeList;
   }): Promise<EventApiProduct> {
@@ -105,7 +105,7 @@ export class EpSdkEventApiProductsServiceClass extends EpSdkServiceClass {
   }
 
   public async removeAssociatedEntityTypeFromCustomAttributeDefinitions({ xContextId, customAttributeNames }: {
-    xContextId: string;
+    xContextId?: string;
     customAttributeNames: Array<string>;
   }): Promise<void> {
     for(const customAttributeName of customAttributeNames) {
@@ -122,7 +122,7 @@ export class EpSdkEventApiProductsServiceClass extends EpSdkServiceClass {
    * @param param0 
    */
   public listAll = async({ xContextId, applicationDomainIds, shared, brokerType, attributesQuery }:{
-    xContextId: string;
+    xContextId?: string;
     applicationDomainIds?: Array<string>;
     shared: boolean;
     brokerType?: EpSdkBrokerTypes;
@@ -178,7 +178,7 @@ export class EpSdkEventApiProductsServiceClass extends EpSdkServiceClass {
   }
 
   public getById = async({ xContextId, eventApiProductId }:{
-    xContextId: string;
+    xContextId?: string;
     eventApiProductId: string;
   }): Promise<EventApiProduct> => {
     const funcName = 'getById';

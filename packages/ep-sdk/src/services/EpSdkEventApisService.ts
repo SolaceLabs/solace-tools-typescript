@@ -17,7 +17,7 @@ import { EpSdkServiceClass } from './EpSdkService';
 export class EpSdkEventApisServiceClass extends EpSdkServiceClass {
   
   public getByName = async({ xContextId, eventApiName, applicationDomainId }:{
-    xContextId: string;
+    xContextId?: string;
     eventApiName: string;
     applicationDomainId: string;
   }): Promise<EventApi | undefined> => {
@@ -44,7 +44,7 @@ export class EpSdkEventApisServiceClass extends EpSdkServiceClass {
   }
 
   public getById = async({ xContextId, eventApiId, applicationDomainId }:{
-    xContextId: string;
+    xContextId?: string;
     eventApiId: string;
     applicationDomainId?: string;
   }): Promise<EventApi> => {
@@ -72,7 +72,7 @@ export class EpSdkEventApisServiceClass extends EpSdkServiceClass {
   }
 
   public deleteById = async({ xContextId, eventApiId, applicationDomainId }:{
-    xContextId: string;
+    xContextId?: string;
     eventApiId: string;
     applicationDomainId?: string;
   }): Promise<EventApi> => {
@@ -90,7 +90,7 @@ export class EpSdkEventApisServiceClass extends EpSdkServiceClass {
   }
 
   public deleteByName = async({ xContextId, applicationDomainId, eventApiName }: {
-    xContextId: string;
+    xContextId?: string;
     eventApiName: string;
     applicationDomainId: string;
   }): Promise<EventApi> => {

@@ -460,7 +460,7 @@ export class EpSdkSchemaVersionTask extends EpSdkVersionTask {
     return epSdkSchemaVersionTask_UpdateFuncReturn;
   }
 
-  public async execute(xContextId: string): Promise<IEpSdkSchemaVersionTask_ExecuteReturn> {
+  public async execute(xContextId?: string): Promise<IEpSdkSchemaVersionTask_ExecuteReturn> {
     const epSdkTask_ExecuteReturn: IEpSdkSchemaVersionTask_ExecuteReturn = await super.execute(xContextId);
     return epSdkTask_ExecuteReturn;
   }
