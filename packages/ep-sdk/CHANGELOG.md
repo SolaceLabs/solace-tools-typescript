@@ -1,5 +1,16 @@
 # @solace-labs/ep-sdk
 
+## 0.55.0
+
+### Minor Changes
+
+- e6376711: added x-context-id header to api services and sdk methods/classes
+
+### Patch Changes
+
+- Updated dependencies [e6376711]
+  - @solace-labs/ep-openapi-node@2.53.0
+
 ## 0.54.0
 
 ### Minor Changes

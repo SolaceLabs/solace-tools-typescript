@@ -1,5 +1,11 @@
 # @internal/tools
 
+## 0.2.0
+
+### Minor Changes
+
+- e6376711: added x-context-id header to api services and sdk methods/classes
+
 ## 0.1.9
 
 ### Patch Changes
