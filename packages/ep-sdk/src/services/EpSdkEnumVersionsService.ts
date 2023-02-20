@@ -28,11 +28,13 @@ import { EpSdkVersionServiceClass } from "./EpSdkVersionService";
 /** @category Services */
 export class EpSdkEnumVersionsServiceClass extends EpSdkVersionServiceClass {
 
-  public getVersionByVersion = async ({ enumId, enumVersionString }: {
+  public getVersionByVersion = async ({ xContextId, enumId, enumVersionString }: {
+    xContextId?: string;
     enumId: string;
     enumVersionString: string;
   }): Promise<TopicAddressEnumVersion | undefined> => {
     const topicAddressEnumVersionList: Array<TopicAddressEnumVersion> = await this.getVersionsForEnumId({
+      xContextId: xContextId,
       enumId: enumId,
     });
     return topicAddressEnumVersionList.find( (topicAddressEnumVersion: TopicAddressEnumVersion) => {
@@ -40,7 +42,8 @@ export class EpSdkEnumVersionsServiceClass extends EpSdkVersionServiceClass {
     });
   }
 
-  public getVersionsForEnumId = async ({ enumId, pageSize = EpApiMaxPageSize }: {
+  public getVersionsForEnumId = async ({ xContextId, enumId, pageSize = EpApiMaxPageSize }: {
+    xContextId?: string;
     enumId: string;
     pageSize?: number; /** for testing */
   }): Promise<Array<TopicAddressEnumVersion>> => {
@@ -53,6 +56,7 @@ export class EpSdkEnumVersionsServiceClass extends EpSdkVersionServiceClass {
     while(nextPage !== undefined && nextPage !== null) {
 
       const topicAddressEnumVersionsResponse: TopicAddressEnumVersionsResponse = await EnumsService.getEnumVersions({
+        xContextId: xContextId,
         enumIds: [enumId],
         pageNumber: nextPage,
         pageSize: pageSize
@@ -79,7 +83,8 @@ export class EpSdkEnumVersionsServiceClass extends EpSdkVersionServiceClass {
     return topicAddressEnumVersionList;
   }
 
-  public getVersionsForEnumName = async ({ enumName, applicationDomainId }: {
+  public getVersionsForEnumName = async ({ xContextId, enumName, applicationDomainId }: {
+    xContextId?: string;
     applicationDomainId: string;
     enumName: string;
   }): Promise<Array<TopicAddressEnumVersion>> => {
@@ -87,6 +92,7 @@ export class EpSdkEnumVersionsServiceClass extends EpSdkVersionServiceClass {
     const logName = `${EpSdkEnumVersionsServiceClass.name}.${funcName}()`;
 
     const topicAddressEnum: TopicAddressEnum | undefined = await EpSdkEnumsService.getByName({
+      xContextId: xContextId,
       applicationDomainId: applicationDomainId,
       enumName: enumName
     });
@@ -95,17 +101,18 @@ export class EpSdkEnumVersionsServiceClass extends EpSdkVersionServiceClass {
     if (topicAddressEnum.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'topicAddressEnum.id === undefined', {
       topicAddressEnum: topicAddressEnum
     });
-    const topicAddressEnumVersionList: Array<TopicAddressEnumVersion> = await this.getVersionsForEnumId({ enumId: topicAddressEnum.id });
+    const topicAddressEnumVersionList: Array<TopicAddressEnumVersion> = await this.getVersionsForEnumId({ xContextId, enumId: topicAddressEnum.id });
     return topicAddressEnumVersionList;
   }
 
-  public getLatestVersionString = async ({ enumId }: {
+  public getLatestVersionString = async ({ xContextId, enumId }: {
+    xContextId?: string;
     enumId: string;
   }): Promise<string | undefined> => {
     const funcName = 'getLatestVersionString';
     const logName = `${EpSdkEnumVersionsServiceClass.name}.${funcName}()`;
 
-    const topicAddressEnumVersionList: Array<TopicAddressEnumVersion> = await this.getVersionsForEnumId({ enumId: enumId });
+    const topicAddressEnumVersionList: Array<TopicAddressEnumVersion> = await this.getVersionsForEnumId({ xContextId, enumId: enumId });
     // CliLogger.trace(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.SERVICE, details: {
     //   enumVersionList: enumVersionList
     // }}));
@@ -118,23 +125,27 @@ export class EpSdkEnumVersionsServiceClass extends EpSdkVersionServiceClass {
     return latestTopicAddressEnumVersion.version;
   }
 
-  public getLatestVersionForEnumId = async ({ enumId, applicationDomainId }: {
+  public getLatestVersionForEnumId = async ({ xContextId, enumId, applicationDomainId }: {
+    xContextId?: string;
     applicationDomainId: string;
     enumId: string;
   }): Promise<TopicAddressEnumVersion | undefined> => {
     applicationDomainId;
     const topicAddressEnumVersionList: Array<TopicAddressEnumVersion> = await this.getVersionsForEnumId({
+      xContextId: xContextId,
       enumId: enumId,
     });
     const latestTopicAddressEnumVersion: TopicAddressEnumVersion | undefined = this.getLatestEpObjectVersionFromList({ epObjectVersionList: topicAddressEnumVersionList });
     return latestTopicAddressEnumVersion;
   }
 
-  public getLatestVersionForEnumName = async ({ applicationDomainId, enumName }: {
+  public getLatestVersionForEnumName = async ({ xContextId, applicationDomainId, enumName }: {
+    xContextId?: string;
     applicationDomainId: string;
     enumName: string;
   }): Promise<TopicAddressEnumVersion | undefined> => {
     const topicAddressEnumVersionList: Array<TopicAddressEnumVersion> = await this.getVersionsForEnumName({
+      xContextId: xContextId,
       enumName: enumName,
       applicationDomainId: applicationDomainId
     });
@@ -142,7 +153,8 @@ export class EpSdkEnumVersionsServiceClass extends EpSdkVersionServiceClass {
     return latestTopicAddressEnumVersion;
   }
 
-  public createEnumVersion = async({ enumId, topicAddressEnumVersion, targetLifecycleStateId }:{
+  public createEnumVersion = async({ xContextId, enumId, topicAddressEnumVersion, targetLifecycleStateId }:{
+    xContextId?: string;
     enumId: string;
     topicAddressEnumVersion: TopicAddressEnumVersion;
     targetLifecycleStateId: string;
@@ -151,6 +163,7 @@ export class EpSdkEnumVersionsServiceClass extends EpSdkVersionServiceClass {
     const logName = `${EpSdkEnumVersionsServiceClass.name}.${funcName}()`;
 
     const topicAddressEnumVersionResponse: TopicAddressEnumVersionResponse = await EnumsService.createEnumVersion({
+      xContextId: xContextId,
       requestBody: {        
         ...topicAddressEnumVersion,
         enumId: enumId,
@@ -175,6 +188,7 @@ export class EpSdkEnumVersionsServiceClass extends EpSdkVersionServiceClass {
     });
     if(createdTopicAddressEnumVersion.stateId !== targetLifecycleStateId) {
       const stateChangeRequestResponse: StateChangeRequestResponse = await EnumsService.updateEnumVersionState({
+        xContextId,
         id: createdTopicAddressEnumVersion.id,
         requestBody: {
           stateId: targetLifecycleStateId
@@ -182,6 +196,7 @@ export class EpSdkEnumVersionsServiceClass extends EpSdkVersionServiceClass {
       });
       stateChangeRequestResponse;
       const updatedTopicAddressEnumVersion: TopicAddressEnumVersion | undefined = await this.getVersionByVersion({
+        xContextId,
         enumId: enumId,
         enumVersionString: createdTopicAddressEnumVersion.version
       });
@@ -194,7 +209,8 @@ export class EpSdkEnumVersionsServiceClass extends EpSdkVersionServiceClass {
     return createdTopicAddressEnumVersion;
   }
 
-  public copyLastestVersionById_IfNotExists = async({ enumVersionId, fromApplicationDomainId, toApplicationDomainId }: {
+  public copyLastestVersionById_IfNotExists = async({ xContextId, enumVersionId, fromApplicationDomainId, toApplicationDomainId }: {
+    xContextId?: string;
     enumVersionId: string;
     fromApplicationDomainId: string;
     toApplicationDomainId: string;
@@ -204,6 +220,7 @@ export class EpSdkEnumVersionsServiceClass extends EpSdkVersionServiceClass {
 
     // get the source enum version
     const fromTopicAddressEnumVersionResponse: TopicAddressEnumVersionResponse = await EnumsService.getEnumVersion({
+      xContextId,
       versionId: enumVersionId,
     });
     /* istanbul ignore next */
@@ -218,6 +235,7 @@ export class EpSdkEnumVersionsServiceClass extends EpSdkVersionServiceClass {
     
     // get the source enum
     const fromTopicAddressEnum: TopicAddressEnum = await EpSdkEnumsService.getById({
+      xContextId,
       applicationDomainId: fromApplicationDomainId,
       enumId: fromTopicAddressEnumVersion.enumId
     });
@@ -230,10 +248,11 @@ export class EpSdkEnumVersionsServiceClass extends EpSdkVersionServiceClass {
         shared: fromTopicAddressEnum.shared ? fromTopicAddressEnum.shared : true,
       },
     });
-    const epSdkEnumTask_ExecuteReturn: IEpSdkEnumTask_ExecuteReturn = await epSdkEnumTask.execute();
+    const epSdkEnumTask_ExecuteReturn: IEpSdkEnumTask_ExecuteReturn = await epSdkEnumTask.execute(xContextId);
     if(epSdkEnumTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action === EEpSdkTask_Action.NO_ACTION) {
       // return the latest version
       const targetTopicAddressEnumVersion: TopicAddressEnumVersion | undefined = await this.getLatestVersionForEnumId({
+        xContextId,
         enumId: epSdkEnumTask_ExecuteReturn.epObjectKeys.epObjectId,
         applicationDomainId: toApplicationDomainId
       });
@@ -253,7 +272,7 @@ export class EpSdkEnumVersionsServiceClass extends EpSdkVersionServiceClass {
       },
       enumValues: fromTopicAddressEnumVersion.values.map( (x) => { return x.value; }),
     });
-    const epSdkEnumVersionTask_ExecuteReturn: IEpSdkEnumVersionTask_ExecuteReturn = await epSdkEnumVersionTask.execute();
+    const epSdkEnumVersionTask_ExecuteReturn: IEpSdkEnumVersionTask_ExecuteReturn = await epSdkEnumVersionTask.execute(xContextId);
     return epSdkEnumVersionTask_ExecuteReturn.epObject;
   }
 

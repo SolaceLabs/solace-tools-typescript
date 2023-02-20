@@ -42,6 +42,7 @@ describe(`${scriptName}`, () => {
   it(`${scriptName}: should get list of environments`, async () => {
     try {
       const environmentsResponse: EnvironmentsResponse = await EnvironmentsService.getEnvironments({
+        xContextId: 'xContextId',
         pageSize: 100,
         pageNumber: 1,
       });

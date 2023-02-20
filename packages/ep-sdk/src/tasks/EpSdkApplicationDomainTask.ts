@@ -167,6 +167,7 @@ export class EpSdkApplicationDomainTask extends EpSdkTask {
 
     const applicationDomain: ApplicationDomain | undefined =
       await EpSdkApplicationDomainsService.getByName({
+        xContextId: this.xContextId,
         applicationDomainName: applicationDomainName,
       });
 
@@ -286,6 +287,7 @@ export class EpSdkApplicationDomainTask extends EpSdkTask {
 
     const applicationDomainResponse: ApplicationDomainResponse =
       await ApplicationDomainsService.createApplicationDomain({
+        xContextId: this.xContextId,
         requestBody: create,
       });
 
@@ -379,6 +381,7 @@ export class EpSdkApplicationDomainTask extends EpSdkTask {
 
     const applicationDomainResponse: ApplicationDomainResponse =
       await ApplicationDomainsService.updateApplicationDomain({
+        xContextId: this.xContextId,
         id: epSdkApplicationDomainTask_GetFuncReturn.epObject.id,
         requestBody: update,
       });
@@ -455,6 +458,7 @@ export class EpSdkApplicationDomainTask extends EpSdkTask {
 
     const applicationDomain: ApplicationDomain =
       await EpSdkApplicationDomainsService.deleteById({
+        xContextId: this.xContextId,
         applicationDomainId:
           epSdkApplicationDomainTask_GetFuncReturn.epObject.id,
       });
@@ -468,9 +472,8 @@ export class EpSdkApplicationDomainTask extends EpSdkTask {
     return epSdkApplicationDomainTask_DeleteFuncReturn;
   }
 
-  public async execute(): Promise<IEpSdkApplicationDomainTask_ExecuteReturn> {
-    const epSdkTask_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn =
-      await super.execute();
+  public async execute(xContextId?: string): Promise<IEpSdkApplicationDomainTask_ExecuteReturn> {
+    const epSdkTask_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn = await super.execute(xContextId);
     return epSdkTask_ExecuteReturn;
   }
 }

@@ -35,6 +35,7 @@
     "build:test": "yarn build:src && yarn tsc",
     "test": "yarn build:test && . ./test/source.env.sh && nyc mocha --config test/.mocharc.yml test/**/**.spec.ts && unset_source_env",
     "test:x": "yarn build:test && . ./test/source.env.sh && nyc mocha --config test/.mocharc.yml test/**/**.x-spec.ts && unset_source_env",
+    "test:x-manual": "yarn build:test && . ./test/source.env.sh && nyc mocha --config test/.mocharc.yml test/**/**.x-manual-spec.ts && unset_source_env",
     "dev:watch": "npm run build --watch"
   },
   "typedoc": {

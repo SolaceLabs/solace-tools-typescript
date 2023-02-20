@@ -31,6 +31,7 @@ describe(`${scriptName}`, () => {
     it(`${scriptName}: should create application domain`, async () => {
       try {
         const applicationDomainResponse: ApplicationDomainResponse = await ApplicationDomainsService.createApplicationDomain({
+          xContextId: 'xContextId',
           requestBody: {
             name: ApplicationDomainName,
           }
@@ -46,6 +47,7 @@ describe(`${scriptName}`, () => {
     it(`${scriptName}: should delete application domain`, async () => {
       try {
         const xvoid: void = await ApplicationDomainsService.deleteApplicationDomain({
+          xContextId: 'xContextId',
           id: ApplicationDomainId
         });
       } catch(e) {

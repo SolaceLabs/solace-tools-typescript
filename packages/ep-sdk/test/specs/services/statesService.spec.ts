@@ -28,7 +28,7 @@ describe(`${scriptName}`, () => {
 
   it(`${scriptName}: should validate stateDTOs`, async () => {
     try {
-      const xvoid: void = await EpSdkStatesService.validateStates();
+      const xvoid: void = await EpSdkStatesService.validateStates({});
     } catch (e) {
       if (e instanceof ApiError)
         expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;

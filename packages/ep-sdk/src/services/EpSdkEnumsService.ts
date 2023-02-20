@@ -16,7 +16,8 @@ import { EpSdkServiceClass } from './EpSdkService';
 /** @category Services */
 export class EpSdkEnumsServiceClass extends EpSdkServiceClass {
 
-  public getByName = async ({ enumName, applicationDomainId }: {
+  public getByName = async ({ xContextId, enumName, applicationDomainId }: {
+    xContextId?: string;
     enumName: string;
     applicationDomainId: string;
   }): Promise<TopicAddressEnum | undefined> => {
@@ -24,6 +25,7 @@ export class EpSdkEnumsServiceClass extends EpSdkServiceClass {
     const logName = `${EpSdkEnumsServiceClass.name}.${funcName}()`;
 
     const topicAddressEnumsResponse: TopicAddressEnumsResponse = await EnumsService.getEnums({
+      xContextId: xContextId,
       applicationDomainId: applicationDomainId,
       names: [enumName]
     });
@@ -42,7 +44,8 @@ export class EpSdkEnumsServiceClass extends EpSdkServiceClass {
     return topicAddressEnum;
   }
 
-  public getById = async ({ enumId, applicationDomainId }: {
+  public getById = async ({ xContextId, enumId, applicationDomainId }: {
+    xContextId?: string;
     enumId: string;
     applicationDomainId: string;
   }): Promise<TopicAddressEnum> => {
@@ -51,6 +54,7 @@ export class EpSdkEnumsServiceClass extends EpSdkServiceClass {
 
     applicationDomainId;
     const topicAddressEnumResponse: TopicAddressEnumResponse = await EnumsService.getEnum({
+      xContextId: xContextId,
       id: enumId
     });
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, {
@@ -69,22 +73,26 @@ export class EpSdkEnumsServiceClass extends EpSdkServiceClass {
     return topicAddressEnum;
   }
 
-  public deleteById = async ({ enumId, applicationDomainId }: {
+  public deleteById = async ({ xContextId, enumId, applicationDomainId }: {
+    xContextId?: string;
     enumId: string;
     applicationDomainId: string;
   }): Promise<TopicAddressEnum> => {
     const topicAddressEnum: TopicAddressEnum = await this.getById({
+      xContextId: xContextId,
       applicationDomainId: applicationDomainId,
       enumId: enumId,
     });
     const xvoid: void = await EnumsService.deleteEnum({
+      xContextId: xContextId,
       id: enumId,
     });
     xvoid;
     return topicAddressEnum;
   }
 
-  public deleteByName = async ({ applicationDomainId, enumName }: {
+  public deleteByName = async ({ xContextId, applicationDomainId, enumName }: {
+    xContextId?: string;
     enumName: string;
     applicationDomainId: string;
   }): Promise<TopicAddressEnum> => {
@@ -92,6 +100,7 @@ export class EpSdkEnumsServiceClass extends EpSdkServiceClass {
     const logName = `${EpSdkEnumsServiceClass.name}.${funcName}()`;
 
     const topicAddressEnum: TopicAddressEnum | undefined = await this.getByName({
+      xContextId: xContextId,
       applicationDomainId: applicationDomainId,
       enumName: enumName,
     });
@@ -104,6 +113,7 @@ export class EpSdkEnumsServiceClass extends EpSdkServiceClass {
       topicAddressEnum: topicAddressEnum,
     });
     const deleted: TopicAddressEnum = await this.deleteById({
+      xContextId: xContextId,
       applicationDomainId: applicationDomainId,
       enumId: topicAddressEnum.id
     });

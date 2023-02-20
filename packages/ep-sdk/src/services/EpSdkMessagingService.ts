@@ -19,13 +19,15 @@ import { EpSdkServiceClass } from './EpSdkService';
 /** @category Services */
 export class EpSdkMessagingServiceClass extends EpSdkServiceClass {
 
-  public getById = async ({ messagingServiceId }: {
+  public getById = async ({ xContextId, messagingServiceId }: {
+    xContextId?: string;
     messagingServiceId: string;
   }): Promise<MessagingService> => {
     const funcName = 'getById';
     const logName = `${EpSdkMessagingServiceClass.name}.${funcName}()`;
 
     const messagingServiceResponse: MessagingServiceResponse = await MessagingServicesService.getMessagingService({ 
+      xContextId,
       id: messagingServiceId,
     });
     /* istanbul ignore next */
@@ -44,7 +46,8 @@ export class EpSdkMessagingServiceClass extends EpSdkServiceClass {
     return messagingServiceResponse.data;
   }
 
-  public listAll = async({ idList, pageSize = EpApiMaxPageSize }:{
+  public listAll = async({ xContextId, idList, pageSize = EpApiMaxPageSize }:{
+    xContextId?: string;
     idList?: Array<string>;
     pageSize?: number; /** for testing */
   }): Promise<Array<MessagingService>> => {
@@ -55,6 +58,7 @@ export class EpSdkMessagingServiceClass extends EpSdkServiceClass {
     let nextPage: number | undefined | null = 1;
     while (nextPage !== undefined && nextPage !== null) {
       const messagingServicesResponse: MessagingServicesResponse = await MessagingServicesService.getMessagingServices({
+        xContextId,
         ids: idList && idList.length > 0 ? idList : undefined,
         pageNumber: nextPage,
         pageSize: pageSize,

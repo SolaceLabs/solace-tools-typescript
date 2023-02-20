@@ -141,6 +141,7 @@ export class EpSdkEpEventTask extends EpSdkTask {
     }}));
 
     const epSdkEvent: EpSdkEvent | undefined = await EpSdkEpEventsService.getByName({ 
+      xContextId: this.xContextId,
       eventName: epSdkEpEventTask_Keys.eventName,
       applicationDomainId: epSdkEpEventTask_Keys.applicationDomainId
     });
@@ -223,6 +224,7 @@ export class EpSdkEpEventTask extends EpSdkTask {
     }
 
     const epSdkEventResponse: EpSdkEventResponse = await EpSdkEpEventsService.createEvent({
+      xContextId: this.xContextId,
       requestBody: create
     });
 
@@ -281,6 +283,7 @@ export class EpSdkEpEventTask extends EpSdkTask {
     }
 
     const epSdkEventResponse: EpSdkEventResponse = await EpSdkEpEventsService.updateEvent({
+      xContextId: this.xContextId,
       eventId: epSdkEpEventTask_GetFuncReturn.epObject.id,
       requestBody: update
     });
@@ -324,6 +327,7 @@ export class EpSdkEpEventTask extends EpSdkTask {
     }
 
     const epSdkEvent: EpSdkEvent = await EpSdkEpEventsService.deleteById({ 
+      xContextId: this.xContextId,
       eventId: epSdkEpEventTask_GetFuncReturn.epObject.id,
     });
 
@@ -335,8 +339,8 @@ export class EpSdkEpEventTask extends EpSdkTask {
     return epSdkEpEventTask_DeleteFuncReturn;
   }
 
-  public async execute(): Promise<IEpSdkEpEventTask_ExecuteReturn> { 
-    const epSdkTask_ExecuteReturn: IEpSdkEpEventTask_ExecuteReturn = await super.execute();
+  public async execute(xContextId?: string): Promise<IEpSdkEpEventTask_ExecuteReturn> { 
+    const epSdkTask_ExecuteReturn: IEpSdkEpEventTask_ExecuteReturn = await super.execute(xContextId);
     return epSdkTask_ExecuteReturn;
   }
 

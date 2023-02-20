@@ -31,6 +31,7 @@ describe(`${scriptName}`, () => {
     after(async() => {
       try {
         const xvoid: void = await CustomAttributeDefinitionsService.deleteCustomAttributeDefinition({
+          xContextId: 'xContextId',
           id: CustomAttribtuteDefinitionId
         });
       } catch(e) {
@@ -42,6 +43,7 @@ describe(`${scriptName}`, () => {
     it(`${scriptName}: should create attribute definition`, async () => {
       try {
         const customAttributeDefinitionResponse: CustomAttributeDefinitionResponse = await CustomAttributeDefinitionsService.createCustomAttributeDefinition({
+          xContextId: 'xContextId',
           requestBody: {
             name: CustomAttribtuteDefinitionName,
             valueType: CustomAttributeDefinition.valueType.STRING,

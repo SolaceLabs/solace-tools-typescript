@@ -16,7 +16,8 @@ import { EpSdkServiceClass } from './EpSdkService';
 /** @category Services */
 export class EpSdkEventApisServiceClass extends EpSdkServiceClass {
   
-  public getByName = async({ eventApiName, applicationDomainId }:{
+  public getByName = async({ xContextId, eventApiName, applicationDomainId }:{
+    xContextId?: string;
     eventApiName: string;
     applicationDomainId: string;
   }): Promise<EventApi | undefined> => {
@@ -24,6 +25,7 @@ export class EpSdkEventApisServiceClass extends EpSdkServiceClass {
     const logName = `${EpSdkEventApisServiceClass.name}.${funcName}()`;
 
     const eventApisResponse: EventApisResponse = await EventApIsService.getEventApis({
+      xContextId,
       applicationDomainId: applicationDomainId,
       name: eventApiName
     });
@@ -41,7 +43,8 @@ export class EpSdkEventApisServiceClass extends EpSdkServiceClass {
     return eventApi;
   }
 
-  public getById = async({ eventApiId, applicationDomainId }:{
+  public getById = async({ xContextId, eventApiId, applicationDomainId }:{
+    xContextId?: string;
     eventApiId: string;
     applicationDomainId?: string;
   }): Promise<EventApi> => {
@@ -50,6 +53,7 @@ export class EpSdkEventApisServiceClass extends EpSdkServiceClass {
 
     applicationDomainId;
     const eventApiResponse: EventApiResponse = await EventApIsService.getEventApi({
+      xContextId,
       id: eventApiId
     });
 
@@ -67,22 +71,26 @@ export class EpSdkEventApisServiceClass extends EpSdkServiceClass {
     return eventApi;
   }
 
-  public deleteById = async({ eventApiId, applicationDomainId }:{
+  public deleteById = async({ xContextId, eventApiId, applicationDomainId }:{
+    xContextId?: string;
     eventApiId: string;
     applicationDomainId?: string;
   }): Promise<EventApi> => {
     const eventApi: EventApi = await this.getById({ 
+      xContextId,
       applicationDomainId: applicationDomainId,
       eventApiId: eventApiId,
     });
     const xvoid: void = await EventApIsService.deleteEventApi({ 
+      xContextId,
       id: eventApiId,
     });
     xvoid;
     return eventApi;
   }
 
-  public deleteByName = async({ applicationDomainId, eventApiName }: {
+  public deleteByName = async({ xContextId, applicationDomainId, eventApiName }: {
+    xContextId?: string;
     eventApiName: string;
     applicationDomainId: string;
   }): Promise<EventApi> => {
@@ -90,6 +98,7 @@ export class EpSdkEventApisServiceClass extends EpSdkServiceClass {
     const logName = `${EpSdkEventApisServiceClass.name}.${funcName}()`;
     
     const eventApi: EventApi | undefined = await this.getByName({ 
+      xContextId,
       applicationDomainId: applicationDomainId,
       eventApiName: eventApiName,
      });
@@ -102,6 +111,7 @@ export class EpSdkEventApisServiceClass extends EpSdkServiceClass {
       eventApi: eventApi,
     });
     const eventApiDeleted: EventApi = await this.deleteById({ 
+      xContextId,
       applicationDomainId: applicationDomainId,
       eventApiId: eventApi.id
      });

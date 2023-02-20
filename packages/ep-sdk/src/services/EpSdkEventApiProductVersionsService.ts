@@ -65,11 +65,13 @@ export interface EpSdkEventApiProductAndVersionSortInfo {
 export class EpSdkEventApiProductVersionsServiceClass extends EpSdkVersionServiceClass {
 
   private getLatestVersionForEventApiProductId = async ({
+    xContextId,
     eventApiProductId,
     stateIds,
     withAtLeastOnePlan = false,
     withAtLeastOneAMessagingService = false,
   }: {
+    xContextId?: string;
     eventApiProductId: string;
     stateIds?: Array<string>;
     withAtLeastOnePlan?: boolean;
@@ -79,6 +81,7 @@ export class EpSdkEventApiProductVersionsServiceClass extends EpSdkVersionServic
     // const logName = `${EpSdkEventApiProductVersionsService.name}.${funcName}()`;
     // get all versions for selected stateId & filters
     const eventApiProductVersionList: Array<EventApiProductVersion> = await this.getVersionsForEventApiProductId({
+      xContextId,
       eventApiProductId: eventApiProductId,
       stateIds: stateIds,
       withAtLeastOnePlan: withAtLeastOnePlan,
@@ -139,6 +142,7 @@ export class EpSdkEventApiProductVersionsServiceClass extends EpSdkVersionServic
   }
 
   public listAllLatestVersions = async ({
+    xContextId,
     applicationDomainIds,
     shared,
     brokerType,
@@ -147,6 +151,7 @@ export class EpSdkEventApiProductVersionsServiceClass extends EpSdkVersionServic
     withAtLeastOnePlan = false,
     withAtLeastOneAMessagingService = false,
   }: {
+    xContextId?: string;
     applicationDomainIds?: Array<string>;
     shared: boolean;
     brokerType?: EpSdkBrokerTypes;
@@ -161,6 +166,7 @@ export class EpSdkEventApiProductVersionsServiceClass extends EpSdkVersionServic
     // get all api products:
     // - we may have eventApiProducts without a version in the state requested
     const eventApiProductsResponse: EventApiProductsResponse = await EpSdkEventApiProductsService.listAll({
+      xContextId,
       applicationDomainIds: applicationDomainIds,
       shared: shared,
       brokerType: brokerType,
@@ -177,6 +183,7 @@ export class EpSdkEventApiProductVersionsServiceClass extends EpSdkVersionServic
       });
       // get the latest version in the requested state & by filters
       const latest_EventApiProductVersion: EventApiProductVersion | undefined = await this.getLatestVersionForEventApiProductId({
+        xContextId,
         eventApiProductId: eventApiProduct.id,
         stateIds: stateIds,
         withAtLeastOnePlan: withAtLeastOnePlan,
@@ -191,6 +198,7 @@ export class EpSdkEventApiProductVersionsServiceClass extends EpSdkVersionServic
   }
 
   public listLatestVersions = async ({
+    xContextId,
     applicationDomainIds,
     shared,
     brokerType,
@@ -202,6 +210,7 @@ export class EpSdkEventApiProductVersionsServiceClass extends EpSdkVersionServic
     withAtLeastOnePlan = false,
     withAtLeastOneAMessagingService = false,
   }: {
+    xContextId?: string;
     applicationDomainIds?: Array<string>;
     shared: boolean;
     brokerType?: EpSdkBrokerTypes;
@@ -215,6 +224,7 @@ export class EpSdkEventApiProductVersionsServiceClass extends EpSdkVersionServic
   }): Promise<EpSdkEventApiProductAndVersionListResponse> => {
     // get complete list
     const complete_EpSdkEventApiProductAndVersionList: EpSdkEventApiProductAndVersionList = await this.listAllLatestVersions({
+      xContextId,
       applicationDomainIds: applicationDomainIds,
       shared: shared,
       brokerType: brokerType,
@@ -247,7 +257,8 @@ export class EpSdkEventApiProductVersionsServiceClass extends EpSdkVersionServic
     };
   }
 
-  public getVersionsForEventApiProductId = async ({ eventApiProductId, stateIds, withAtLeastOnePlan = false, withAtLeastOneAMessagingService = false, pageSize = EpApiMaxPageSize }: {
+  public getVersionsForEventApiProductId = async ({ xContextId, eventApiProductId, stateIds, withAtLeastOnePlan = false, withAtLeastOneAMessagingService = false, pageSize = EpApiMaxPageSize }: {
+    xContextId?: string;
     eventApiProductId: string;
     stateIds?: Array<string>;
     withAtLeastOnePlan?: boolean;
@@ -262,6 +273,7 @@ export class EpSdkEventApiProductVersionsServiceClass extends EpSdkVersionServic
     while (nextPage !== undefined && nextPage !== null) {
 
       const eventApiProductVersionsResponse: EventApiProductVersionsResponse = await EventApiProductsService.getEventApiProductVersions({
+        xContextId,
         eventApiProductIds: [eventApiProductId],
         pageNumber: nextPage,
         pageSize: pageSize,
@@ -306,7 +318,8 @@ export class EpSdkEventApiProductVersionsServiceClass extends EpSdkVersionServic
    * Retrieves Event API Product & Version object in the given stateId & filters.
    * If versionString is omitted, retrieves the latest version.
    */
-  public getObjectAndVersionForEventApiProductId = async ({ eventApiProductId, stateIds, versionString, withAtLeastOnePlan = false, withAtLeastOneAMessagingService = false }: {
+  public getObjectAndVersionForEventApiProductId = async ({ xContextId, eventApiProductId, stateIds, versionString, withAtLeastOnePlan = false, withAtLeastOneAMessagingService = false }: {
+    xContextId?: string;
     eventApiProductId: string;
     stateIds?: Array<string>;
     versionString?: string;
@@ -319,7 +332,7 @@ export class EpSdkEventApiProductVersionsServiceClass extends EpSdkVersionServic
     // get event api product
     let eventApiProductResponse: EventApiProductResponse;
     try {
-      eventApiProductResponse = await EventApiProductsService.getEventApiProduct({ id: eventApiProductId });
+      eventApiProductResponse = await EventApiProductsService.getEventApiProduct({ xContextId, id: eventApiProductId });
     } catch (e) {
       return undefined;
     }
@@ -330,6 +343,7 @@ export class EpSdkEventApiProductVersionsServiceClass extends EpSdkVersionServic
 
     // get all versions for selected stateId with plans & messaging services
     const eventApiProductVersionList: Array<EventApiProductVersion> = await this.getVersionsForEventApiProductId({
+      xContextId,
       eventApiProductId: eventApiProductId,
       stateIds: stateIds,
       withAtLeastOnePlan: withAtLeastOnePlan,
@@ -357,7 +371,7 @@ export class EpSdkEventApiProductVersionsServiceClass extends EpSdkVersionServic
         });
         return solaceMessagingService.messagingServiceId;
       });
-      messagingServiceList = await EpSdkMessagingService.listAll({ idList: idList });
+      messagingServiceList = await EpSdkMessagingService.listAll({ xContextId, idList: idList });
     }
     // create a list of all versions
     const versionStringList: Array<string> = eventApiProductVersionList.map((eventApiProductVersion: EventApiProductVersion) => {

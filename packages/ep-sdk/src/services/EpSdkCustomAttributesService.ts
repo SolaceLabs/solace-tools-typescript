@@ -22,7 +22,8 @@ export class EpSdkCustomAttributesServiceClass {
    * Returns full custom attributes including existing & new ones.
    * Ensures any missing definitions are created or their entity types added.
    */
-  public async createCustomAttributesWithNew({ existingCustomAttributes, epSdkCustomAttributeList, epSdkCustomAttributeEntityType }:{
+  public async createCustomAttributesWithNew({ xContextId, existingCustomAttributes, epSdkCustomAttributeList, epSdkCustomAttributeEntityType }:{
+    xContextId?: string;
     existingCustomAttributes?: Array<CustomAttribute>;
     epSdkCustomAttributeList: TEpSdkCustomAttributeList;
     epSdkCustomAttributeEntityType: EEpSdkCustomAttributeEntityTypes;
@@ -35,6 +36,7 @@ export class EpSdkCustomAttributesServiceClass {
     for(const epSdkCustomAttribute of epSdkCustomAttributeList) {
 
       const associatedEntityTypes: Array<EEpSdkCustomAttributeEntityTypes> = await EpSdkCustomAttributeDefinitionsService.presentAssociatedEntityType({
+        xContextId: xContextId,
         attributeName: epSdkCustomAttribute.name,
         associatedEntityType: epSdkCustomAttributeEntityType
       });
@@ -46,7 +48,7 @@ export class EpSdkCustomAttributesServiceClass {
           associatedEntityTypes: associatedEntityTypes
         },
       });
-      const epSdkCustomAttributeDefinitionTask_ExecuteReturn: IEpSdkCustomAttributeDefinitionTask_ExecuteReturn = await epSdkCustomAttributeDefinitionTask.execute();
+      const epSdkCustomAttributeDefinitionTask_ExecuteReturn: IEpSdkCustomAttributeDefinitionTask_ExecuteReturn = await epSdkCustomAttributeDefinitionTask.execute(xContextId);
       /* istanbul ignore next */
       if(epSdkCustomAttributeDefinitionTask_ExecuteReturn.epObject.id == undefined) throw new EpSdkApiContentError(logName, this.constructor.name,'epSdkCustomAttributeDefinitionTask_ExecuteReturn.epObject.id == undefined', {
         epSdkCustomAttributeDefinitionTask_ExecuteReturn_epObject: epSdkCustomAttributeDefinitionTask_ExecuteReturn.epObject

@@ -32,7 +32,8 @@ import { EpSdkServiceClass } from './EpSdkService';
 /** @category Services */
 export class EpSdkEpEventsServiceClass extends EpSdkServiceClass {
   
-  private async updateEpEvent({ update }:{
+  private async updateEpEvent({ xContextId, update }:{
+    xContextId?: string;
     update: EpSdkEventUpdate;
   }): Promise<EpSdkEvent> {
     const funcName = 'updateEpEvent';
@@ -44,6 +45,7 @@ export class EpSdkEpEventsServiceClass extends EpSdkServiceClass {
     });
 
     const eventResponse: EventResponse = await EventsService.updateEvent({
+      xContextId,
       id: update.id,
       requestBody: update
     });
@@ -60,19 +62,23 @@ export class EpSdkEpEventsServiceClass extends EpSdkServiceClass {
    * @param param0 
    * @returns 
    */
-  public async setCustomAttributes({ eventId, epSdkCustomAttributeList}:{
+  public async setCustomAttributes({ xContextId, eventId, epSdkCustomAttributeList}:{
+    xContextId?: string;
     eventId: string;
     epSdkCustomAttributeList: TEpSdkCustomAttributeList;
   }): Promise<EpSdkEvent> {
     const epSdkEvent: EpSdkEvent = await this.getById({
+      xContextId,
       eventId: eventId
     });
     const customAttributes: Array<CustomAttribute> = await EpSdkCustomAttributesService.createCustomAttributesWithNew({
+      xContextId,
       existingCustomAttributes: epSdkEvent.customAttributes,
       epSdkCustomAttributeList: epSdkCustomAttributeList,
       epSdkCustomAttributeEntityType: EEpSdkCustomAttributeEntityTypes.EVENT
     });
     return await this.updateEpEvent({
+      xContextId,
       update: {
         ...epSdkEvent,
         customAttributes: customAttributes,  
@@ -84,11 +90,13 @@ export class EpSdkEpEventsServiceClass extends EpSdkServiceClass {
    * Unsets the custom attributes in the list on the event.
    * Leaves attibute definitions as-is.
    */
-  public async unsetCustomAttributes({ eventId, epSdkCustomAttributeList }:{
+  public async unsetCustomAttributes({ xContextId, eventId, epSdkCustomAttributeList }:{
+    xContextId?: string;
     eventId: string;
     epSdkCustomAttributeList: TEpSdkCustomAttributeList;
   }): Promise<EpSdkEvent> {
     const epSdkEvent: EpSdkEvent = await this.getById({
+      xContextId,
       eventId: eventId
     });
     const customAttributes: Array<CustomAttribute> = await EpSdkCustomAttributesService.createCustomAttributesExcluding({
@@ -96,6 +104,7 @@ export class EpSdkEpEventsServiceClass extends EpSdkServiceClass {
       epSdkCustomAttributeList: epSdkCustomAttributeList,
     });
     return await this.updateEpEvent({
+      xContextId,
       update: {
         ...epSdkEvent,
         customAttributes: customAttributes,  
@@ -103,11 +112,13 @@ export class EpSdkEpEventsServiceClass extends EpSdkServiceClass {
     });
   }
 
-  public async removeAssociatedEntityTypeFromCustomAttributeDefinitions({ customAttributeNames }: {
+  public async removeAssociatedEntityTypeFromCustomAttributeDefinitions({ xContextId, customAttributeNames }: {
+    xContextId?: string;
     customAttributeNames: Array<string>;
   }): Promise<void> {
     for(const customAttributeName of customAttributeNames) {
       await EpSdkCustomAttributeDefinitionsService.removeAssociatedEntityTypeFromCustomAttributeDefinition({
+        xContextId,
         attributeName: customAttributeName,
         associatedEntityType: EEpSdkCustomAttributeEntityTypes.EVENT,
       });
@@ -118,7 +129,8 @@ export class EpSdkEpEventsServiceClass extends EpSdkServiceClass {
    * Retrieves a sorted and filtered list of all Events without paging.
    * Filters are all AND.
    */
-  public listAll = async({ applicationDomainIds, shared, sortFieldName, brokerType, attributesQuery }:{
+  public listAll = async({ xContextId, applicationDomainIds, shared, sortFieldName, brokerType, attributesQuery }:{
+    xContextId?: string;
     applicationDomainIds?: Array<string>;
     shared: boolean;
     brokerType?: EpSdkBrokerTypes;
@@ -133,6 +145,7 @@ export class EpSdkEpEventsServiceClass extends EpSdkServiceClass {
     let nextPage: number | undefined | null = 1;
     while(nextPage !== undefined && nextPage !== null) {
       const eventsResponse: EventsResponse = await EventsService.getEvents({
+        xContextId,
         applicationDomainIds: applicationDomainIds,
         shared: shared,
         pageSize: 100,
@@ -182,7 +195,8 @@ export class EpSdkEpEventsServiceClass extends EpSdkServiceClass {
     return eventsResponse;
   }
 
-  public getByName = async({ eventName, applicationDomainId }:{
+  public getByName = async({ xContextId, eventName, applicationDomainId }:{
+    xContextId?: string;
     eventName: string;
     applicationDomainId: string;
   }): Promise<EpSdkEvent | undefined> => {
@@ -190,6 +204,7 @@ export class EpSdkEpEventsServiceClass extends EpSdkServiceClass {
     const logName = `${EpSdkEpEventsServiceClass.name}.${funcName}()`;
 
     const eventsResponse: EventsResponse = await EventsService.getEvents({
+      xContextId,
       applicationDomainId: applicationDomainId,
       name: eventName
     });
@@ -206,13 +221,15 @@ export class EpSdkEpEventsServiceClass extends EpSdkServiceClass {
     return epSdkEvent;
   }
 
-  public getById = async({ eventId }:{
+  public getById = async({ xContextId, eventId }:{
+    xContextId?: string;
     eventId: string;
   }): Promise<EpSdkEvent | undefined> => {
     const funcName = 'getById';
     const logName = `${EpSdkEpEventsServiceClass.name}.${funcName}()`;
     try {
       const eventResponse: EventResponse = await EventsService.getEvent({
+        xContextId,
         id: eventId
       });
       EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.SERVICE_GET, module: this.constructor.name, details: {
@@ -229,20 +246,24 @@ export class EpSdkEpEventsServiceClass extends EpSdkServiceClass {
     }
   }
 
-  public deleteById = async({ eventId }:{
+  public deleteById = async({ xContextId, eventId }:{
+    xContextId?: string;
     eventId: string;
   }): Promise<EpSdkEvent> => {
     const epSdkEvent: EpSdkEvent = await this.getById({ 
+      xContextId,
       eventId: eventId,
      });
     const xvoid: void = await EventsService.deleteEvent({ 
+      xContextId,
       id: eventId,
     });
     xvoid;
     return epSdkEvent;
   }
 
-  public deleteByName = async({ applicationDomainId, eventName }: {
+  public deleteByName = async({ xContextId, applicationDomainId, eventName }: {
+    xContextId?: string;
     eventName: string;
     applicationDomainId: string;
   }): Promise<EpSdkEvent> => {
@@ -250,6 +271,7 @@ export class EpSdkEpEventsServiceClass extends EpSdkServiceClass {
     const logName = `${EpSdkEpEventsServiceClass.name}.${funcName}()`;
     
     const epSdkEvent: EpSdkEvent | undefined = await this.getByName({ 
+      xContextId,
       applicationDomainId: applicationDomainId,
       eventName: eventName,
      });
@@ -261,17 +283,20 @@ export class EpSdkEpEventsServiceClass extends EpSdkServiceClass {
       epSdkEvent: epSdkEvent,
     });
     const epSdkEventDeleted: EpSdkEvent = await this.deleteById({ 
+      xContextId,
       eventId: epSdkEvent.id
      });
     return epSdkEventDeleted;
   }
 
-  public createEvent = async({ requestBody }:{
+  public createEvent = async({ xContextId, requestBody }:{
+    xContextId?: string;
     requestBody: EpSdkEventCreate;
   }): Promise<EpSdkEventResponse> => {
     const funcName = 'createEvent';
     const logName = `${EpSdkEpEventsServiceClass.name}.${funcName}()`;
     const eventResponse: EventResponse = await EventsService.createEvent({
+      xContextId,
       requestBody: {
         ...requestBody
       },
@@ -289,13 +314,15 @@ export class EpSdkEpEventsServiceClass extends EpSdkServiceClass {
     return epSdkEventResponse;
   }
 
-  public updateEvent = async({ eventId, requestBody }:{
+  public updateEvent = async({ xContextId, eventId, requestBody }:{
+    xContextId?: string;
     eventId: string;
     requestBody: EpSdkEventUpdate;
   }): Promise<EpSdkEventResponse> => {
     const funcName = 'updateEvent';
     const logName = `${EpSdkEpEventsServiceClass.name}.${funcName}()`;
     const eventResponse: EventResponse = await EventsService.updateEvent({
+      xContextId,
       id: eventId,
       requestBody: {
         ...requestBody

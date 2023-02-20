@@ -42,6 +42,7 @@ describe(`${scriptName}`, () => {
   it(`${scriptName}: should get list of event meshes`, async () => {
     try {
       const eventMeshesResponse: EventMeshesResponse = await EventMeshesService.getEventMeshes({
+        xContextId: 'xContextId',
         pageSize: 100,
         pageNumber: 1,
         // name,

@@ -183,6 +183,7 @@ export class EpSdkApplicationVersionTask extends EpSdkVersionTask {
 
     const applicationVersion: ApplicationVersion | undefined =
       await EpSdkApplicationVersionsService.getLatestVersionForApplicationId({
+        xContextId: this.xContextId,
         applicationDomainId:
           epSdkApplicationVersionTask_Keys.applicationDomainId,
         applicationId: epSdkApplicationVersionTask_Keys.applicationId,
@@ -326,6 +327,7 @@ export class EpSdkApplicationVersionTask extends EpSdkVersionTask {
 
     const applicationVersion: ApplicationVersion =
       await EpSdkApplicationVersionsService.createApplicationVersion({
+        xContextId: this.xContextId,
         applicationDomainId: this.getTaskConfig().applicationDomainId,
         applicationId: this.getTaskConfig().applicationId,
         applicationVersion: create,
@@ -455,6 +457,7 @@ export class EpSdkApplicationVersionTask extends EpSdkVersionTask {
 
     const applicationVersion: ApplicationVersion =
       await EpSdkApplicationVersionsService.createApplicationVersion({
+        xContextId: this.xContextId,
         applicationDomainId: this.getTaskConfig().applicationDomainId,
         applicationId: this.getTaskConfig().applicationId,
         applicationVersion: update,
@@ -483,9 +486,9 @@ export class EpSdkApplicationVersionTask extends EpSdkVersionTask {
     return epSdkApplicationVersionTask_UpdateFuncReturn;
   }
 
-  public async execute(): Promise<IEpSdkApplicationVersionTask_ExecuteReturn> {
+  public async execute(xContextId?: string): Promise<IEpSdkApplicationVersionTask_ExecuteReturn> {
     const epSdkTask_ExecuteReturn: IEpSdkApplicationVersionTask_ExecuteReturn =
-      await super.execute();
+      await super.execute(xContextId);
     return epSdkTask_ExecuteReturn;
   }
 }

@@ -23,7 +23,9 @@ describe(`${scriptName}`, () => {
 
     it(`${scriptName}: should get about api`, async () => {
       try {
-        const aboutApiResponse: AboutApiResponse = await AboutService.getAboutApi({});
+        const aboutApiResponse: AboutApiResponse = await AboutService.getAboutApi({
+          xContextId: 'xContextId' 
+        });
         expect(aboutApiResponse.data, TestLogger.createApiTestFailMessage('failed')).to.not.be.undefined;
         // // DEBUG:
         // expect(false, TestLogger.createLogMessage('aboutApiResponse', aboutApiResponse)).to.be.true;

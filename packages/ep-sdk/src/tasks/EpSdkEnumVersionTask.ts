@@ -190,11 +190,11 @@ export class EpSdkEnumVersionTask extends EpSdkVersionTask {
       })
     );
 
-    const enumVersion: TopicAddressEnumVersion | undefined =
-      await EpSdkEnumVersionsService.getLatestVersionForEnumId({
-        applicationDomainId: epSdkEnumVersionTask_Keys.applicationDomainId,
-        enumId: epSdkEnumVersionTask_Keys.enumId,
-      });
+    const enumVersion: TopicAddressEnumVersion | undefined = await EpSdkEnumVersionsService.getLatestVersionForEnumId({
+      xContextId: this.xContextId,
+      applicationDomainId: epSdkEnumVersionTask_Keys.applicationDomainId,
+      enumId: epSdkEnumVersionTask_Keys.enumId,
+    });
 
     EpSdkLogger.trace(
       EpSdkLogger.createLogEntry(logName, {
@@ -342,13 +342,13 @@ export class EpSdkEnumVersionTask extends EpSdkVersionTask {
       };
     }
 
-    const topicAddressEnumVersion: TopicAddressEnumVersion =
-      await EpSdkEnumVersionsService.createEnumVersion({
-        enumId: this.getTaskConfig().enumId,
-        topicAddressEnumVersion: create,
-        targetLifecycleStateId:
-          this.getTaskConfig().enumVersionSettings.stateId,
-      });
+    const topicAddressEnumVersion: TopicAddressEnumVersion = await EpSdkEnumVersionsService.createEnumVersion({
+      xContextId: this.xContextId,
+      enumId: this.getTaskConfig().enumId,
+      topicAddressEnumVersion: create,
+      targetLifecycleStateId:
+        this.getTaskConfig().enumVersionSettings.stateId,
+    });
 
     EpSdkLogger.trace(
       EpSdkLogger.createLogEntry(logName, {
@@ -468,13 +468,12 @@ export class EpSdkEnumVersionTask extends EpSdkVersionTask {
       };
     }
 
-    const topicAddressEnumVersion: TopicAddressEnumVersion =
-      await EpSdkEnumVersionsService.createEnumVersion({
-        enumId: this.getTaskConfig().enumId,
-        topicAddressEnumVersion: update,
-        targetLifecycleStateId:
-          this.getTaskConfig().enumVersionSettings.stateId,
-      });
+    const topicAddressEnumVersion: TopicAddressEnumVersion = await EpSdkEnumVersionsService.createEnumVersion({
+      xContextId: this.xContextId,
+      enumId: this.getTaskConfig().enumId,
+      topicAddressEnumVersion: update,
+      targetLifecycleStateId: this.getTaskConfig().enumVersionSettings.stateId,
+    });
 
     EpSdkLogger.trace(
       EpSdkLogger.createLogEntry(logName, {
@@ -497,9 +496,9 @@ export class EpSdkEnumVersionTask extends EpSdkVersionTask {
     return epSdkEnumVersionTask_UpdateFuncReturn;
   }
 
-  public async execute(): Promise<IEpSdkEnumVersionTask_ExecuteReturn> {
+  public async execute(xContextId?: string): Promise<IEpSdkEnumVersionTask_ExecuteReturn> {
     const epSdkTask_ExecuteReturn: IEpSdkEnumVersionTask_ExecuteReturn =
-      await super.execute();
+      await super.execute(xContextId);
     return epSdkTask_ExecuteReturn;
   }
 }

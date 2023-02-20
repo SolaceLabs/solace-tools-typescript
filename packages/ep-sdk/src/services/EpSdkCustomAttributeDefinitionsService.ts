@@ -30,11 +30,13 @@ export class EpSdkCustomAttributeDefinitionsServiceClass extends EpSdkServiceCla
    * Adds the associated entity type to existing list of entity types if definition exists.
    * Returns list of all associated enitity types.
    */
-  public async presentAssociatedEntityType({ attributeName, associatedEntityType}:{
+  public async presentAssociatedEntityType({ xContextId, attributeName, associatedEntityType}:{
+    xContextId?: string;
     attributeName: string;
     associatedEntityType: EEpSdkCustomAttributeEntityTypes;
   }): Promise<Array<EEpSdkCustomAttributeEntityTypes>> {
     const customAttributeDefinition: CustomAttributeDefinition | undefined = await this.getByName({
+      xContextId: xContextId,
       attributeName: attributeName,
     });
     if(customAttributeDefinition === undefined || customAttributeDefinition.associatedEntityTypes === undefined) return [associatedEntityType];
@@ -68,12 +70,14 @@ export class EpSdkCustomAttributeDefinitionsServiceClass extends EpSdkServiceCla
    * If no associatedEntityTypes are left, then deletes the entire custom attribute definition.
    * @returns The modified custom attribute definition or undefined if it has been deleted.
    */
-  public async removeAssociatedEntityTypeFromCustomAttributeDefinition({ attributeName, associatedEntityType }:{
+  public async removeAssociatedEntityTypeFromCustomAttributeDefinition({ xContextId, attributeName, associatedEntityType }:{
+    xContextId?: string;
     attributeName: string;
     associatedEntityType: EEpSdkCustomAttributeEntityTypes;
   }): Promise<CustomAttributeDefinition | undefined> {
 
     const customAttributeDefinition: CustomAttributeDefinition | undefined = await this.getByName({
+      xContextId: xContextId,
       attributeName: attributeName,
     });
     if(customAttributeDefinition === undefined) return undefined;
@@ -93,7 +97,7 @@ export class EpSdkCustomAttributeDefinitionsServiceClass extends EpSdkServiceCla
         associatedEntityTypes: associatedEntityTypes
       }
     });
-    const epSdkCustomAttributeDefinitionTask_ExecuteReturn: IEpSdkCustomAttributeDefinitionTask_ExecuteReturn = await epSdkCustomAttributeDefinitionTask.execute();
+    const epSdkCustomAttributeDefinitionTask_ExecuteReturn: IEpSdkCustomAttributeDefinitionTask_ExecuteReturn = await epSdkCustomAttributeDefinitionTask.execute(xContextId);
     if(epSdkTask_TargetState === EEpSdkTask_TargetState.ABSENT) return undefined;
     return epSdkCustomAttributeDefinitionTask_ExecuteReturn.epObject;
   }
@@ -137,7 +141,8 @@ export class EpSdkCustomAttributeDefinitionsServiceClass extends EpSdkServiceCla
   /**
    * Get attribute definition by name. Name is unique.
    */
-  public getByName = async ({ attributeName, pageSize = EpApiMaxPageSize }: {
+  public getByName = async ({ xContextId, attributeName, pageSize = EpApiMaxPageSize }: {
+    xContextId?: string;
     attributeName: string;
     pageSize?: number; /** for testing */
   }): Promise<CustomAttributeDefinition | undefined> => {
@@ -149,6 +154,7 @@ export class EpSdkCustomAttributeDefinitionsServiceClass extends EpSdkServiceCla
 
     while(nextPage !== null) {
       const customAttributeDefinitionsResponse: CustomAttributeDefinitionsResponse = await CustomAttributeDefinitionsService.getCustomAttributeDefinitions({
+        xContextId: xContextId,
         pageSize: pageSize,
         pageNumber: nextPage,
       });
@@ -186,13 +192,15 @@ export class EpSdkCustomAttributeDefinitionsServiceClass extends EpSdkServiceCla
     return customAttributeDefinitionList[0];
   }
 
-  public getById = async ({ customAttributeDefinitionId }: {
+  public getById = async ({ xContextId, customAttributeDefinitionId }: {
+    xContextId?: string;
     customAttributeDefinitionId: string;
   }): Promise<CustomAttributeDefinition> => {
     const funcName = 'getById';
     const logName = `${EpSdkCustomAttributeDefinitionsServiceClass.name}.${funcName}()`;
 
     const customAttributeDefinitionResponse: CustomAttributeDefinitionResponse = await CustomAttributeDefinitionsService.getCustomAttributeDefinition({
+      xContextId: xContextId,
       id: customAttributeDefinitionId,
     })
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, {
@@ -209,13 +217,16 @@ export class EpSdkCustomAttributeDefinitionsServiceClass extends EpSdkServiceCla
     return customAttributeDefinition;
   }
 
-  public deleteById = async ({ customAttributeDefinitionId }: {
+  public deleteById = async ({ xContextId, customAttributeDefinitionId }: {
+    xContextId?: string;
     customAttributeDefinitionId: string;
   }): Promise<CustomAttributeDefinition> => {
     const customAttributeDefinition: CustomAttributeDefinition = await this.getById({
+      xContextId: xContextId,
       customAttributeDefinitionId: customAttributeDefinitionId,
     });
     const xvoid: void = await CustomAttributeDefinitionsService.deleteCustomAttributeDefinition({
+      xContextId: xContextId,
       id: customAttributeDefinitionId,
     });
     xvoid;

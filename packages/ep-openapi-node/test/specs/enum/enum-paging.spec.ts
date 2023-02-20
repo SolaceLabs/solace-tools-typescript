@@ -77,6 +77,7 @@ describe(`${scriptName}`, () => {
   it(`${scriptName}: should create application domain`, async () => {
     try {
       const applicationDomainResponse: ApplicationDomainResponse = await ApplicationDomainsService.createApplicationDomain({
+        xContextId: 'xContextId',
         requestBody: {
           name: ApplicationDomainName,
         }
@@ -93,11 +94,12 @@ describe(`${scriptName}`, () => {
     try {
 
       const topicAddressEnumResponse: TopicAddressEnumResponse = await EnumsService.createEnum({
-          requestBody: {
-            applicationDomainId: ApplicationDomainId,
-            name: EnumName,
-            shared: false
-          }
+        xContextId: 'xContextId',
+        requestBody: {
+          applicationDomainId: ApplicationDomainId,
+          name: EnumName,
+          shared: false
+        }
       });
       const data: TopicAddressEnum | undefined = topicAddressEnumResponse.data;
       expect(data, TestLogger.createApiTestFailMessage('failed')).to.not.be.undefined;
@@ -121,6 +123,7 @@ describe(`${scriptName}`, () => {
           values: topicAddressEnumValueList
         };
         const topicAddressEnumVersionResponse: TopicAddressEnumVersionResponse = await EnumsService.createEnumVersionForEnum({
+          xContextId: 'xContextId',
           enumId: EnumId,
           requestBody: requestBody,
         });
@@ -140,8 +143,8 @@ describe(`${scriptName}`, () => {
       const topicAddressEnumVersionList: Array<TopicAddressEnumVersion> = [];
       let nextPage: number | null = 1;
       while(nextPage !== null) {
-
         const topicAddressEnumVersionsResponse: TopicAddressEnumVersionsResponse = await EnumsService.getEnumVersionsForEnum({
+          xContextId: 'xContextId',
           enumId: EnumId,
           pageSize: PageSize,
           pageNumber: nextPage

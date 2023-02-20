@@ -25,7 +25,9 @@ describe(`${scriptName}`, () => {
 
     it(`${scriptName}: should get broker object`, async () => {
       try {
-        const brokerResponse: BrokerResponse = await AllService.getBroker({ });
+        const brokerResponse: BrokerResponse = await AllService.getBroker({ 
+          xContextId: 'xContextId' 
+        });
         expect(brokerResponse.data, TestLogger.createApiTestFailMessage('failed')).to.not.be.undefined;
         // DEBUG:
         expect(false, TestLogger.createLogMessage('brokerResponse', brokerResponse)).to.be.true;

@@ -24,10 +24,8 @@ export enum EEpSdkSchemaContentType {
 
 /** @category Services */
 export class EpSdkSchemasServiceClass extends EpSdkServiceClass {
-  public getByName = async ({
-    schemaName,
-    applicationDomainId,
-  }: {
+  public getByName = async ({ xContextId, schemaName, applicationDomainId }: {
+    xContextId?: string;
     schemaName: string;
     applicationDomainId: string;
   }): Promise<SchemaObject | undefined> => {
@@ -35,6 +33,7 @@ export class EpSdkSchemasServiceClass extends EpSdkServiceClass {
     const logName = `${EpSdkSchemasServiceClass.name}.${funcName}()`;
 
     const schemasResponse: SchemasResponse = await SchemasService.getSchemas({
+      xContextId,
       applicationDomainId: applicationDomainId,
       name: schemaName,
     });
@@ -66,9 +65,11 @@ export class EpSdkSchemasServiceClass extends EpSdkServiceClass {
   };
 
   public getById = async ({
+    xContextId,
     schemaId,
     applicationDomainId,
   }: {
+    xContextId?: string;
     schemaId: string;
     applicationDomainId: string;
   }): Promise<SchemaObject> => {
@@ -78,6 +79,7 @@ export class EpSdkSchemasServiceClass extends EpSdkServiceClass {
     applicationDomainId;
 
     const schemaResponse: SchemaResponse = await SchemasService.getSchema({
+      xContextId,
       id: schemaId,
     });
     EpSdkLogger.trace(
@@ -106,17 +108,21 @@ export class EpSdkSchemasServiceClass extends EpSdkServiceClass {
   };
 
   public deleteById = async ({
+    xContextId,
     schemaId,
     applicationDomainId,
   }: {
+    xContextId?: string;
     schemaId: string;
     applicationDomainId: string;
   }): Promise<SchemaObject> => {
     const epSchemaObject: SchemaObject = await this.getById({
+      xContextId,
       applicationDomainId: applicationDomainId,
       schemaId: schemaId,
     });
     const xvoid: void = await SchemasService.deleteSchema({
+      xContextId,
       id: schemaId,
     });
     xvoid;
@@ -124,9 +130,11 @@ export class EpSdkSchemasServiceClass extends EpSdkServiceClass {
   };
 
   public deleteByName = async ({
+    xContextId, 
     applicationDomainId,
     schemaName,
   }: {
+    xContextId?: string;
     schemaName: string;
     applicationDomainId: string;
   }): Promise<SchemaObject> => {
@@ -134,6 +142,7 @@ export class EpSdkSchemasServiceClass extends EpSdkServiceClass {
     const logName = `${EpSdkSchemasServiceClass.name}.${funcName}()`;
 
     const epSchemaObject: SchemaObject | undefined = await this.getByName({
+      xContextId,
       applicationDomainId: applicationDomainId,
       schemaName: schemaName,
     });
@@ -158,6 +167,7 @@ export class EpSdkSchemasServiceClass extends EpSdkServiceClass {
         }
       );
     const epSchemaObjectDeleted: SchemaObject = await this.deleteById({
+      xContextId,
       applicationDomainId: applicationDomainId,
       schemaId: epSchemaObject.id,
     });

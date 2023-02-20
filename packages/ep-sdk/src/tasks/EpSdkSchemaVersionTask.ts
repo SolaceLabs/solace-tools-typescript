@@ -169,11 +169,11 @@ export class EpSdkSchemaVersionTask extends EpSdkVersionTask {
       })
     );
 
-    const schemaVersion: SchemaVersion | undefined =
-      await EpSdkSchemaVersionsService.getLatestVersionForSchemaId({
-        applicationDomainId: epSdkSchemaVersionTask_Keys.applicationDomainId,
-        schemaId: epSdkSchemaVersionTask_Keys.schemaId,
-      });
+    const schemaVersion: SchemaVersion | undefined = await EpSdkSchemaVersionsService.getLatestVersionForSchemaId({
+      xContextId: this.xContextId,
+      applicationDomainId: epSdkSchemaVersionTask_Keys.applicationDomainId,
+      schemaId: epSdkSchemaVersionTask_Keys.schemaId,
+    });
 
     EpSdkLogger.trace(
       EpSdkLogger.createLogEntry(logName, {
@@ -304,14 +304,13 @@ export class EpSdkSchemaVersionTask extends EpSdkVersionTask {
       };
     }
 
-    const schemaVersion: SchemaVersion =
-      await EpSdkSchemaVersionsService.createSchemaVersion({
-        applicationDomainId: this.getTaskConfig().applicationDomainId,
-        schemaId: this.getTaskConfig().schemaId,
-        schemaVersion: create,
-        targetLifecycleStateId:
-          this.getTaskConfig().schemaVersionSettings.stateId,
-      });
+    const schemaVersion: SchemaVersion = await EpSdkSchemaVersionsService.createSchemaVersion({
+      xContextId: this.xContextId,
+      applicationDomainId: this.getTaskConfig().applicationDomainId,
+      schemaId: this.getTaskConfig().schemaId,
+      schemaVersion: create,
+      targetLifecycleStateId: this.getTaskConfig().schemaVersionSettings.stateId,
+    });
 
     EpSdkLogger.trace(
       EpSdkLogger.createLogEntry(logName, {
@@ -432,14 +431,13 @@ export class EpSdkSchemaVersionTask extends EpSdkVersionTask {
       };
     }
 
-    const schemaVersion: SchemaVersion =
-      await EpSdkSchemaVersionsService.createSchemaVersion({
-        applicationDomainId: this.getTaskConfig().applicationDomainId,
-        schemaId: this.getTaskConfig().schemaId,
-        schemaVersion: update,
-        targetLifecycleStateId:
-          this.getTaskConfig().schemaVersionSettings.stateId,
-      });
+    const schemaVersion: SchemaVersion = await EpSdkSchemaVersionsService.createSchemaVersion({
+      xContextId: this.xContextId,
+      applicationDomainId: this.getTaskConfig().applicationDomainId,
+      schemaId: this.getTaskConfig().schemaId,
+      schemaVersion: update,
+      targetLifecycleStateId: this.getTaskConfig().schemaVersionSettings.stateId,
+    });
 
     EpSdkLogger.trace(
       EpSdkLogger.createLogEntry(logName, {
@@ -462,9 +460,8 @@ export class EpSdkSchemaVersionTask extends EpSdkVersionTask {
     return epSdkSchemaVersionTask_UpdateFuncReturn;
   }
 
-  public async execute(): Promise<IEpSdkSchemaVersionTask_ExecuteReturn> {
-    const epSdkTask_ExecuteReturn: IEpSdkSchemaVersionTask_ExecuteReturn =
-      await super.execute();
+  public async execute(xContextId?: string): Promise<IEpSdkSchemaVersionTask_ExecuteReturn> {
+    const epSdkTask_ExecuteReturn: IEpSdkSchemaVersionTask_ExecuteReturn = await super.execute(xContextId);
     return epSdkTask_ExecuteReturn;
   }
 }

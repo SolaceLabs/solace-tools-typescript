@@ -54,6 +54,7 @@ describe(`${scriptName}`, () => {
     TestContext.newItId();
     try {
       const xvoid: void = await ApplicationDomainsService.deleteApplicationDomain({
+        xContextId: 'xContextId',
         id: ApplicationDomainId
       });
     } catch(e) {
@@ -65,6 +66,7 @@ describe(`${scriptName}`, () => {
   it(`${scriptName}: should create application domain`, async () => {
     try {
       const applicationDomainResponse: ApplicationDomainResponse = await ApplicationDomainsService.createApplicationDomain({
+        xContextId: 'xContextId',
         requestBody: {
           name: ApplicationDomainName,
         }
@@ -81,6 +83,7 @@ describe(`${scriptName}`, () => {
     try {
 
       const schemaResponse: SchemaResponse = await SchemasService.createSchema({
+        xContextId: 'xContextId',
         requestBody: {
           applicationDomainId: ApplicationDomainId,
           contentType: 'json',
@@ -106,6 +109,7 @@ describe(`${scriptName}`, () => {
         version: '1.0.0',
       };
       const schemaVersionResponse: SchemaVersionResponse = await SchemasService.createSchemaVersionForSchema({
+        xContextId: 'xContextId',
         schemaId: SchemaId,
         requestBody: requestBody
       });
