@@ -1,4 +1,5 @@
 import s from 'shelljs';
+import fs from 'fs';
 import path from 'path';
 import { 
   GenerateOpenApiService,
@@ -13,6 +14,7 @@ const rootDir: string = `${scriptDir}/../../../`;
 // files & dirs
 const packageDir = `${scriptDir}/..`;
 const inputApiSpecFile = `${packageDir}/openapi-spec/openapi-spec.json`;
+const generatedApiSpecFile = `${packageDir}/openapi-spec/generated.openapi-spec.json`;
 const outputOpenApiClientSrcDir = 'generated-src';
 // description
 const packageJsonDescription = "Solace Event Portal APIM OpenAPI Client for NodeJS (Typescript)";
@@ -36,8 +38,13 @@ const main = async() => {
   
   prepare();
   
-  const xvoid: void = await GenerateOpenApiService.generateOpenApiClientNode({
+  GenerateOpenApiService.generateOpenApiSpec({
     inputApiSpecFile: inputApiSpecFile,
+    outputApiSpecFile: generatedApiSpecFile
+  });
+
+  const xvoid: void = await GenerateOpenApiService.generateOpenApiClientNode({
+    inputApiSpecFile: generatedApiSpecFile,
     outputOpenApiClientSrcDir: outputOpenApiClientSrcDir
   });
 
@@ -46,7 +53,7 @@ const main = async() => {
   });
 
   const apiVersion: string = OpenApiService.getOpenApiVersion({
-    inputApiSpecFile: inputApiSpecFile
+    inputApiSpecFile: generatedApiSpecFile
   });
 
   PackageJsonService.setVersion({

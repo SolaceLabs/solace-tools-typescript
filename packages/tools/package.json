@@ -13,6 +13,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "short-uuid": "^4.2.2"
+    "short-uuid": "^4.2.2",
+    "openapi-typescript-codegen": "^0.19.0"
   }
 }

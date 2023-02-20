@@ -77,6 +77,7 @@ describe(`${scriptName}`, () => {
       for(let i=0; i<NumberOfConsumerApps; i++) {
         const consumerAppName = generateConsumerAppName(`ep-devp-consumer-app @ ${ConsumerAppSource}`,i);
         const applicationRegistrationResponse: ApplicationRegistrationResponse = await RegistrationsService.createAppRegistration({
+          xContextId: 'xContextId',
           requestBody: {
             name: consumerAppName,
             registrationId: TestUtils.getShortUUID(),
@@ -97,6 +98,8 @@ describe(`${scriptName}`, () => {
       // select EventApiProduct
       const queryAst = EpSdkRsqlQueryBuilder.eq(TestUtils.nameOf<EventApiProduct>("name"), EventApiProductName_1);
       const eventApiProductsResponse: EventApiProductsResponse = await EventApiProductsService.listEventApiProducts({
+        xContextId: 'xContextId',
+
         query: emit(queryAst)
       });
       expect(eventApiProductsResponse.data.length, 'eventApiProductsResponse.data.length').to.equal(1);
@@ -108,6 +111,7 @@ describe(`${scriptName}`, () => {
       const plan_0: Plan = EventApiProduct_1.plans[0];
       for(const [name, id] of ConsumerAppIds) {
         const eventApiProductRegistrationResponse: EventApiProductRegistrationResponse = await RegistrationsService.createAppRegistrationAccessRequest({
+          xContextId: 'xContextId',
           registrationId: id,
           requestBody: {
             accessRequestId: TestUtils.getShortUUID(),
@@ -128,6 +132,7 @@ describe(`${scriptName}`, () => {
       for(let i=0; i<NumberOfConsumerApps; i++) {
         const consumerAppName = generateConsumerAppName(`ep-devp-consumer-app @ ${ConsumerAppAnotherSource}`,i);
         const applicationRegistrationResponse: ApplicationRegistrationResponse = await RegistrationsService.createAppRegistration({
+          xContextId: 'xContextId',
           requestBody: {
             name: consumerAppName,
             registrationId: TestUtils.getShortUUID(),
@@ -147,6 +152,7 @@ describe(`${scriptName}`, () => {
     try {
       const sourceQueryAst = EpSdkRsqlQueryBuilder.eq(TestUtils.nameOf<ApplicationRegistrationView>('source'), ConsumerAppSource);
       const applicationRegistrationsResponse: ApplicationRegistrationsResponse = await RegistrationsService.listAppRegistrations({ 
+        xContextId: 'xContextId',
         query: emit(sourceQueryAst),
         pageSize: 100
       });

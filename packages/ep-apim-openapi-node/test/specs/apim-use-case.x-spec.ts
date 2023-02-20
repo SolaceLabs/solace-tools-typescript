@@ -71,6 +71,7 @@ describe(`${scriptName}`, () => {
         let nextPage: number | null = 1;
         while(nextPage !== null) {
           const eventApiProductsResponse: EventApiProductsResponse = await EventApiProductsService.listEventApiProducts({
+            xContextId: 'xContextId',
             pageSize: PageSize,
             pageNumber: nextPage,
             // query: query  
@@ -148,6 +149,7 @@ describe(`${scriptName}`, () => {
         let nextPage: number | null = 1;
         while(nextPage !== null) {
           const eventApiProductsResponse: EventApiProductsResponse = await EventApiProductsService.listEventApiProducts({
+            xContextId: 'xContextId',
             pageNumber: nextPage,
             query: attributeQuery
           });
@@ -174,13 +176,17 @@ describe(`${scriptName}`, () => {
       try {
         if(EventApiProductId === undefined) throw new Error('EventApiProductId === undefined');
         const eventApiProductResponse: EventApiProductResponse = await EventApiProductsService.getEventApiProduct({ 
+          xContextId: 'xContextId',
           eventApiProductId: EventApiProductId,
         });
         const eventApiProduct: EventApiProduct = eventApiProductResponse.data;
         expect(eventApiProduct.solaceMessagingServices.length, TestLogger.createLogMessage('eventApiProduct.solaceMessagingServices.length', eventApiProduct.solaceMessagingServices.length)).to.be.greaterThanOrEqual(1);
         for(const solaceMessagingService of eventApiProduct.solaceMessagingServices) {
           // get the gateway
-          const gatewayResponse: GatewayResponse = await GatewaysService.getGateway({ messagingServiceId: solaceMessagingService.messagingServiceId });
+          const gatewayResponse: GatewayResponse = await GatewaysService.getGateway({ 
+            xContextId: 'xContextId',
+            messagingServiceId: solaceMessagingService.messagingServiceId 
+          });
           const messagingService: MessagingService = gatewayResponse.data;
           expect(messagingService.brokerType, TestLogger.createLogMessage('messagingService.brokerType', messagingService.brokerType)).to.equal(BrokerType.SOLACE);
           // // DEBUG
@@ -198,6 +204,7 @@ describe(`${scriptName}`, () => {
       try {
         if(EventApiProductId === undefined) throw new Error('EventApiProductId === undefined');
         const eventApiProductResponse: EventApiProductResponse = await EventApiProductsService.getEventApiProduct({ 
+          xContextId: 'xContextId',
           eventApiProductId: EventApiProductId,
         });
         const eventApiProduct: EventApiProduct = eventApiProductResponse.data;
@@ -210,6 +217,7 @@ describe(`${scriptName}`, () => {
         for(const plan of eventApiProduct.plans) {
           for(const eventApiVersion of eventApiProduct.apis) {
             const asyncApiObject = await EventApiProductsService.getEventApiProductPlanApi({
+              xContextId: 'xContextId',
               eventApiProductId: EventApiProductId,
               planId: plan.id,
               eventApiId: eventApiVersion.id,
@@ -235,17 +243,20 @@ describe(`${scriptName}`, () => {
       try {
         if(EventApiProductId === undefined) throw new Error('EventApiProductId === undefined');
         const eventApiProductResponse: EventApiProductResponse = await EventApiProductsService.getEventApiProduct({ 
+          xContextId: 'xContextId',
           eventApiProductId: EventApiProductId,
         });
         const eventApiProduct: EventApiProduct = eventApiProductResponse.data;
         // get all attributes
         const attributesResponse: AttributesResponse = await EventApiProductsService.getEventApiProductAttributes({ 
+          xContextId: 'xContextId',
           eventApiProductId: EventApiProductId,
           pageSize: 100,
         });
         const attributeList: Array<Attribute> = attributesResponse.data;
         for(const attribute of attributeList) {
           const x: void = await EventApiProductsService.deleteEventApiProductAttribute({ 
+            xContextId: 'xContextId',
             eventApiProductId: EventApiProductId,
             attributeName: attribute.name
           });
@@ -261,6 +272,7 @@ describe(`${scriptName}`, () => {
       try {
         if(EventApiProductId === undefined) throw new Error('EventApiProductId === undefined');
         const attributeResponse: AttributeResponse = await EventApiProductsService.createEventApiProductAttribute({
+          xContextId: 'xContextId',
           eventApiProductId: EventApiProductId,
           requestBody: {
             name: AttributeName,
@@ -272,6 +284,7 @@ describe(`${scriptName}`, () => {
         expect(created.value, TestLogger.createLogMessage('created.value', created.value)).to.equal(AttributeValue);
         // get the event api product and check the attributes
         const eventApiProductResponse: EventApiProductResponse = await EventApiProductsService.getEventApiProduct({
+          xContextId: 'xContextId',
           eventApiProductId: EventApiProductId
         });
         const eventApiProduct = eventApiProductResponse.data;
@@ -291,6 +304,7 @@ describe(`${scriptName}`, () => {
         if(EventApiProductId === undefined) throw new Error('EventApiProductId === undefined');
         const newAttributeValue = `patched-${AttributeValue}`;
         const attributeResponse: AttributeResponse = await EventApiProductsService.updateEventApiProductAttribute({
+          xContextId: 'xContextId',
           eventApiProductId: EventApiProductId,
           attributeName: AttributeName,
           requestBody: {
@@ -302,6 +316,7 @@ describe(`${scriptName}`, () => {
         expect(updated.value, TestLogger.createLogMessage('updated.value', updated.value)).to.equal(newAttributeValue);
         // get the event api product and check the attributes
         const eventApiProductResponse: EventApiProductResponse = await EventApiProductsService.getEventApiProduct({
+          xContextId: 'xContextId',
           eventApiProductId: EventApiProductId
         });
         const eventApiProduct = eventApiProductResponse.data;
@@ -321,11 +336,13 @@ describe(`${scriptName}`, () => {
         if(EventApiProductId === undefined) throw new Error('EventApiProductId === undefined');
 
         const x: void = await EventApiProductsService.deleteEventApiProductAttribute({
+          xContextId: 'xContextId',
           eventApiProductId: EventApiProductId,
           attributeName: AttributeName,
         });
         // get the event api product and check the attributes
         const eventApiProductResponse: EventApiProductResponse = await EventApiProductsService.getEventApiProduct({
+          xContextId: 'xContextId',
           eventApiProductId: EventApiProductId
         });
         const eventApiProduct = eventApiProductResponse.data;
@@ -375,6 +392,7 @@ describe(`${scriptName}`, () => {
         let nextPage: number | null = 1;
         while(nextPage !== null) {
           const eventApiProductsResponse: EventApiProductsResponse = await EventApiProductsService.listEventApiProducts({
+            xContextId: 'xContextId',
             pageNumber: nextPage,
             pageSize: 100,
             query: query
@@ -419,6 +437,7 @@ describe(`${scriptName}`, () => {
         let nextPage: number | null = 1;
         while(nextPage !== null) {
           const eventApiProductsResponse: EventApiProductsResponse = await EventApiProductsService.listEventApiProducts({
+            xContextId: 'xContextId',
             pageNumber: nextPage,
             query: query
           });
@@ -442,6 +461,7 @@ describe(`${scriptName}`, () => {
       try {
         const queryAst = EpSdkRsqlQueryBuilder.eq(TestUtils.nameOf<EventApiProduct>('name'), EventApiProductName_ReleasedThenDraft);
         const eventApiProductsResponse: EventApiProductsResponse = await EventApiProductsService.listEventApiProducts({
+          xContextId: 'xContextId',
           query: emit(queryAst)
         });
         expect(eventApiProductsResponse.data.length, TestLogger.createLogMessage('eventApiProductsResponse', eventApiProductsResponse)).to.equal(1);
@@ -461,6 +481,7 @@ describe(`${scriptName}`, () => {
       try {
         const queryAst = EpSdkRsqlQueryBuilder.eq(TestUtils.nameOf<EventApiProduct>('name'), EventApiProductName_ReleasedThenDelete);
         const eventApiProductsResponse: EventApiProductsResponse = await EventApiProductsService.listEventApiProducts({
+          xContextId: 'xContextId',
           query: emit(queryAst)
         });
         expect(eventApiProductsResponse.data.length, TestLogger.createLogMessage('eventApiProductsResponse', eventApiProductsResponse)).to.equal(1);
@@ -472,6 +493,7 @@ describe(`${scriptName}`, () => {
         expect(eventApiProduct.state, TestLogger.createLogMessage('eventApiProduct.state', eventApiProduct.state)).to.equal(EventApiProductState.DELETED);
         // now get the history
         const eventApiProductHistoryResponse: EventApiProductHistoryResponse = await EventApiProductsService.getEventApiProductHistory({ 
+          xContextId: 'xContextId',
           eventApiProductId: EventApiProductId_ReleasedThenDelete
         });
         for(const eventApiProductSummary of eventApiProductHistoryResponse.data) {
@@ -490,6 +512,7 @@ describe(`${scriptName}`, () => {
       try {
         const queryAst = EpSdkRsqlQueryBuilder.eq(TestUtils.nameOf<EventApiProduct>('name'), EventApiProductName_Filters);
         const eventApiProductsResponse: EventApiProductsResponse = await EventApiProductsService.listEventApiProducts({
+          xContextId: 'xContextId',
           query: emit(queryAst)
         });
         expect(eventApiProductsResponse.data.length, TestLogger.createApiTestFailMessage(TestLogger.createLogMessage('eventApiProductsResponse', eventApiProductsResponse))).to.equal(1);

@@ -215,6 +215,74 @@ class GenerateOpenApiService {
     console.log(`${logName}: success.`);
   }
 
+  public generateOpenApiSpec({ inputApiSpecFile, outputApiSpecFile }:{
+    inputApiSpecFile: string;
+    outputApiSpecFile: string;
+  }): void {
+    const funcName = 'generateOpenApiSpec';
+    const logName = `${GenerateOpenApiService.name}.${funcName}()`;
+    
+    const xContextIdParameterKey = "x-context-id";
+    const xContextIdParametersTemplateText = `
+    {
+        "name": "x-context-id",
+        "description": "Optional context id the request is running.",
+        "in": "header",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]*$",
+          "minLength": 4,
+          "maxLength": 64
+        }
+      }
+    `;
+    const xContextIdPathParameterTemplateText = `
+    {
+      "$ref": "#/components/parameters/x-context-id"
+    }
+    `;
+
+    console.log(`${logName}: starting ...`);
+    console.log(`${logName}: spec: ${inputApiSpecFile}`);
+  
+    try {
+      // read the input spec
+      const apiSpecJson: any = require(inputApiSpecFile);
+      const xContextIdParametersTemplateJson = JSON.parse(xContextIdParametersTemplateText);
+      const xContextIdPathParameterTemplateJson = JSON.parse(xContextIdPathParameterTemplateText);
+      // add context id parameter to components
+      if(apiSpecJson.components === undefined) apiSpecJson.components = {};
+      const components = apiSpecJson.components;
+      if(apiSpecJson.components.parameters === undefined) apiSpecJson.components.parameters = {};
+      const componentsParameters = components.parameters;
+      componentsParameters[xContextIdParameterKey] = xContextIdParametersTemplateJson;
+      // paths
+      const paths: Record<string, any> = apiSpecJson.paths;
+      for(const path in paths) {
+        console.log(`${logName}: path = ${JSON.stringify(path, null, 2)}`);
+        const pathObject = paths[path];
+        // console.log(`${logName}: pathObject = ${JSON.stringify(pathObject, null, 2)}`);
+        let pathParameters: Array<any> | undefined = pathObject.parameters;
+        if(pathParameters === undefined) {
+          pathParameters = [xContextIdPathParameterTemplateJson];
+        } else {
+          pathParameters.push(xContextIdPathParameterTemplateJson);
+        }
+        pathObject.parameters = pathParameters;
+      }  
+      const newSpecJsonString = JSON.stringify(apiSpecJson, null, 2);
+      // write the generated spec
+      fs.writeFileSync(outputApiSpecFile, newSpecJsonString);  
+    } catch(e) {
+      console.log(`${logName}: error=${e}`);
+      throw e;
+    }
+    console.log(`${logName}: generated spec file: ${outputApiSpecFile}`);
+    console.log(`${logName}: success.`);
+  }
+  
+  
 }
 
 export default new GenerateOpenApiService();

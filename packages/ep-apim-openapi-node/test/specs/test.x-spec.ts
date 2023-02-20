@@ -58,6 +58,7 @@ describe(`${scriptName}`, () => {
         let nextPage: number | null = 1;
         while(nextPage !== null) {
           const eventApiProductsResponse: EventApiProductsResponse = await EventApiProductsService.listEventApiProducts({
+            xContextId: 'xContextId',
             pageSize: 100,
             pageNumber: nextPage,
             // query: query  

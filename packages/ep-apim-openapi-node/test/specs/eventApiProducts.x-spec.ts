@@ -67,6 +67,7 @@ describe(`${scriptName}`, () => {
         let nextPage: number | null = 1;
         while(nextPage !== null) {
           const eventApiProductsResponse: EventApiProductsResponse = await EventApiProductsService.listEventApiProducts({
+            xContextId: 'xContextId',
             pageSize: PageSize,
             pageNumber: nextPage,
             // query: query  
@@ -96,6 +97,7 @@ describe(`${scriptName}`, () => {
         const eventApiProductList: Array<EventApiProduct> = await TestHelpers.getAllEventApiProducts();
         for(const listedEventApiProduct of eventApiProductList) {
           const eventApiProductResponse: EventApiProductResponse = await EventApiProductsService.getEventApiProduct({
+            xContextId: 'xContextId',
             eventApiProductId: listedEventApiProduct.id
           });
           expect(eventApiProductResponse.data, 'not equal').to.deep.equal(listedEventApiProduct);
@@ -111,6 +113,7 @@ describe(`${scriptName}`, () => {
       try {
         for(const listedEventApiProduct of EventApiProductList) {
           const eventApiProductHistoryResponse: EventApiProductHistoryResponse = await EventApiProductsService.getEventApiProductHistory({
+            xContextId: 'xContextId',
             eventApiProductId: listedEventApiProduct.id
           });
           const eventApiProductSummaryList: Array<EventApiProductSummary>  = eventApiProductHistoryResponse.data;          
@@ -118,6 +121,7 @@ describe(`${scriptName}`, () => {
           // expect(false, TestLogger.createLogMessage('eventApiProductVersionSummaryList', eventApiProductVersionSummaryList)).to.be.true;
           for(const eventApiProductSummary of eventApiProductSummaryList) {
             const eventApiProductResponse: EventApiProductResponse = await EventApiProductsService.getEventApiProductRevision({
+              xContextId: 'xContextId',
               eventApiProductId: listedEventApiProduct.id,
               version: eventApiProductSummary.version
             });
