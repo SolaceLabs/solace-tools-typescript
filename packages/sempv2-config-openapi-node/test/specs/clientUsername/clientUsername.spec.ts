@@ -30,6 +30,7 @@ describe(`${scriptName}`, () => {
       // delete client username
       try {
         await ClientUsernameService.deleteMsgVpnClientUsername({
+          xContextId: 'xContextId',
           msgVpnName: TestConfig.getConfig().msgVpnName,
           clientUsername: ClientUsername,
         });
@@ -45,6 +46,7 @@ describe(`${scriptName}`, () => {
           // password: 'foo'
         };
         const msgVpnClientUsernameResponse: MsgVpnClientUsernameResponse = await ClientUsernameService.createMsgVpnClientUsername({
+          xContextId: 'xContextId',
           msgVpnName: TestConfig.getConfig().msgVpnName,
           body: msgVpnClientUsername,
         });
