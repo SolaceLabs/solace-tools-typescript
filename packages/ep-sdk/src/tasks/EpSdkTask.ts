@@ -100,7 +100,7 @@ export interface IEpSdkTaskDeepCompareResult extends IEpSdkDeepCompareResult {}
 
 /** @category Tasks */
 export abstract class EpSdkTask {
-  protected xContextId?: string = '';
+  protected xContextId?: string;
   protected epSdkTask_Config: IEpSdkTask_Config;
   private taskTransactionId: string;
   protected epSdkTask_TransactionLog: EpSdkTask_TransactionLog;
