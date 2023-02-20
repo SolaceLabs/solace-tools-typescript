@@ -116,15 +116,8 @@
 <span class="w">      </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;my app domain&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">  </span><span class="p">});</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">epSdkApplicationDomainTask_ExecuteReturn_Present</span><span class="o">:</span><span class="w"> </span><span class="kt">IEpSdkApplicationDomainTask_ExecuteReturn</span><span class="w"> </span><span class="o">=</span>
-<span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="nx">epSdkApplicationDomainTaskPresent</span><span class="p">.</span><span class="nx">execute</span><span class="p">();</span>
-<span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span>
-<span class="w">    </span><span class="sb">`epSdkApplicationDomainTask_ExecuteReturn_Present.epSdkTask_TransactionLogData = </span><span class="si">${</span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span>
-<span class="w">      </span><span class="nx">epSdkApplicationDomainTask_ExecuteReturn_Present</span><span class="p">.</span><span class="nx">epSdkTask_TransactionLogData</span><span class="p">,</span>
-<span class="w">      </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">      </span><span class="mf">2</span>
-<span class="w">    </span><span class="p">)</span><span class="si">}</span><span class="sb">.`</span>
-<span class="w">  </span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">epSdkApplicationDomainTask_ExecuteReturn_Present</span><span class="o">:</span><span class="w"> </span><span class="kt">IEpSdkApplicationDomainTask_ExecuteReturn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">epSdkApplicationDomainTaskPresent</span><span class="p">.</span><span class="nx">execute</span><span class="p">(</span><span class="s1">&#39;my-context-id&#39;</span><span class="p">);</span>
+<span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`epSdkApplicationDomainTask_ExecuteReturn_Present.epSdkTask_TransactionLogData = </span><span class="si">${</span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="w"> </span><span class="nx">epSdkApplicationDomainTask_ExecuteReturn_Present</span><span class="p">.</span><span class="nx">epSdkTask_TransactionLogData</span><span class="p">,</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="mf">2</span><span class="p">)</span><span class="si">}</span><span class="sb">.`</span><span class="p">);</span>
 
 <span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">applicationDomainId</span><span class="w"> </span><span class="o">=</span>
 <span class="w">    </span><span class="nx">epSdkApplicationDomainTask_ExecuteReturn_Present</span><span class="p">.</span><span class="nx">epObject</span><span class="p">.</span><span class="nx">id</span><span class="p">;</span>
@@ -137,15 +130,8 @@
 <span class="w">    </span><span class="nx">epSdkTask_TargetState</span><span class="o">:</span><span class="w"> </span><span class="kt">EEpSdkTask_TargetState.ABSENT</span><span class="p">,</span>
 <span class="w">    </span><span class="nx">applicationDomainName</span><span class="o">:</span><span class="w"> </span><span class="kt">ApplicationDomainName</span><span class="p">,</span>
 <span class="w">  </span><span class="p">});</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">epSdkApplicationDomainTask_ExecuteReturn_Absent</span><span class="o">:</span><span class="w"> </span><span class="kt">IEpSdkApplicationDomainTask_ExecuteReturn</span><span class="w"> </span><span class="o">=</span>
-<span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="nx">epSdkApplicationDomainTaskAbsent</span><span class="p">.</span><span class="nx">execute</span><span class="p">();</span>
-<span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span>
-<span class="w">    </span><span class="sb">`epSdkApplicationDomainTask_ExecuteReturn_Absent.epSdkTask_TransactionLogData = </span><span class="si">${</span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span>
-<span class="w">      </span><span class="nx">epSdkApplicationDomainTask_ExecuteReturn_Absent</span><span class="p">.</span><span class="nx">epSdkTask_TransactionLogData</span><span class="p">,</span>
-<span class="w">      </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">      </span><span class="mf">2</span>
-<span class="w">    </span><span class="p">)</span><span class="si">}</span><span class="sb">.`</span>
-<span class="w">  </span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">epSdkApplicationDomainTask_ExecuteReturn_Absent</span><span class="o">:</span><span class="w"> </span><span class="kt">IEpSdkApplicationDomainTask_ExecuteReturn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">epSdkApplicationDomainTaskAbsent</span><span class="p">.</span><span class="nx">execute</span><span class="p">(</span><span class="s1">&#39;my-context-id&#39;</span><span class="p">);</span>
+<span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`epSdkApplicationDomainTask_ExecuteReturn_Absent.epSdkTask_TransactionLogData = </span><span class="si">${</span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">epSdkApplicationDomainTask_ExecuteReturn_Absent</span><span class="p">.</span><span class="nx">epSdkTask_TransactionLogData</span><span class="p">,</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="mf">2</span><span class="w"> </span><span class="p">)</span><span class="si">}</span><span class="sb">.`</span><span class="p">);</span>
 <span class="p">};</span>
 
 <span class="nx">main</span><span class="p">();</span>
@@ -166,7 +152,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, Solace Corporation, Ricardo Gomez-Ulmke, &lt;ricardo.gomez-ulmke@solace.com&gt;.
-      <span class="lastupdated">Last updated on 13 Feb 2023 at 16:31.
+      <span class="lastupdated">Last updated on 20 Feb 2023 at 11:05.
       </span></p>
   </div>
 
