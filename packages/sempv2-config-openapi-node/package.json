@@ -1,6 +1,6 @@
 {
   "name": "@solace-labs/sempv2-config-openapi-node",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "description": "Solace SempV2 Config OpenAPI Client for NodeJS (Typescript), v2.30",

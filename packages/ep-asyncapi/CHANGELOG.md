@@ -1,5 +1,12 @@
 # @solace-labs/ep-asyncapi
 
+## 0.53.2
+
+### Patch Changes
+
+- Updated dependencies [e6376711]
+  - @solace-labs/ep-openapi-node@2.53.0
+
 ## 0.53.1
 
 ### Patch Changes
