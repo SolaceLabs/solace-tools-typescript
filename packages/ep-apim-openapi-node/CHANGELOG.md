@@ -1,5 +1,11 @@
 # @solace-labs/ep-apim-openapi-node
 
+## 0.3.1
+
+### Patch Changes
+
+- f57f4efc: upgrade to ea.12 spec
+
 ## 0.3.0
 
 ### Minor Changes
