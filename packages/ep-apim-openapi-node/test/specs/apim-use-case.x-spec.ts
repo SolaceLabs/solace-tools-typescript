@@ -151,7 +151,7 @@ describe(`${scriptName}`, () => {
           const eventApiProductsResponse: EventApiProductsResponse = await EventApiProductsService.listEventApiProducts({
             xContextId: 'xContextId',
             pageNumber: nextPage,
-            query: attributeQuery
+            where: attributeQuery
           });
           expect(eventApiProductsResponse.data, TestLogger.createApiTestFailMessage('failed')).to.not.be.undefined;
           // expect(eventApiProductsResponse.data.length, TestLogger.createApiTestFailMessage('failed')).to.be.lessThanOrEqual(PageSize);
@@ -395,7 +395,7 @@ describe(`${scriptName}`, () => {
             xContextId: 'xContextId',
             pageNumber: nextPage,
             pageSize: 100,
-            query: query
+            where: query
           });
           // check for SMF protocol
           const smfEventApiProductList = eventApiProductsResponse.data.filter( (eventApiProduct: EventApiProduct) => {
@@ -439,7 +439,7 @@ describe(`${scriptName}`, () => {
           const eventApiProductsResponse: EventApiProductsResponse = await EventApiProductsService.listEventApiProducts({
             xContextId: 'xContextId',
             pageNumber: nextPage,
-            query: query
+            where: query
           });
           // check the state
           for(const eventApiProduct of eventApiProductsResponse.data) {
@@ -462,7 +462,7 @@ describe(`${scriptName}`, () => {
         const queryAst = EpSdkRsqlQueryBuilder.eq(TestUtils.nameOf<EventApiProduct>('name'), EventApiProductName_ReleasedThenDraft);
         const eventApiProductsResponse: EventApiProductsResponse = await EventApiProductsService.listEventApiProducts({
           xContextId: 'xContextId',
-          query: emit(queryAst)
+          where: emit(queryAst)
         });
         expect(eventApiProductsResponse.data.length, TestLogger.createLogMessage('eventApiProductsResponse', eventApiProductsResponse)).to.equal(1);
         const eventApiProduct = eventApiProductsResponse.data[0];
@@ -482,7 +482,7 @@ describe(`${scriptName}`, () => {
         const queryAst = EpSdkRsqlQueryBuilder.eq(TestUtils.nameOf<EventApiProduct>('name'), EventApiProductName_ReleasedThenDelete);
         const eventApiProductsResponse: EventApiProductsResponse = await EventApiProductsService.listEventApiProducts({
           xContextId: 'xContextId',
-          query: emit(queryAst)
+          where: emit(queryAst)
         });
         expect(eventApiProductsResponse.data.length, TestLogger.createLogMessage('eventApiProductsResponse', eventApiProductsResponse)).to.equal(1);
         const eventApiProduct = eventApiProductsResponse.data[0];
@@ -513,7 +513,7 @@ describe(`${scriptName}`, () => {
         const queryAst = EpSdkRsqlQueryBuilder.eq(TestUtils.nameOf<EventApiProduct>('name'), EventApiProductName_Filters);
         const eventApiProductsResponse: EventApiProductsResponse = await EventApiProductsService.listEventApiProducts({
           xContextId: 'xContextId',
-          query: emit(queryAst)
+          where: emit(queryAst)
         });
         expect(eventApiProductsResponse.data.length, TestLogger.createApiTestFailMessage(TestLogger.createLogMessage('eventApiProductsResponse', eventApiProductsResponse))).to.equal(1);
         const eventApiProduct = eventApiProductsResponse.data[0];
