@@ -3,6 +3,7 @@ import {
   ApplicationDomainResponse,
   ApplicationDomainsResponse,
   ApplicationDomainsService,
+  CustomAttribute,
   Pagination,
 } from '@solace-labs/ep-openapi-node';
 import {
@@ -15,12 +16,97 @@ import {
   EpApiMaxPageSize 
 } from '../constants';
 import { EpSdkServiceClass } from './EpSdkService';
-import { IEpSdkAttributesQuery } from '../types';
+import { EEpSdkCustomAttributeEntityTypes, IEpSdkAttributesQuery, TEpSdkCustomAttributeList } from '../types';
 import EpSdkCustomAttributesQueryService from './EpSdkCustomAttributesQueryService';
+import EpSdkCustomAttributesService from './EpSdkCustomAttributesService';
+import EpSdkCustomAttributeDefinitionsService from './EpSdkCustomAttributeDefinitionsService';
 
 
 /** @category Services */
 export class EpSdkApplicationDomainsServiceClass extends EpSdkServiceClass {
+
+  private async updateApplicationDomain({ xContextId, update }:{
+    xContextId?: string;
+    update: ApplicationDomain;
+  }): Promise<ApplicationDomain> {
+    const funcName = 'updateApplicationDomain';
+    const logName = `${EpSdkApplicationDomainsServiceClass.name}.${funcName}()`;
+    /* istanbul ignore next */
+    if(update.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'update.id === undefined', {
+      update: update
+    });
+    const applicationDomainResponse: ApplicationDomainResponse = await ApplicationDomainsService.updateApplicationDomain({
+      xContextId,
+      id: update.id,
+      requestBody: update
+    });
+    /* istanbul ignore next */
+    if(applicationDomainResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'applicationDomainResponse.data === undefined', {
+      applicationDomainResponse: applicationDomainResponse
+    });
+    return applicationDomainResponse.data;
+  }
+
+  /**
+   * Sets the custom attributes in the list on the application domain.
+   * Creates attribute definitions / adds entity type 'applicationDomain' if it doesn't exist.
+   */
+  public async setCustomAttributes({ xContextId, applicationDomainId, epSdkCustomAttributeList}:{
+    xContextId?: string;
+    applicationDomainId: string;
+    epSdkCustomAttributeList: TEpSdkCustomAttributeList;
+  }): Promise<ApplicationDomain> {
+    const applicationDomain: ApplicationDomain = await this.getById({ xContextId, applicationDomainId });
+    const customAttributes: Array<CustomAttribute> = await EpSdkCustomAttributesService.createCustomAttributesWithNew({
+      xContextId,
+      existingCustomAttributes: applicationDomain.customAttributes,
+      epSdkCustomAttributeList: epSdkCustomAttributeList,
+      epSdkCustomAttributeEntityType: EEpSdkCustomAttributeEntityTypes.APPLICATION_DOMAIN
+    });
+    return await this.updateApplicationDomain({
+      xContextId,
+      update: {
+        ...applicationDomain,
+        customAttributes: customAttributes,  
+      }
+    });
+  }
+
+  /**
+   * Unsets the custom attributes in the list on the application domain.
+   * Leaves attibute definitions as-is.
+   */
+  public async unsetCustomAttributes({ xContextId, applicationDomainId, epSdkCustomAttributeList }:{
+    xContextId?: string;
+    applicationDomainId: string;
+    epSdkCustomAttributeList: TEpSdkCustomAttributeList;
+  }): Promise<ApplicationDomain> {
+    const applicationDomain: ApplicationDomain = await this.getById({ xContextId, applicationDomainId });
+    const customAttributes: Array<CustomAttribute> = await EpSdkCustomAttributesService.createCustomAttributesExcluding({
+      existingCustomAttributes: applicationDomain.customAttributes,
+      epSdkCustomAttributeList: epSdkCustomAttributeList,
+    });
+    return await this.updateApplicationDomain({
+      xContextId,
+      update: {
+        ...applicationDomain,
+        customAttributes: customAttributes,  
+      }
+    });
+  }
+
+  public async removeAssociatedEntityTypeFromCustomAttributeDefinitions({ xContextId, customAttributeNames }: {
+    xContextId?: string;
+    customAttributeNames: Array<string>;
+  }): Promise<void> {
+    for(const customAttributeName of customAttributeNames) {
+      await EpSdkCustomAttributeDefinitionsService.removeAssociatedEntityTypeFromCustomAttributeDefinition({
+        xContextId,
+        attributeName: customAttributeName,
+        associatedEntityType: EEpSdkCustomAttributeEntityTypes.APPLICATION_DOMAIN,
+      });
+    }
+  }
 
   public listAll = async({ pageSize = EpApiMaxPageSize, xContextId, attributesQuery }:{
     xContextId?: string;

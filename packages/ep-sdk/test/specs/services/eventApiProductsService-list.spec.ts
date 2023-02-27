@@ -127,37 +127,27 @@ describe(`${scriptName}`, () => {
             });
           // test it is set
           expect(eventApiProduct.customAttributes).to.not.be.undefined;
-          const found: CustomAttribute | undefined =
-            eventApiProduct.customAttributes.find(
-              (customAttribute: CustomAttribute) => {
-                return (
-                  customAttribute.customAttributeDefinitionName ===
-                  PublishDestinationsAttribute.name
-                );
-              }
+          const found: CustomAttribute | undefined = eventApiProduct.customAttributes.find((customAttribute: CustomAttribute) => {
+            return (
+              customAttribute.customAttributeDefinitionName ===
+              PublishDestinationsAttribute.name
             );
-          expect(
-            found,
-            `eventApiProduct=${JSON.stringify(eventApiProduct, null, 2)}`
-          ).to.not.be.undefined;
+          });
+          expect(found, `eventApiProduct=${JSON.stringify(eventApiProduct, null, 2)}`).to.not.be.undefined;
         } else if (i % 3 === 1) {
-          const eventApiProduct: EventApiProduct =
-            await EpSdkEventApiProductsService.setCustomAttributes({
-              eventApiProductId: eventApiProductResponse.data.id,
-              epSdkCustomAttributeList: [AnotherAttribute],
-            });
+          const eventApiProduct: EventApiProduct = await EpSdkEventApiProductsService.setCustomAttributes({
+            eventApiProductId: eventApiProductResponse.data.id,
+            epSdkCustomAttributeList: [AnotherAttribute],
+          });
         } else {
           // no attributes
         }
         i++;
       }
     } catch (e) {
-      if (e instanceof ApiError)
-        expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
-        .to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
-        .true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 
@@ -172,37 +162,21 @@ describe(`${scriptName}`, () => {
       // // DEBUG
       // expect(false, `eventApiProductsResponse.data=${JSON.stringify(eventApiProductsResponse.data, null, 2)}`).to.be.true;
       expect(eventApiProductsResponse.data).to.not.be.undefined;
-      expect(
-        eventApiProductsResponse.data.length,
-        `wrong length, eventApiProductsResponse.data=${JSON.stringify(
-          eventApiProductsResponse.data,
-          null,
-          2
-        )}`
-      ).to.equal((NumEventApiProducts / 3) * 2);
+      expect(eventApiProductsResponse.data.length, `wrong length, eventApiProductsResponse.data=${JSON.stringify( eventApiProductsResponse.data, null, 2 )}`).to.equal((NumEventApiProducts / 3) * 2);
       for (const eventApiProduct of eventApiProductsResponse.data) {
         expect(eventApiProduct.customAttributes).to.not.be.undefined;
-        const found: CustomAttribute | undefined =
-          eventApiProduct.customAttributes.find(
-            (customAttribute: CustomAttribute) => {
-              return (
-                customAttribute.customAttributeDefinitionName ===
-                PublishDestinationsAttribute.name
-              );
-            }
+        const found: CustomAttribute | undefined = eventApiProduct.customAttributes.find( (customAttribute: CustomAttribute) => {
+          return (
+            customAttribute.customAttributeDefinitionName ===
+            PublishDestinationsAttribute.name
           );
-        expect(
-          found,
-          `eventApiProduct=${JSON.stringify(eventApiProduct, null, 2)}`
-        ).to.be.undefined;
+        });
+        expect(found, `eventApiProduct=${JSON.stringify(eventApiProduct, null, 2)}`).to.be.undefined;
       }
     } catch (e) {
-      if (e instanceof ApiError)
-        expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
-        .to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
-        .true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 });
