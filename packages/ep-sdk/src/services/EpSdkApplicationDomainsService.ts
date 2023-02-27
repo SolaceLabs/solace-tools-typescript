@@ -15,14 +15,17 @@ import {
   EpApiMaxPageSize 
 } from '../constants';
 import { EpSdkServiceClass } from './EpSdkService';
+import { IEpSdkAttributesQuery } from '../types';
+import EpSdkCustomAttributesQueryService from './EpSdkCustomAttributesQueryService';
 
 
 /** @category Services */
 export class EpSdkApplicationDomainsServiceClass extends EpSdkServiceClass {
 
-  public listAll = async({ pageSize = EpApiMaxPageSize, xContextId }:{
+  public listAll = async({ pageSize = EpApiMaxPageSize, xContextId, attributesQuery }:{
     xContextId?: string;
     pageSize?: number; /** for testing */
+    attributesQuery?: IEpSdkAttributesQuery;
   }): Promise<ApplicationDomainsResponse> => {
     const funcName = 'listAll';
     const logName = `${EpSdkApplicationDomainsServiceClass.name}.${funcName}()`;
@@ -38,7 +41,14 @@ export class EpSdkApplicationDomainsServiceClass extends EpSdkServiceClass {
       });
       if(applicationDomainsResponse.data === undefined || applicationDomainsResponse.data.length === 0) nextPage = undefined;
       else {
-        applicationDomainList.push(...applicationDomainsResponse.data);
+        if(attributesQuery) {
+          for(const applicationDomain of applicationDomainsResponse.data) {
+            if(EpSdkCustomAttributesQueryService.resolve({
+              customAttributes: applicationDomain.customAttributes,
+              attributesQuery: attributesQuery,
+            })) applicationDomainList.push(applicationDomain);  
+          }
+        } else applicationDomainList.push(...applicationDomainsResponse.data);
         /* istanbul ignore next */
         if(applicationDomainsResponse.meta === undefined) throw new EpSdkApiContentError(logName, this.constructor.name,'applicationDomainsResponse.meta === undefined', {
           applicationDomainsResponse: applicationDomainsResponse
