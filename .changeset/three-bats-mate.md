@@ -2,4 +2,11 @@
 "@solace-labs/ep-sdk": minor
 ---
 
-add optional attributes query to application domains listAll()
+add managing custom attributes for application domains
+
+- **EpSdkApplicationDomainsServiceClass**
+  - `setCustomAttributes()`
+  - `unsetCustomAttributes()`
+  - `removeAssociatedEntityTypeFromCustomAttributeDefinitions()`
+  - `listAll()`
+    - new optional parameter: `attributesQuery?: IEpSdkAttributesQuery;`

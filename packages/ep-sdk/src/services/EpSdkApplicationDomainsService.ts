@@ -95,6 +95,9 @@ export class EpSdkApplicationDomainsServiceClass extends EpSdkServiceClass {
     });
   }
 
+  /**
+   * Removes the custom attribute association for application domains.
+   */
   public async removeAssociatedEntityTypeFromCustomAttributeDefinitions({ xContextId, customAttributeNames }: {
     xContextId?: string;
     customAttributeNames: Array<string>;
