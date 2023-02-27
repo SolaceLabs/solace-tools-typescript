@@ -1,5 +1,18 @@
 # @solace-labs/ep-sdk
 
+## 0.56.0
+
+### Minor Changes
+
+- 120f8bf4: add managing custom attributes for application domains
+
+  - **EpSdkApplicationDomainsServiceClass**
+    - `setCustomAttributes()`
+    - `unsetCustomAttributes()`
+    - `removeAssociatedEntityTypeFromCustomAttributeDefinitions()`
+    - `listAll()`
+      - new optional parameter: `attributesQuery?: IEpSdkAttributesQuery;`
+
 ## 0.55.0
 
 ### Minor Changes
