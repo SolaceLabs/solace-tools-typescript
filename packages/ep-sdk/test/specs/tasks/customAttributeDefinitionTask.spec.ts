@@ -53,13 +53,9 @@ describe(`${scriptName}`, () => {
     TestContext.newItId();
     try {
       // delete custom attribute definition
-      await EpSdkCustomAttributeDefinitionsService.deleteById({
-        customAttributeDefinitionId: CustomAttributeDefinition_1_Id,
-      });
+      await EpSdkCustomAttributeDefinitionsService.deleteById({customAttributeDefinitionId: CustomAttributeDefinition_1_Id });
       for (const id of CustomAttributeDefinition_IdList) {
-        await EpSdkCustomAttributeDefinitionsService.deleteById({
-          customAttributeDefinitionId: id,
-        });
+        await EpSdkCustomAttributeDefinitionsService.deleteById({ customAttributeDefinitionId: id });
       }
     } catch (e) {}
   });
@@ -277,8 +273,7 @@ describe(`${scriptName}`, () => {
 
   it(`${scriptName}: customAttributeDefintion present: update to CustomAttributeDefinition_1_EntityTypeList_3`, async () => {
     try {
-      const epSdkCustomAttributeDefinitionTask =
-        new EpSdkCustomAttributeDefinitionTask({
+      const epSdkCustomAttributeDefinitionTask = new EpSdkCustomAttributeDefinitionTask({
           epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
           attributeName: CustomAttributeDefinition_1_Name,
           customAttributeDefinitionObjectSettings: {
@@ -290,50 +285,26 @@ describe(`${scriptName}`, () => {
           },
           checkmode: false,
         });
-      const epSdkCustomAttributeDefinitionTask_ExecuteReturn: IEpSdkCustomAttributeDefinitionTask_ExecuteReturn =
-        await epSdkCustomAttributeDefinitionTask.execute();
-
-      const message = TestLogger.createLogMessage(
-        "epSdkCustomAttributeDefinitionTask_ExecuteReturn",
-        epSdkCustomAttributeDefinitionTask_ExecuteReturn
-      );
-      expect(
-        epSdkCustomAttributeDefinitionTask_ExecuteReturn
-          .epSdkTask_TransactionLogData.epSdkTask_Action,
-        message
-      ).to.eq(EEpSdkTask_Action.UPDATE);
-      expect(
-        epSdkCustomAttributeDefinitionTask_ExecuteReturn.epObject.id,
-        message
-      ).to.eq(CustomAttributeDefinition_1_Id);
+      const epSdkCustomAttributeDefinitionTask_ExecuteReturn: IEpSdkCustomAttributeDefinitionTask_ExecuteReturn = await epSdkCustomAttributeDefinitionTask.execute();
+      const message = TestLogger.createLogMessage("epSdkCustomAttributeDefinitionTask_ExecuteReturn", epSdkCustomAttributeDefinitionTask_ExecuteReturn);
+      expect(epSdkCustomAttributeDefinitionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.UPDATE);
+      expect(epSdkCustomAttributeDefinitionTask_ExecuteReturn.epObject.id, message).to.eq(CustomAttributeDefinition_1_Id);
 
       // get the customAttributeDefintion and check entities
-      const customAttributeDefinition: CustomAttributeDefinition =
-        await EpSdkCustomAttributeDefinitionsService.getById({
-          customAttributeDefinitionId: CustomAttributeDefinition_1_Id,
-        });
-      const associatedEntityTypesString = JSON.stringify(
-        customAttributeDefinition.associatedEntityTypes
-      );
-      const failMessage = TestLogger.createLogMessage(
-        "customAttributeDefinition.associatedEntityTypes",
-        customAttributeDefinition.associatedEntityTypes
-      );
+      const customAttributeDefinition: CustomAttributeDefinition = await EpSdkCustomAttributeDefinitionsService.getById({
+        customAttributeDefinitionId: CustomAttributeDefinition_1_Id,
+      });
+      const associatedEntityTypesString = JSON.stringify(customAttributeDefinition.associatedEntityTypes);
+      const failMessage = TestLogger.createLogMessage("customAttributeDefinition.associatedEntityTypes",customAttributeDefinition.associatedEntityTypes);
       for (const associatedEntityType of CustomAttributeDefinition_1_EntityTypeList_3) {
-        expect(associatedEntityTypesString, failMessage).to.include(
-          associatedEntityType
-        );
+        expect(associatedEntityTypesString, failMessage).to.include(associatedEntityType);
       }
-
       // // DEBUG
       // expect(false, message).to.be.true;
     } catch (e) {
-      if (e instanceof ApiError)
-        expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
-        .to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
-        .true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 
@@ -352,138 +323,80 @@ describe(`${scriptName}`, () => {
           },
           checkmode: false,
         });
-      const epSdkCustomAttributeDefinitionTask_ExecuteReturn: IEpSdkCustomAttributeDefinitionTask_ExecuteReturn =
-        await epSdkCustomAttributeDefinitionTask.execute();
-
-      const message = TestLogger.createLogMessage(
-        "epSdkCustomAttributeDefinitionTask_ExecuteReturn",
-        epSdkCustomAttributeDefinitionTask_ExecuteReturn
-      );
-      expect(
-        epSdkCustomAttributeDefinitionTask_ExecuteReturn
-          .epSdkTask_TransactionLogData.epSdkTask_Action,
-        message
-      ).to.eq(EEpSdkTask_Action.UPDATE);
-      expect(
-        epSdkCustomAttributeDefinitionTask_ExecuteReturn.epObject.id,
-        message
-      ).to.eq(CustomAttributeDefinition_1_Id);
+      const epSdkCustomAttributeDefinitionTask_ExecuteReturn: IEpSdkCustomAttributeDefinitionTask_ExecuteReturn = await epSdkCustomAttributeDefinitionTask.execute();
+      const message = TestLogger.createLogMessage("epSdkCustomAttributeDefinitionTask_ExecuteReturn", epSdkCustomAttributeDefinitionTask_ExecuteReturn);
+      expect(epSdkCustomAttributeDefinitionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.UPDATE);
+      expect(epSdkCustomAttributeDefinitionTask_ExecuteReturn.epObject.id, message).to.eq(CustomAttributeDefinition_1_Id);
 
       // get the customAttributeDefintion and check entities
-      const customAttributeDefinition: CustomAttributeDefinition =
-        await EpSdkCustomAttributeDefinitionsService.getById({
-          customAttributeDefinitionId: CustomAttributeDefinition_1_Id,
-        });
-      const associatedEntityTypesString = JSON.stringify(
-        customAttributeDefinition.associatedEntityTypes
-      );
-      const failMessage = TestLogger.createLogMessage(
-        "customAttributeDefinition.associatedEntityTypes",
-        customAttributeDefinition.associatedEntityTypes
-      );
+      const customAttributeDefinition: CustomAttributeDefinition = await EpSdkCustomAttributeDefinitionsService.getById({
+        customAttributeDefinitionId: CustomAttributeDefinition_1_Id,
+      });
+      const associatedEntityTypesString = JSON.stringify(customAttributeDefinition.associatedEntityTypes);
+      const failMessage = TestLogger.createLogMessage("customAttributeDefinition.associatedEntityTypes", customAttributeDefinition.associatedEntityTypes);
       for (const associatedEntityType of CustomAttributeDefinition_1_EntityTypeList_1) {
-        expect(associatedEntityTypesString, failMessage).to.include(
-          associatedEntityType
-        );
+        expect(associatedEntityTypesString, failMessage).to.include(associatedEntityType);
       }
-
       // // DEBUG
       // expect(false, message).to.be.true;
     } catch (e) {
-      if (e instanceof ApiError)
-        expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
-        .to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
-        .true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 
   it(`${scriptName}: customAttributeDefintion absent: checkmode with existing`, async () => {
     try {
-      const epSdkCustomAttributeDefinitionTask =
-        new EpSdkCustomAttributeDefinitionTask({
-          epSdkTask_TargetState: EEpSdkTask_TargetState.ABSENT,
-          attributeName: CustomAttributeDefinition_1_Name,
-          customAttributeDefinitionObjectSettings: {
-            associatedEntityTypes: [],
-          },
-          epSdkTask_TransactionConfig: {
-            parentTransactionId: "parentTransactionId",
-            groupTransactionId: "groupTransactionId",
-          },
-          checkmode: true,
-        });
-      const epSdkCustomAttributeDefinitionTask_ExecuteReturn: IEpSdkCustomAttributeDefinitionTask_ExecuteReturn =
-        await epSdkCustomAttributeDefinitionTask.execute();
-
-      const message = TestLogger.createLogMessage(
-        "epSdkCustomAttributeDefinitionTask_ExecuteReturn",
-        epSdkCustomAttributeDefinitionTask_ExecuteReturn
-      );
-
-      expect(
-        epSdkCustomAttributeDefinitionTask_ExecuteReturn
-          .epSdkTask_TransactionLogData.epSdkTask_Action,
-        message
-      ).to.eq(EEpSdkTask_Action.WOULD_DELETE);
-      expect(
-        epSdkCustomAttributeDefinitionTask_ExecuteReturn.epObject.id,
-        message
-      ).to.eq(CustomAttributeDefinition_1_Id);
-
+      const epSdkCustomAttributeDefinitionTask = new EpSdkCustomAttributeDefinitionTask({
+        epSdkTask_TargetState: EEpSdkTask_TargetState.ABSENT,
+        attributeName: CustomAttributeDefinition_1_Name,
+        customAttributeDefinitionObjectSettings: {
+          associatedEntityTypes: [],
+        },
+        epSdkTask_TransactionConfig: {
+          parentTransactionId: "parentTransactionId",
+          groupTransactionId: "groupTransactionId",
+        },
+        checkmode: true,
+      });
+      const epSdkCustomAttributeDefinitionTask_ExecuteReturn: IEpSdkCustomAttributeDefinitionTask_ExecuteReturn = await epSdkCustomAttributeDefinitionTask.execute();
+      const message = TestLogger.createLogMessage("epSdkCustomAttributeDefinitionTask_ExecuteReturn", epSdkCustomAttributeDefinitionTask_ExecuteReturn);
+      expect(epSdkCustomAttributeDefinitionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.WOULD_DELETE);
+      expect(epSdkCustomAttributeDefinitionTask_ExecuteReturn.epObject.id, message).to.eq(CustomAttributeDefinition_1_Id);
       // // DEBUG
       // expect(false, message).to.be.true;
     } catch (e) {
-      if (e instanceof ApiError)
-        expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
-        .to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
-        .true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 
   it(`${scriptName}: customAttributeDefintion absent`, async () => {
     try {
-      const epSdkCustomAttributeDefinitionTask =
-        new EpSdkCustomAttributeDefinitionTask({
-          epSdkTask_TargetState: EEpSdkTask_TargetState.ABSENT,
-          attributeName: CustomAttributeDefinition_1_Name,
-          customAttributeDefinitionObjectSettings: {
-            associatedEntityTypes: [],
-          },
-          epSdkTask_TransactionConfig: {
-            parentTransactionId: "parentTransactionId",
-            groupTransactionId: "groupTransactionId",
-          },
-          checkmode: false,
-        });
-      const epSdkCustomAttributeDefinitionTask_ExecuteReturn: IEpSdkCustomAttributeDefinitionTask_ExecuteReturn =
-        await epSdkCustomAttributeDefinitionTask.execute();
-
-      const message = TestLogger.createLogMessage(
-        "epSdkCustomAttributeDefinitionTask_ExecuteReturn",
-        epSdkCustomAttributeDefinitionTask_ExecuteReturn
-      );
-      expect(
-        epSdkCustomAttributeDefinitionTask_ExecuteReturn
-          .epSdkTask_TransactionLogData.epSdkTask_Action,
-        message
-      ).to.eq(EEpSdkTask_Action.DELETE);
-      expect(
-        epSdkCustomAttributeDefinitionTask_ExecuteReturn.epObject.id,
-        message
-      ).to.eq(CustomAttributeDefinition_1_Id);
+      const epSdkCustomAttributeDefinitionTask = new EpSdkCustomAttributeDefinitionTask({
+        epSdkTask_TargetState: EEpSdkTask_TargetState.ABSENT,
+        attributeName: CustomAttributeDefinition_1_Name,
+        customAttributeDefinitionObjectSettings: {
+          associatedEntityTypes: [],
+        },
+        epSdkTask_TransactionConfig: {
+          parentTransactionId: "parentTransactionId",
+          groupTransactionId: "groupTransactionId",
+        },
+        checkmode: false,
+      });
+      const epSdkCustomAttributeDefinitionTask_ExecuteReturn: IEpSdkCustomAttributeDefinitionTask_ExecuteReturn = await epSdkCustomAttributeDefinitionTask.execute();
+      const message = TestLogger.createLogMessage("epSdkCustomAttributeDefinitionTask_ExecuteReturn", epSdkCustomAttributeDefinitionTask_ExecuteReturn);
+      expect(epSdkCustomAttributeDefinitionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.DELETE);
+      expect(epSdkCustomAttributeDefinitionTask_ExecuteReturn.epObject.id, message).to.eq(CustomAttributeDefinition_1_Id);
       // // DEBUG
       // expect(false, message).to.be.true;
     } catch (e) {
-      if (e instanceof ApiError)
-        expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
-        .to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
-        .true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 

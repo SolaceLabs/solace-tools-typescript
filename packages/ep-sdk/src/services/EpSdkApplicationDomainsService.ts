@@ -63,13 +63,10 @@ export class EpSdkApplicationDomainsServiceClass extends EpSdkServiceClass {
       epSdkCustomAttributeList: epSdkCustomAttributeList,
       epSdkCustomAttributeEntityType: EEpSdkCustomAttributeEntityTypes.APPLICATION_DOMAIN
     });
-    return await this.updateApplicationDomain({
-      xContextId,
-      update: {
-        ...applicationDomain,
-        customAttributes: customAttributes,  
-      }
-    });
+    return await this.updateApplicationDomain({xContextId, update: {
+      ...applicationDomain,
+      customAttributes: customAttributes,  
+    }});
   }
 
   /**
@@ -86,13 +83,10 @@ export class EpSdkApplicationDomainsServiceClass extends EpSdkServiceClass {
       existingCustomAttributes: applicationDomain.customAttributes,
       epSdkCustomAttributeList: epSdkCustomAttributeList,
     });
-    return await this.updateApplicationDomain({
-      xContextId,
-      update: {
-        ...applicationDomain,
-        customAttributes: customAttributes,  
-      }
-    });
+    return await this.updateApplicationDomain({ xContextId, update: {
+      ...applicationDomain,
+      customAttributes: customAttributes,  
+    }});
   }
 
   /**
