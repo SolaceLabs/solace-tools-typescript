@@ -1,5 +1,11 @@
 # @solace-labs/ep-apim-openapi-node
 
+## 0.4.0
+
+### Minor Changes
+
+- 2beefa75: upgrade api spec to 2.0.0-ea.13
+
 ## 0.3.1
 
 ### Patch Changes

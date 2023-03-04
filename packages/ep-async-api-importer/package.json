@@ -1,6 +1,6 @@
 {
   "name": "@solace-labs/ep-async-api-importer",
-  "version": "0.52.6",
+  "version": "0.52.7",
   "description": "Async API Importer for Solace Event Portal",
   "bin": {
     "ep-async-api-importer": "./dist/cli.js"
@@ -62,7 +62,7 @@
   },
   "dependencies": {
     "@solace-labs/ep-asyncapi": "^0.53.2",
-    "@solace-labs/ep-sdk": "^0.56.0",
+    "@solace-labs/ep-sdk": "^0.56.1",
     "chalk": "^4.1.2",
     "clear": "^0.1.0",
     "commander": "^9.3.0",
