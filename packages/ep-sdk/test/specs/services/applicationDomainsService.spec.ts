@@ -78,35 +78,26 @@ describe(`${scriptName}`, () => {
     // delete all recorded application domains
     for (const applicationDomainId of ApplicationDomainIdList) {
       try {
-        await EpSdkApplicationDomainsService.deleteById({
-          applicationDomainId: applicationDomainId,
-        });
+        await EpSdkApplicationDomainsService.deleteById({applicationDomainId: applicationDomainId });
       } catch (e) {}
     }
-    const xvoid: void = await TestHelpers.applicationDomainAbsent({
-      applicationDomainName: ApplicationDomainName,
-    });
+    const xvoid: void = await TestHelpers.applicationDomainAbsent({applicationDomainName: ApplicationDomainName });
   });
 
   it(`${scriptName}: should create application domain`, async () => {
     try {
-      const applicationDomainResponse: ApplicationDomainResponse =
-        await ApplicationDomainsService.createApplicationDomain({
-          requestBody: {
-            name: ApplicationDomainName,
-          },
-        });
+      const applicationDomainResponse: ApplicationDomainResponse = await ApplicationDomainsService.createApplicationDomain({
+        requestBody: {
+          name: ApplicationDomainName,
+        },
+      });
       recordApplicationDomainId(applicationDomainResponse.data.id);      
       // // DEBUG
       // expect(false, `ApplicationDomainId=${ApplicationDomainId}`).to.be.true;
     } catch (e) {
-      if (e instanceof ApiError)
-        expect(false, TestLogger.createApiTestFailMessage("failed", e)).to.be
-          .true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
-        .to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
-        .true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed", e)).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 
