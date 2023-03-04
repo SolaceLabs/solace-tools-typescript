@@ -6,10 +6,8 @@
   "license": "Apache-2.0",
   "private": true,
   "scripts": {
-    "compile": "tsc",
-    "build": "tsc",
     "clean": "rm -rf dist && rm -rf .turbo",
-    "build:test": "yarn build",
+    "build:test": "yarn tsc",
     "test:x": "yarn build:test && . ./source.env.sh && mocha --config .mocharc.yml src/**/**.x-spec.ts && unset_source_env"
   },
   "dependencies": {},
