@@ -356,7 +356,7 @@ describe(`${scriptName}`, () => {
 
     it(`${scriptName}: should list only event api products with SMF/S enabled`, async () => {
       try {
-        const attributeQueryAst = EpSdkRsqlQueryBuilder.attributeContains(PublishDestiationsAttributeName, PublishDestinationValue);
+        const attributeQueryAst = EpSdkRsqlQueryBuilder.customAttributeContains(PublishDestiationsAttributeName, PublishDestinationValue);
         const name = 'solaceMessagingServices.supportedProtocols';
 
         const smfLikeQueryAst = EpSdkRsqlQueryBuilder.like(name, MessagingServiceProtocol.SMF);
