@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema 
+  xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+  elementFormDefault="qualified"
+  vc:minVersion="1.1" 
+  xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning"
+  xmlns:tns="http://xml.solace-labs.io/test/v1" 
+  version="1.0"
+>
+
+    <xs:element name="ROOT">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="complexType" minOccurs="0" maxOccurs="1" type="ComplexType1"/>
+            </xs:all>
+            <xs:attribute name="SchemaVersion" type="SchemaVersionType" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:simpleType name="SchemaVersionType">
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="20"/>
+            <xs:minLength value="1"/>
+            <xs:pattern value="(\s*[^\s]\s*)+"></xs:pattern>
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <xs:complexType name="ComplexType1">
+        <xs:annotation>
+            <xs:documentation>ComplexType1</xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="elem1" type="StringType20" minOccurs="0" maxOccurs="1">
+              <xs:annotation>
+                  <xs:documentation>doc for elem1</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="elem2" type="StringType20" minOccurs="0" maxOccurs="1">
+              <xs:annotation>
+                  <xs:documentation> doc for elem2</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+
+    <xs:simpleType name="StringType20">
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="20"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>
