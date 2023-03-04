@@ -16,10 +16,12 @@ import { EpSdkServiceClass } from "./EpSdkService";
 export enum EEpSdkSchemaType {
   JSON_SCHEMA = "jsonSchema",
   AVRO = "avro",
+  XSD = "xsd",
 }
 /** @category Services */
 export enum EEpSdkSchemaContentType {
   APPLICATION_JSON = "json",
+  APPLICATION_XML = "xml"
 }
 
 /** @category Services */

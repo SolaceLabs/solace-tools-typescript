@@ -20,9 +20,7 @@ export class TestSolaceCloudApiConfigBase extends TestApiConfigBase {
   public initialize({ appId }:{
     appId: string;
   }): void {
-    super.initialize({
-      appId: appId,
-    });
+    super.initialize({ appId: appId });
     const _testConfig: ITestSolaceCloudApiConfigBase = {
       ...(this.testConfig as ITestApiConfigBase),
       apiBaseUrl: this.getOptionalEnvVarValueAsUrlWithDefault(this.createEnvVar({ envVarPartial: EEnvVarPartials.SOLACE_CLOUD_API_BASE_URL }), this.DEFAULT_SOLACE_CLOUD_API_BASE_URL),
