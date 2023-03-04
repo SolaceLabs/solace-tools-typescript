@@ -1,5 +1,11 @@
 # @solace-labs/ep-sdk
 
+## 0.56.1
+
+### Patch Changes
+
+- 77845aa7: enhancements to EpSdkApplicationDomainService and tests
+
 ## 0.56.0
 
 ### Minor Changes
