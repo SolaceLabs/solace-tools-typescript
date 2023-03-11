@@ -10,13 +10,14 @@ import {
   StateChangeRequestResponse,
   EventApiResponse,
   Pagination,
+  CustomAttributeDefinition,
 } from '@solace-labs/ep-openapi-node';
 import { 
   EpSdkApiContentError, 
   EpSdkValidationError 
 } from "../utils";
 import { 
-  EpApiMaxPageSize 
+  EpApiMaxPageSize, EpSdkCustomAttributeNameSourceApplicationDomainId 
 } from '../constants';
 import { 
   EEpSdkObjectTypes 
@@ -404,6 +405,15 @@ export class EpSdkEventApiVersionsServiceClass extends EpSdkVersionServiceClass 
     //   });
     //   if(targetEventApiVersion !== undefined) return targetEventApiVersion;
     // }
+    // add the source application domain id to custom attribute
+    await EpSdkEventApisService.setCustomAttributes({
+      xContextId: xContextId,
+      eventApiId: epSdkEventApiTask_ExecuteReturn.epObjectKeys.epObjectId,
+      scope: CustomAttributeDefinition.scope.APPLICATION_DOMAIN,
+      epSdkCustomAttributeList: [ 
+        { name: EpSdkCustomAttributeNameSourceApplicationDomainId, value: fromApplicationDomainId }
+      ]
+    });
     // create target event api version
     const epSdkEventApiVersionTask = new EpSdkEventApiVersionTask({
       epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,

@@ -1,20 +1,80 @@
 import {
+  CustomAttribute,
+  CustomAttributeDefinition,
   EnumsService, 
   TopicAddressEnum,
   TopicAddressEnumResponse, 
   TopicAddressEnumsResponse,
 } from '@solace-labs/ep-openapi-node';
+import { EEpSdkCustomAttributeEntityTypes, TEpSdkCustomAttributeList } from '../types';
 import { 
   EpSdkApiContentError, 
   EpSdkServiceError,
   EpSdkLogger,
   EEpSdkLoggerCodes,
 } from '../utils';
+import EpSdkCustomAttributesService from './EpSdkCustomAttributesService';
 import { EpSdkServiceClass } from './EpSdkService';
 
 
 /** @category Services */
 export class EpSdkEnumsServiceClass extends EpSdkServiceClass {
+
+  private async updateEnum({ xContextId, update }:{
+    xContextId?: string;
+    update: TopicAddressEnum;
+  }): Promise<TopicAddressEnum> {
+    const funcName = 'updateEnum';
+    const logName = `${EpSdkEnumsServiceClass.name}.${funcName}()`;
+    /* istanbul ignore next */
+    if(update.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'update.id === undefined', {
+      update: update
+    });
+    const topicAddressEnumResponse: TopicAddressEnumResponse = await EnumsService.updateEnum({
+      xContextId,
+      id: update.id,
+      requestBody: update
+    });
+    /* istanbul ignore next */
+    if(topicAddressEnumResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'topicAddressEnumResponse.data === undefined', {
+      topicAddressEnumResponse: topicAddressEnumResponse
+    });
+    return topicAddressEnumResponse.data;
+  }
+
+  /**
+   * Sets the custom attributes in the list on the event api product.
+   * Creates attribute definitions / adds entity type 'eventApiProduct' if it doesn't exist.
+   */
+  public async setCustomAttributes({ xContextId, enumId, epSdkCustomAttributeList, scope}:{
+    xContextId?: string;
+    enumId: string;
+    epSdkCustomAttributeList: TEpSdkCustomAttributeList;
+    scope?: CustomAttributeDefinition.scope;
+  }): Promise<TopicAddressEnum> {
+    const funcName = 'setCustomAttributes';
+    const logName = `${EpSdkEnumsServiceClass.name}.${funcName}()`;
+    const topicAddressEnum: TopicAddressEnum = await this.getById({
+      xContextId,
+      enumId: enumId,
+    });
+    scope;
+    const customAttributes: Array<CustomAttribute> = await EpSdkCustomAttributesService.createCustomAttributesWithNew({
+      xContextId,
+      existingCustomAttributes: topicAddressEnum.customAttributes,
+      epSdkCustomAttributeList: epSdkCustomAttributeList,
+      epSdkCustomAttributeEntityType: EEpSdkCustomAttributeEntityTypes.ENUM,
+      // note: adding scope if not organization currently causes EP to return an internal server error
+      // scope: scope
+    });
+    return await this.updateEnum({
+      xContextId,
+      update: {
+        ...topicAddressEnum,
+        customAttributes: customAttributes,  
+      }
+    });
+  }
 
   public getByName = async ({ xContextId, enumName, applicationDomainId }: {
     xContextId?: string;
@@ -47,11 +107,10 @@ export class EpSdkEnumsServiceClass extends EpSdkServiceClass {
   public getById = async ({ xContextId, enumId, applicationDomainId }: {
     xContextId?: string;
     enumId: string;
-    applicationDomainId: string;
+    applicationDomainId?: string;
   }): Promise<TopicAddressEnum> => {
     const funcName = 'getById';
     const logName = `${EpSdkEnumsServiceClass.name}.${funcName}()`;
-
     applicationDomainId;
     const topicAddressEnumResponse: TopicAddressEnumResponse = await EnumsService.getEnum({
       xContextId: xContextId,

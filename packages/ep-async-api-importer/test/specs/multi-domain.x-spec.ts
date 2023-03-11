@@ -2,6 +2,7 @@ import "mocha";
 import { expect } from "chai";
 import path from "path";
 import {
+  ApiError,
   EventApi,
   EventApIsService,
   EventApiVersion,
@@ -33,6 +34,7 @@ import {
   EpSdkApplicationVersionTask,
   IEpSdkApplicationVersionTask_ExecuteReturn,
   EpSdkEventApiVersionsService,
+  EpSdkError,
 } from "@solace-labs/ep-sdk";
 import { TestContext, TestUtils } from "@internal/tools/src";
 import {
@@ -159,33 +161,64 @@ const initializeGlobals = () => {
 };
 
 const applicationDomainTasks = async(epSdkTask_TargetState: EEpSdkTask_TargetState) => {
-  const task_1 = new EpSdkApplicationDomainTask({
-    applicationDomainName: ApplicationDomain_Events_1_Name,
-    epSdkTask_TargetState: epSdkTask_TargetState
-  });
-  const task1_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn = await task_1.execute('xContextId');
-  ApplicationDomain_Events_1_Id = task1_ExecuteReturn.epObject.id;
-
-  const task_2 = new EpSdkApplicationDomainTask({
-    applicationDomainName: ApplicationDomain_Events_2_Name,
-    epSdkTask_TargetState: epSdkTask_TargetState
-  });
-  const task2_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn = await task_2.execute('xContextId');
-  ApplicationDomain_Events_2_Id = task2_ExecuteReturn.epObject.id;
-
-  const task_3 = new EpSdkApplicationDomainTask({
-    applicationDomainName: ApplicationDomain_Main_Name,
-    epSdkTask_TargetState: epSdkTask_TargetState
-  });
-  const task3_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn = await task_3.execute('xContextId');
-  ApplicationDomain_Main_Id = task3_ExecuteReturn.epObject.id;
-
-  const task_4 = new EpSdkApplicationDomainTask({
-    applicationDomainName: ApplicationDomain_Copy_Name,
-    epSdkTask_TargetState: epSdkTask_TargetState
-  });
-  const task4_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn = await task_4.execute('xContextId');
-  ApplicationDomain_Copy_Id = task4_ExecuteReturn.epObject.id;
+  // reverse the order for absent / present
+  if(epSdkTask_TargetState === EEpSdkTask_TargetState.PRESENT) {
+    const task_1 = new EpSdkApplicationDomainTask({
+      applicationDomainName: ApplicationDomain_Events_1_Name,
+      epSdkTask_TargetState: epSdkTask_TargetState
+    });
+    const task1_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn = await task_1.execute('xContextId');
+    ApplicationDomain_Events_1_Id = task1_ExecuteReturn.epObject.id;
+  
+    const task_2 = new EpSdkApplicationDomainTask({
+      applicationDomainName: ApplicationDomain_Events_2_Name,
+      epSdkTask_TargetState: epSdkTask_TargetState
+    });
+    const task2_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn = await task_2.execute('xContextId');
+    ApplicationDomain_Events_2_Id = task2_ExecuteReturn.epObject.id;
+  
+    const task_3 = new EpSdkApplicationDomainTask({
+      applicationDomainName: ApplicationDomain_Main_Name,
+      epSdkTask_TargetState: epSdkTask_TargetState
+    });
+    const task3_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn = await task_3.execute('xContextId');
+    ApplicationDomain_Main_Id = task3_ExecuteReturn.epObject.id;
+  
+    const task_4 = new EpSdkApplicationDomainTask({
+      applicationDomainName: ApplicationDomain_Copy_Name,
+      epSdkTask_TargetState: epSdkTask_TargetState
+    });
+    const task4_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn = await task_4.execute('xContextId');
+    ApplicationDomain_Copy_Id = task4_ExecuteReturn.epObject.id;  
+  } else {
+    const task_4 = new EpSdkApplicationDomainTask({
+      applicationDomainName: ApplicationDomain_Copy_Name,
+      epSdkTask_TargetState: epSdkTask_TargetState
+    });
+    const task4_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn = await task_4.execute('xContextId');
+    ApplicationDomain_Copy_Id = task4_ExecuteReturn.epObject ? task4_ExecuteReturn.epObject.id : undefined;  
+    
+    const task_3 = new EpSdkApplicationDomainTask({
+      applicationDomainName: ApplicationDomain_Main_Name,
+      epSdkTask_TargetState: epSdkTask_TargetState
+    });
+    const task3_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn = await task_3.execute('xContextId');
+    ApplicationDomain_Main_Id = task3_ExecuteReturn.epObject ? task3_ExecuteReturn.epObject.id : undefined;
+  
+    const task_2 = new EpSdkApplicationDomainTask({
+      applicationDomainName: ApplicationDomain_Events_2_Name,
+      epSdkTask_TargetState: epSdkTask_TargetState
+    });
+    const task2_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn = await task_2.execute('xContextId');
+    ApplicationDomain_Events_2_Id = task2_ExecuteReturn.epObject ? task2_ExecuteReturn.epObject.id : undefined;
+  
+    const task_1 = new EpSdkApplicationDomainTask({
+      applicationDomainName: ApplicationDomain_Events_1_Name,
+      epSdkTask_TargetState: epSdkTask_TargetState
+    });
+    const task1_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn = await task_1.execute('xContextId');
+    ApplicationDomain_Events_1_Id = task1_ExecuteReturn.epObject ? task1_ExecuteReturn.epObject.id : undefined;
+  }
 }
 
 describe(`${scriptName}`, () => {
@@ -207,7 +240,9 @@ describe(`${scriptName}`, () => {
       await applicationDomainTasks(EEpSdkTask_TargetState.ABSENT);
       await applicationDomainTasks(EEpSdkTask_TargetState.PRESENT);
     } catch (e) {
-      expect(false, TestLogger.createApiTestFailMessage("failed", e)).to.be.true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 
@@ -265,7 +300,9 @@ describe(`${scriptName}`, () => {
       const task_2_1_ExecuteReturn: IEpSdkSchemaVersionTask_ExecuteReturn = await task_2_1.execute();
       SchemaVersion_2_Id = task_2_1_ExecuteReturn.epObject.id;
     } catch (e) {
-      expect(false, TestLogger.createApiTestFailMessage("failed", e)).to.be.true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 
@@ -322,7 +359,9 @@ describe(`${scriptName}`, () => {
       EnumVersion_2_Id = task_2_1_ExecuteReturn.epObject.id;
 
     } catch (e) {
-      expect(false, TestLogger.createApiTestFailMessage("failed", e)).to.be.true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 
@@ -383,7 +422,9 @@ describe(`${scriptName}`, () => {
       EventVersion_2_Id = task_2_1_ExecuteReturn.epObject.id;
 
     } catch (e) {
-      expect(false, TestLogger.createApiTestFailMessage("failed", e)).to.be.true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 
@@ -416,7 +457,9 @@ describe(`${scriptName}`, () => {
       const task_1_1_ExecuteReturn: IEpSdkEventApiVersionTask_ExecuteReturn = await task_1_1.execute();
       EventApiVersion_Id = task_1_1_ExecuteReturn.epObject.id;
     } catch (e) {
-      expect(false, TestLogger.createApiTestFailMessage("failed", e)).to.be.true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 
@@ -449,7 +492,9 @@ describe(`${scriptName}`, () => {
       const task_1_1_ExecuteReturn: IEpSdkApplicationVersionTask_ExecuteReturn = await task_1_1.execute();
       AppVersion_Id = task_1_1_ExecuteReturn.epObject.id;
     } catch (e) {
-      expect(false, TestLogger.createApiTestFailMessage("failed", e)).to.be.true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 
@@ -460,7 +505,9 @@ describe(`${scriptName}`, () => {
       });
       // console.log(`EventApiSpec = ${JSON.stringify(EventApiSpec, null, 2)}`);
     } catch (e) {
-      expect(false, TestLogger.createApiTestFailMessage("failed", e)).to.be.true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 
@@ -482,7 +529,9 @@ describe(`${scriptName}`, () => {
       // console.log(`applicationDomainName = ${JSON.stringify(applicationDomainName)}`);
       // console.log(`assetsApplicationDomainName = ${JSON.stringify(assetsApplicationDomainName)}`);
     } catch (e) {
-      expect(false, TestLogger.createApiTestFailMessage("failed", e)).to.be.true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 
@@ -500,7 +549,10 @@ describe(`${scriptName}`, () => {
       // });
       expect(false, 'did the copy work?').to.be.true;
     } catch (e) {
-      expect(false, TestLogger.createApiTestFailMessage("failed", e)).to.be.true;
+      TestLogger.logMessageWithId(TestLogger.createTestFailMessageForError('error', e));
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 
