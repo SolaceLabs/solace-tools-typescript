@@ -5,7 +5,6 @@ import {
   ApiError,
   EventApi,
   EventApIsService,
-  EventApiVersion,
 } from "@solace-labs/ep-openapi-node";
 import { 
   EEpSdkTask_TargetState,
@@ -35,8 +34,6 @@ import {
   IEpSdkApplicationVersionTask_ExecuteReturn,
   EpSdkEventApiVersionsService,
   EpSdkError,
-  EpSdkCustomAttributeNameSourceApplicationDomainId,
-  EpSdkEventApisService,
   EpSdkEnumVersionsService,
   EpSdkSchemaVersionsService,
   EpSdkEpEventVersionsService
@@ -202,7 +199,7 @@ describe(`${scriptName}`, () => {
         schemaVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
           displayName: 'Schema_1_Id',
-          description: 'Schema_1_Id',
+          // description: 'Schema_1_Id',
           content: SchemaContent,
         },
       });
@@ -228,7 +225,7 @@ describe(`${scriptName}`, () => {
         schemaVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
           displayName: 'Schema_2_Id',
-          description: 'Schema_2_Id',
+          // description: 'Schema_2_Id',
           content: SchemaContent,
         },
       });
@@ -261,7 +258,7 @@ describe(`${scriptName}`, () => {
         enumVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
           displayName: 'Enum_1_Id',
-          description: 'Enum_1_Id',
+          // description: 'Enum_1_Id',
         },
         enumValues: EnumValues
       });
@@ -286,7 +283,7 @@ describe(`${scriptName}`, () => {
         enumVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
           displayName: 'Enum_2_Id',
-          description: 'Enum_2_Id',
+          // description: 'Enum_2_Id',
         },
         enumValues: EnumValues
       });
@@ -347,7 +344,7 @@ describe(`${scriptName}`, () => {
         versionString: "1.0.0",
         eventVersionSettings: {
           displayName: 'Event_2_Id',
-          description: 'Event_2_Id',
+          // description: 'Event_2_Id',
           schemaVersionId: SchemaVersion_2_Id,
           stateId: EpSdkStatesService.releasedId,
         },

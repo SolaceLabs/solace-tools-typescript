@@ -22,13 +22,10 @@ import {
   EpSdkEnumVersionTask, 
   IEpSdkEnumVersionTask_ExecuteReturn,
   EEpSdk_VersionTaskStrategy,
-  EpSdkCustomAttributeDefinitionTask,
-  IEpSdkCustomAttributeDefinitionTask_ExecuteReturn
 } from "../tasks";
 import EpSdkEnumsService from "./EpSdkEnumsService";
 import { EpSdkVersionServiceClass } from "./EpSdkVersionService";
 import { EEpSdkCustomAttributeEntityTypes } from '../types';
-import { EpSdkCustomAttributesService } from '.';
 
 /** @category Services */
 export class EpSdkEnumVersionsServiceClass extends EpSdkVersionServiceClass {

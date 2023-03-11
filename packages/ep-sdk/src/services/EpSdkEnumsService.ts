@@ -52,8 +52,8 @@ export class EpSdkEnumsServiceClass extends EpSdkServiceClass {
     epSdkCustomAttributeList: TEpSdkCustomAttributeList;
     scope?: CustomAttributeDefinition.scope;
   }): Promise<TopicAddressEnum> {
-    const funcName = 'setCustomAttributes';
-    const logName = `${EpSdkEnumsServiceClass.name}.${funcName}()`;
+    // const funcName = 'setCustomAttributes';
+    // const logName = `${EpSdkEnumsServiceClass.name}.${funcName}()`;
     const topicAddressEnum: TopicAddressEnum = await this.getById({
       xContextId,
       enumId: enumId,

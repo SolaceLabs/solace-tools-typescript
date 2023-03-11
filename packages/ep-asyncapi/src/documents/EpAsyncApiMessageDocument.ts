@@ -154,11 +154,14 @@ export class EpAsyncApiMessageDocument {
 
   public getPayloadSchemaName(): string {
     const schema: Schema = this.asyncApiMessage.payload();
-    try { return schema.title(); } catch(e) {}
-    if(schema.hasExtension(EpAsyncApiSchemaExtensions.xEpSchemaName)) {
-      return schema.extension(EpAsyncApiSchemaExtensions.xEpSchemaName);
+    try { 
+      return schema.title(); 
+    } catch(e) { 
+      if(schema.hasExtension(EpAsyncApiSchemaExtensions.xEpSchemaName)) {
+        return schema.extension(EpAsyncApiSchemaExtensions.xEpSchemaName);
+      }
+      return this.getMessageName();
     }
-    return this.getMessageName();
   }
 
   public getPayloadSchemaDisplayName(): string | undefined {
@@ -166,6 +169,11 @@ export class EpAsyncApiMessageDocument {
     if(schema.hasExtension(EpAsyncApiSchemaExtensions.xEpSchemaVersionDisplayName)) {
       return schema.extension(EpAsyncApiSchemaExtensions.xEpSchemaVersionDisplayName);
     }
+  }
+
+  public getPayloadSchemaDescription(): string | undefined {
+    const schema: Schema = this.asyncApiMessage.payload();
+    try { return schema.description(); } catch(e) { return undefined; }
   }
 
   public getSchemaFileName(): string {

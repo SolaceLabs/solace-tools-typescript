@@ -254,7 +254,7 @@ export abstract class CliAssetsImporter extends CliImporter {
       versionStrategy: this.get_EEpSdk_VersionTaskStrategy(),
       schemaVersionSettings: { 
         content: JSON.stringify(epAsyncApiMessageDocument.getSchemaAsSanitizedJson()),
-        description: epAsyncApiMessageDocument.getDescription(),
+        description: epAsyncApiMessageDocument.getPayloadSchemaDescription(),
         displayName: epAsyncApiMessageDocument.getPayloadSchemaDisplayName(),
         stateId: this.get_EpSdkTask_StateId(),
       },
