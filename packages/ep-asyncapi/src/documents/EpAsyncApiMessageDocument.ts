@@ -175,7 +175,13 @@ export class EpAsyncApiMessageDocument {
 
   public getPayloadSchemaDescription(): string | undefined {
     const schema: Schema = this.asyncApiMessage.payload();
-    try { return schema.description(); } catch(e) { return undefined; }
+    try { 
+      const descr = schema.description();
+      if(descr === "") return undefined;
+      return descr;
+    } catch(e) { 
+      return undefined; 
+    }
   }
 
   public getSchemaFileName(): string {
