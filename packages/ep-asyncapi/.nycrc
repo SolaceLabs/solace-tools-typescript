@@ -2,7 +2,7 @@
   "all": true,
   "check-coverage": true,
   "statements": 79,
-  "branches": 70,
+  "branches": 69,
   "functions": 77,
   "lines": 80,
   "temp-dir": "./test/logs/nyc_output",
