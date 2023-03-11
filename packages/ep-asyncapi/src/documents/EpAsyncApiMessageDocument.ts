@@ -154,7 +154,7 @@ export class EpAsyncApiMessageDocument {
 
   public getPayloadSchemaName(): string {
     const schema: Schema = this.asyncApiMessage.payload();
-    let name: string | undefined = schema.title();
+    const name: string | undefined = schema.title();
     if(name !== undefined) return name;
     if(schema.hasExtension(EpAsyncApiSchemaExtensions.xEpSchemaName)) {
       return schema.extension(EpAsyncApiSchemaExtensions.xEpSchemaName);
