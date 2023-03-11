@@ -489,12 +489,8 @@ export class CliEventApiImporter extends CliAssetsImporter {
         assetOutputRootDir,
         "schemas"
       );
-      const asyncApiSpecFileNameJson =
-        assetOutputRootDir +
-        "/" +
-        epAsyncApiDocument.getTitleAsFileName("json");
-      const asyncApiSpecFileNameYaml =
-        assetOutputRootDir + "/" + epAsyncApiDocument.getTitleAsFileName("yml");
+      const asyncApiSpecFileNameJson = assetOutputRootDir + "/" + epAsyncApiDocument.getTitleAsFileName("json");
+      const asyncApiSpecFileNameYaml = assetOutputRootDir + "/" + epAsyncApiDocument.getTitleAsFileName("yml");
       CliLogger.trace(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.GENERATING_ASSETS_OUTPUT, details: {
         applicationDomainNameAsFilePath: applicationDomainNameAsFilePath,
         apiTitleAsFilePath: apiTitleAsFilePath,

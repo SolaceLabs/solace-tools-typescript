@@ -10,6 +10,7 @@ enum EEnvVarPartials {
 
 export interface ITestConfig extends ITestSolaceCloudApiConfigBase {
   dataRootDir: string;
+  tmpDir: string;
   epSdkLogLevel: EEpSdkLogLevel;
 }
 
@@ -21,6 +22,7 @@ class TestConfig extends TestSolaceCloudApiConfigBase {
     const _testConfig: ITestConfig = {
       ...(this.testConfig as ITestSolaceCloudApiConfigBase),
       dataRootDir: this.getValidatedReadDir(`${scriptDir}/data`),
+      tmpDir: this.createReadWriteDir(`${scriptDir}/tmp`),
       epSdkLogLevel: this.getMandatoryEnvVarValueAsNumber(
         this.createEnvVar({ envVarPartial: EEnvVarPartials.EP_SDK_LOG_LEVEL })
       ),
