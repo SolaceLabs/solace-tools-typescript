@@ -28,14 +28,8 @@ import {
 } from "./EpSdkVersionTask";
 
 /** @category Tasks */
-export type TEpSdkEnumVersionTask_Settings = Required<
-  Pick<TopicAddressEnumVersion, "displayName" | "stateId">
-> &
-  Pick<TopicAddressEnumVersion, "description">;
-type TEpSdkEnumVersionTask_CompareObject =
-  Partial<TEpSdkEnumVersionTask_Settings> &
-    Pick<TopicAddressEnumVersion, "values"> &
-    Partial<Pick<TopicAddressEnumVersion, "version">>;
+export type TEpSdkEnumVersionTask_Settings = Required<Pick<TopicAddressEnumVersion, "stateId">> & Pick<TopicAddressEnumVersion, "description" | "displayName">;
+type TEpSdkEnumVersionTask_CompareObject = Partial<TEpSdkEnumVersionTask_Settings> & Pick<TopicAddressEnumVersion, "values"> & Partial<Pick<TopicAddressEnumVersion, "version">>;
 
 /** @category Tasks */
 export interface IEpSdkEnumVersionTask_Config extends IEpSdkVersionTask_Config {

@@ -1,0 +1,152 @@
+{
+  "components": {
+    "schemas": {
+      "Schema_2_Name": {
+        "x-ep-schema-version": "1.0.0",
+        "x-ep-schema-state-id": "2",
+        "x-ep-schema-version-id": "n00r9bespvj",
+        "x-ep-schema-id": "bx9070aj3mu",
+        "description": "Generic message header.",
+        "x-ep-schema-state-name": "RELEASED",
+        "x-ep-schema-name": "Schema_2_Name",
+        "type": "object",
+        "properties": {
+          "sentAt": {
+            "format": "date-time",
+            "description": "Date and time when the message was sent.",
+            "type": "string"
+          },
+          "storeId": {
+            "description": "The store id.",
+            "type": "string"
+          },
+          "transactionId": {
+            "description": "The transaction id.",
+            "type": "string"
+          }
+        },
+        "required": ["sentAt", "transactionId", "storeId"],
+        "x-ep-schema-version-displayname": "Schema_2_Id"
+      },
+      "Schema_1_Name": {
+        "x-ep-schema-version": "1.0.0",
+        "x-ep-schema-state-id": "2",
+        "x-ep-schema-version-id": "loyscnlazj5",
+        "x-ep-schema-id": "5e95l0jqxlt",
+        "description": "Generic message header.",
+        "x-ep-schema-state-name": "RELEASED",
+        "x-ep-schema-name": "Schema_1_Name",
+        "type": "object",
+        "properties": {
+          "sentAt": {
+            "format": "date-time",
+            "description": "Date and time when the message was sent.",
+            "type": "string"
+          },
+          "storeId": {
+            "description": "The store id.",
+            "type": "string"
+          },
+          "transactionId": {
+            "description": "The transaction id.",
+            "type": "string"
+          }
+        },
+        "required": ["sentAt", "transactionId", "storeId"],
+        "x-ep-schema-version-displayname": "Schema_1_Id"
+      }
+    },
+    "messages": {
+      "Event_2_Name": {
+        "x-ep-event-id": "oumr2wycciv",
+        "x-ep-event-version-displayname": "Event_2_Id",
+        "x-ep-event-version-id": "ifg6vpksml9",
+        "payload": {
+          "$ref": "#/components/schemas/Schema_2_Name"
+        },
+        "x-ep-event-version": "1.0.0",
+        "x-ep-event-name": "Event_2_Name",
+        "description": "Event_2_Id",
+        "schemaFormat": "application/vnd.aai.asyncapi+json;version=2.0.0",
+        "contentType": "application/json",
+        "x-ep-event-state-id": "2",
+        "x-ep-event-state-name": "RELEASED"
+      },
+      "Event_1_Name": {
+        "x-ep-event-id": "7jhc9d369ob",
+        "x-ep-event-version-displayname": "Event_1_Id",
+        "x-ep-event-version-id": "mvi0eewza58",
+        "payload": {
+          "$ref": "#/components/schemas/Schema_1_Name"
+        },
+        "x-ep-event-version": "1.0.0",
+        "x-ep-event-name": "Event_1_Name",
+        "description": "Event_1_Id",
+        "schemaFormat": "application/vnd.aai.asyncapi+json;version=2.0.0",
+        "contentType": "application/json",
+        "x-ep-event-state-id": "2",
+        "x-ep-event-state-name": "RELEASED"
+      }
+    }
+  },
+  "channels": {
+    "topic/{Enum_2_Name}/_2_": {
+      "publish": {
+        "message": {
+          "$ref": "#/components/messages/Event_2_Name"
+        }
+      },
+      "parameters": {
+        "Enum_2_Name": {
+          "schema": {
+            "type": "string",
+            "enum": ["value1", "value2"]
+          },
+          "x-ep-enum-version-displayname": "Enum_2_Id",
+          "x-ep-enum-version": "1.0.0",
+          "x-ep-enum-name": "Enum_2_Name",
+          "x-ep-enum-state-id": "2",
+          "x-ep-enum-version-id": "xix16gkl5a2",
+          "x-ep-enum-id": "dte6uczbac1",
+          "x-ep-parameter-name": "Enum_2_Name"
+        }
+      }
+    },
+    "topic/{Enum_1_Name}/_1_": {
+      "subscribe": {
+        "message": {
+          "$ref": "#/components/messages/Event_1_Name"
+        }
+      },
+      "parameters": {
+        "Enum_1_Name": {
+          "schema": {
+            "type": "string",
+            "enum": ["value1", "value2"]
+          },
+          "x-ep-enum-version-displayname": "Enum_1_Id",
+          "x-ep-enum-version": "1.0.0",
+          "x-ep-enum-name": "Enum_1_Name",
+          "x-ep-enum-state-id": "2",
+          "x-ep-enum-version-id": "fg7m5qrcs4v",
+          "x-ep-enum-id": "7tsxzoiznu9",
+          "x-ep-parameter-name": "Enum_1_Name"
+        }
+      }
+    }
+  },
+  "asyncapi": "2.5.0",
+  "info": {
+    "x-ep-event-api-version": "1.0.0",
+    "x-ep-event-api-id": "lp6umylv3v0",
+    "description": "EventApi_Id",
+    "x-ep-displayname": "EventApi_Id",
+    "x-ep-state-name": "RELEASED",
+    "title": "EventApi_Name",
+    "x-ep-application-domain-id": "9kf35bbrm4l",
+    "version": "1.0.0",
+    "x-ep-state-id": "2",
+    "x-ep-event-api-version-id": "ehl0ysygev4",
+    "x-ep-application-domain-name": "TEST_EP_ASYNC_API_IMPORTER/multi-domain.x-spec.ts/ApplicationDomain_Main_Name"
+  }
+}

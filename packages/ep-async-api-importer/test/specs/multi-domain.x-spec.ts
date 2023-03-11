@@ -37,7 +37,8 @@ import {
   EpSdkError,
   EpSdkEpEventsService,
   EpSdkEvent,
-  EpSdkCustomAttributeNameSourceApplicationDomainId
+  EpSdkCustomAttributeNameSourceApplicationDomainId,
+  EpSdkEventApisService
 } from "@solace-labs/ep-sdk";
 import { TestContext, TestUtils } from "@internal/tools/src";
 import {
@@ -45,7 +46,13 @@ import {
   TestLogger,
 } from "../lib";
 import {
+  CliConfig,
+  CliError,
+  CliImporterManager,
+  CliRunSummary,
   CliUtils,
+  ECliImporterManagerMode,
+  ICliRunSummary_Base,
 } from "../../src/cli-components";
 import { EpAsyncApiDocument, EpAsyncApiDocumentService } from "@solace-labs/ep-asyncapi";
 
@@ -53,13 +60,6 @@ const scriptName: string = path.basename(__filename);
 const TestSpecName = scriptName;
 const TestSpecId = TestUtils.getShortUUID();
 TestLogger.logMessage(scriptName, ">>> starting ...");
-
-// TEST expects only 1 api file, not a list of api files.
-let FileList: Array<string> = [];
-let AsyncApiSpecFile: string;
-let AsyncApiSpecFile_X_EpApplicationDomainName: string;
-let AsyncApiSpecFile_X_EpAssetApplicationDomainName: string;
-
 
 let ApplicationDomain_Events_1_Name: string;
 let ApplicationDomain_Events_1_Id: string | undefined;
@@ -131,6 +131,13 @@ let AppVersion_Id: string | undefined;
 let ApplicationDomain_Copy_Name: string;
 let ApplicationDomain_Copy_Id: string;
 
+let AsyncApiSpecFileNameJson: string;
+// let AsyncApiSpecFile_X_EpApplicationDomainName: string;
+// let AsyncApiSpecFile_X_EpAssetApplicationDomainName: string;
+
+
+
+
 const initializeGlobals = () => {
   ApplicationDomain_Events_1_Name = `${TestConfig.getAppId()}/${TestSpecName}/ApplicationDomain_Events_1_Name`;
   ApplicationDomain_Events_2_Name = `${TestConfig.getAppId()}/${TestSpecName}/ApplicationDomain_Events_2_Name`;
@@ -151,18 +158,6 @@ const initializeGlobals = () => {
   EventApi_Name = "EventApi_Name";
   App_Name = "App_Name";
 
-  // AsyncApiSpecFile = TestService.validateFilePathWithReadPermission(`${TestConfig.getConfig().dataRootDir}/individual-tests/asset-domain/asset-domain-1.spec.yml`);
-  // FileList.push(AsyncApiSpecFile);
-  // // set test specific importer options
-  // CliConfig.getCliImporterManagerOptions().asyncApiFileList = FileList;
-  // CliConfig.getCliImporterManagerOptions().cliImporterManagerMode = ECliImporterManagerMode.RELEASE_MODE;
-  // // CliConfig.getCliImporterManagerOptions().runId = scriptName;
-  // // // DEBUG
-  // // CliConfig.getCliImporterManagerOptions().cliImporterManagerMode = ECliImporterManagerMode.TEST_MODE_KEEP;
-  // // CliConfig.getCliImporterManagerOptions().applicationDomainName = 'release_mode';
-  // CliConfig.getCliImporterManagerOptions().createEventApiApplication = false;
-  // CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_BrokerType = undefined;
-  // CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_ChannelDelimiter = undefined;
 };
 
 const applicationDomainTasks = async(epSdkTask_TargetState: EEpSdkTask_TargetState) => {
@@ -468,6 +463,34 @@ describe(`${scriptName}`, () => {
     }
   });
 
+  it(`${scriptName}: should deep copy event api version`, async () => {
+    try {
+      const copiedEventApiVersion: EventApiVersion | undefined = await EpSdkEventApiVersionsService.deepCopyLastestVersionById_IfNotExists({
+        eventApiName: EventApi_Name,
+        fromApplicationDomainId: ApplicationDomain_Main_Id,
+        toApplicationDomainId: ApplicationDomain_Copy_Id,
+      });
+      expect(copiedEventApiVersion, 'copy failed').to.not.be.undefined;
+      CopiedEventApi_Id = copiedEventApiVersion.id;
+      expect(CopiedEventApi_Id, 'api content error').to.not.be.undefined;
+      // check that the attribute is set on the EventApi object
+      const eventApi: EventApi = await EpSdkEventApisService.getById({ eventApiId: copiedEventApiVersion.eventApiId });
+      expect(eventApi, 'EventApi is undefined').to.not.be.undefined;
+      const customAttributesStr = JSON.stringify(eventApi.customAttributes);
+      expect(customAttributesStr, 'source attribute not found in eventApi').to.include(EpSdkCustomAttributeNameSourceApplicationDomainId)
+      // const copiedApplicationVersion: ApplicationVersion | undefined = await EpSdkApplicationVersionsService.deepCopyLastestVersionById_IfNotExists({
+      //   eventApiName: EventApi_Name,
+      //   fromApplicationDomainId: ApplicationDomain_Main_Id,
+      //   toApplicationDomainId: ApplicationDomain_Copy_Id,
+      // });
+    } catch (e) {
+      TestLogger.logMessageWithId(TestLogger.createTestFailMessageForError('error', e));
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
+    }
+  });
+
   it(`${scriptName}: should create the app & version`, async () => {
     try {
       const task_1 = new EpSdkApplicationTask({
@@ -524,15 +547,11 @@ describe(`${scriptName}`, () => {
       const applicationDomainName = epAsyncApiDocument.getApplicationDomainName();
       const assetsApplicationDomainName = epAsyncApiDocument.getAssetsApplicationDomainName();
 
-      const asyncApiSpecFileNameJson = TestConfig.getConfig().tmpDir + "/" + epAsyncApiDocument.getTitleAsFileName("json");
+      AsyncApiSpecFileNameJson = TestConfig.getConfig().tmpDir + "/" + epAsyncApiDocument.getTitleAsFileName("json");
       CliUtils.saveContents2File({
-        filePath: asyncApiSpecFileNameJson,
+        filePath: AsyncApiSpecFileNameJson,
         content: JSON.stringify(epAsyncApiDocument.getOriginalSpecAsJson(), null, 2 ),
       });
-
-
-      // console.log(`applicationDomainName = ${JSON.stringify(applicationDomainName)}`);
-      // console.log(`assetsApplicationDomainName = ${JSON.stringify(assetsApplicationDomainName)}`);
     } catch (e) {
       if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
       expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
@@ -540,29 +559,29 @@ describe(`${scriptName}`, () => {
     }
   });
 
-  it(`${scriptName}: should deep copy event api version`, async () => {
+  it(`${scriptName}: should import event api spec with test`, async () => {
     try {
-      const copiedEventApiVersion: EventApiVersion | undefined = await EpSdkEventApiVersionsService.deepCopyLastestVersionById_IfNotExists({
-        eventApiName: EventApi_Name,
-        fromApplicationDomainId: ApplicationDomain_Main_Id,
-        toApplicationDomainId: ApplicationDomain_Copy_Id,
-      });
-      expect(copiedEventApiVersion, 'copy failed').to.not.be.undefined;
-      CopiedEventApi_Id = copiedEventApiVersion.id;
-      expect(CopiedEventApi_Id, 'api content error').to.not.be.undefined;
-      // check that the attribute is set on the EventApi object
-      const epSdkEvent: EpSdkEvent = await EpSdkEpEventsService.getById({ eventId: copiedEventApiVersion.eventApiId });
-      const customAttributesStr = JSON.stringify(epSdkEvent.customAttributes);
-      expect(customAttributesStr, 'source attribute not found').to.include(EpSdkCustomAttributeNameSourceApplicationDomainId)
+      CliConfig.getCliImporterManagerOptions().asyncApiFileList = [AsyncApiSpecFileNameJson];
+      CliConfig.getCliImporterManagerOptions().cliImporterManagerMode = ECliImporterManagerMode.RELEASE_MODE;
+      // CliConfig.getCliImporterManagerOptions().runId = scriptName;
+      // // DEBUG
+      // CliConfig.getCliImporterManagerOptions().cliImporterManagerMode = ECliImporterManagerMode.TEST_MODE_KEEP;
+      // CliConfig.getCliImporterManagerOptions().applicationDomainName = 'release_mode';
+      CliConfig.getCliImporterManagerOptions().createEventApiApplication = true;
+      CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_BrokerType = undefined;
+      CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_ChannelDelimiter = undefined;
 
-      // const copiedApplicationVersion: ApplicationVersion | undefined = await EpSdkApplicationVersionsService.deepCopyLastestVersionById_IfNotExists({
-      //   eventApiName: EventApi_Name,
-      //   fromApplicationDomainId: ApplicationDomain_Main_Id,
-      //   toApplicationDomainId: ApplicationDomain_Copy_Id,
-      // });
-      expect(false, 'did the copy work?').to.be.true;
+      const cliImporter = new CliImporterManager(CliConfig.getCliImporterManagerOptions());
+      const xvoid: void = await cliImporter.run();
+      // // DEBUG
+      // const cliRunSummaryList: Array<ICliRunSummary_Base> = CliRunSummary.getSummaryLogList();
+      // expect(false, JSON.stringify(cliRunSummaryList, null, 2)).to.be.true;
+
+      expect(false, "not idempotent - needs to respect source app domains of all objects").to.be.true;
     } catch (e) {
       TestLogger.logMessageWithId(TestLogger.createTestFailMessageForError('error', e));
+      expect( e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
+      expect(false, TestLogger.createTestFailMessageWithCliError("failed", e)).to.be.true;
       if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
       expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
       expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
