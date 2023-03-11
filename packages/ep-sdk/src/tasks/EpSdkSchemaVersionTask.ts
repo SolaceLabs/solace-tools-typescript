@@ -24,12 +24,8 @@ import {
 } from "./EpSdkVersionTask";
 
 /** @category Tasks */
-export type TEpSdkSchemaVersionTask_Settings = Required<
-  Pick<SchemaVersion, "description" | "displayName" | "content" | "stateId">
->;
-type TEpSdkSchemaVersionTask_CompareObject =
-  Partial<TEpSdkSchemaVersionTask_Settings> &
-    Partial<Pick<SchemaVersion, "version">>;
+export type TEpSdkSchemaVersionTask_Settings = Required<Pick<SchemaVersion, "content" | "stateId">> & Pick<SchemaVersion, "description" | "displayName">;
+type TEpSdkSchemaVersionTask_CompareObject = Partial<TEpSdkSchemaVersionTask_Settings> & Partial<Pick<SchemaVersion, "version">>;
 
 /** @category Tasks */
 export interface IEpSdkSchemaVersionTask_Config

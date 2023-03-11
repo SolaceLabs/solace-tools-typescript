@@ -2,6 +2,7 @@ import {
   Message, 
   Schema 
 } from '@asyncapi/parser';
+import { EpAsyncApiSchemaExtensions } from '../constants';
 import { 
   EpAsyncApiUtils, 
   EpAsyncApiMessageError, 
@@ -117,8 +118,6 @@ export class EpAsyncApiMessageDocument {
     }
   }
 
-  public getMessageKey(): string { return this.asyncApiMessageKey; }
-
   public getMessageName(): string {
     // const funcName = 'getMessageName';
     // const logName = `${EpAsyncApiMessageDocument.name}.${funcName}()`;
@@ -142,12 +141,11 @@ export class EpAsyncApiMessageDocument {
     return JSON.stringify(schema.json());
   }
 
-  public getDescription(): string {
+  public getDescription(): string | undefined {
     const description: string | null = this.asyncApiMessage.description();
     const summary: string | null = this.asyncApiMessage.summary();
     if(description) return description;
     if(summary) return summary;
-    return '';
   }
 
   public getMessageNameAsFilePath(): string {
@@ -157,8 +155,18 @@ export class EpAsyncApiMessageDocument {
   public getPayloadSchemaName(): string {
     const schema: Schema = this.asyncApiMessage.payload();
     let name: string | undefined = schema.title();
-    if(!name) name = this.getMessageName();
-    return name;
+    if(name !== undefined) return name;
+    if(schema.hasExtension(EpAsyncApiSchemaExtensions.xEpSchemaName)) {
+      return schema.extension(EpAsyncApiSchemaExtensions.xEpSchemaName);
+    }
+    return this.getMessageName();
+  }
+
+  public getPayloadSchemaDisplayName(): string | undefined {
+    const schema: Schema = this.asyncApiMessage.payload();
+    if(schema.hasExtension(EpAsyncApiSchemaExtensions.xEpSchemaVersionDisplayName)) {
+      return schema.extension(EpAsyncApiSchemaExtensions.xEpSchemaVersionDisplayName);
+    }
   }
 
   public getSchemaFileName(): string {

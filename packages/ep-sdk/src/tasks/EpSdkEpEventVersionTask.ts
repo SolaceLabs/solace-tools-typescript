@@ -37,7 +37,7 @@ import {
 /** @category Tasks */
 export type TEpSdkEpEventVersionTask_Settings_DeliveryDescriptor = Pick<DeliveryDescriptor,"brokerType">;
 /** @category Tasks */
-export type TEpSdkEpEventVersionTask_Settings = Required<Pick<EventVersion, "description" | "displayName" | "stateId" | "schemaVersionId">> & TEpSdkEpEventVersionTask_Settings_DeliveryDescriptor;
+export type TEpSdkEpEventVersionTask_Settings = Required<Pick<EventVersion, "stateId" | "schemaVersionId">> & Pick<EventVersion, "description" | "displayName" > & TEpSdkEpEventVersionTask_Settings_DeliveryDescriptor;
 type TEpSdkEpEventVersionTask_CompareObject = Partial<TEpSdkEpEventVersionTask_Settings> & Pick<EventVersion, "deliveryDescriptor"> & Partial<Pick<EventVersion, "version">>;
 
 /** @category Tasks */

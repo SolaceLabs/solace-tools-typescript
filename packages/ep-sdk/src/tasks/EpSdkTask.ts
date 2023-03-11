@@ -156,7 +156,8 @@ export abstract class EpSdkTask {
     return epSdkTask_Config;
   }
 
-  protected truncate(str: string, maxLength: number | undefined): string {
+  protected truncate(str: string | undefined, maxLength: number | undefined): string| undefined {
+    if(str === undefined) return undefined;
     if (maxLength !== undefined && str.length > maxLength)
       return str.slice(0, maxLength - 4) + "...";
     return str;

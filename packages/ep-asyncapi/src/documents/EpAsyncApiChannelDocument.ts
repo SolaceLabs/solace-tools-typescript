@@ -242,12 +242,7 @@ export class EpAsyncApiChannelDocument {
       this.createEpEventName();
       this.validate_EpName();
     }
-    if (this.epEventName === undefined)
-      throw new EpAsyncApiInternalError(
-        logName,
-        this.constructor.name,
-        "this.epEventName === undefined"
-      );
+    if (this.epEventName === undefined) throw new EpAsyncApiInternalError(logName, this.constructor.name, "this.epEventName === undefined");
     return this.epEventName;
   }
 
@@ -258,12 +253,7 @@ export class EpAsyncApiChannelDocument {
       this.createEpEventVersionName();
       this.validate_EpEventVersionName();
     }
-    if (this.epEventVersionName === undefined)
-      throw new EpAsyncApiInternalError(
-        logName,
-        this.constructor.name,
-        "this.epEventVersionName === undefined"
-      );
+    if (this.epEventVersionName === undefined) throw new EpAsyncApiInternalError(logName, this.constructor.name, "this.epEventVersionName === undefined");
     return this.epEventVersionName;
   }
 

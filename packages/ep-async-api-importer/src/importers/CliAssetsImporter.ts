@@ -171,24 +171,13 @@ export abstract class CliAssetsImporter extends CliImporter {
     // CliRunContext.updateContext({
     //   runContext: rctxt
     // });
-    CliLogger.debug(
-      CliLogger.createLogEntry(logName, {
-        code: ECliStatusCodes.IMPORTING_API_CHANNEL_MESSAGE,
-        details: {
-          epEventName: epEventName,
-          channelTopic: channelTopic,
-        },
-      })
-    );
-    CliLogger.trace(
-      CliLogger.createLogEntry(logName, {
-        code: ECliStatusCodes.IMPORTING_API_CHANNEL_MESSAGE,
-        details: {
-          epAsyncApiMessageDocument: epAsyncApiMessageDocument,
-        },
-      })
-    );
-
+    CliLogger.debug(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.IMPORTING_API_CHANNEL_MESSAGE, details: {
+      epEventName: epEventName,
+      channelTopic: channelTopic,
+    }}));
+    CliLogger.trace(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.IMPORTING_API_CHANNEL_MESSAGE, details: {
+      epAsyncApiMessageDocument: epAsyncApiMessageDocument,
+    }}));
     // present event
     const epSdkEpEventTask = new EpSdkEpEventTask({
       epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
@@ -266,7 +255,7 @@ export abstract class CliAssetsImporter extends CliImporter {
       schemaVersionSettings: { 
         content: JSON.stringify(epAsyncApiMessageDocument.getSchemaAsSanitizedJson()),
         description: epAsyncApiMessageDocument.getDescription(),
-        displayName: epAsyncApiMessageDocument.getMessageName(),
+        displayName: epAsyncApiMessageDocument.getPayloadSchemaDisplayName(),
         stateId: this.get_EpSdkTask_StateId(),
       },
       epSdkTask_TransactionConfig: this.get_IEpSdkTask_TransactionConfig(),
@@ -305,26 +294,16 @@ export abstract class CliAssetsImporter extends CliImporter {
     };
     CliRunContext.push(rctxt);
 
-    CliLogger.debug(
-      CliLogger.createLogEntry(logName, {
-        code: ECliStatusCodes.IMPORTING_API_CHANNEL_MESSAGE,
-        details: {},
-      })
-    );
-    CliLogger.trace(
-      CliLogger.createLogEntry(logName, {
-        code: ECliStatusCodes.IMPORTING_API_CHANNEL_MESSAGE,
-        details: {
-          epAsyncApiMessageDocument: epAsyncApiMessageDocument,
-        },
-      })
-    );
+    CliLogger.debug(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.IMPORTING_API_CHANNEL_MESSAGE, details: {} }));
+    CliLogger.trace(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.IMPORTING_API_CHANNEL_MESSAGE, details: {
+      epAsyncApiMessageDocument: epAsyncApiMessageDocument,
+    }}));
 
     // present schema
     const epSdkSchemaTask = new EpSdkSchemaTask({
       epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
       applicationDomainId: assetApplicationDomainId,
-      schemaName: epAsyncApiMessageDocument.getMessageName(),
+      schemaName: epAsyncApiMessageDocument.getPayloadSchemaName(),
       schemaObjectSettings: {
         contentType:
           CliAsyncApiDocumentService.map_MessageDocumentContentType_To_EpSchemaContentType(
@@ -339,20 +318,13 @@ export abstract class CliAssetsImporter extends CliImporter {
       epSdkTask_TransactionConfig: this.get_IEpSdkTask_TransactionConfig(),
       checkmode: checkmode,
     });
-    const epSdkSchemaTask_ExecuteReturn: IEpSdkSchemaTask_ExecuteReturn =
-      await this.executeTask({
-        epSdkTask: epSdkSchemaTask,
-        expectNoAction: checkmode,
-      });
-    CliLogger.trace(
-      CliLogger.createLogEntry(logName, {
-        code: ECliStatusCodes.IMPORTING_EP_SCHEMA,
-        details: {
-          epSdkSchemaTask_ExecuteReturn: epSdkSchemaTask_ExecuteReturn,
-        },
-      })
-    );
-
+    const epSdkSchemaTask_ExecuteReturn: IEpSdkSchemaTask_ExecuteReturn = await this.executeTask({
+      epSdkTask: epSdkSchemaTask,
+      expectNoAction: checkmode,
+    });
+    CliLogger.trace(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.IMPORTING_EP_SCHEMA, details: {
+      epSdkSchemaTask_ExecuteReturn: epSdkSchemaTask_ExecuteReturn,
+    }}));
     // present the schema version
     const epSdkSchemaVersionTask_ExecuteReturn: IEpSdkSchemaVersionTask_ExecuteReturn =
       await this.run_present_schema_version({
