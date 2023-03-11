@@ -38,7 +38,7 @@ describe(`${scriptName}`, () => {
   before(async () => {
     initializeGlobals();
     TestContext.newItId();
-    TestHelpers.applicationDomainAbsent({ applicationDomainName: ApplicationDomainName });
+    await TestHelpers.applicationDomainAbsent({ applicationDomainName: ApplicationDomainName });
     const applicationDomainResponse: ApplicationDomainResponse = await ApplicationDomainsService.createApplicationDomain({
     requestBody: {
       name: ApplicationDomainName,

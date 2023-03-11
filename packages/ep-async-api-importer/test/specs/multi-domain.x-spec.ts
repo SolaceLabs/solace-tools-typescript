@@ -35,6 +35,9 @@ import {
   IEpSdkApplicationVersionTask_ExecuteReturn,
   EpSdkEventApiVersionsService,
   EpSdkError,
+  EpSdkEpEventsService,
+  EpSdkEvent,
+  EpSdkCustomAttributeNameSourceApplicationDomainId
 } from "@solace-labs/ep-sdk";
 import { TestContext, TestUtils } from "@internal/tools/src";
 import {
@@ -119,6 +122,7 @@ let EventApi_Name: string;
 let EventApi_Id: string | undefined;
 let EventApiVersion_Id: string | undefined;
 let EventApiSpec: any;
+let CopiedEventApi_Id: string | undefined;
 
 let App_Name: string;
 let App_Id: string | undefined;
@@ -146,6 +150,7 @@ const initializeGlobals = () => {
 
   EventApi_Name = "EventApi_Name";
   App_Name = "App_Name";
+
   // AsyncApiSpecFile = TestService.validateFilePathWithReadPermission(`${TestConfig.getConfig().dataRootDir}/individual-tests/asset-domain/asset-domain-1.spec.yml`);
   // FileList.push(AsyncApiSpecFile);
   // // set test specific importer options
@@ -542,6 +547,14 @@ describe(`${scriptName}`, () => {
         fromApplicationDomainId: ApplicationDomain_Main_Id,
         toApplicationDomainId: ApplicationDomain_Copy_Id,
       });
+      expect(copiedEventApiVersion, 'copy failed').to.not.be.undefined;
+      CopiedEventApi_Id = copiedEventApiVersion.id;
+      expect(CopiedEventApi_Id, 'api content error').to.not.be.undefined;
+      // check that the attribute is set on the EventApi object
+      const epSdkEvent: EpSdkEvent = await EpSdkEpEventsService.getById({ eventId: copiedEventApiVersion.eventApiId });
+      const customAttributesStr = JSON.stringify(epSdkEvent.customAttributes);
+      expect(customAttributesStr, 'source attribute not found').to.include(EpSdkCustomAttributeNameSourceApplicationDomainId)
+
       // const copiedApplicationVersion: ApplicationVersion | undefined = await EpSdkApplicationVersionsService.deepCopyLastestVersionById_IfNotExists({
       //   eventApiName: EventApi_Name,
       //   fromApplicationDomainId: ApplicationDomain_Main_Id,
