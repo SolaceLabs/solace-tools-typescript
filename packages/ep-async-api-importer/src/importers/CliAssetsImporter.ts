@@ -326,14 +326,13 @@ export abstract class CliAssetsImporter extends CliImporter {
       epSdkSchemaTask_ExecuteReturn: epSdkSchemaTask_ExecuteReturn,
     }}));
     // present the schema version
-    const epSdkSchemaVersionTask_ExecuteReturn: IEpSdkSchemaVersionTask_ExecuteReturn =
-      await this.run_present_schema_version({
-        schemaObject: epSdkSchemaTask_ExecuteReturn.epObject,
-        specVersion: specVersion,
-        epAsyncApiMessageDocument: epAsyncApiMessageDocument,
-        applicationDomainId: assetApplicationDomainId,
-        checkmode: checkmode,
-      });
+    const epSdkSchemaVersionTask_ExecuteReturn: IEpSdkSchemaVersionTask_ExecuteReturn = await this.run_present_schema_version({
+      schemaObject: epSdkSchemaTask_ExecuteReturn.epObject,
+      specVersion: specVersion,
+      epAsyncApiMessageDocument: epAsyncApiMessageDocument,
+      applicationDomainId: assetApplicationDomainId,
+      checkmode: checkmode,
+    });
     CliRunContext.pop();
     return epSdkSchemaVersionTask_ExecuteReturn.epObject;
   };
@@ -373,10 +372,9 @@ export abstract class CliAssetsImporter extends CliImporter {
     );
 
     /* istanbul ignore next */
-    if (enumObject.id === undefined)
-      throw new CliEPApiContentError(logName, "enumObject.id === undefined", {
-        enumObject: enumObject,
-      });
+    if (enumObject.id === undefined) throw new CliEPApiContentError(logName, "enumObject.id === undefined", {
+      enumObject: enumObject,
+    });
 
     const epSdkEnumVersionTask = new EpSdkEnumVersionTask({
       epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
@@ -384,8 +382,7 @@ export abstract class CliAssetsImporter extends CliImporter {
       enumId: enumObject.id,
       versionString: specVersion,
       versionStrategy: this.get_EEpSdk_VersionTaskStrategy(),
-      enumValues:
-        epAsyncApiChannelParameterDocument.getParameterEnumValueList(),
+      enumValues: epAsyncApiChannelParameterDocument.getParameterEnumValueList(),
       enumVersionSettings: {
         description: epAsyncApiChannelParameterDocument.getDescription(),
         displayName: epAsyncApiChannelParameterDocument.getDisplayName(),
@@ -394,24 +391,15 @@ export abstract class CliAssetsImporter extends CliImporter {
       epSdkTask_TransactionConfig: this.get_IEpSdkTask_TransactionConfig(),
       checkmode: checkmode,
     });
-    const epSdkEnumVersionTask_ExecuteReturn: IEpSdkEnumVersionTask_ExecuteReturn =
-      await this.executeTask({
-        epSdkTask: epSdkEnumVersionTask,
-        expectNoAction: checkmode,
-      });
-    CliLogger.trace(
-      CliLogger.createLogEntry(logName, {
-        code: ECliStatusCodes.IMPORTING_EP_ENUM_VERSION,
-        details: {
-          epSdkEnumVersionTask_ExecuteReturn:
-            epSdkEnumVersionTask_ExecuteReturn,
-        },
-      })
-    );
-    // summary
-    CliRunSummary.processedEnumVersion({
-      epSdkEnumVersionTask_ExecuteReturn: epSdkEnumVersionTask_ExecuteReturn,
+    const epSdkEnumVersionTask_ExecuteReturn: IEpSdkEnumVersionTask_ExecuteReturn = await this.executeTask({
+      epSdkTask: epSdkEnumVersionTask,
+      expectNoAction: checkmode,
     });
+    CliLogger.trace(CliLogger.createLogEntry(logName, {code: ECliStatusCodes.IMPORTING_EP_ENUM_VERSION, details: {
+      epSdkEnumVersionTask_ExecuteReturn: epSdkEnumVersionTask_ExecuteReturn,
+    }}));
+    // summary
+    CliRunSummary.processedEnumVersion({ epSdkEnumVersionTask_ExecuteReturn: epSdkEnumVersionTask_ExecuteReturn });
   };
 
   private run_present_channel_parameters = async ({

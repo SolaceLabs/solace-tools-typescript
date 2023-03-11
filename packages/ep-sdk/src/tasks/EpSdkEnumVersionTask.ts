@@ -79,9 +79,7 @@ export class EpSdkEnumVersionTask extends EpSdkVersionTask {
   private getTaskConfig(): IEpSdkEnumVersionTask_Config {
     return this.epSdkTask_Config as IEpSdkEnumVersionTask_Config;
   }
-  private createEnumValueList(
-    valueList: Array<string>
-  ): Array<TopicAddressEnumValue> {
+  private createEnumValueList(valueList: Array<string>): Array<TopicAddressEnumValue> {
     const enumValueList: Array<TopicAddressEnumValue> = [];
     valueList.forEach((value: string) => {
       const enumValue: TopicAddressEnumValue = {
@@ -167,8 +165,7 @@ export class EpSdkEnumVersionTask extends EpSdkVersionTask {
   /**
    * Get the latest EnumVersion.
    */
-  protected async getFunc(
-    epSdkEnumVersionTask_Keys: IEpSdkEnumVersionTask_Keys
+  protected async getFunc(epSdkEnumVersionTask_Keys: IEpSdkEnumVersionTask_Keys
   ): Promise<IEpSdkEnumVersionTask_GetFuncReturn> {
     const funcName = "getFunc";
     const logName = `${EpSdkEnumVersionTask.name}.${funcName}()`;
@@ -187,9 +184,7 @@ export class EpSdkEnumVersionTask extends EpSdkVersionTask {
       epSdkEnumVersionTask_Keys: epSdkEnumVersionTask_Keys,
       enumVersion: enumVersion ? enumVersion : "undefined",
     }}));
-
     if (enumVersion === undefined) return this.Empty_IEpSdkEnumVersionTask_GetFuncReturn;
-
     const epSdkEnumVersionTask_GetFuncReturn: IEpSdkEnumVersionTask_GetFuncReturn = {
       epObjectKeys: this.getEpObjectKeys(enumVersion),
       epObject: enumVersion,
@@ -227,7 +222,6 @@ export class EpSdkEnumVersionTask extends EpSdkVersionTask {
     if (epSdkEnumVersionTask_GetFuncReturn.epObject.version === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "epSdkEnumVersionTask_GetFuncReturn.epObject.version === undefined", {
       epObject: epSdkEnumVersionTask_GetFuncReturn.epObject,
     });
-
     const existingObject: TopicAddressEnumVersion = epSdkEnumVersionTask_GetFuncReturn.epObject;
     const existingCompareObject: TEpSdkEnumVersionTask_CompareObject = {
       description: existingObject.description ? existingObject.description : undefined,
@@ -276,16 +270,10 @@ export class EpSdkEnumVersionTask extends EpSdkVersionTask {
       enumId: this.getTaskConfig().enumId,
       version: this.versionString,
     };
-    EpSdkLogger.trace(
-      EpSdkLogger.createLogEntry(logName, {
-        code: EEpSdkLoggerCodes.TASK_EXECUTE_CREATE,
-        module: this.constructor.name,
-        details: {
-          epSdkEnumVersionTask_Config: this.getTaskConfig(),
-          create: create,
-        },
-      })
-    );
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_CREATE, module: this.constructor.name, details: {
+      epSdkEnumVersionTask_Config: this.getTaskConfig(),
+      create: create,
+    }}));
 
     if (this.isCheckmode()) {
       return {
@@ -302,21 +290,14 @@ export class EpSdkEnumVersionTask extends EpSdkVersionTask {
       xContextId: this.xContextId,
       enumId: this.getTaskConfig().enumId,
       topicAddressEnumVersion: create,
-      targetLifecycleStateId:
-        this.getTaskConfig().enumVersionSettings.stateId,
+      targetLifecycleStateId: this.getTaskConfig().enumVersionSettings.stateId,
     });
 
-    EpSdkLogger.trace(
-      EpSdkLogger.createLogEntry(logName, {
-        code: EEpSdkLoggerCodes.TASK_EXECUTE_CREATE,
-        module: this.constructor.name,
-        details: {
-          epSdkApplicationDomainTask_Config: this.getTaskConfig(),
-          create: create,
-          topicAddressEnumVersion: topicAddressEnumVersion,
-        },
-      })
-    );
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_CREATE, module: this.constructor.name, details: {
+      epSdkApplicationDomainTask_Config: this.getTaskConfig(),
+      create: create,
+      topicAddressEnumVersion: topicAddressEnumVersion,
+    }}));
 
     return {
       epSdkTask_Action: this.getCreateFuncAction(),
@@ -328,53 +309,26 @@ export class EpSdkEnumVersionTask extends EpSdkVersionTask {
   /**
    * Creates a new EnumVersion with bumped version number.
    */
-  protected async updateFunc(
-    epSdkEnumVersionTask_GetFuncReturn: IEpSdkEnumVersionTask_GetFuncReturn
+  protected async updateFunc(epSdkEnumVersionTask_GetFuncReturn: IEpSdkEnumVersionTask_GetFuncReturn
   ): Promise<IEpSdkEnumVersionTask_UpdateFuncReturn> {
     const funcName = "updateFunc";
     const logName = `${EpSdkEnumVersionTask.name}.${funcName}()`;
 
-    EpSdkLogger.trace(
-      EpSdkLogger.createLogEntry(logName, {
-        code: EEpSdkLoggerCodes.TASK_EXECUTE_START_UPDATE,
-        module: this.constructor.name,
-      })
-    );
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_START_UPDATE, module: this.constructor.name }));
 
-    if (epSdkEnumVersionTask_GetFuncReturn.epObject === undefined)
-      throw new EpSdkInternalTaskError(
-        logName,
-        this.constructor.name,
-        "epSdkEnumVersionTask_GetFuncReturn.epObject === undefined"
-      );
+    if (epSdkEnumVersionTask_GetFuncReturn.epObject === undefined) throw new EpSdkInternalTaskError(logName, this.constructor.name, "epSdkEnumVersionTask_GetFuncReturn.epObject === undefined");
     /* istanbul ignore next */
-    if (epSdkEnumVersionTask_GetFuncReturn.epObject.id === undefined)
-      throw new EpSdkApiContentError(
-        logName,
-        this.constructor.name,
-        "epSdkEnumVersionTask_GetFuncReturn.epObject.id === undefined",
-        {
-          epObject: epSdkEnumVersionTask_GetFuncReturn.epObject,
-        }
-      );
+    if (epSdkEnumVersionTask_GetFuncReturn.epObject.id === undefined) throw new EpSdkApiContentError( logName, this.constructor.name, "epSdkEnumVersionTask_GetFuncReturn.epObject.id === undefined", {
+      epObject: epSdkEnumVersionTask_GetFuncReturn.epObject,
+    });
     /* istanbul ignore next */
-    if (epSdkEnumVersionTask_GetFuncReturn.epObject.version === undefined)
-      throw new EpSdkApiContentError(
-        logName,
-        this.constructor.name,
-        "epSdkEnumVersionTask_GetFuncReturn.epObject.version === undefined",
-        {
-          epObject: epSdkEnumVersionTask_GetFuncReturn.epObject,
-        }
-      );
-
+    if (epSdkEnumVersionTask_GetFuncReturn.epObject.version === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "epSdkEnumVersionTask_GetFuncReturn.epObject.version === undefined", {
+      epObject: epSdkEnumVersionTask_GetFuncReturn.epObject,
+    });
     // getFuncReturn has the latest version object
     let nextVersion: string;
     try {
-      nextVersion = this.createNextVersionWithStrategyValidation({
-        existingObjectVersionString:
-          epSdkEnumVersionTask_GetFuncReturn.epObject.version,
-      });
+      nextVersion = this.createNextVersionWithStrategyValidation({existingObjectVersionString: epSdkEnumVersionTask_GetFuncReturn.epObject.version });
     } catch (e) {
       if (
         this.isCheckmode() &&

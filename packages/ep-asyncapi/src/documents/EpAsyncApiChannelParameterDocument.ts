@@ -23,10 +23,9 @@ export class EpAsyncApiChannelParameterDocument {
 
   public getAsyncApiChannelParameter(): ChannelParameter { return this.asyncApiChannelParameter; }
 
-  public getDescription(): string {
+  public getDescription(): string | undefined {
     const description: string | null = this.asyncApiChannelParameter.description();
-    if(description) return description;
-    return '';
+    if(description && description.length > 0) return description;
   }
 
   public getDisplayName(): string | undefined {
