@@ -154,6 +154,7 @@ export class EpAsyncApiMessageDocument {
 
   public getPayloadSchemaName(): string {
     const schema: Schema = this.asyncApiMessage.payload();
+    if(!schema) return this.getMessageName();
     try { 
       const title = schema.title();
       if(title && title !== '') return title;
@@ -168,6 +169,7 @@ export class EpAsyncApiMessageDocument {
 
   public getPayloadSchemaDisplayName(): string | undefined {
     const schema: Schema = this.asyncApiMessage.payload();
+    if(!schema) return undefined;
     if(schema.hasExtension(EpAsyncApiSchemaExtensions.xEpSchemaVersionDisplayName)) {
       return schema.extension(EpAsyncApiSchemaExtensions.xEpSchemaVersionDisplayName);
     }
