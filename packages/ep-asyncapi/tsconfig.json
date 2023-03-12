@@ -10,7 +10,7 @@
     "moduleResolution": "node",
     "emitDecoratorMetadata": false,
     "experimentalDecorators": false,
-    "strict": false,
+    "strict": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "strictPropertyInitialization": false

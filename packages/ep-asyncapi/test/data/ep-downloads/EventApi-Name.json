@@ -6,7 +6,7 @@
         "x-ep-schema-state-id": "2",
         "x-ep-schema-version-id": "n00r9bespvj",
         "x-ep-schema-id": "bx9070aj3mu",
-        "description": "Generic message header.",
+        "description": "Schema_2_Name description",
         "x-ep-schema-state-name": "RELEASED",
         "x-ep-schema-name": "Schema_2_Name",
         "type": "object",
@@ -26,14 +26,14 @@
           }
         },
         "required": ["sentAt", "transactionId", "storeId"],
-        "x-ep-schema-version-displayname": "Schema_2_Id"
+        "x-ep-schema-version-displayname": "Schema_2_Version_Name"
       },
       "Schema_1_Name": {
         "x-ep-schema-version": "1.0.0",
         "x-ep-schema-state-id": "2",
         "x-ep-schema-version-id": "loyscnlazj5",
         "x-ep-schema-id": "5e95l0jqxlt",
-        "description": "Generic message header.",
+        "description": "Schema_1_Name description",
         "x-ep-schema-state-name": "RELEASED",
         "x-ep-schema-name": "Schema_1_Name",
         "type": "object",
@@ -53,20 +53,20 @@
           }
         },
         "required": ["sentAt", "transactionId", "storeId"],
-        "x-ep-schema-version-displayname": "Schema_1_Id"
+        "x-ep-schema-version-displayname": "Schema_1_Version_Name"
       }
     },
     "messages": {
       "Event_2_Name": {
         "x-ep-event-id": "oumr2wycciv",
-        "x-ep-event-version-displayname": "Event_2_Id",
+        "x-ep-event-version-displayname": "Event_2_Version_Name",
         "x-ep-event-version-id": "ifg6vpksml9",
         "payload": {
           "$ref": "#/components/schemas/Schema_2_Name"
         },
         "x-ep-event-version": "1.0.0",
         "x-ep-event-name": "Event_2_Name",
-        "description": "Event_2_Id",
+        "description": "Event_2_Name description",
         "schemaFormat": "application/vnd.aai.asyncapi+json;version=2.0.0",
         "contentType": "application/json",
         "x-ep-event-state-id": "2",
@@ -74,14 +74,14 @@
       },
       "Event_1_Name": {
         "x-ep-event-id": "7jhc9d369ob",
-        "x-ep-event-version-displayname": "Event_1_Id",
+        "x-ep-event-version-displayname": "Event_1_Version_Name",
         "x-ep-event-version-id": "mvi0eewza58",
         "payload": {
           "$ref": "#/components/schemas/Schema_1_Name"
         },
         "x-ep-event-version": "1.0.0",
         "x-ep-event-name": "Event_1_Name",
-        "description": "Event_1_Id",
+        "description": "Event_1_Name description",
         "schemaFormat": "application/vnd.aai.asyncapi+json;version=2.0.0",
         "contentType": "application/json",
         "x-ep-event-state-id": "2",

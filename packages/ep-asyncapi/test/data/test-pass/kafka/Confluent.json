@@ -1,87 +1,76 @@
 {
-    "components": {
-        "schemas": {},
-        "messages": {
-            "samples.clickstream.avro.ClickEvent-1ddlngjbz4z": {
-                "payload": {
-                    "name": "ClickEvent",
-                    "namespace": "samples.clickstream.avro",
-                    "type": "record",
-                    "fields": [
-                        {
-                            "name": "ip",
-                            "type": "string"
-                        },
-                        {
-                            "name": "eventtimestamp",
-                            "type": "long"
-                        },
-                        {
-                            "name": "devicetype",
-                            "type": "string"
-                        },
-                        {
-                            "name": "event_type",
-                            "type": [
-                                "string",
-                                "null"
-                            ]
-                        },
-                        {
-                            "name": "product_type",
-                            "type": [
-                                "string",
-                                "null"
-                            ]
-                        },
-                        {
-                            "name": "userid",
-                            "type": "int"
-                        },
-                        {
-                            "name": "globalseq",
-                            "type": "long"
-                        },
-                        {
-                            "default": 0,
-                            "name": "prevglobalseq",
-                            "type": "long"
-                        }
-                    ]
-                },
-                "name": "samples.clickstream.avro.ClickEvent-1ddlngjbz4z",
-                "contentType": "application/json",
-                "schemaFormat": "application/vnd.apache.avro;version=1.9.0"
+  "components": {
+    "schemas": {},
+    "messages": {
+      "samples.clickstream.avro.ClickEvent-1ddlngjbz4z": {
+        "payload": {
+          "name": "ClickEvent",
+          "namespace": "samples.clickstream.avro",
+          "type": "record",
+          "fields": [
+            {
+              "name": "ip",
+              "type": "string"
             },
-            "1ddlngjbz4p": {
-                "payload": {
-                    "type": "string"
-                },
-                "name": "1ddlngjbz4p",
-                "contentType": "application/json",
-                "schemaFormat": "application/vnd.apache.avro;version=1.9.0"
+            {
+              "name": "eventtimestamp",
+              "type": "long"
+            },
+            {
+              "name": "devicetype",
+              "type": "string"
+            },
+            {
+              "name": "event_type",
+              "type": ["string", "null"]
+            },
+            {
+              "name": "product_type",
+              "type": ["string", "null"]
+            },
+            {
+              "name": "userid",
+              "type": "int"
+            },
+            {
+              "name": "globalseq",
+              "type": "long"
+            },
+            {
+              "default": 0,
+              "name": "prevglobalseq",
+              "type": "long"
             }
-        }
-    },
-    "channels": {
-        "User_Sessions_Aggregates_With_Order_Checkout": {},
-        "ClickEvents_UserId_Agg_Result": {},
-        "__amazon_msk_canary": {},
-        "_schemas": {},
-        "Departments_Agg": {},
-        "ExampleTopic": {
-            "publish": {
-                "message": {
-                    "$ref": "#/components/messages/samples.clickstream.avro.ClickEvent-1ddlngjbz4z"
-                }
-            }
-        }
-    },
-    "asyncapi": "2.2.0",
-    "x-ep-application-domain-name": "Discovery",
-    "info": {
-        "description": "Discovery Agent Scan",
-        "title": "Confluent16-1",
-        "version": "0.1.0"
+          ]
+        },
+        "name": "samples.clickstream.avro.ClickEvent-1ddlngjbz4z",
+        "contentType": "application/json",
+        "schemaFormat": "application/vnd.apache.avro;version=1.9.0"
+      },
+      "1ddlngjbz4p": {
+        "payload": {
+          "type": "string"
+        },
+        "name": "1ddlngjbz4p",
+        "contentType": "application/json",
+        "schemaFormat": "application/vnd.apache.avro;version=1.9.0"
+      }
     }
+  },
+  "channels": {
+    "ExampleTopic": {
+      "publish": {
+        "message": {
+          "$ref": "#/components/messages/samples.clickstream.avro.ClickEvent-1ddlngjbz4z"
+        }
+      }
+    }
+  },
+  "asyncapi": "2.2.0",
+  "x-ep-application-domain-name": "Discovery",
+  "info": {
+    "description": "Discovery Agent Scan",
+    "title": "Confluent16-1",
+    "version": "0.1.0"
+  }
 }

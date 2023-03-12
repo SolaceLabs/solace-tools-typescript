@@ -2,7 +2,9 @@ import {
   ChannelParameter, 
   Schema, 
 } from '@asyncapi/parser';
-import { EpAsyncApiParameterExtensions } from '../constants';
+import { 
+  EpParameterExtensions 
+} from '../constants';
 
 export class EpAsyncApiChannelParameterDocument {
   private channelParameterName: string;
@@ -23,15 +25,18 @@ export class EpAsyncApiChannelParameterDocument {
 
   public getAsyncApiChannelParameter(): ChannelParameter { return this.asyncApiChannelParameter; }
 
-  public getDescription(): string | undefined {
+  public getDescription(): string {
     const description: string | null = this.asyncApiChannelParameter.description();
     if(description && description.length > 0) return description;
+    return '';
   }
 
-  public getDisplayName(): string | undefined {
-    if(this.asyncApiChannelParameter.hasExtension(EpAsyncApiParameterExtensions.xEpEnumVersionDisplayName)) {
-      return this.asyncApiChannelParameter.extension(EpAsyncApiParameterExtensions.xEpEnumVersionDisplayName);
+  public getDisplayName(): string {
+    if(this.asyncApiChannelParameter.hasExtension(EpParameterExtensions.xEpEnumVersionDisplayName)) {
+      const displayName = this.asyncApiChannelParameter.extension(EpParameterExtensions.xEpEnumVersionDisplayName);
+      if(displayName && displayName.length > 0) return displayName;
     }
+    return '';
   }
 
   public getParameterEnumValueList(): Array<string> {

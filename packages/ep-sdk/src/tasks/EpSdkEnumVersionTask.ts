@@ -66,16 +66,12 @@ export interface IEpSdkEnumVersionTask_ExecuteReturn
 
 /** @category Tasks */
 export class EpSdkEnumVersionTask extends EpSdkVersionTask {
-  private readonly Empty_IEpSdkEnumVersionTask_GetFuncReturn: IEpSdkEnumVersionTask_GetFuncReturn =
-    {
-      epObjectKeys: this.getDefaultEpObjectKeys(),
-      epObject: undefined,
-      epObjectExists: false,
-    };
-  private readonly Default_TEpSdkEnumVersionTask_Settings: Partial<TEpSdkEnumVersionTask_Settings> =
-    {
-      // description: `Created by ${EpSdkConfig.getAppName()}.`,
-    };
+  private readonly Empty_IEpSdkEnumVersionTask_GetFuncReturn: IEpSdkEnumVersionTask_GetFuncReturn = {
+    epObjectKeys: this.getDefaultEpObjectKeys(),
+    epObject: undefined,
+    epObjectExists: false,
+  };
+  private readonly Default_TEpSdkEnumVersionTask_Settings: Partial<TEpSdkEnumVersionTask_Settings> = {};
   private getTaskConfig(): IEpSdkEnumVersionTask_Config {
     return this.epSdkTask_Config as IEpSdkEnumVersionTask_Config;
   }
@@ -128,23 +124,13 @@ export class EpSdkEnumVersionTask extends EpSdkVersionTask {
 
     if (epObject === undefined) return this.getDefaultEpObjectKeys();
     /* istanbul ignore next */
-    if (epObject.id === undefined) throw new EpSdkApiContentError(logName,
-        this.constructor.name,
-        "epObject.id === undefined",
-        {
-          epObject: epObject,
-        }
-      );
+    if (epObject.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "epObject.id === undefined", {
+      epObject: epObject,
+    });
     /* istanbul ignore next */
-    if (epObject.enumId === undefined)
-      throw new EpSdkApiContentError(
-        logName,
-        this.constructor.name,
-        "epObject.enumId === undefined",
-        {
-          epObject: epObject,
-        }
-      );
+    if (epObject.enumId === undefined) throw new EpSdkApiContentError(logName,this.constructor.name,"epObject.enumId === undefined",{
+      epObject: epObject,
+    });
     return {
       ...this.getDefaultEpObjectKeys(),
       epObjectId: epObject.enumId,
@@ -211,18 +197,15 @@ export class EpSdkEnumVersionTask extends EpSdkVersionTask {
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_START_IS_UPDATE_REQUIRED, module: this.constructor.name, details: {
       epSdkEnumVersionTask_GetFuncReturn: epSdkEnumVersionTask_GetFuncReturn,
     }}));
-
-    if (epSdkEnumVersionTask_GetFuncReturn.epObject === undefined) throw new EpSdkInternalTaskError(logName, this.constructor.name,
-      "epSdkEnumVersionTask_GetFuncReturn.epObject === undefined"
-    );
+    if (epSdkEnumVersionTask_GetFuncReturn.epObject === undefined) throw new EpSdkInternalTaskError(logName, this.constructor.name,"epSdkEnumVersionTask_GetFuncReturn.epObject === undefined");
     /* istanbul ignore next */
     if (epSdkEnumVersionTask_GetFuncReturn.epObject.version === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "epSdkEnumVersionTask_GetFuncReturn.epObject.version === undefined", {
       epObject: epSdkEnumVersionTask_GetFuncReturn.epObject,
     });
     const existingObject: TopicAddressEnumVersion = epSdkEnumVersionTask_GetFuncReturn.epObject;
     const existingCompareObject: TEpSdkEnumVersionTask_CompareObject = {
-      description: existingObject.description ? existingObject.description : undefined,
-      displayName: existingObject.displayName,
+      description: existingObject.description ? existingObject.description : '',
+      displayName: existingObject.displayName ? existingObject.displayName: '',
       stateId: existingObject.stateId,
       values: this.createCompareEnumValueList_From_EP({ epEnumValueList: existingObject.values }),
     };
@@ -231,12 +214,10 @@ export class EpSdkEnumVersionTask extends EpSdkVersionTask {
       existingCompareObject.version = epSdkEnumVersionTask_GetFuncReturn.epObject.version;
       requestedCompareObject.version = this.versionString;
     }
-
-    const epSdkTask_IsUpdateRequiredFuncReturn: IEpSdkTask_IsUpdateRequiredFuncReturn =
-      this.create_IEpSdkTask_IsUpdateRequiredFuncReturn({
-        existingObject: existingCompareObject,
-        requestedObject: requestedCompareObject,
-      });
+    const epSdkTask_IsUpdateRequiredFuncReturn: IEpSdkTask_IsUpdateRequiredFuncReturn = this.create_IEpSdkTask_IsUpdateRequiredFuncReturn({
+      existingObject: existingCompareObject,
+      requestedObject: requestedCompareObject,
+    });
     // // DEBUG:
     // if(epSdkTask_IsUpdateRequiredFuncReturn.isUpdateRequired) {
     //   EpSdkLogger.debug(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_DONE_IS_UPDATE_REQUIRED, module: this.constructor.name, details: {

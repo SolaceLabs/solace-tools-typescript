@@ -62,34 +62,38 @@ export interface IEpSdkSchemaVersionTask_ExecuteReturn
 
 /** @category Tasks */
 export class EpSdkSchemaVersionTask extends EpSdkVersionTask {
-  private readonly Empty_IEpSdkSchemaVersionTask_GetFuncReturn: IEpSdkSchemaVersionTask_GetFuncReturn =
-    {
-      epObjectKeys: this.getDefaultEpObjectKeys(),
-      epObject: undefined,
-      epObjectExists: false,
-    };
-  private readonly Default_TEpSdkSchemaVersionTask_Settings: Partial<TEpSdkSchemaVersionTask_Settings> =
-    {
-      // description: `Created by ${EpSdkConfig.getAppName()}.`,
-    };
+  private readonly Empty_IEpSdkSchemaVersionTask_GetFuncReturn: IEpSdkSchemaVersionTask_GetFuncReturn = {
+    epObjectKeys: this.getDefaultEpObjectKeys(),
+    epObject: undefined,
+    epObjectExists: false,
+  };
+  private readonly Default_TEpSdkSchemaVersionTask_Settings: Partial<TEpSdkSchemaVersionTask_Settings> = {
+    // description: `Created by ${EpSdkConfig.getAppName()}.`,
+  };
   private getTaskConfig(): IEpSdkSchemaVersionTask_Config {
     return this.epSdkTask_Config as IEpSdkSchemaVersionTask_Config;
   }
   private createObjectSettings(): Partial<SchemaVersion> {
+    // // try parse the content as json
+    // let content = this.getTaskConfig().schemaVersionSettings.content;
+    // try {
+    //   const jsonContent = JSON.parse(JSON.stringify(content));
+    //   content = JSON.stringify(jsonContent);
+    // } catch(e) {
+    //   // nothing
+    // }
     return {
-      ...this.Default_TEpSdkSchemaVersionTask_Settings,
+      ...this.Default_TEpSdkSchemaVersionTask_Settings,      
       ...this.getTaskConfig().schemaVersionSettings,
+      // content: content
     };
   }
 
-  public transform_EpSdkTask_Config(
-    epSdkSchemaVersionTask_Config: IEpSdkSchemaVersionTask_Config
-  ): IEpSdkSchemaVersionTask_Config {
-    epSdkSchemaVersionTask_Config.schemaVersionSettings.displayName =
-      this.truncate(
-        epSdkSchemaVersionTask_Config.schemaVersionSettings.displayName,
-        $SchemaVersion.properties.displayName.maxLength
-      );
+  public transform_EpSdkTask_Config(epSdkSchemaVersionTask_Config: IEpSdkSchemaVersionTask_Config): IEpSdkSchemaVersionTask_Config {
+    epSdkSchemaVersionTask_Config.schemaVersionSettings.displayName = this.truncate(
+      epSdkSchemaVersionTask_Config.schemaVersionSettings.displayName,
+      $SchemaVersion.properties.displayName.maxLength
+    );
     return epSdkSchemaVersionTask_Config;
   }
 
@@ -105,33 +109,18 @@ export class EpSdkSchemaVersionTask extends EpSdkVersionTask {
     };
   }
 
-  protected getEpObjectKeys(
-    epObject: SchemaVersion | undefined
-  ): IEpSdkVersionTask_EpObjectKeys {
+  protected getEpObjectKeys(epObject: SchemaVersion | undefined): IEpSdkVersionTask_EpObjectKeys {
     const funcName = "getEpObjectKeys";
     const logName = `${EpSdkSchemaVersionTask.name}.${funcName}()`;
-
     if (epObject === undefined) return this.getDefaultEpObjectKeys();
     /* istanbul ignore next */
-    if (epObject.id === undefined)
-      throw new EpSdkApiContentError(
-        logName,
-        this.constructor.name,
-        "epObject.id === undefined",
-        {
-          epObject: epObject,
-        }
-      );
+    if (epObject.id === undefined) throw new EpSdkApiContentError(logName,this.constructor.name,"epObject.id === undefined",{
+      epObject: epObject,
+    });
     /* istanbul ignore next */
-    if (epObject.schemaId === undefined)
-      throw new EpSdkApiContentError(
-        logName,
-        this.constructor.name,
-        "epObject.schemaId === undefined",
-        {
-          epObject: epObject,
-        }
-      );
+    if (epObject.schemaId === undefined) throw new EpSdkApiContentError(logName,this.constructor.name,"epObject.schemaId === undefined",{
+      epObject: epObject,
+    });
     return {
       ...this.getDefaultEpObjectKeys(),
       epObjectId: epObject.schemaId,
@@ -149,21 +138,14 @@ export class EpSdkSchemaVersionTask extends EpSdkVersionTask {
   /**
    * Get the latest SchemaVersion.
    */
-  protected async getFunc(
-    epSdkSchemaVersionTask_Keys: IEpSdkSchemaVersionTask_Keys
+  protected async getFunc(epSdkSchemaVersionTask_Keys: IEpSdkSchemaVersionTask_Keys
   ): Promise<IEpSdkSchemaVersionTask_GetFuncReturn> {
     const funcName = "getFunc";
     const logName = `${EpSdkSchemaVersionTask.name}.${funcName}()`;
 
-    EpSdkLogger.trace(
-      EpSdkLogger.createLogEntry(logName, {
-        code: EEpSdkLoggerCodes.TASK_EXECUTE_START_GET,
-        module: this.constructor.name,
-        details: {
-          epSdkSchemaVersionTask_Keys: epSdkSchemaVersionTask_Keys,
-        },
-      })
-    );
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, {code: EEpSdkLoggerCodes.TASK_EXECUTE_START_GET,module: this.constructor.name,details: {
+      epSdkSchemaVersionTask_Keys: epSdkSchemaVersionTask_Keys,
+    }}));
 
     const schemaVersion: SchemaVersion | undefined = await EpSdkSchemaVersionsService.getLatestVersionForSchemaId({
       xContextId: this.xContextId,
@@ -171,83 +153,57 @@ export class EpSdkSchemaVersionTask extends EpSdkVersionTask {
       schemaId: epSdkSchemaVersionTask_Keys.schemaId,
     });
 
-    EpSdkLogger.trace(
-      EpSdkLogger.createLogEntry(logName, {
-        code: EEpSdkLoggerCodes.TASK_EXECUTE_API_GET,
-        module: this.constructor.name,
-        details: {
-          epSdkSchemaVersionTask_Keys: epSdkSchemaVersionTask_Keys,
-          schemaVersion: schemaVersion ? schemaVersion : "undefined",
-        },
-      })
-    );
-
-    if (schemaVersion === undefined)
-      return this.Empty_IEpSdkSchemaVersionTask_GetFuncReturn;
-
-    const epSdkSchemaVersionTask_GetFuncReturn: IEpSdkSchemaVersionTask_GetFuncReturn =
-      {
-        epObjectKeys: this.getEpObjectKeys(schemaVersion),
-        epObject: schemaVersion,
-        epObjectExists: true,
-      };
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, {code: EEpSdkLoggerCodes.TASK_EXECUTE_API_GET,module: this.constructor.name,details: {
+      epSdkSchemaVersionTask_Keys: epSdkSchemaVersionTask_Keys,
+      schemaVersion: schemaVersion ? schemaVersion : "undefined",
+    }}));
+    if (schemaVersion === undefined) return this.Empty_IEpSdkSchemaVersionTask_GetFuncReturn;
+    const epSdkSchemaVersionTask_GetFuncReturn: IEpSdkSchemaVersionTask_GetFuncReturn = {
+      epObjectKeys: this.getEpObjectKeys(schemaVersion),
+      epObject: schemaVersion,
+      epObjectExists: true,
+    };
     return epSdkSchemaVersionTask_GetFuncReturn;
   }
 
-  protected async isUpdateRequiredFunc(
-    epSdkSchemaVersionTask_GetFuncReturn: IEpSdkSchemaVersionTask_GetFuncReturn
-  ): Promise<IEpSdkTask_IsUpdateRequiredFuncReturn> {
+  protected async isUpdateRequiredFunc(epSdkSchemaVersionTask_GetFuncReturn: IEpSdkSchemaVersionTask_GetFuncReturn): Promise<IEpSdkTask_IsUpdateRequiredFuncReturn> {
     const funcName = "isUpdateRequired";
     const logName = `${EpSdkSchemaVersionTask.name}.${funcName}()`;
 
-    EpSdkLogger.trace(
-      EpSdkLogger.createLogEntry(logName, {
-        code: EEpSdkLoggerCodes.TASK_EXECUTE_START_IS_UPDATE_REQUIRED,
-        module: this.constructor.name,
-        details: {
-          epSdkSchemaVersionTask_GetFuncReturn:
-            epSdkSchemaVersionTask_GetFuncReturn,
-        },
-      })
-    );
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, {code: EEpSdkLoggerCodes.TASK_EXECUTE_START_IS_UPDATE_REQUIRED,module: this.constructor.name,details: {
+      epSdkSchemaVersionTask_GetFuncReturn: epSdkSchemaVersionTask_GetFuncReturn,
+    }}));
 
-    if (epSdkSchemaVersionTask_GetFuncReturn.epObject === undefined)
-      throw new EpSdkInternalTaskError(
-        logName,
-        this.constructor.name,
-        "epSdkSchemaVersionTask_GetFuncReturn.epObject === undefined"
-      );
+    if (epSdkSchemaVersionTask_GetFuncReturn.epObject === undefined) throw new EpSdkInternalTaskError(logName,this.constructor.name,"epSdkSchemaVersionTask_GetFuncReturn.epObject === undefined");
     /* istanbul ignore next */
-    if (epSdkSchemaVersionTask_GetFuncReturn.epObject.version === undefined)
-      throw new EpSdkApiContentError(
-        logName,
-        this.constructor.name,
-        "epSdkSchemaVersionTask_GetFuncReturn.epObject.version === undefined",
-        {
-          epObject: epSdkSchemaVersionTask_GetFuncReturn.epObject,
-        }
-      );
-    const existingObject: SchemaVersion =
-      epSdkSchemaVersionTask_GetFuncReturn.epObject;
+    if (epSdkSchemaVersionTask_GetFuncReturn.epObject.version === undefined) throw new EpSdkApiContentError(logName,this.constructor.name,"epSdkSchemaVersionTask_GetFuncReturn.epObject.version === undefined",{
+      epObject: epSdkSchemaVersionTask_GetFuncReturn.epObject,
+    });
+    const existingObject: SchemaVersion = epSdkSchemaVersionTask_GetFuncReturn.epObject;
+    // // try parse the content as JSON
+    // let content = existingObject.content;
+    // try {
+    //   const jsonContent = JSON.parse(JSON.stringify(content));
+    //   content = JSON.stringify(jsonContent);
+    // } catch(e) {
+    //   // nothing
+    // }
     const existingCompareObject: TEpSdkSchemaVersionTask_CompareObject = {
       content: existingObject.content,
-      description: existingObject.description,
-      displayName: existingObject.displayName,
+      description: existingObject.description ? existingObject.description : '',
+      displayName: existingObject.displayName ? existingObject.displayName : '',
       stateId: existingObject.stateId,
     };
-    const requestedCompareObject: TEpSdkSchemaVersionTask_CompareObject =
-      this.createObjectSettings();
+    const requestedCompareObject: TEpSdkSchemaVersionTask_CompareObject = this.createObjectSettings();
     if (this.versionStrategy === EEpSdk_VersionTaskStrategy.EXACT_VERSION) {
-      existingCompareObject.version =
-        epSdkSchemaVersionTask_GetFuncReturn.epObject.version;
+      existingCompareObject.version = epSdkSchemaVersionTask_GetFuncReturn.epObject.version;
       requestedCompareObject.version = this.versionString;
     }
 
-    const epSdkTask_IsUpdateRequiredFuncReturn: IEpSdkTask_IsUpdateRequiredFuncReturn =
-      this.create_IEpSdkTask_IsUpdateRequiredFuncReturn({
-        existingObject: existingCompareObject,
-        requestedObject: requestedCompareObject,
-      });
+    const epSdkTask_IsUpdateRequiredFuncReturn: IEpSdkTask_IsUpdateRequiredFuncReturn = this.create_IEpSdkTask_IsUpdateRequiredFuncReturn({
+      existingObject: existingCompareObject,
+      requestedObject: requestedCompareObject,
+    });
     // // DEBUG:
     // if(epSdkTask_IsUpdateRequiredFuncReturn.isUpdateRequired) {
     //   EpSdkLogger.debug(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_DONE_IS_UPDATE_REQUIRED, module: this.constructor.name, details: {
@@ -266,28 +222,17 @@ export class EpSdkSchemaVersionTask extends EpSdkVersionTask {
     const funcName = "createFunc";
     const logName = `${EpSdkSchemaVersionTask.name}.${funcName}()`;
 
-    EpSdkLogger.trace(
-      EpSdkLogger.createLogEntry(logName, {
-        code: EEpSdkLoggerCodes.TASK_EXECUTE_START_CREATE,
-        module: this.constructor.name,
-      })
-    );
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, {code: EEpSdkLoggerCodes.TASK_EXECUTE_START_CREATE,module: this.constructor.name}));
 
     const create: SchemaVersion = {
       ...this.createObjectSettings(),
       schemaId: this.getTaskConfig().schemaId,
       version: this.versionString,
     };
-    EpSdkLogger.trace(
-      EpSdkLogger.createLogEntry(logName, {
-        code: EEpSdkLoggerCodes.TASK_EXECUTE_CREATE,
-        module: this.constructor.name,
-        details: {
-          epSdkSchemaVersionTask_Config: this.getTaskConfig(),
-          create: create,
-        },
-      })
-    );
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, {code: EEpSdkLoggerCodes.TASK_EXECUTE_CREATE,module: this.constructor.name,details: {
+      epSdkSchemaVersionTask_Config: this.getTaskConfig(),
+      create: create,
+    }}));
 
     if (this.isCheckmode()) {
       return {
@@ -299,7 +244,6 @@ export class EpSdkSchemaVersionTask extends EpSdkVersionTask {
         }),
       };
     }
-
     const schemaVersion: SchemaVersion = await EpSdkSchemaVersionsService.createSchemaVersion({
       xContextId: this.xContextId,
       applicationDomainId: this.getTaskConfig().applicationDomainId,
@@ -308,17 +252,11 @@ export class EpSdkSchemaVersionTask extends EpSdkVersionTask {
       targetLifecycleStateId: this.getTaskConfig().schemaVersionSettings.stateId,
     });
 
-    EpSdkLogger.trace(
-      EpSdkLogger.createLogEntry(logName, {
-        code: EEpSdkLoggerCodes.TASK_EXECUTE_CREATE,
-        module: this.constructor.name,
-        details: {
-          epSdkApplicationDomainTask_Config: this.getTaskConfig(),
-          create: create,
-          schemaVersion: schemaVersion,
-        },
-      })
-    );
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, {code: EEpSdkLoggerCodes.TASK_EXECUTE_CREATE,module: this.constructor.name,details: {
+      epSdkApplicationDomainTask_Config: this.getTaskConfig(),
+      create: create,
+      schemaVersion: schemaVersion,
+    }}));
 
     return {
       epSdkTask_Action: this.getCreateFuncAction(),
@@ -330,53 +268,25 @@ export class EpSdkSchemaVersionTask extends EpSdkVersionTask {
   /**
    * Creates a new SchemaVersion with bumped version number.
    */
-  protected async updateFunc(
-    epSdkSchemaVersionTask_GetFuncReturn: IEpSdkSchemaVersionTask_GetFuncReturn
-  ): Promise<IEpSdkSchemaVersionTask_UpdateFuncReturn> {
+  protected async updateFunc(epSdkSchemaVersionTask_GetFuncReturn: IEpSdkSchemaVersionTask_GetFuncReturn): Promise<IEpSdkSchemaVersionTask_UpdateFuncReturn> {
     const funcName = "updateFunc";
     const logName = `${EpSdkSchemaVersionTask.name}.${funcName}()`;
 
-    EpSdkLogger.trace(
-      EpSdkLogger.createLogEntry(logName, {
-        code: EEpSdkLoggerCodes.TASK_EXECUTE_START_UPDATE,
-        module: this.constructor.name,
-      })
-    );
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, {code: EEpSdkLoggerCodes.TASK_EXECUTE_START_UPDATE,module: this.constructor.name}));
 
-    if (epSdkSchemaVersionTask_GetFuncReturn.epObject === undefined)
-      throw new EpSdkInternalTaskError(
-        logName,
-        this.constructor.name,
-        "epSdkSchemaVersionTask_GetFuncReturn.epObject === undefined"
-      );
+    if (epSdkSchemaVersionTask_GetFuncReturn.epObject === undefined) throw new EpSdkInternalTaskError(logName,this.constructor.name,"epSdkSchemaVersionTask_GetFuncReturn.epObject === undefined");
     /* istanbul ignore next */
-    if (epSdkSchemaVersionTask_GetFuncReturn.epObject.id === undefined)
-      throw new EpSdkApiContentError(
-        logName,
-        this.constructor.name,
-        "epSdkSchemaVersionTask_GetFuncReturn.epObject.id === undefined",
-        {
-          epObject: epSdkSchemaVersionTask_GetFuncReturn.epObject,
-        }
-      );
+    if (epSdkSchemaVersionTask_GetFuncReturn.epObject.id === undefined) throw new EpSdkApiContentError(logName,this.constructor.name,"epSdkSchemaVersionTask_GetFuncReturn.epObject.id === undefined",{
+      epObject: epSdkSchemaVersionTask_GetFuncReturn.epObject,
+    });
     /* istanbul ignore next */
-    if (epSdkSchemaVersionTask_GetFuncReturn.epObject.version === undefined)
-      throw new EpSdkApiContentError(
-        logName,
-        this.constructor.name,
-        "epSdkSchemaVersionTask_GetFuncReturn.epObject.version === undefined",
-        {
-          epObject: epSdkSchemaVersionTask_GetFuncReturn.epObject,
-        }
-      );
-
+    if (epSdkSchemaVersionTask_GetFuncReturn.epObject.version === undefined) throw new EpSdkApiContentError(logName,this.constructor.name,"epSdkSchemaVersionTask_GetFuncReturn.epObject.version === undefined",{
+      epObject: epSdkSchemaVersionTask_GetFuncReturn.epObject,
+    });
     // getFuncReturn has the latest version object
     let nextVersion: string;
     try {
-      nextVersion = this.createNextVersionWithStrategyValidation({
-        existingObjectVersionString:
-          epSdkSchemaVersionTask_GetFuncReturn.epObject.version,
-      });
+      nextVersion = this.createNextVersionWithStrategyValidation({existingObjectVersionString: epSdkSchemaVersionTask_GetFuncReturn.epObject.version });
     } catch (e) {
       if (
         this.isCheckmode() &&
@@ -404,16 +314,10 @@ export class EpSdkSchemaVersionTask extends EpSdkVersionTask {
       schemaId: epSdkSchemaVersionTask_GetFuncReturn.epObject.id,
       version: nextVersion,
     };
-    EpSdkLogger.trace(
-      EpSdkLogger.createLogEntry(logName, {
-        code: EEpSdkLoggerCodes.TASK_EXECUTE_UPDATE,
-        module: this.constructor.name,
-        details: {
-          epSdkApplicationDomainTask_Config: this.getTaskConfig(),
-          update: update,
-        },
-      })
-    );
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, {code: EEpSdkLoggerCodes.TASK_EXECUTE_UPDATE,module: this.constructor.name,details: {
+      epSdkApplicationDomainTask_Config: this.getTaskConfig(),
+      update: update,
+    }}));
 
     if (this.isCheckmode()) {
       const wouldBe_EpObject: SchemaVersion = {
@@ -435,24 +339,17 @@ export class EpSdkSchemaVersionTask extends EpSdkVersionTask {
       targetLifecycleStateId: this.getTaskConfig().schemaVersionSettings.stateId,
     });
 
-    EpSdkLogger.trace(
-      EpSdkLogger.createLogEntry(logName, {
-        code: EEpSdkLoggerCodes.TASK_EXECUTE_UPDATE,
-        module: this.constructor.name,
-        details: {
-          epSdkApplicationDomainTask_Config: this.getTaskConfig(),
-          update: update,
-          schemaVersion: schemaVersion,
-        },
-      })
-    );
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, {code: EEpSdkLoggerCodes.TASK_EXECUTE_UPDATE,module: this.constructor.name,details: {
+      epSdkApplicationDomainTask_Config: this.getTaskConfig(),
+      update: update,
+      schemaVersion: schemaVersion,
+    }}));
 
-    const epSdkSchemaVersionTask_UpdateFuncReturn: IEpSdkSchemaVersionTask_UpdateFuncReturn =
-      {
-        epSdkTask_Action: this.getUpdateFuncAction(),
-        epObject: schemaVersion,
-        epObjectKeys: this.getEpObjectKeys(schemaVersion),
-      };
+    const epSdkSchemaVersionTask_UpdateFuncReturn: IEpSdkSchemaVersionTask_UpdateFuncReturn = {
+      epSdkTask_Action: this.getUpdateFuncAction(),
+      epObject: schemaVersion,
+      epObjectKeys: this.getEpObjectKeys(schemaVersion),
+    };
     return epSdkSchemaVersionTask_UpdateFuncReturn;
   }
 

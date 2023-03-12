@@ -147,7 +147,7 @@ export class CliEventApiImporter extends CliAssetsImporter {
       versionStrategy: EEpSdk_VersionTaskStrategy.EXACT_VERSION,
       eventApiVersionSettings: {
         description: epAsyncApiDocument.getDescription(),
-        displayName: epAsyncApiDocument.getTitle(),
+        displayName: epAsyncApiDocument.getEpEventApiVersionName(),
         producedEventVersionIds: cliPubSubEventVersionIds.publishEventVersionIdList,
         consumedEventVersionIds: cliPubSubEventVersionIds.subscribeEventVersionIdList,
         stateId: this.get_EpSdkTask_StateId(),
@@ -189,7 +189,7 @@ export class CliEventApiImporter extends CliAssetsImporter {
           versionStrategy: EEpSdk_VersionTaskStrategy.BUMP_PATCH,
           eventApiVersionSettings: {
             description: epAsyncApiDocument.getDescription(),
-            displayName: epAsyncApiDocument.getTitle(),
+            displayName: epAsyncApiDocument.getEpEventApiVersionName(),
             producedEventVersionIds: cliPubSubEventVersionIds.publishEventVersionIdList,
             consumedEventVersionIds: cliPubSubEventVersionIds.subscribeEventVersionIdList,
             // stateId: CliEPStatesService.getTargetLifecycleState({cliAssetImport_TargetLifecycleState: ECliAssetImport_TargetLifecycleState.DRAFT }),
@@ -257,7 +257,7 @@ export class CliEventApiImporter extends CliAssetsImporter {
         versionStrategy: EEpSdk_VersionTaskStrategy.EXACT_VERSION,
         eventApiVersionSettings: {
           description: epAsyncApiDocument.getDescription(),
-          displayName: epAsyncApiDocument.getTitle(),
+          displayName: epAsyncApiDocument.getEpEventApiVersionName(),
           producedEventVersionIds: cliPubSubEventVersionIds.publishEventVersionIdList,
           consumedEventVersionIds: cliPubSubEventVersionIds.subscribeEventVersionIdList,
           stateId: this.get_EpSdkTask_StateId(),

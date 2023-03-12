@@ -108,7 +108,6 @@ export abstract class CliAssetsImporter extends CliImporter {
       });
 
     const eventId: string = eventObject.id;
-    const eventVersionDisplayName: string = epAsyncApiChannelDocument.getEpEventName();
     const channelTopic: string = epAsyncApiChannelDocument.getAsyncApiChannelKey();
 
     const epSdkEpEventVersionTask = new EpSdkEpEventVersionTask({
@@ -120,8 +119,8 @@ export abstract class CliAssetsImporter extends CliImporter {
       topicString: channelTopic,
       topicDelimiter: epAsyncApiChannelDocument.getChannelDelimiter(),
       eventVersionSettings: {
-        description: epAsyncApiMessageDocument.getDescription(),
-        displayName: eventVersionDisplayName,
+        description: epAsyncApiChannelDocument.getEpEventDescription(),
+        displayName: epAsyncApiChannelDocument.getEpEventVersionName(),
         schemaVersionId: schemaVersionId,
         stateId: this.get_EpSdkTask_StateId(),
         brokerType: epAsyncApiChannelDocument.getBrokerType()
@@ -254,7 +253,10 @@ export abstract class CliAssetsImporter extends CliImporter {
       versionStrategy: this.get_EEpSdk_VersionTaskStrategy(),
       schemaVersionSettings: { 
         content: JSON.stringify(epAsyncApiMessageDocument.getSchemaAsSanitizedJson()),
-        description: epAsyncApiMessageDocument.getPayloadSchemaDescription(),
+        // don't set the description, it remains in the schema
+        // otherwise no idempotency 
+        // description: epAsyncApiMessageDocument.getPayloadSchemaDescription(),
+        description: '',
         displayName: epAsyncApiMessageDocument.getPayloadSchemaDisplayName(),
         stateId: this.get_EpSdkTask_StateId(),
       },
@@ -352,25 +354,13 @@ export abstract class CliAssetsImporter extends CliImporter {
   }): Promise<void> => {
     const funcName = "run_present_enum_version";
     const logName = `${CliAssetsImporter.name}.${funcName}()`;
-    CliLogger.debug(
-      CliLogger.createLogEntry(logName, {
-        code: ECliStatusCodes.IMPORTING_API_CHANNEL_PARAMETER,
-        details: {},
-      })
-    );
-    CliLogger.trace(
-      CliLogger.createLogEntry(logName, {
-        code: ECliStatusCodes.IMPORTING_API_CHANNEL_PARAMETER,
-        details: {
-          enumObject: enumObject,
-          specVersion: specVersion,
-          epAsyncApiChannelParameterDocument:
-            epAsyncApiChannelParameterDocument,
-          checkmode: checkmode,
-        },
-      })
-    );
-
+    CliLogger.debug(CliLogger.createLogEntry(logName, {code: ECliStatusCodes.IMPORTING_API_CHANNEL_PARAMETER,details: {}}));
+    CliLogger.trace(CliLogger.createLogEntry(logName, {code: ECliStatusCodes.IMPORTING_API_CHANNEL_PARAMETER, details: {
+      enumObject: enumObject,
+      specVersion: specVersion,
+      epAsyncApiChannelParameterDocument: epAsyncApiChannelParameterDocument,
+      checkmode: checkmode,
+    }}));
     /* istanbul ignore next */
     if (enumObject.id === undefined) throw new CliEPApiContentError(logName, "enumObject.id === undefined", {
       enumObject: enumObject,

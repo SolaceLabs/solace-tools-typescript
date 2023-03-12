@@ -54,6 +54,7 @@ import {
   EpAsyncApiDocument, 
   EpAsyncApiDocumentService 
 } from "@solace-labs/ep-asyncapi";
+import { ECliAssetImport_TargetVersionStrategy } from "../../src/importers";
 
 const scriptName: string = path.basename(__filename);
 const TestSpecName = scriptName;
@@ -69,8 +70,7 @@ let SchemaVersion_1_Id: string | undefined;
 let Schema_2_Name: string;
 let Schema_2_Id: string | undefined;
 let SchemaVersion_2_Id: string | undefined;
-const SchemaContent = `
-{
+const SchemaContent = `{
   "description": "Generic message header.",
   "type": "object",
   "properties": {
@@ -93,8 +93,7 @@ const SchemaContent = `
     "transactionId",
     "storeId"
   ]
-}
-`;
+}`;
 
 let Enum_1_Name: string;
 let Enum_1_Id: string | undefined;
@@ -198,9 +197,9 @@ describe(`${scriptName}`, () => {
         versionString: "1.0.0",
         schemaVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
-          displayName: 'Schema_1_Id',
+          displayName: `${Schema_1_Name} displayName`,
           // description: 'Schema_1_Id',
-          content: SchemaContent,
+          content: JSON.stringify(JSON.parse(SchemaContent)),
         },
       });
       const task_1_1_ExecuteReturn: IEpSdkSchemaVersionTask_ExecuteReturn = await task_1_1.execute();
@@ -224,9 +223,9 @@ describe(`${scriptName}`, () => {
         versionString: "1.0.0",
         schemaVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
-          displayName: 'Schema_2_Id',
+          displayName: `${Schema_2_Name} displayName`,
           // description: 'Schema_2_Id',
-          content: SchemaContent,
+          content: JSON.stringify(JSON.parse(SchemaContent)),
         },
       });
       const task_2_1_ExecuteReturn: IEpSdkSchemaVersionTask_ExecuteReturn = await task_2_1.execute();
@@ -257,8 +256,7 @@ describe(`${scriptName}`, () => {
         versionString: "1.0.0",
         enumVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
-          displayName: 'Enum_1_Id',
-          // description: 'Enum_1_Id',
+          displayName: `${Enum_1_Name} displayName`,
         },
         enumValues: EnumValues
       });
@@ -282,8 +280,7 @@ describe(`${scriptName}`, () => {
         versionString: "1.0.0",
         enumVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
-          displayName: 'Enum_2_Id',
-          // description: 'Enum_2_Id',
+          displayName: `${Enum_2_Name} displayName`,
         },
         enumValues: EnumValues
       });
@@ -316,8 +313,8 @@ describe(`${scriptName}`, () => {
         eventId: Event_1_Id,
         versionString: "1.0.0",
         eventVersionSettings: {
-          displayName: 'Event_1_Id',
-          description: 'Event_1_Id',
+          displayName: `${Event_1_Name} displayName`,
+          description: `${Event_1_Name} description`,
           schemaVersionId: SchemaVersion_1_Id,
           stateId: EpSdkStatesService.releasedId,
         },
@@ -343,8 +340,8 @@ describe(`${scriptName}`, () => {
         eventId: Event_2_Id,
         versionString: "1.0.0",
         eventVersionSettings: {
-          displayName: 'Event_2_Id',
-          // description: 'Event_2_Id',
+          displayName: `${Event_2_Name} displayName`,
+          description: `${Event_2_Name} description`,
           schemaVersionId: SchemaVersion_2_Id,
           stateId: EpSdkStatesService.releasedId,
         },
@@ -380,8 +377,8 @@ describe(`${scriptName}`, () => {
         versionString: "1.0.0",
         eventApiVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
-          displayName: 'EventApi_Id',
-          description: 'EventApi_Id',
+          displayName: `${EventApi_Name} displayName`,
+          description: `${EventApi_Name} description`,
           consumedEventVersionIds: [EventVersion_1_Id],
           producedEventVersionIds: [EventVersion_2_Id],
         }
@@ -414,8 +411,8 @@ describe(`${scriptName}`, () => {
         applicationId: App_Id,
         versionString: "1.0.0",
         applicationVersionSettings: {
-          displayName: 'App_Id',
-          description: 'App_Id',
+          displayName: `${App_Name} displayName`,
+          description: `${App_Name} description`,
           declaredConsumedEventVersionIds: [EventVersion_2_Id],
           declaredProducedEventVersionIds: [EventVersion_1_Id],
           stateId: EpSdkStatesService.releasedId,
@@ -467,6 +464,7 @@ describe(`${scriptName}`, () => {
     try {
       CliConfig.getCliImporterManagerOptions().asyncApiFileList = [AsyncApiSpecFileNameJson];
       CliConfig.getCliImporterManagerOptions().cliImporterManagerMode = ECliImporterManagerMode.RELEASE_MODE;
+      CliConfig.getCliImporterManagerOptions().cliTestSetupDomainsForApis = true;
       // CliConfig.getCliImporterManagerOptions().runId = scriptName;
       // // DEBUG
       // CliConfig.getCliImporterManagerOptions().cliImporterManagerMode = ECliImporterManagerMode.TEST_MODE_KEEP;
@@ -474,6 +472,8 @@ describe(`${scriptName}`, () => {
       CliConfig.getCliImporterManagerOptions().createEventApiApplication = true;
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_BrokerType = undefined;
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_ChannelDelimiter = undefined;
+      CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliValidateApiSpecBestPractices = true;
+      CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_TargetVersionStrategy = ECliAssetImport_TargetVersionStrategy.BUMP_PATCH;
 
       const cliImporter = new CliImporterManager(CliConfig.getCliImporterManagerOptions());
       const xvoid: void = await cliImporter.run();

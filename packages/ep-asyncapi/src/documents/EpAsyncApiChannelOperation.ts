@@ -45,7 +45,7 @@ abstract class EpAsyncApiChannelOperation {
       asyncApiChannelOperation: asyncApiChannelOperation,
       asyncApiSpecTitle: this.epAsyncApiDocument.getTitle(),
     });
-    return new EpAsyncApiMessageDocument(this.epAsyncApiDocument, this.epAsyncApiChannelDocument, undefined, messageList[0]);
+    return new EpAsyncApiMessageDocument(this.epAsyncApiDocument, this.epAsyncApiChannelDocument, messageList[0]);
   }
 
 }

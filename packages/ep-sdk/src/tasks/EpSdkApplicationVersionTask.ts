@@ -214,65 +214,36 @@ export class EpSdkApplicationVersionTask extends EpSdkVersionTask {
     return epSdkApplicationVersionTask_GetFuncReturn;
   }
 
-  protected async isUpdateRequiredFunc(
-    epSdkApplicationVersionTask_GetFuncReturn: IEpSdkApplicationVersionTask_GetFuncReturn
-  ): Promise<IEpSdkTask_IsUpdateRequiredFuncReturn> {
+  protected async isUpdateRequiredFunc(epSdkApplicationVersionTask_GetFuncReturn: IEpSdkApplicationVersionTask_GetFuncReturn): Promise<IEpSdkTask_IsUpdateRequiredFuncReturn> {
     const funcName = "isUpdateRequired";
     const logName = `${EpSdkApplicationVersionTask.name}.${funcName}()`;
 
-    EpSdkLogger.trace(
-      EpSdkLogger.createLogEntry(logName, {
-        code: EEpSdkLoggerCodes.TASK_EXECUTE_START_IS_UPDATE_REQUIRED,
-        module: this.constructor.name,
-        details: {
-          epSdkApplicationVersionTask_GetFuncReturn:
-            epSdkApplicationVersionTask_GetFuncReturn,
-        },
-      })
-    );
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, {code: EEpSdkLoggerCodes.TASK_EXECUTE_START_IS_UPDATE_REQUIRED,module: this.constructor.name,details: {
+      epSdkApplicationVersionTask_GetFuncReturn: epSdkApplicationVersionTask_GetFuncReturn,
+    }}));
 
-    if (epSdkApplicationVersionTask_GetFuncReturn.epObject === undefined)
-      throw new EpSdkInternalTaskError(
-        logName,
-        this.constructor.name,
-        "epSdkApplicationVersionTask_GetFuncReturn.epObject === undefined"
-      );
+    if (epSdkApplicationVersionTask_GetFuncReturn.epObject === undefined) throw new EpSdkInternalTaskError(logName,this.constructor.name,"epSdkApplicationVersionTask_GetFuncReturn.epObject === undefined");
     /* istanbul ignore next */
-    if (
-      epSdkApplicationVersionTask_GetFuncReturn.epObject.version === undefined
-    )
-      throw new EpSdkApiContentError(
-        logName,
-        this.constructor.name,
-        "epSdkApplicationVersionTask_GetFuncReturn.epObject.version === undefined",
-        {
-          epObject: epSdkApplicationVersionTask_GetFuncReturn.epObject,
-        }
-      );
-    const existingObject: ApplicationVersion =
-      epSdkApplicationVersionTask_GetFuncReturn.epObject;
+    if (epSdkApplicationVersionTask_GetFuncReturn.epObject.version === undefined) throw new EpSdkApiContentError(logName,this.constructor.name,"epSdkApplicationVersionTask_GetFuncReturn.epObject.version === undefined",{
+      epObject: epSdkApplicationVersionTask_GetFuncReturn.epObject,
+    });
+    const existingObject: ApplicationVersion = epSdkApplicationVersionTask_GetFuncReturn.epObject;
     const existingCompareObject: TEpSdkApplicationVersionTask_CompareObject = {
-      description: existingObject.description,
-      displayName: existingObject.displayName,
+      description: existingObject.description ? existingObject.description : '',
+      displayName: existingObject.displayName ? existingObject.displayName : '',
       stateId: existingObject.stateId,
-      declaredConsumedEventVersionIds:
-        existingObject.declaredConsumedEventVersionIds,
-      declaredProducedEventVersionIds:
-        existingObject.declaredProducedEventVersionIds,
+      declaredConsumedEventVersionIds: existingObject.declaredConsumedEventVersionIds,
+      declaredProducedEventVersionIds: existingObject.declaredProducedEventVersionIds,
     };
-    const requestedCompareObject: TEpSdkApplicationVersionTask_CompareObject =
-      this.createObjectSettings();
+    const requestedCompareObject: TEpSdkApplicationVersionTask_CompareObject = this.createObjectSettings();
     if (this.versionStrategy === EEpSdk_VersionTaskStrategy.EXACT_VERSION) {
-      existingCompareObject.version =
-        epSdkApplicationVersionTask_GetFuncReturn.epObject.version;
+      existingCompareObject.version = epSdkApplicationVersionTask_GetFuncReturn.epObject.version;
       requestedCompareObject.version = this.versionString;
     }
-
-    const epSdkTask_IsUpdateRequiredFuncReturn: IEpSdkTask_IsUpdateRequiredFuncReturn =
-      this.create_IEpSdkTask_IsUpdateRequiredFuncReturn({
-        existingObject: existingCompareObject,
-        requestedObject: requestedCompareObject,
-      });
+    const epSdkTask_IsUpdateRequiredFuncReturn: IEpSdkTask_IsUpdateRequiredFuncReturn = this.create_IEpSdkTask_IsUpdateRequiredFuncReturn({
+      existingObject: existingCompareObject,
+      requestedObject: requestedCompareObject,
+    });
     // // DEBUG:
     // if(epSdkTask_IsUpdateRequiredFuncReturn.isUpdateRequired) {
     //   EpSdkLogger.debug(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_DONE_IS_UPDATE_REQUIRED, module: this.constructor.name, details: {
