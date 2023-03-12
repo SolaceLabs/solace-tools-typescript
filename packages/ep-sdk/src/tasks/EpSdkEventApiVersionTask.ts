@@ -89,6 +89,8 @@ export class EpSdkEventApiVersionTask extends EpSdkVersionTask {
     return {
       ...this.Default_TEpSdkEventApiVersionTask_Settings,
       ...this.getTaskConfig().eventApiVersionSettings,
+      description: this.getTaskConfig().eventApiVersionSettings.description ? this.getTaskConfig().eventApiVersionSettings.description : '',
+      displayName: this.getTaskConfig().eventApiVersionSettings.displayName ? this.getTaskConfig().eventApiVersionSettings.displayName : '',      
     };
   }
 

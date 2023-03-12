@@ -92,6 +92,8 @@ export class EpSdkEnumVersionTask extends EpSdkVersionTask {
       ...this.Default_TEpSdkEnumVersionTask_Settings,
       ...this.getTaskConfig().enumVersionSettings,
       values: this.createEnumValueList(this.getTaskConfig().enumValues),
+      description: this.getTaskConfig().enumVersionSettings.description ? this.getTaskConfig().enumVersionSettings.description : '',
+      displayName: this.getTaskConfig().enumVersionSettings.displayName ? this.getTaskConfig().enumVersionSettings.displayName : '',
     };
   }
 
@@ -188,9 +190,7 @@ export class EpSdkEnumVersionTask extends EpSdkVersionTask {
     });
   }
 
-  protected async isUpdateRequiredFunc(
-    epSdkEnumVersionTask_GetFuncReturn: IEpSdkEnumVersionTask_GetFuncReturn
-  ): Promise<IEpSdkTask_IsUpdateRequiredFuncReturn> {
+  protected async isUpdateRequiredFunc(epSdkEnumVersionTask_GetFuncReturn: IEpSdkEnumVersionTask_GetFuncReturn): Promise<IEpSdkTask_IsUpdateRequiredFuncReturn> {
     const funcName = "isUpdateRequired";
     const logName = `${EpSdkEnumVersionTask.name}.${funcName}()`;
 

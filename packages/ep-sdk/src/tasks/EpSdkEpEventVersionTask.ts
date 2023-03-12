@@ -119,6 +119,8 @@ export class EpSdkEpEventVersionTask extends EpSdkVersionTask {
     const settings: TEpSdkEpEventVersionTask_Settings = {
       ...this.Default_TEpSdkEpEventVersionTask_Settings,
       ...this.getTaskConfig().eventVersionSettings,
+      description: this.getTaskConfig().eventVersionSettings.description ? this.getTaskConfig().eventVersionSettings.description : '',
+      displayName: this.getTaskConfig().eventVersionSettings.displayName ? this.getTaskConfig().eventVersionSettings.displayName : '',
     };
     delete settings.brokerType;
     const brokerType = this.getTaskConfig().eventVersionSettings.brokerType

@@ -180,14 +180,23 @@ export class EpSdkSchemaVersionTask extends EpSdkVersionTask {
       epObject: epSdkSchemaVersionTask_GetFuncReturn.epObject,
     });
     const existingObject: SchemaVersion = epSdkSchemaVersionTask_GetFuncReturn.epObject;
-    // // try parse the content as JSON
-    // let content = existingObject.content;
-    // try {
-    //   const jsonContent = JSON.parse(JSON.stringify(content));
-    //   content = JSON.stringify(jsonContent);
-    // } catch(e) {
-    //   // nothing
-    // }
+    // get the parent object to check for contentType
+    // existingObject.schemaId
+    // try parse the content as JSON
+    let content = existingObject.content;
+    try {
+      const jsonContent = JSON.parse(content);
+
+      console.log(`\n\n\n\njsonContent = ${JSON.stringify(jsonContent, null, 2)}\n\n\n\n`);
+
+
+      content = JSON.stringify(jsonContent);
+    } catch(e) {
+      // nothing
+    }
+
+
+    
     const existingCompareObject: TEpSdkSchemaVersionTask_CompareObject = {
       content: existingObject.content,
       description: existingObject.description ? existingObject.description : '',

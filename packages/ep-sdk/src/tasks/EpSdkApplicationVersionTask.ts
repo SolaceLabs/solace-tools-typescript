@@ -94,6 +94,8 @@ export class EpSdkApplicationVersionTask extends EpSdkVersionTask {
     return {
       ...this.Default_TEpSdkApplicationVersionTask_Settings,
       ...this.getTaskConfig().applicationVersionSettings,
+      description: this.getTaskConfig().applicationVersionSettings.description ? this.getTaskConfig().applicationVersionSettings.description : '',
+      displayName: this.getTaskConfig().applicationVersionSettings.displayName ? this.getTaskConfig().applicationVersionSettings.displayName : '',      
     };
   }
 
