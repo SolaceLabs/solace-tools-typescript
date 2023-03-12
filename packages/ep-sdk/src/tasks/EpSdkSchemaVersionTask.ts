@@ -25,7 +25,9 @@ import {
 
 /** @category Tasks */
 export type TEpSdkSchemaVersionTask_Settings = Required<Pick<SchemaVersion, "content" | "stateId">> & Pick<SchemaVersion, "description" | "displayName">;
-type TEpSdkSchemaVersionTask_CompareObject = Partial<TEpSdkSchemaVersionTask_Settings> & Partial<Pick<SchemaVersion, "version">>;
+type TEpSdkSchemaVersionTask_CompareObject = Partial<TEpSdkSchemaVersionTask_Settings> & Partial<Pick<SchemaVersion, "version">> & {
+  content?: any;
+}
 
 /** @category Tasks */
 export interface IEpSdkSchemaVersionTask_Config
@@ -74,18 +76,9 @@ export class EpSdkSchemaVersionTask extends EpSdkVersionTask {
     return this.epSdkTask_Config as IEpSdkSchemaVersionTask_Config;
   }
   private createObjectSettings(): Partial<SchemaVersion> {
-    // // try parse the content as json
-    // let content = this.getTaskConfig().schemaVersionSettings.content;
-    // try {
-    //   const jsonContent = JSON.parse(JSON.stringify(content));
-    //   content = JSON.stringify(jsonContent);
-    // } catch(e) {
-    //   // nothing
-    // }
     return {
       ...this.Default_TEpSdkSchemaVersionTask_Settings,      
       ...this.getTaskConfig().schemaVersionSettings,
-      // content: content
     };
   }
 
@@ -180,30 +173,33 @@ export class EpSdkSchemaVersionTask extends EpSdkVersionTask {
       epObject: epSdkSchemaVersionTask_GetFuncReturn.epObject,
     });
     const existingObject: SchemaVersion = epSdkSchemaVersionTask_GetFuncReturn.epObject;
-    // get the parent object to check for contentType
-    // existingObject.schemaId
+    // better: get the parent object to check for contentType: existingObject.schemaId
     // try parse the content as JSON
-    let content = existingObject.content;
+    let existingContent: any = existingObject.content;
     try {
-      const jsonContent = JSON.parse(content);
-
-      console.log(`\n\n\n\njsonContent = ${JSON.stringify(jsonContent, null, 2)}\n\n\n\n`);
-
-
-      content = JSON.stringify(jsonContent);
+      const jsonContent = JSON.parse(existingContent);
+      existingContent = jsonContent;
     } catch(e) {
       // nothing
     }
-
-
-    
     const existingCompareObject: TEpSdkSchemaVersionTask_CompareObject = {
-      content: existingObject.content,
+      content: existingContent,
+      // content: existingObject.content,
       description: existingObject.description ? existingObject.description : '',
       displayName: existingObject.displayName ? existingObject.displayName : '',
       stateId: existingObject.stateId,
     };
-    const requestedCompareObject: TEpSdkSchemaVersionTask_CompareObject = this.createObjectSettings();
+    let requestedContent: any = this.createObjectSettings().content;
+    try {
+      const jsonContent = JSON.parse(requestedContent);
+      requestedContent = jsonContent;
+    } catch(e) {
+      // nothing
+    }
+    const requestedCompareObject: TEpSdkSchemaVersionTask_CompareObject = {
+      ...this.createObjectSettings(),
+      content: requestedContent
+    }
     if (this.versionStrategy === EEpSdk_VersionTaskStrategy.EXACT_VERSION) {
       existingCompareObject.version = epSdkSchemaVersionTask_GetFuncReturn.epObject.version;
       requestedCompareObject.version = this.versionString;
