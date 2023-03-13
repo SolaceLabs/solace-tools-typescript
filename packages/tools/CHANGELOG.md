@@ -1,5 +1,11 @@
 # @internal/tools
 
+## 0.3.0
+
+### Minor Changes
+
+- 3e7f1b30: added integration test functionality
+
 ## 0.2.0
 
 ### Minor Changes
