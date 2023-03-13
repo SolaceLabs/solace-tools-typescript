@@ -356,14 +356,6 @@ export class EpAsyncApiDocument {
     return this.asyncApiDocument.info().title();
   }
 
-  // private getTitleAsFilePath(): string {
-  //   return this.getTitle().replaceAll(/[^0-9a-zA-Z]+/g, "-");
-  // }
-
-  // private getTitleAsFileName(ext: string): string {
-  //   return `${this.getTitleAsFilePath()}.${ext}`;
-  // }
-
   public getVersion(): string {
     return this.asyncApiDocument.info().version();
   }
@@ -408,24 +400,6 @@ export class EpAsyncApiDocument {
     if(this.epApiVersionName === undefined) return '';
     return this.epApiVersionName;
   }
-
-  // public getEpApplicationName(): string {
-  //   // TODO: needs its own property, different create algo
-  //   return this.getEpEventApiName();
-  // }
-
-  // public getEpApplicationVersionName(): string {
-  //   // TODO: needs its own property, different create algo
-  //   return this.getEpEventApiVersionName();
-  // }
-
-  // public getEpApplicationNameAsFilePath(): string {
-  //   return this.getEpApplicationName().replaceAll(/[^0-9a-zA-Z]+/g, "-");
-  // }
-
-  // public getEpApplicationNameAsFileName(ext: string): string {
-  //   return `${this.getEpApplicationNameAsFilePath()}.${ext}`;
-  // }
 
   public getAsJson(): any { return this.asyncApiDocumentJson; }
 
