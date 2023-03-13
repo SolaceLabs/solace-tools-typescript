@@ -83,8 +83,8 @@ export class EpAsyncApiDocument {
   private overrideBrokerType: string | undefined;
   private channelDelimiter: EChannelDelimiters;
   private overrideChannelDelimiter: string | undefined;
-  private epEventApiName: string;
-  private epEventApiVersionName?: string;
+  private epApiName: string;
+  private epApiVersionName?: string;
 
   private getJSON(asyncApiDocument: AsyncAPIDocument): any {
     const funcName = "getJSON";
@@ -177,15 +177,15 @@ export class EpAsyncApiDocument {
     if(channelDelimiter === undefined) channelDelimiter = EpAsyncApiDocument.DefaultChannelDelimiter;
     return channelDelimiter as EChannelDelimiters;
   }
-  private createEpEventApiName(): string {
-    if(this.epEventApiName !== undefined) return this.epEventApiName;
+  private createEpApiName(): string {
+    if(this.epApiName !== undefined) return this.epApiName;
     return this.getTitle();
   }
-  private createEpEventApiVersionName(): string {
+  private createEpApiVersionName(): string {
     if(!this.asyncApiDocument.info()) return '';
     if(this.asyncApiDocument.info().hasExtension(EpApiInfoExtensions.xEpApiInfoVersionDisplayName)) {
-      const eventApiDisplayName = this.asyncApiDocument.info().extension(EpApiInfoExtensions.xEpApiInfoVersionDisplayName);
-      if(eventApiDisplayName && eventApiDisplayName.length > 0) return eventApiDisplayName;
+      const epApiDisplayName = this.asyncApiDocument.info().extension(EpApiInfoExtensions.xEpApiInfoVersionDisplayName);
+      if(epApiDisplayName && epApiDisplayName.length > 0) return epApiDisplayName;
     }
     // set to empty for better logging
     return '';
@@ -245,39 +245,39 @@ export class EpAsyncApiDocument {
     this.overrideChannelDelimiter = overrideChannelDelimiter;
     this.brokerType = this.createBrokerType();
     this.channelDelimiter = this.createChannelDelimiter();
-    this.epEventApiName = this.createEpEventApiName();
-    this.epEventApiVersionName = this.createEpEventApiVersionName();
+    this.epApiName = this.createEpApiName();
+    this.epApiVersionName = this.createEpApiVersionName();
   }
 
-  private validateEpEventApiName = () => {
-    const funcName = "validateEpEventApiName";
+  private validateEpApiName = () => {
+    const funcName = "validateEpApiName";
     const logName = `${EpAsyncApiDocument.name}.${funcName}()`;
-    const eventApiName = this.epEventApiName || this.createEpEventApiName();
+    const epApiName = this.epApiName || this.createEpApiName();
     const schema = $EventApi.properties.name;
     const v: Validator = new Validator();
-    const validateResult: ValidatorResult = v.validate(eventApiName, schema);
+    const validateResult: ValidatorResult = v.validate(epApiName, schema);
     if (!validateResult.valid) throw new EpAsyncApiValidationError(logName,this.constructor.name,undefined,{
       asyncApiSpecTitle: this.getTitle(),
       issues: validateResult.errors,
       value: {
-        epEventApiName: this.epEventApiName,
+        epApiName: this.epApiName,
       }
     });
   };
 
-  private validateEpEventApiVersionName = () => {
-    const funcName = "validateEpEventApiVersionName";
+  private validateEpApiVersionName = () => {
+    const funcName = "validateEpApiVersionName";
     const logName = `${EpAsyncApiDocument.name}.${funcName}()`;
-    const eventApiVersionName = this.epEventApiVersionName || this.createEpEventApiVersionName();
-    if(eventApiVersionName === undefined) throw new EpAsyncApiInternalError(logName, this.constructor.name, 'eventApiVersionName === undefined');
+    const epApiVersionName = this.epApiVersionName || this.createEpApiVersionName();
+    if(epApiVersionName === undefined) throw new EpAsyncApiInternalError(logName, this.constructor.name, 'epApiVersionName === undefined');
     const schema = $EventApiVersion.properties.displayName;
     const v: Validator = new Validator();
-    const validateResult: ValidatorResult = v.validate(eventApiVersionName, schema);
+    const validateResult: ValidatorResult = v.validate(epApiVersionName, schema);
     if (!validateResult.valid) throw new EpAsyncApiValidationError(logName,this.constructor.name,undefined,{
       asyncApiSpecTitle: this.getTitle(),
       issues: validateResult.errors,
       value: {
-        epEventApiVersionName: this.epEventApiVersionName,
+        epApiVersionName: this.epApiVersionName,
       },
     });
   };
@@ -326,8 +326,8 @@ export class EpAsyncApiDocument {
   public validate(): void {
     // this doc
     this.validate_VersionIsSemVerFormat();
-    this.validateEpEventApiName();
-    this.validateEpEventApiVersionName();
+    this.validateEpApiName();
+    this.validateEpApiVersionName();
     this.validate_BrokerType();
     this.validate_ChannelDelimiter();
     // cascade validation to all elements
@@ -394,30 +394,38 @@ export class EpAsyncApiDocument {
 
   public getChannelDelimiter(): EChannelDelimiters { return this.channelDelimiter; }
 
-  public getEpEventApiName(): string { return this.epEventApiName; }
+  public getEpApiName(): string { return this.epApiName; }
 
-  public getEpEventApiNameAsFilePath(): string {
-    return this.getEpEventApiName().replaceAll(/[^0-9a-zA-Z]+/g, "-");
+  public getEpApiNameAsFilePath(): string {
+    return this.getEpApiName().replaceAll(/[^0-9a-zA-Z]+/g, "-");
   }
 
-  public getEpEventApiNameAsFileName(ext: string): string {
-    return `${this.getEpEventApiNameAsFilePath()}.${ext}`;
+  public getEpApiNameAsFileName(ext: string): string {
+    return `${this.getEpApiNameAsFilePath()}.${ext}`;
   }
 
-  public getEpEventApiVersionName(): string {
-    if(this.epEventApiVersionName === undefined) return '';
-    return this.epEventApiVersionName;
+  public getEpApiVersionName(): string {
+    if(this.epApiVersionName === undefined) return '';
+    return this.epApiVersionName;
   }
 
-  public getEpApplicationName(): string {
-    // TODO: needs its own property, different create algo
-    return this.getEpEventApiName();
-  }
+  // public getEpApplicationName(): string {
+  //   // TODO: needs its own property, different create algo
+  //   return this.getEpEventApiName();
+  // }
 
-  public getEpApplicationVersionName(): string {
-    // TODO: needs its own property, different create algo
-    return this.getEpEventApiVersionName();
-  }
+  // public getEpApplicationVersionName(): string {
+  //   // TODO: needs its own property, different create algo
+  //   return this.getEpEventApiVersionName();
+  // }
+
+  // public getEpApplicationNameAsFilePath(): string {
+  //   return this.getEpApplicationName().replaceAll(/[^0-9a-zA-Z]+/g, "-");
+  // }
+
+  // public getEpApplicationNameAsFileName(ext: string): string {
+  //   return `${this.getEpApplicationNameAsFilePath()}.${ext}`;
+  // }
 
   public getAsJson(): any { return this.asyncApiDocumentJson; }
 

@@ -82,7 +82,7 @@ export class CliApplicationImporter extends CliImporter {
     // get latest version as reference
     const latestExistingApplicationVersionObjectBefore: ApplicationVersion | undefined = await EpSdkApplicationVersionsService.getLatestVersionForApplicationName({
       applicationDomainId: applicationDomainId,
-      applicationName: epAsyncApiDocument.getEpApplicationName(),
+      applicationName: epAsyncApiDocument.getEpApiName(),
     });
     // const latestExistingApplicationVersionString: string | undefined = latestExistingApplicationVersionObjectBefore?.version;
 
@@ -107,7 +107,7 @@ export class CliApplicationImporter extends CliImporter {
       versionStrategy: EEpSdk_VersionTaskStrategy.EXACT_VERSION,
       applicationVersionSettings: {
         description: epAsyncApiDocument.getDescription(),
-        displayName: epAsyncApiDocument.getEpApplicationVersionName(),
+        displayName: epAsyncApiDocument.getEpApiVersionName(),
         stateId: this.get_EpSdkTask_StateId(),
         declaredConsumedEventVersionIds:
           cliPubSubEventVersionIds.publishEventVersionIdList,
@@ -140,7 +140,7 @@ export class CliApplicationImporter extends CliImporter {
       if (latestExistingApplicationVersionObjectBefore === undefined) throw new CliInternalCodeInconsistencyError(logName, {
           message: "latestExistingApplicationVersionObjectBefore === undefined",
           applicationDomainId: applicationDomainId,
-          applicationName: epAsyncApiDocument.getEpApplicationName(),
+          applicationName: epAsyncApiDocument.getEpApiName(),
         });
 
       // create a new application version and issue warning
@@ -152,7 +152,7 @@ export class CliApplicationImporter extends CliImporter {
         versionStrategy: EEpSdk_VersionTaskStrategy.BUMP_PATCH,
         applicationVersionSettings: {
           description: epAsyncApiDocument.getDescription(),
-          displayName: epAsyncApiDocument.getEpApplicationVersionName(),
+          displayName: epAsyncApiDocument.getEpApiVersionName(),
           stateId: this.get_EpSdkTask_StateId(),
           declaredConsumedEventVersionIds: cliPubSubEventVersionIds.publishEventVersionIdList,
           declaredProducedEventVersionIds: cliPubSubEventVersionIds.subscribeEventVersionIdList,
@@ -194,7 +194,7 @@ export class CliApplicationImporter extends CliImporter {
         versionStrategy: EEpSdk_VersionTaskStrategy.EXACT_VERSION,
         applicationVersionSettings: {
           description: epAsyncApiDocument.getDescription(),
-          displayName: epAsyncApiDocument.getEpApplicationVersionName(),
+          displayName: epAsyncApiDocument.getEpApiVersionName(),
           stateId: this.get_EpSdkTask_StateId(),
           declaredConsumedEventVersionIds: cliPubSubEventVersionIds.publishEventVersionIdList,
           declaredProducedEventVersionIds: cliPubSubEventVersionIds.subscribeEventVersionIdList,
@@ -237,7 +237,7 @@ export class CliApplicationImporter extends CliImporter {
     const epSdkApplicationTask = new EpSdkApplicationTask({
       epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
       applicationDomainId: applicationDomainId,
-      applicationName: epAsyncApiDocument.getEpApplicationName(),
+      applicationName: epAsyncApiDocument.getEpApiName(),
       applicationObjectSettings: {
         applicationType: "standard",
         brokerType: epAsyncApiDocument.getBrokerType() as unknown as Application.brokerType
