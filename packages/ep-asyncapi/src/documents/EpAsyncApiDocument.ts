@@ -356,6 +356,14 @@ export class EpAsyncApiDocument {
     return this.asyncApiDocument.info().title();
   }
 
+  // private getTitleAsFilePath(): string {
+  //   return this.getTitle().replaceAll(/[^0-9a-zA-Z]+/g, "-");
+  // }
+
+  // private getTitleAsFileName(ext: string): string {
+  //   return `${this.getTitleAsFilePath()}.${ext}`;
+  // }
+
   public getVersion(): string {
     return this.asyncApiDocument.info().version();
   }
@@ -382,23 +390,33 @@ export class EpAsyncApiDocument {
     return this.unprefixedAssetsApplicationDomainName;
   }
 
-  public getTitleAsFilePath(): string {
-    return this.getTitle().replaceAll(/[^0-9a-zA-Z]+/g, "-");
-  }
-
-  public getTitleAsFileName(ext: string): string {
-    return `${this.getTitleAsFilePath()}.${ext}`;
-  }
-
   public getBrokerType(): EBrokerTypes { return this.brokerType; }
 
   public getChannelDelimiter(): EChannelDelimiters { return this.channelDelimiter; }
 
   public getEpEventApiName(): string { return this.epEventApiName; }
 
+  public getEpEventApiNameAsFilePath(): string {
+    return this.getEpEventApiName().replaceAll(/[^0-9a-zA-Z]+/g, "-");
+  }
+
+  public getEpEventApiNameAsFileName(ext: string): string {
+    return `${this.getEpEventApiNameAsFilePath()}.${ext}`;
+  }
+
   public getEpEventApiVersionName(): string {
     if(this.epEventApiVersionName === undefined) return '';
     return this.epEventApiVersionName;
+  }
+
+  public getEpApplicationName(): string {
+    // TODO: needs its own property, different create algo
+    return this.getEpEventApiName();
+  }
+
+  public getEpApplicationVersionName(): string {
+    // TODO: needs its own property, different create algo
+    return this.getEpEventApiVersionName();
   }
 
   public getAsJson(): any { return this.asyncApiDocumentJson; }

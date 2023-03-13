@@ -124,7 +124,7 @@ export class CliEventApiImporter extends CliAssetsImporter {
     // get latest version as reference
     const latestExistingEventApiVersionObjectBefore: EventApiVersion | undefined = await EpSdkEventApiVersionsService.getLatestVersionForEventApiName({
       applicationDomainId: applicationDomainId,
-      eventApiName: epAsyncApiDocument.getTitle(),
+      eventApiName: epAsyncApiDocument.getEpEventApiName(),
     });
     // const latestExistingEventApiVersionString: string | undefined = latestExistingEventApiVersionObjectBefore?.version;
     // get the list of pub and sub events
@@ -177,7 +177,7 @@ export class CliEventApiImporter extends CliAssetsImporter {
       if (latestExistingEventApiVersionObjectBefore === undefined) throw new CliInternalCodeInconsistencyError(logName, {
           message: "latestExistingEventApiVersionObjectBefore === undefined",
           applicationDomainId: applicationDomainId,
-          applicationName: epAsyncApiDocument.getTitle(),
+          applicationName: epAsyncApiDocument.getEpApplicationName(),
         });
       if (CliRunContext.get().runMode === ECliRunContext_RunMode.RELEASE) {
         // create event api version and issue warning
@@ -242,6 +242,8 @@ export class CliEventApiImporter extends CliAssetsImporter {
           requestedUpdates: requestedUpdates,
         });
         throw new CliImporterTestRunAssetsInconsistencyError(logName, {
+          applicationDomainName: epAsyncApiDocument.getApplicationDomainName(),
+          eventApiName: epAsyncApiDocument.getEpEventApiName(),
           requestedUpdates: requestedUpdates,
           latestExistingEventApiVersionObjectBefore: latestExistingEventApiVersionObjectBefore,
           epSdkEventApiVersionTask_ExecuteReturn: epSdkEventApiVersionTask_ExecuteReturn_Check,
@@ -307,7 +309,7 @@ export class CliEventApiImporter extends CliAssetsImporter {
     const epSdkEventApiTask = new EpSdkEventApiTask({
       epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
       applicationDomainId: applicationDomainId,
-      eventApiName: epAsyncApiDocument.getTitle(),
+      eventApiName: epAsyncApiDocument.getEpEventApiName(),
       eventApiObjectSettings: {
         shared: true,
         brokerType: epAsyncApiDocument.getBrokerType() as unknown as EventApi.brokerType,
@@ -338,8 +340,7 @@ export class CliEventApiImporter extends CliAssetsImporter {
 
     return {
       eventApiId: eventApiId,
-      eventApiVersionId:
-        cliEventApiImporterRunPresentEventApiVersionReturn.eventApiVersionId,
+      eventApiVersionId: cliEventApiImporterRunPresentEventApiVersionReturn.eventApiVersionId,
     };
   };
 
@@ -349,7 +350,7 @@ export class CliEventApiImporter extends CliAssetsImporter {
     const funcName = "run_present";
     const logName = `${CliEventApiImporter.name}.${funcName}()`;
 
-    const apiTitle: string = cliImporterRunPresentOptions.epAsyncApiDocument.getTitle();
+    const apiTitle: string = cliImporterRunPresentOptions.epAsyncApiDocument.getEpEventApiName();
     const apiVersion: string = cliImporterRunPresentOptions.epAsyncApiDocument.getVersion();
     const apiBrokerType: string = cliImporterRunPresentOptions.epAsyncApiDocument.getBrokerType();
     const epApplicationDomainName: string = cliImporterRunPresentOptions.epAsyncApiDocument.getApplicationDomainName();
@@ -480,7 +481,7 @@ export class CliEventApiImporter extends CliAssetsImporter {
         CliUtils.convertStringToFilePath(
           epAsyncApiDocument.getApplicationDomainName()
         );
-      const apiTitleAsFilePath = epAsyncApiDocument.getTitleAsFilePath();
+      const apiTitleAsFilePath = epAsyncApiDocument.getEpEventApiNameAsFilePath();
       const assetOutputRootDir: string = CliUtils.ensureDirExists(
         this.cliImporterOptions.assetOutputDir,
         applicationDomainNameAsFilePath + "/" + apiTitleAsFilePath
@@ -489,8 +490,8 @@ export class CliEventApiImporter extends CliAssetsImporter {
         assetOutputRootDir,
         "schemas"
       );
-      const asyncApiSpecFileNameJson = assetOutputRootDir + "/" + epAsyncApiDocument.getTitleAsFileName("json");
-      const asyncApiSpecFileNameYaml = assetOutputRootDir + "/" + epAsyncApiDocument.getTitleAsFileName("yml");
+      const asyncApiSpecFileNameJson = assetOutputRootDir + "/" + epAsyncApiDocument.getEpEventApiNameAsFileName("json");
+      const asyncApiSpecFileNameYaml = assetOutputRootDir + "/" + epAsyncApiDocument.getEpEventApiNameAsFileName("yml");
       CliLogger.trace(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.GENERATING_ASSETS_OUTPUT, details: {
         applicationDomainNameAsFilePath: applicationDomainNameAsFilePath,
         apiTitleAsFilePath: apiTitleAsFilePath,
@@ -507,7 +508,7 @@ export class CliEventApiImporter extends CliAssetsImporter {
 
       CliRunSummary.generatingApiOutput({ cliRunSummary_GenerateApiOutput: {
         type: ECliRunSummary_Type.ApiOutput,
-        apiName: epAsyncApiDocument.getTitle(),
+        apiName: epAsyncApiDocument.getEpEventApiName(),
         apiVersion: epAsyncApiDocument.getVersion(),
         outputDir: assetOutputRootDir,
       }});
@@ -620,7 +621,7 @@ export class CliEventApiImporter extends CliAssetsImporter {
         overrideChannelDelimiter: cliImporterRunOptions.overrideChannelDelimiter,
         validateBestPractices: this.cliImporterOptions.cliValidateApiSpecBestPractices,
       });
-      cliEventApiImporterRunImportReturn.apiTitle = epAsyncApiDocument.getTitle();
+      cliEventApiImporterRunImportReturn.apiTitle = epAsyncApiDocument.getEpEventApiName();
       cliEventApiImporterRunImportReturn.applicationDomainName = epAsyncApiDocument.getApplicationDomainName();
       cliEventApiImporterRunImportReturn.assetApplicationDomainName = epAsyncApiDocument.getAssetsApplicationDomainName();
 
