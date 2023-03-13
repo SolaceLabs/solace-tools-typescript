@@ -60,11 +60,11 @@ describe(`${scriptName}`, () => {
         expect(title, 'failed').to.eq(Global_Title);
         
         const expected_titleAsFilePath = "slash-amp-star-quotes-";
-        const titleAsFilePath = Global_EpAsyncApiDocument.getTitleAsFilePath();
+        const titleAsFilePath = Global_EpAsyncApiDocument.getEpEventApiNameAsFilePath();
         expect(titleAsFilePath, 'failed').to.eq(expected_titleAsFilePath);
         
         const expected_titleAsFileName = expected_titleAsFilePath + ".yml";
-        const titleAsFileName = Global_EpAsyncApiDocument.getTitleAsFileName('yml');
+        const titleAsFileName = Global_EpAsyncApiDocument.getEpEventApiNameAsFileName('yml');
         expect(titleAsFileName, 'failed').to.eq(expected_titleAsFileName);
         
     });
