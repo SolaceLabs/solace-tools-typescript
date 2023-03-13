@@ -37,7 +37,7 @@ const initializeGlobals = () => {
   CliConfig.getCliImporterManagerOptions().asyncApiFileList = FileList;
   CliConfig.getCliImporterManagerOptions().cliImporterManagerMode = ECliImporterManagerMode.RELEASE_MODE;
   CliConfig.getCliImporterManagerOptions().cliTestSetupDomainsForApis = true;
-  CliConfig.getCliImporterManagerOptions().createEventApiApplication = false;
+  CliConfig.getCliImporterManagerOptions().createApiApplication = false;
 }
 
 describe(`${scriptName}`, () => {
@@ -112,7 +112,7 @@ describe(`${scriptName}`, () => {
 
   it(`${scriptName}: should import specs with application / version`, async () => {
     try {
-      CliConfig.getCliImporterManagerOptions().createEventApiApplication = true;
+      CliConfig.getCliImporterManagerOptions().createApiApplication = true;
 
       const cliImporter = new CliImporterManager(CliConfig.getCliImporterManagerOptions());
       const xvoid: void = await cliImporter.run();      

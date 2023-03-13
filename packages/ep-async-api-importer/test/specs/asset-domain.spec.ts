@@ -46,7 +46,7 @@ const initializeGlobals = () => {
   // // DEBUG
   // CliConfig.getCliImporterManagerOptions().cliImporterManagerMode = ECliImporterManagerMode.TEST_MODE_KEEP;
   // CliConfig.getCliImporterManagerOptions().applicationDomainName = 'release_mode';
-  CliConfig.getCliImporterManagerOptions().createEventApiApplication = false;
+  CliConfig.getCliImporterManagerOptions().createApiApplication = false;
   CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_BrokerType = undefined;
   CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_ChannelDelimiter = undefined;
 };
