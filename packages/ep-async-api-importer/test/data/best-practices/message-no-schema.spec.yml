@@ -1,6 +1,5 @@
 ---
 asyncapi: "2.5.0"
-x-ep-application-domain-name: solace-labs/ep-asyncapi/test
 info:
   title: "Message no schema"
   version: "0.1.1"

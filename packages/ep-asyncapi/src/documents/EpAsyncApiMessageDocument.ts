@@ -119,7 +119,7 @@ export class EpAsyncApiMessageDocument {
         asyncApiSpecTitle: this.epAsyncApiDocument.getTitle(),
         issues: EpAsyncApiMessageDocument.MissingMessagePayloadSchemaIssue,
         value: {
-          channel: this.asyncApiMessageKey,
+          channel: this.epAsyncApiChannelDocument.getAsyncApiChannelKey(),
           message: this.asyncApiMessageKey
         }
       });

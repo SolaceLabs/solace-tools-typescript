@@ -9,10 +9,9 @@ class CliApplicationDomainsService {
   }): Promise<void> => {
     for (const applicationDomainName of applicationDomainNameList) {
       try {
-        const applicationDomain: ApplicationDomain =
-          await EpSdkApplicationDomainsService.deleteByName({
-            applicationDomainName: applicationDomainName,
-          });
+        const applicationDomain: ApplicationDomain = await EpSdkApplicationDomainsService.deleteByName({
+          applicationDomainName: applicationDomainName,
+        });
         /* istanbul ignore next */
         applicationDomain;
       } catch (e) {
