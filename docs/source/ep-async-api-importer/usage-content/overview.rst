@@ -107,3 +107,27 @@ After each Api import the following output is generated:
 
       - {schema-name}.json
       - ...
+
+
+Importing Api as Event API
+--------------------------
+
+The default mode is to import the Api as an Event API.
+
+You can switch it off by setting the following environment variable:
+
+.. code-block:: bash
+
+  export CLI_IMPORT_CREATE_API_EVENT_API=false
+
+
+Importing Api as Application
+----------------------------
+
+By default, importing the Api as an Application is switched off.
+
+You can switch it on by setting the following environment variable:
+
+.. code-block:: bash
+
+  export CLI_IMPORT_CREATE_API_APPLICATION=true

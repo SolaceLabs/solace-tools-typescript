@@ -3,6 +3,7 @@ import { expect } from "chai";
 import path from "path";
 import {
   ApiError,
+  ApplicationsService,
   EventApi,
   EventApIsService,
   EventApiVersion,
@@ -127,11 +128,13 @@ let CopiedEventApi_Id: string | undefined;
 let App_Name: string;
 let App_Id: string | undefined;
 let AppVersion_Id: string | undefined;
+let AppApiSpec: any;
 
 let ApplicationDomain_Copy_Name: string;
 let ApplicationDomain_Copy_Id: string;
 
-let AsyncApiSpecFileNameJson: string;
+let EventApiAsyncApiSpecFileNameJson: string;
+let AppAsyncApiSpecFileNameJson: string;
 // let AsyncApiSpecFile_X_EpApplicationDomainName: string;
 // let AsyncApiSpecFile_X_EpAssetApplicationDomainName: string;
 
@@ -547,9 +550,9 @@ describe(`${scriptName}`, () => {
       const applicationDomainName = epAsyncApiDocument.getApplicationDomainName();
       const assetsApplicationDomainName = epAsyncApiDocument.getAssetsApplicationDomainName();
 
-      AsyncApiSpecFileNameJson = TestConfig.getConfig().tmpDir + "/" + epAsyncApiDocument.getTitleAsFileName("json");
+      EventApiAsyncApiSpecFileNameJson = TestConfig.getConfig().tmpDir + "/" + epAsyncApiDocument.getEpApiNameAsFileName("json");
       CliUtils.saveContents2File({
-        filePath: AsyncApiSpecFileNameJson,
+        filePath: EventApiAsyncApiSpecFileNameJson,
         content: JSON.stringify(epAsyncApiDocument.getOriginalSpecAsJson(), null, 2 ),
       });
     } catch (e) {
@@ -559,15 +562,15 @@ describe(`${scriptName}`, () => {
     }
   });
 
-  it(`${scriptName}: should import event api spec with test`, async () => {
+  it(`${scriptName}: should import event api spec`, async () => {
     try {
-      CliConfig.getCliImporterManagerOptions().asyncApiFileList = [AsyncApiSpecFileNameJson];
+      CliConfig.getCliImporterManagerOptions().asyncApiFileList = [EventApiAsyncApiSpecFileNameJson];
       CliConfig.getCliImporterManagerOptions().cliImporterManagerMode = ECliImporterManagerMode.RELEASE_MODE;
       // CliConfig.getCliImporterManagerOptions().runId = scriptName;
       // // DEBUG
       // CliConfig.getCliImporterManagerOptions().cliImporterManagerMode = ECliImporterManagerMode.TEST_MODE_KEEP;
       // CliConfig.getCliImporterManagerOptions().applicationDomainName = 'release_mode';
-      CliConfig.getCliImporterManagerOptions().createEventApiApplication = true;
+      CliConfig.getCliImporterManagerOptions().createApiApplication = false;
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_BrokerType = undefined;
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_ChannelDelimiter = undefined;
 
@@ -587,5 +590,38 @@ describe(`${scriptName}`, () => {
       expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
+
+  it(`${scriptName}: should get the application version api spec`, async () => {
+    try {
+      AppApiSpec = await ApplicationsService.getAsyncApiForApplicationVersion({
+        applicationVersionId: AppVersion_Id
+      })
+    } catch (e) {
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
+    }
+  });
+
+  it(`${scriptName}: should parse the application version api spec and save it to file`, async () => {
+    try {
+      const epAsyncApiDocument: EpAsyncApiDocument = await EpAsyncApiDocumentService.createFromAny({ 
+        anySpec: AppApiSpec
+      });
+      const applicationDomainName = epAsyncApiDocument.getApplicationDomainName();
+      const assetsApplicationDomainName = epAsyncApiDocument.getAssetsApplicationDomainName();
+
+      AppAsyncApiSpecFileNameJson = TestConfig.getConfig().tmpDir + "/" + epAsyncApiDocument.getEpApiNameAsFileName("json");
+      CliUtils.saveContents2File({
+        filePath: AppAsyncApiSpecFileNameJson,
+        content: JSON.stringify(epAsyncApiDocument.getOriginalSpecAsJson(), null, 2 ),
+      });
+    } catch (e) {
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
+    }
+  });
+
 
 });

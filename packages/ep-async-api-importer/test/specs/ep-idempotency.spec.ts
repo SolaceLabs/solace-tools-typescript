@@ -168,7 +168,7 @@ describe(`${scriptName}`, () => {
 
   after(async () => {
     TestContext.newItId();
-    // await applicationDomainTasks(EEpSdkTask_TargetState.ABSENT);
+    await applicationDomainTasks(EEpSdkTask_TargetState.ABSENT);
   });
 
   it(`${scriptName}: should setup the domains`, async () => {
