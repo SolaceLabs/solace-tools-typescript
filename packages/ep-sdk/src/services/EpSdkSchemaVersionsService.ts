@@ -380,7 +380,7 @@ export class EpSdkSchemaVersionsServiceClass extends EpSdkVersionServiceClass {
       versionStrategy: EEpSdk_VersionTaskStrategy.EXACT_VERSION,
       schemaVersionSettings: {
         stateId: fromSchemaVersion.stateId,
-        displayName: fromSchemaVersion.displayName ? fromSchemaVersion.displayName : fromSchemaObject.name,
+        displayName: fromSchemaVersion.displayName ? fromSchemaVersion.displayName : '',
         description: fromSchemaVersion.description ? fromSchemaVersion.description : "",
         content: fromSchemaVersion.content,
       },

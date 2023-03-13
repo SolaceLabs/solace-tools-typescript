@@ -499,7 +499,7 @@ export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
       topicString: this.createTopicStringFromAddress({ address: targetEventVersionDeliveryDescriptorAddress }),
       eventVersionSettings: {
         stateId: fromEventVersion.stateId,
-        displayName: fromEventVersion.displayName ? fromEventVersion.displayName : fromEvent.name,
+        displayName: fromEventVersion.displayName ? fromEventVersion.displayName : '',
         description: fromEventVersion.description ? fromEventVersion.description : '',
         schemaVersionId: targetSchemaVersion.id,
       },

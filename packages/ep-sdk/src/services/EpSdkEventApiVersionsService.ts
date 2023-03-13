@@ -423,7 +423,7 @@ export class EpSdkEventApiVersionsServiceClass extends EpSdkVersionServiceClass 
       versionStrategy: EEpSdk_VersionTaskStrategy.EXACT_VERSION,
       eventApiVersionSettings: {
         stateId: fromEventApiVersion.stateId,
-        displayName: fromEventApiVersion.displayName ? fromEventApiVersion.displayName : fromEventApi.name,
+        displayName: fromEventApiVersion.displayName ? fromEventApiVersion.displayName : '',
         description: fromEventApiVersion.description ? fromEventApiVersion.description : '',
         consumedEventVersionIds: targetConsumedEventVersions.map( (targetConsumedEventVersion: EventVersion) => {
           /* istanbul ignore next */

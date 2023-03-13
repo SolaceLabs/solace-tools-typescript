@@ -279,7 +279,7 @@ export class EpSdkEnumVersionsServiceClass extends EpSdkVersionServiceClass {
       versionStrategy: EEpSdk_VersionTaskStrategy.EXACT_VERSION,
       enumVersionSettings: {
         stateId: fromTopicAddressEnumVersion.stateId,
-        displayName: fromTopicAddressEnumVersion.displayName ? fromTopicAddressEnumVersion.displayName : fromTopicAddressEnum.name,
+        displayName: fromTopicAddressEnumVersion.displayName ? fromTopicAddressEnumVersion.displayName : '',
         description: fromTopicAddressEnumVersion.description,
       },
       enumValues: fromTopicAddressEnumVersion.values.map( (x) => { return x.value; }),

@@ -27,7 +27,12 @@ TestLogger.logMessage(scriptName, ">>> starting ...");
 let FileList: Array<string> = [];
 
 const initializeGlobals = () => {
+  // test individual specs only
+  // FileList.push(...CliUtils.createFileList(`${TestConfig.getConfig().dataRootDir}/passing/**/AcmeRetail-Central-IT-Provider-TillSystem-v1-Test.spec.yml`));
+
+  // test all specs found in dir
   FileList.push(...CliUtils.createFileList(`${TestConfig.getConfig().dataRootDir}/passing/**/*.spec.yml`));
+
   // set test specific importer options
   CliConfig.getCliImporterManagerOptions().asyncApiFileList = FileList;
   CliConfig.getCliImporterManagerOptions().cliImporterManagerMode = ECliImporterManagerMode.RELEASE_MODE;
@@ -84,8 +89,8 @@ describe(`${scriptName}`, () => {
       const cliImporter = new CliImporterManager(CliConfig.getCliImporterManagerOptions());
       const xvoid: void = await cliImporter.run();      
       const cliRunSummaryList: Array<ICliRunSummary_Base> = CliRunSummary.getSummaryLogList();
-      // DEBUG
-      // expect(false, JSON.stringify(cliRunSummaryList, null, 2)).to.be.true;
+      // // DEBUG
+      // expect(false, 'check imported specs & assets').to.be.true;
     } catch(e) {
       expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
       expect(false, TestLogger.createTestFailMessageWithCliError('failed', e)).to.be.true;
