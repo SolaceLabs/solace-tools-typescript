@@ -56,6 +56,7 @@ import {
   EpAsyncApiDocumentService 
 } from "@solace-labs/ep-asyncapi";
 import { ECliAssetImport_TargetVersionStrategy } from "../../src/importers";
+import { EpSdkApplicationVersionsService } from "@solace-labs/ep-sdk";
 
 const scriptName: string = path.basename(__filename);
 const TestSpecName = scriptName;
@@ -473,7 +474,8 @@ describe(`${scriptName}`, () => {
       // // DEBUG
       // CliConfig.getCliImporterManagerOptions().cliImporterManagerMode = ECliImporterManagerMode.TEST_MODE_KEEP;
       // CliConfig.getCliImporterManagerOptions().applicationDomainName = 'release_mode';
-      CliConfig.getCliImporterManagerOptions().createEventApiApplication = true;
+      CliConfig.getCliImporterManagerOptions().createApiApplication = true;
+      CliConfig.getCliImporterManagerOptions().createApiEventApi = false;
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_BrokerType = undefined;
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_ChannelDelimiter = undefined;
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliValidateApiSpecBestPractices = true;
@@ -481,10 +483,6 @@ describe(`${scriptName}`, () => {
 
       const cliImporter = new CliImporterManager(CliConfig.getCliImporterManagerOptions());
       const xvoid: void = await cliImporter.run();
-      // // DEBUG
-      expect(false, 'check app import ok').to.be.true;
-      // const cliRunSummaryList: Array<ICliRunSummary_Base> = CliRunSummary.getSummaryLogList();
-      // expect(false, JSON.stringify(cliRunSummaryList, null, 2)).to.be.true;
     } catch (e) {
       TestLogger.logMessageWithId(TestLogger.createTestFailMessageForError('error', e));
       expect( e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
@@ -495,16 +493,8 @@ describe(`${scriptName}`, () => {
     }
   });
 
-  it(`${scriptName}: continue here`, async () => {
-    expect(false, 'continue here').to.be.true;
-  });
-
   it(`${scriptName}: should check no new version created for application`, async () => {
-
-    expect(false, 'continue here').to.be.true;
-
     try {
-      // TODO: write the correct checks
       const enum_1_id_versions = await EpSdkEnumVersionsService.getVersionsForEnumId({enumId: Enum_1_Id});
       expect(enum_1_id_versions.length,'enum_1_id_versions.length not 1').to.equal(1);
       const enum_2_id_versions = await EpSdkEnumVersionsService.getVersionsForEnumId({enumId: Enum_2_Id});
@@ -520,9 +510,8 @@ describe(`${scriptName}`, () => {
       const event_2_id_versions = await EpSdkEpEventVersionsService.getVersionsForEventId({ eventId: Event_2_Id });
       expect(event_2_id_versions.length,'event_2_id_versions.length not 1').to.equal(1);
 
-      const event_api_versions = await EpSdkEventApiVersionsService.getVersionsForEventApiId({ eventApiId: EventApi_Id });
-      expect(event_api_versions.length,'event_api_versions.length not 1').to.equal(1);
-
+      const app_versions = await EpSdkApplicationVersionsService.getVersionsForApplicationId({ applicationId: App_Id });
+      expect(app_versions.length,'app_versions.length not 1').to.equal(1);
     } catch (e) {
       TestLogger.logMessageWithId(TestLogger.createTestFailMessageForError('error', e));
       if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
@@ -573,7 +562,8 @@ describe(`${scriptName}`, () => {
       // // DEBUG
       // CliConfig.getCliImporterManagerOptions().cliImporterManagerMode = ECliImporterManagerMode.TEST_MODE_KEEP;
       // CliConfig.getCliImporterManagerOptions().applicationDomainName = 'release_mode';
-      CliConfig.getCliImporterManagerOptions().createEventApiApplication = false;
+      CliConfig.getCliImporterManagerOptions().createApiApplication = false;
+      CliConfig.getCliImporterManagerOptions().createApiEventApi = true;
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_BrokerType = undefined;
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_ChannelDelimiter = undefined;
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliValidateApiSpecBestPractices = true;

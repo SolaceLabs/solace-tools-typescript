@@ -17,6 +17,7 @@ import {
   EEpSdkTask_TargetState,
   EEpSdk_VersionTaskStrategy,
   EpSdkApplicationDomainTask,
+  EpSdkEventApisService,
   EpSdkEventApiTask,
   EpSdkEventApiVersionsService,
   EpSdkEventApiVersionTask,
@@ -95,6 +96,7 @@ export interface ICliEventApiImporterRunImportReturn extends ICliAssetsImporterR
   eventApiVersionId: string;
 }
 export interface ICliEventApiImporterRunOptions extends ICliAssetsImporterRunOptions {
+  deleteEventApiAfter: boolean;
   generateAssetsOutput: boolean;
 }
 export interface ICliEventApiImporterRunReturn extends ICliAssetsImporterRunReturn {
@@ -652,40 +654,40 @@ export class CliEventApiImporter extends CliAssetsImporter {
   public async run({ cliImporterRunOptions, }: {
     cliImporterRunOptions: ICliEventApiImporterRunOptions;
   }): Promise<ICliEventApiImporterRunReturn> {
-    // const funcName = 'run';
-    // const logName = `${CliEventApiImporter.name}.${funcName}()`;
+    const funcName = 'run';
+    const logName = `${CliEventApiImporter.name}.${funcName}()`;
 
     const cliEventApiImporterRunImportReturn: ICliEventApiImporterRunImportReturn = await this.run_import({ cliImporterRunOptions: cliImporterRunOptions, });
-
     if (cliEventApiImporterRunImportReturn.error !== undefined) return {
-        ...cliEventApiImporterRunImportReturn,
-        cliEventApiImporterGenerateAssetsReturn: {
-          assetOutputRootDir: undefined,
-          asyncApiSpecFileNameJson: undefined,
-          asyncApiSpecFileNameYaml: undefined,
-          schemasOutputDir: undefined,
-          error: undefined,
-        },
-      };
-    if (cliImporterRunOptions.generateAssetsOutput) {
-      const cliEventApiImporterGenerateAssetsReturn: ICliEventApiImporterGenerateAssetsReturn =
-        await this.generate_assets_ouput({ cliImporterGenerateAssetsOptions: {
-            cliEventApiImporterRunOptions: cliImporterRunOptions,
-            eventApiId: cliEventApiImporterRunImportReturn.eventApiId,
-            eventApiVersionId:
-              cliEventApiImporterRunImportReturn.eventApiVersionId,
-            applicationDomainId:
-              cliEventApiImporterRunImportReturn.applicationDomainId,
-            applicationDomainName:
-              cliEventApiImporterRunImportReturn.applicationDomainName,
-            apiTitle: cliEventApiImporterRunImportReturn.apiTitle,
-          },
-        });
+      ...cliEventApiImporterRunImportReturn,
+      cliEventApiImporterGenerateAssetsReturn: {
+        assetOutputRootDir: undefined,
+        asyncApiSpecFileNameJson: undefined,
+        asyncApiSpecFileNameYaml: undefined,
+        schemasOutputDir: undefined,
+        error: undefined,
+    }};
+    if(cliImporterRunOptions.deleteEventApiAfter) {
+      const eventApi: EventApi = await EpSdkEventApisService.deleteById({
+        eventApiId: cliEventApiImporterRunImportReturn.eventApiId
+      });
+      CliLogger.trace(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.IMPORTING_EP_EVENT_API_DELETED, details: {
+        eventApiId: cliEventApiImporterRunImportReturn.eventApiId,
+        eventApiName: eventApi.name,
+      }}));
+    } else if (cliImporterRunOptions.generateAssetsOutput) {
+      const cliEventApiImporterGenerateAssetsReturn: ICliEventApiImporterGenerateAssetsReturn = await this.generate_assets_ouput({ cliImporterGenerateAssetsOptions: {
+        cliEventApiImporterRunOptions: cliImporterRunOptions,
+        eventApiId: cliEventApiImporterRunImportReturn.eventApiId,
+        eventApiVersionId: cliEventApiImporterRunImportReturn.eventApiVersionId,
+        applicationDomainId: cliEventApiImporterRunImportReturn.applicationDomainId,
+        applicationDomainName: cliEventApiImporterRunImportReturn.applicationDomainName,
+        apiTitle: cliEventApiImporterRunImportReturn.apiTitle,
+      }});
       return {
         ...cliEventApiImporterRunImportReturn,
         error: cliEventApiImporterGenerateAssetsReturn.error,
-        cliEventApiImporterGenerateAssetsReturn:
-          cliEventApiImporterGenerateAssetsReturn,
+        cliEventApiImporterGenerateAssetsReturn: cliEventApiImporterGenerateAssetsReturn,
       };
     }
     return {

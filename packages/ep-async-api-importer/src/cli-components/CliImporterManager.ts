@@ -1,4 +1,5 @@
 import { EpAsyncApiDocument } from "@solace-labs/ep-asyncapi";
+import { EEpSdkTask_TargetState, EpSdkEventApisService, EpSdkEventApiTask } from "@solace-labs/ep-sdk";
 import {
   CliApplicationImporter,
   ICliApplicationImporterRunReturn,
@@ -45,7 +46,8 @@ export interface ICliImporterManagerOptions {
   applicationDomainName?: string;
   assetApplicationDomainName?: string;
   cliImporterOptions: ICliImporterOptions;
-  createEventApiApplication: boolean;
+  createApiApplication: boolean;
+  createApiEventApi: boolean;
   cliTestSetupDomainsForApis: boolean;
 }
 
@@ -56,10 +58,7 @@ export class CliImporterManager {
     this.cliImporterManagerOptions = cliImporterManagerOptions;
   }
 
-  private static createApplicationDomainPrefix4TestMode({
-    appName,
-    runId,
-  }: {
+  private static createApplicationDomainPrefix4TestMode({appName, runId }: {
     appName: string;
     runId: string;
   }): string {
@@ -78,20 +77,13 @@ export class CliImporterManager {
     const funcName = "setup_test_domains";
     const logName = `${CliImporterManager.name}.${funcName}()`;
 
-    const rctxt: ICliSetupTestDomainsContext = {
-      runProcess: "setUpTestDomains",
-    };
+    const rctxt: ICliSetupTestDomainsContext = { runProcess: "setUpTestDomains" };
     CliRunContext.push(rctxt);
-    CliRunSummary.setUpTestDomains({
-      cliRunSummary_SetupTestDomains: {
-        type: ECliRunSummary_Type.SetupTestDomains,
-      },
-    });
+    CliRunSummary.setUpTestDomains({cliRunSummary_SetupTestDomains: { type: ECliRunSummary_Type.SetupTestDomains }});
     // clean application domains before test
-    let xvoid: void =
-      await CliApplicationDomainsService.absent_ApplicationDomains({
-        applicationDomainNameList: applicationDomainNameList,
-      });
+    let xvoid: void = await CliApplicationDomainsService.absent_ApplicationDomains({
+      applicationDomainNameList: applicationDomainNameList,
+    });
     xvoid = await CliApplicationDomainsService.absent_ApplicationDomains({
       applicationDomainNameList: assetApplicationDomainNameList,
     });
@@ -101,14 +93,10 @@ export class CliImporterManager {
     if (this.cliImporterManagerOptions.cliTestSetupDomainsForApis) {
       // copy existing source event apis from source to target test domain(s)
       for (const epAsyncApiDocument of epAsyncApiDocumentList) {
-        const fromApplicationDomainName =
-          epAsyncApiDocument.getUnprefixedApplicationDomainName();
-        const toApplicationDomainName =
-          epAsyncApiDocument.getApplicationDomainName();
-        const fromAssetsApplicationDomainName =
-          epAsyncApiDocument.getUnprefixedAssetsApplicationDomainName();
-        const toAssetsApplicationDomainName =
-          epAsyncApiDocument.getAssetsApplicationDomainName();
+        const fromApplicationDomainName = epAsyncApiDocument.getUnprefixedApplicationDomainName();
+        const toApplicationDomainName = epAsyncApiDocument.getApplicationDomainName();
+        const fromAssetsApplicationDomainName = epAsyncApiDocument.getUnprefixedAssetsApplicationDomainName();
+        const toAssetsApplicationDomainName = epAsyncApiDocument.getAssetsApplicationDomainName();
 
         const rctxt: ICliSetupTestApiRunContext = {
           apiTitle: epAsyncApiDocument.getTitle(),
@@ -125,30 +113,22 @@ export class CliImporterManager {
           },
         });
 
-        const copied: boolean =
-          await CliEventApisService.deepCopyLatestEventApiVersion({
-            epAsyncApiDocument: epAsyncApiDocument,
-          });
+        const copied: boolean = await CliEventApisService.deepCopyLatestEventApiVersion({
+          epAsyncApiDocument: epAsyncApiDocument,
+        });
         let loggerCode = "";
         if (copied) {
-          loggerCode =
-            ECliStatusCodes.SETUP_TEST_DOMAIN_EVENT_API_VERSION_COPIED;
+          loggerCode = ECliStatusCodes.SETUP_TEST_DOMAIN_EVENT_API_VERSION_COPIED;
         } else {
-          loggerCode =
-            ECliStatusCodes.SETUP_TEST_DOMAIN_EVENT_API_VERSION_COPY_SKIPPED;
+          loggerCode = ECliStatusCodes.SETUP_TEST_DOMAIN_EVENT_API_VERSION_COPY_SKIPPED;
         }
-        CliLogger.info(
-          CliLogger.createLogEntry(logName, {
-            code: loggerCode,
-            details: {
-              apiTitle: epAsyncApiDocument.getTitle(),
-              fromApplicationDomainName: fromApplicationDomainName,
-              toApplicationDomainName: toApplicationDomainName,
-              fromAssetsApplicationDomainName: fromAssetsApplicationDomainName,
-              toAssetsApplicationDomainName: toAssetsApplicationDomainName,
-            },
-          })
-        );
+        CliLogger.info(CliLogger.createLogEntry(logName, {code: loggerCode, details: {
+          apiTitle: epAsyncApiDocument.getTitle(),
+          fromApplicationDomainName: fromApplicationDomainName,
+          toApplicationDomainName: toApplicationDomainName,
+          fromAssetsApplicationDomainName: fromAssetsApplicationDomainName,
+          toAssetsApplicationDomainName: toAssetsApplicationDomainName,
+        }}));
         CliRunContext.pop();
       }
     }
@@ -235,16 +215,16 @@ export class CliImporterManager {
           checkmode: false,
           generateAssetsOutput: false,
           overrideBrokerType: this.cliImporterManagerOptions.cliImporterOptions.cliAssetImport_BrokerType,
-          overrideChannelDelimiter: this.cliImporterManagerOptions.cliImporterOptions.cliAssetImport_ChannelDelimiter  
+          overrideChannelDelimiter: this.cliImporterManagerOptions.cliImporterOptions.cliAssetImport_ChannelDelimiter,
+          deleteEventApiAfter: false
         }});
         if (cliEventApiImporterRunReturn.error !== undefined) throw cliEventApiImporterRunReturn.error;
         if (cliEventApiImporterRunReturn.applicationDomainName === undefined) throw new CliInternalCodeInconsistencyError(logName, "cliEventApiImporterRunReturn.applicationDomainName === undefined");
         // create application
-        if (this.cliImporterManagerOptions.createEventApiApplication) {
+        if (this.cliImporterManagerOptions.createApiApplication) {
           const cliApplicationImporter = new CliApplicationImporter({
             ...this.cliImporterManagerOptions.cliImporterOptions,
-            applicationDomainName:
-              cliEventApiImporterRunReturn.applicationDomainName,
+            applicationDomainName: cliEventApiImporterRunReturn.applicationDomainName,
           });
           const cliApplicationImporterRunReturn: ICliApplicationImporterRunReturn = await cliApplicationImporter.run({ cliImporterRunOptions: {
             apiFile: asyncApiFile,
@@ -299,7 +279,8 @@ export class CliImporterManager {
           checkmode: true,
           generateAssetsOutput: false,
           overrideBrokerType: this.cliImporterManagerOptions.cliImporterOptions.cliAssetImport_BrokerType,
-          overrideChannelDelimiter: this.cliImporterManagerOptions.cliImporterOptions.cliAssetImport_ChannelDelimiter
+          overrideChannelDelimiter: this.cliImporterManagerOptions.cliImporterOptions.cliAssetImport_ChannelDelimiter,
+          deleteEventApiAfter: false
         }});
         if (cliEventApiImporterRunReturn.error !== undefined)
           throw cliEventApiImporterRunReturn.error;
@@ -309,7 +290,7 @@ export class CliImporterManager {
             "cliEventApiImporterRunReturn.applicationDomainName === undefined"
           );
         // create application
-        if (this.cliImporterManagerOptions.createEventApiApplication) {
+        if (this.cliImporterManagerOptions.createApiApplication) {
           const cliApplicationImporter = new CliApplicationImporter({
             ...this.cliImporterManagerOptions.cliImporterOptions,
             applicationDomainName:
@@ -330,10 +311,9 @@ export class CliImporterManager {
       }
       // clean up if specified
       if (cleanUp) {
-        let xvoid: void =
-          await CliApplicationDomainsService.absent_ApplicationDomains({
-            applicationDomainNameList: applicationDomainNameList,
-          });
+        let xvoid: void = await CliApplicationDomainsService.absent_ApplicationDomains({
+          applicationDomainNameList: applicationDomainNameList,
+        });
         xvoid = await CliApplicationDomainsService.absent_ApplicationDomains({
           applicationDomainNameList: assetApplicationDomainNameList,
         });
@@ -343,10 +323,9 @@ export class CliImporterManager {
       CliRunContext.pop();
     } catch (e) {
       if (cleanUp) {
-        let xvoid: void =
-          await CliApplicationDomainsService.absent_ApplicationDomains({
-            applicationDomainNameList: applicationDomainNameList,
-          });
+        let xvoid: void = await CliApplicationDomainsService.absent_ApplicationDomains({
+          applicationDomainNameList: applicationDomainNameList,
+        });
         xvoid = await CliApplicationDomainsService.absent_ApplicationDomains({
           applicationDomainNameList: assetApplicationDomainNameList,
         });
@@ -405,12 +384,13 @@ export class CliImporterManager {
         checkmode: false,
         generateAssetsOutput: true,
         overrideBrokerType: this.cliImporterManagerOptions.cliImporterOptions.cliAssetImport_BrokerType,
-        overrideChannelDelimiter: this.cliImporterManagerOptions.cliImporterOptions.cliAssetImport_ChannelDelimiter  
+        overrideChannelDelimiter: this.cliImporterManagerOptions.cliImporterOptions.cliAssetImport_ChannelDelimiter,
+        deleteEventApiAfter: !this.cliImporterManagerOptions.createApiEventApi
       }});
       if (cliEventApiImporterRunReturn.error !== undefined) throw cliEventApiImporterRunReturn.error;
       if (cliEventApiImporterRunReturn.applicationDomainName === undefined) throw new CliInternalCodeInconsistencyError(logName, "cliEventApiImporterRunReturn.applicationDomainName === undefined");
       // create application
-      if (this.cliImporterManagerOptions.createEventApiApplication) {
+      if (this.cliImporterManagerOptions.createApiApplication) {
         const cliApplicationImporter = new CliApplicationImporter({
           ...this.cliImporterManagerOptions.cliImporterOptions,
           applicationDomainName: cliEventApiImporterRunReturn.applicationDomainName,
