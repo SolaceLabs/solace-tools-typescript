@@ -31,3 +31,66 @@ The importer uses the following extensions:
 
        - Event Name = $.channel.{topic}
        - Event Version Name = EMPTY
+
+
+In addition, it uses the following Event Portal extensions:
+
+.. list-table:: Event Portal Info Extensions
+   :widths: 30 100
+   :header-rows: 1
+
+   * - Async Api Extension
+     - Description
+   * - $.info.x-ep-displayname
+     - The version display name for Event APIs and Applications.
+
+       Defaults to empty string if omitted.
+
+
+.. list-table:: Event Portal Message Extensions
+   :widths: 30 100
+   :header-rows: 1
+
+   * - Async Api Extension
+     - Description
+   * - x-ep-event-name
+     - The Event name for the message.
+
+       Defaults to `$.channels.{topic}.x-ep-event-name` if omitted.
+   * - x-ep-event-version-displayname
+     - The Event version name for the message.
+
+       Defaults to empty string if omitted.
+
+
+.. list-table:: Event Portal Schema Extensions
+   :widths: 30 100
+   :header-rows: 1
+
+   * - Async Api Extension
+     - Description
+   * - x-ep-schema-name
+     - The Schema name for the schema.
+
+       Defaults to `x-ep-event-name` if omitted.
+   * - x-ep-schema-version-displayname
+     - The Schema version name for the schema.
+
+       Defaults to empty string if omitted.
+
+
+.. list-table:: Event Portal Channel Parameter Extensions
+   :widths: 30 100
+   :header-rows: 1
+
+   * - Async Api Extension
+     - Description
+   * - x-ep-enum-name
+     - The Enum name for the parameter.
+
+       Defaults to the string in the channel parameter if omitted.
+   * - x-ep-enum-version-displayname
+     - The Enum version name for the parameter.
+
+       Defaults to empty string if omitted.
+

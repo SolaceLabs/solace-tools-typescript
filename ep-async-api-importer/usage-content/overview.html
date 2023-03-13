@@ -62,6 +62,8 @@
 <li class="toctree-l4"><a class="reference internal" href="#importing-api-assets-into-a-separate-application-domain">Importing Api Assets into a separate Application Domain</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#log-file">Log File</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#generated-output">Generated Output</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#importing-api-as-event-api">Importing Api as Event API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#importing-api-as-application">Importing Api as Application</a></li>
 </ul>
 </li>
 </ul>
@@ -203,6 +205,22 @@ You can override the asset application domain name using the command line option
 </li>
 </ul>
 </div>
+<div class="section" id="importing-api-as-event-api">
+<h2>Importing Api as Event API<a class="headerlink" href="#importing-api-as-event-api" title="Permalink to this heading"></a></h2>
+<p>The default mode is to import the Api as an Event API.</p>
+<p>You can switch it off by setting the following environment variable:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">CLI_IMPORT_CREATE_API_EVENT_API</span><span class="o">=</span><span class="nb">false</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="importing-api-as-application">
+<h2>Importing Api as Application<a class="headerlink" href="#importing-api-as-application" title="Permalink to this heading"></a></h2>
+<p>By default, importing the Api as an Application is switched off.</p>
+<p>You can switch it on by setting the following environment variable:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">CLI_IMPORT_CREATE_API_APPLICATION</span><span class="o">=</span><span class="nb">true</span>
+</pre></div>
+</div>
+</div>
 </div>
 
 
@@ -217,7 +235,7 @@ You can override the asset application domain name using the command line option
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, Solace Corporation, Ricardo Gomez-Ulmke, &lt;ricardo.gomez-ulmke@solace.com&gt;.
-      <span class="lastupdated">Last updated on 04 Mar 2023 at 03:49.
+      <span class="lastupdated">Last updated on 13 Mar 2023 at 16:19.
       </span></p>
   </div>
 
