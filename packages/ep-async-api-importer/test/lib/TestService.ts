@@ -1,4 +1,5 @@
 import { EpAsyncApiDocument } from "@solace-labs/ep-asyncapi";
+import { EEpSdkTask_TargetState, EpSdkApplicationDomainTask, IEpSdkApplicationDomainTask_ExecuteReturn } from "@solace-labs/ep-sdk";
 import { CliUtils } from "../../src/cli-components";
 import {
   CliApplicationDomainsService,
@@ -70,17 +71,11 @@ export class TestService {
     if (keep) return;
     const xvoid: void =
       await CliApplicationDomainsService.absent_ApplicationDomains({
-        applicationDomainNameList: TestService.testApiSpecRecordList
-          .map((testApiSpecRecord: TTestApiSpecRecord) => {
+        applicationDomainNameList: TestService.testApiSpecRecordList.map((testApiSpecRecord: TTestApiSpecRecord) => {
             return testApiSpecRecord.epAsyncApiDocument.getApplicationDomainName();
-          })
-          .concat(
-            TestService.testApiSpecRecordList.map(
-              (testApiSpecRecord: TTestApiSpecRecord) => {
-                return testApiSpecRecord.epAsyncApiDocument.getAssetsApplicationDomainName();
-              }
-            )
-          ),
+          }).concat(TestService.testApiSpecRecordList.map((testApiSpecRecord: TTestApiSpecRecord) => {
+            return testApiSpecRecord.epAsyncApiDocument.getAssetsApplicationDomainName();
+          })),
       });
   };
 
@@ -101,4 +96,16 @@ export class TestService {
 
     return true;
   };
+
+  public static applicationDomainTask = async({ applicationDomainName, epSdkTask_TargetState}:{
+    applicationDomainName: string;
+    epSdkTask_TargetState: EEpSdkTask_TargetState;
+  }): Promise<void> => {
+    const task = new EpSdkApplicationDomainTask({
+      applicationDomainName: applicationDomainName,
+      epSdkTask_TargetState: epSdkTask_TargetState
+    });
+    const task_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn = await task.execute('xContextId');
+  }
+  
 }

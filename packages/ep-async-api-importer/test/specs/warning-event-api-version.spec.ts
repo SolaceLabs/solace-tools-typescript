@@ -50,7 +50,7 @@ const initializeGlobals = () => {
   CliConfig.getCliImporterManagerOptions().cliImporterManagerMode =
     ECliImporterManagerMode.RELEASE_MODE;
   CliConfig.getCliImporterManagerOptions().cliTestSetupDomainsForApis = false;
-  CliConfig.getCliImporterManagerOptions().createEventApiApplication = true;
+  CliConfig.getCliImporterManagerOptions().createApiApplication = true;
 };
 
 describe(`${scriptName}`, () => {

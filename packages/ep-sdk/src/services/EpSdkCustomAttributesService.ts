@@ -1,5 +1,5 @@
 import { 
-  CustomAttribute,
+  CustomAttribute, CustomAttributeDefinition,
 } from "@solace-labs/ep-openapi-node";
 import { 
   EpSdkApiContentError 
@@ -22,11 +22,12 @@ export class EpSdkCustomAttributesServiceClass {
    * Returns full custom attributes including existing & new ones.
    * Ensures any missing definitions are created or their entity types added.
    */
-  public async createCustomAttributesWithNew({ xContextId, existingCustomAttributes, epSdkCustomAttributeList, epSdkCustomAttributeEntityType }:{
+  public async createCustomAttributesWithNew({ xContextId, existingCustomAttributes, epSdkCustomAttributeList, epSdkCustomAttributeEntityType, scope }:{
     xContextId?: string;
     existingCustomAttributes?: Array<CustomAttribute>;
     epSdkCustomAttributeList: TEpSdkCustomAttributeList;
     epSdkCustomAttributeEntityType: EEpSdkCustomAttributeEntityTypes;
+    scope?: CustomAttributeDefinition.scope;
   }): Promise<Array<CustomAttribute>> {
     const funcName = 'createCustomAttributesWithNew';
     const logName = `${EpSdkCustomAttributesServiceClass.name}.${funcName}()`;
@@ -34,7 +35,6 @@ export class EpSdkCustomAttributesServiceClass {
     const customAttributeList: Array<CustomAttribute> = [];
 
     for(const epSdkCustomAttribute of epSdkCustomAttributeList) {
-
       const associatedEntityTypes: Array<EEpSdkCustomAttributeEntityTypes> = await EpSdkCustomAttributeDefinitionsService.presentAssociatedEntityType({
         xContextId: xContextId,
         attributeName: epSdkCustomAttribute.name,
@@ -45,7 +45,8 @@ export class EpSdkCustomAttributesServiceClass {
         epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
         attributeName: epSdkCustomAttribute.name,
         customAttributeDefinitionObjectSettings: {
-          associatedEntityTypes: associatedEntityTypes
+          associatedEntityTypes: associatedEntityTypes,
+          scope: scope ? scope : CustomAttributeDefinition.scope.ORGANIZATION
         },
       });
       const epSdkCustomAttributeDefinitionTask_ExecuteReturn: IEpSdkCustomAttributeDefinitionTask_ExecuteReturn = await epSdkCustomAttributeDefinitionTask.execute(xContextId);

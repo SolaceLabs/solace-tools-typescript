@@ -60,19 +60,11 @@ describe(`${scriptName}`, () => {
         );
         EpSdkLogger.initialize({ epSdkLoggerInstance: epSdkConsoleLogger });
         EpSdkConfig.initialize(TestConfig.getAppId());
-        console.log(
-          TestLogger.createLogMessage("TestConfig", {
-            TestConfig: TestConfig.getConfig(),
-          })
-        );
+        console.log(TestLogger.createLogMessage("TestConfig", {
+          TestConfig: TestConfig.getConfig(),
+        }));
       } catch (e) {
-        expect(
-          false,
-          TestLogger.createTestFailMessageForError(
-            "intitializing test config failed",
-            e
-          )
-        ).to.be.true;
+        expect(false, TestLogger.createTestFailMessageForError("intitializing test config failed", e)).to.be.true;
       }
     });
 
@@ -104,12 +96,8 @@ describe(`${scriptName}`, () => {
         // DEBUG
         // expect(false, TestLogger.createLogMessage('OpenApi', OpenAPI )).to.be.true;
       } catch (e) {
-        expect(
-          e instanceof CliError,
-          TestLogger.createNotCliErrorMesssage(e.message)
-        ).to.be.true;
-        expect(false, TestLogger.createTestFailMessageWithCliError("failed", e))
-          .to.be.true;
+        expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
+        expect(false, TestLogger.createTestFailMessageWithCliError("failed", e)).to.be.true;
       }
     });
   });

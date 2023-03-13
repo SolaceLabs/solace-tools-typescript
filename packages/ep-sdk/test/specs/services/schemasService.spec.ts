@@ -2,7 +2,7 @@ import "mocha";
 import { expect } from "chai";
 import path from "path";
 import { TestContext, TestUtils } from "@internal/tools/src";
-import { TestLogger, TestConfig } from "../../lib";
+import { TestLogger, TestConfig, TestHelpers } from "../../lib";
 import {
   ApiError,
   ApplicationDomainResponse,
@@ -38,12 +38,11 @@ describe(`${scriptName}`, () => {
   before(async () => {
     initializeGlobals();
     TestContext.newItId();
-    const applicationDomainResponse: ApplicationDomainResponse =
-      await ApplicationDomainsService.createApplicationDomain({
-        requestBody: {
-          name: ApplicationDomainName,
-        },
-      });
+    await TestHelpers.applicationDomainAbsent({ applicationDomainName: ApplicationDomainName });
+    const applicationDomainResponse: ApplicationDomainResponse = await ApplicationDomainsService.createApplicationDomain({
+    requestBody: {
+      name: ApplicationDomainName,
+    }});
     ApplicationDomainId = applicationDomainResponse.data.id;
   });
 
@@ -54,9 +53,7 @@ describe(`${scriptName}`, () => {
   after(async () => {
     TestContext.newItId();
     // delete application domain
-    await EpSdkApplicationDomainsService.deleteById({
-      applicationDomainId: ApplicationDomainId,
-    });
+    await EpSdkApplicationDomainsService.deleteById({applicationDomainId: ApplicationDomainId });
   });
 
   it(`${scriptName}: should create schema`, async () => {

@@ -1,4 +1,5 @@
 import {
+  CustomAttributeDefinition,
   EnumsService,
   Pagination,
   StateChangeRequestResponse,
@@ -11,7 +12,7 @@ import {
   EpSdkApiContentError 
 } from "../utils";
 import { 
-  EpApiMaxPageSize 
+  EpApiMaxPageSize, EpSdkCustomAttributeNameSourceApplicationDomainId 
 } from '../constants';
 import { 
   EpSdkEnumTask, 
@@ -20,13 +21,15 @@ import {
   EEpSdkTask_TargetState,
   EpSdkEnumVersionTask, 
   IEpSdkEnumVersionTask_ExecuteReturn,
-  EEpSdk_VersionTaskStrategy
+  EEpSdk_VersionTaskStrategy,
 } from "../tasks";
 import EpSdkEnumsService from "./EpSdkEnumsService";
 import { EpSdkVersionServiceClass } from "./EpSdkVersionService";
+import { EEpSdkCustomAttributeEntityTypes } from '../types';
 
 /** @category Services */
 export class EpSdkEnumVersionsServiceClass extends EpSdkVersionServiceClass {
+  private readonly CustomAttributeEntityType = EEpSdkCustomAttributeEntityTypes.ENUM_VERSION;
 
   public getVersionByVersion = async ({ xContextId, enumId, enumVersionString }: {
     xContextId?: string;
@@ -258,6 +261,15 @@ export class EpSdkEnumVersionsServiceClass extends EpSdkVersionServiceClass {
       });
       if(targetTopicAddressEnumVersion !== undefined) return targetTopicAddressEnumVersion;
     }
+    // add the source application domain id to custom attribute
+    await EpSdkEnumsService.setCustomAttributes({
+      xContextId: xContextId,
+      enumId: epSdkEnumTask_ExecuteReturn.epObjectKeys.epObjectId,
+      scope: CustomAttributeDefinition.scope.APPLICATION_DOMAIN,
+      epSdkCustomAttributeList: [ 
+        { name: EpSdkCustomAttributeNameSourceApplicationDomainId, value: fromApplicationDomainId }
+      ]
+    });
     // create target enum version
     const epSdkEnumVersionTask = new EpSdkEnumVersionTask({
       epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
@@ -267,15 +279,14 @@ export class EpSdkEnumVersionsServiceClass extends EpSdkVersionServiceClass {
       versionStrategy: EEpSdk_VersionTaskStrategy.EXACT_VERSION,
       enumVersionSettings: {
         stateId: fromTopicAddressEnumVersion.stateId,
-        displayName: fromTopicAddressEnumVersion.displayName ? fromTopicAddressEnumVersion.displayName : fromTopicAddressEnum.name,
-        description: fromTopicAddressEnumVersion.description
+        displayName: fromTopicAddressEnumVersion.displayName ? fromTopicAddressEnumVersion.displayName : '',
+        description: fromTopicAddressEnumVersion.description,
       },
       enumValues: fromTopicAddressEnumVersion.values.map( (x) => { return x.value; }),
     });
     const epSdkEnumVersionTask_ExecuteReturn: IEpSdkEnumVersionTask_ExecuteReturn = await epSdkEnumVersionTask.execute(xContextId);
     return epSdkEnumVersionTask_ExecuteReturn.epObject;
   }
-
 }
 
 /** @category Services */

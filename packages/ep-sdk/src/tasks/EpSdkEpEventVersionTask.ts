@@ -37,7 +37,7 @@ import {
 /** @category Tasks */
 export type TEpSdkEpEventVersionTask_Settings_DeliveryDescriptor = Pick<DeliveryDescriptor,"brokerType">;
 /** @category Tasks */
-export type TEpSdkEpEventVersionTask_Settings = Required<Pick<EventVersion, "description" | "displayName" | "stateId" | "schemaVersionId">> & TEpSdkEpEventVersionTask_Settings_DeliveryDescriptor;
+export type TEpSdkEpEventVersionTask_Settings = Required<Pick<EventVersion, "stateId" | "schemaVersionId">> & Pick<EventVersion, "description" | "displayName" > & TEpSdkEpEventVersionTask_Settings_DeliveryDescriptor;
 type TEpSdkEpEventVersionTask_CompareObject = Partial<TEpSdkEpEventVersionTask_Settings> & Pick<EventVersion, "deliveryDescriptor"> & Partial<Pick<EventVersion, "version">>;
 
 /** @category Tasks */
@@ -119,6 +119,8 @@ export class EpSdkEpEventVersionTask extends EpSdkVersionTask {
     const settings: TEpSdkEpEventVersionTask_Settings = {
       ...this.Default_TEpSdkEpEventVersionTask_Settings,
       ...this.getTaskConfig().eventVersionSettings,
+      description: this.getTaskConfig().eventVersionSettings.description ? this.getTaskConfig().eventVersionSettings.description : '',
+      displayName: this.getTaskConfig().eventVersionSettings.displayName ? this.getTaskConfig().eventVersionSettings.displayName : '',
     };
     delete settings.brokerType;
     const brokerType = this.getTaskConfig().eventVersionSettings.brokerType
@@ -218,21 +220,13 @@ export class EpSdkEpEventVersionTask extends EpSdkVersionTask {
   /**
    * Get the latest EventVersion.
    */
-  protected async getFunc(
-    epSdkEpEventVersionTask_Keys: IEpSdkEpEventVersionTask_Keys
-  ): Promise<IEpSdkEpEventVersionTask_GetFuncReturn> {
+  protected async getFunc(epSdkEpEventVersionTask_Keys: IEpSdkEpEventVersionTask_Keys): Promise<IEpSdkEpEventVersionTask_GetFuncReturn> {
     const funcName = "getFunc";
     const logName = `${EpSdkEpEventVersionTask.name}.${funcName}()`;
 
-    EpSdkLogger.trace(
-      EpSdkLogger.createLogEntry(logName, {
-        code: EEpSdkLoggerCodes.TASK_EXECUTE_START_GET,
-        module: this.constructor.name,
-        details: {
-          epSdkEpEventVersionTask_Keys: epSdkEpEventVersionTask_Keys,
-        },
-      })
-    );
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, {code: EEpSdkLoggerCodes.TASK_EXECUTE_START_GET,module: this.constructor.name,details: {
+      epSdkEpEventVersionTask_Keys: epSdkEpEventVersionTask_Keys,
+    }}));
 
     const eventVersion: EventVersion | undefined = await EpSdkEpEventVersionsService.getLatestVersionForEventId({
       xContextId: this.xContextId,
@@ -240,25 +234,18 @@ export class EpSdkEpEventVersionTask extends EpSdkVersionTask {
       eventId: epSdkEpEventVersionTask_Keys.eventId,
     });
 
-    EpSdkLogger.trace(
-      EpSdkLogger.createLogEntry(logName, {
-        code: EEpSdkLoggerCodes.TASK_EXECUTE_API_GET,
-        module: this.constructor.name,
-        details: {
-          epSdkEpEventVersionTask_Keys: epSdkEpEventVersionTask_Keys,
-          eventVersion: eventVersion ? eventVersion : "undefined",
-        },
-      })
-    );
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, {code: EEpSdkLoggerCodes.TASK_EXECUTE_API_GET,module: this.constructor.name,details: {
+      epSdkEpEventVersionTask_Keys: epSdkEpEventVersionTask_Keys,
+      eventVersion: eventVersion ? eventVersion : "undefined",
+    }}));
 
     if (eventVersion === undefined) return this.Empty_IEpSdkEpEventVersionTask_GetFuncReturn;
 
-    const epSdkEpEventVersionTask_GetFuncReturn: IEpSdkEpEventVersionTask_GetFuncReturn =
-      {
-        epObjectKeys: this.getEpObjectKeys(eventVersion),
-        epObject: eventVersion,
-        epObjectExists: true,
-      };
+    const epSdkEpEventVersionTask_GetFuncReturn: IEpSdkEpEventVersionTask_GetFuncReturn = {
+      epObjectKeys: this.getEpObjectKeys(eventVersion),
+      epObject: eventVersion,
+      epObjectExists: true,
+    };
     return epSdkEpEventVersionTask_GetFuncReturn;
   }
 
@@ -266,56 +253,33 @@ export class EpSdkEpEventVersionTask extends EpSdkVersionTask {
     const funcName = "isUpdateRequired";
     const logName = `${EpSdkEpEventVersionTask.name}.${funcName}()`;
 
-    EpSdkLogger.trace(
-      EpSdkLogger.createLogEntry(logName, {
-        code: EEpSdkLoggerCodes.TASK_EXECUTE_START_IS_UPDATE_REQUIRED,
-        module: this.constructor.name,
-        details: {
-          epSdkEpEventVersionTask_GetFuncReturn:
-            epSdkEpEventVersionTask_GetFuncReturn,
-        },
-      })
-    );
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, {code: EEpSdkLoggerCodes.TASK_EXECUTE_START_IS_UPDATE_REQUIRED,module: this.constructor.name,details: {
+      epSdkEpEventVersionTask_GetFuncReturn: epSdkEpEventVersionTask_GetFuncReturn,
+    }}));
 
-    if (epSdkEpEventVersionTask_GetFuncReturn.epObject === undefined)
-      throw new EpSdkInternalTaskError(
-        logName,
-        this.constructor.name,
-        "epSdkEpEventVersionTask_GetFuncReturn.epObject === undefined"
-      );
+    if (epSdkEpEventVersionTask_GetFuncReturn.epObject === undefined) throw new EpSdkInternalTaskError(logName,this.constructor.name,"epSdkEpEventVersionTask_GetFuncReturn.epObject === undefined");
     /* istanbul ignore next */
-    if (epSdkEpEventVersionTask_GetFuncReturn.epObject.version === undefined)
-      throw new EpSdkApiContentError(
-        logName,
-        this.constructor.name,
-        "epSdkEpEventVersionTask_GetFuncReturn.epObject.version === undefined",
-        {
-          epObject: epSdkEpEventVersionTask_GetFuncReturn.epObject,
-        }
-      );
+    if (epSdkEpEventVersionTask_GetFuncReturn.epObject.version === undefined) throw new EpSdkApiContentError(logName,this.constructor.name,"epSdkEpEventVersionTask_GetFuncReturn.epObject.version === undefined",{
+      epObject: epSdkEpEventVersionTask_GetFuncReturn.epObject,
+    });
 
-    const existingObject: EventVersion =
-      epSdkEpEventVersionTask_GetFuncReturn.epObject;
+    const existingObject: EventVersion = epSdkEpEventVersionTask_GetFuncReturn.epObject;
     const existingCompareObject: TEpSdkEpEventVersionTask_CompareObject = {
-      description: existingObject.description,
-      displayName: existingObject.displayName,
+      description: existingObject.description ? existingObject.description : '',
+      displayName: existingObject.displayName ? existingObject.displayName : '',
       stateId: existingObject.stateId,
       schemaVersionId: existingObject.schemaVersionId,
       deliveryDescriptor: existingObject.deliveryDescriptor,
     };
-    const requestedCompareObject: TEpSdkEpEventVersionTask_CompareObject =
-      this.createObjectSettings();
+    const requestedCompareObject: TEpSdkEpEventVersionTask_CompareObject = this.createObjectSettings();
     if (this.versionStrategy === EEpSdk_VersionTaskStrategy.EXACT_VERSION) {
-      existingCompareObject.version =
-        epSdkEpEventVersionTask_GetFuncReturn.epObject.version;
+      existingCompareObject.version = epSdkEpEventVersionTask_GetFuncReturn.epObject.version;
       requestedCompareObject.version = this.versionString;
     }
-
-    const epSdkTask_IsUpdateRequiredFuncReturn: IEpSdkTask_IsUpdateRequiredFuncReturn =
-      this.create_IEpSdkTask_IsUpdateRequiredFuncReturn({
-        existingObject: existingCompareObject,
-        requestedObject: requestedCompareObject,
-      });
+    const epSdkTask_IsUpdateRequiredFuncReturn: IEpSdkTask_IsUpdateRequiredFuncReturn = this.create_IEpSdkTask_IsUpdateRequiredFuncReturn({
+      existingObject: existingCompareObject,
+      requestedObject: requestedCompareObject,
+    });
     // // DEBUG:
     // if(epSdkTask_IsUpdateRequiredFuncReturn.isUpdateRequired) {
     //   EpSdkLogger.debug(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_DONE_IS_UPDATE_REQUIRED, module: this.constructor.name, details: {

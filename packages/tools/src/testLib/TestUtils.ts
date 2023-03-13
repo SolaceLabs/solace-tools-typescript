@@ -1,5 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import short from 'short-uuid';
+import fs from 'fs';
+import path from 'path';
 
 // use with // @ts-ignore if getting Type instantiation is excessively deep and possibly infinite.  TS2589
 type DotPrefix<T extends string> = T extends "" ? "" : `.${T}`;
@@ -24,6 +26,25 @@ export class TestUtils {
     const funcName = 'assertNever';
     const logName = `${TestUtils.name}.${funcName}()`;
     throw new Error(`${logName}:${extLogName}: unexpected object: ${JSON.stringify(x)}`);
+  }
+
+  public static validateFilePathWithReadPermission = (filePath: string): string => {
+    try {
+      const absoluteFilePath = path.resolve(filePath);
+      // console.log(`validateFilePathWithReadPermission: absoluteFilePath=${absoluteFilePath}`);
+      fs.accessSync(absoluteFilePath, fs.constants.R_OK);
+      return absoluteFilePath;
+    } catch (e) {
+      throw e;
+      // console.log(`validateFilePathWithReadPermission: filePath=${filePath}`);
+      // console.log(`e=${e}`);
+
+    }
+  }
+
+  public static readFile =(filePath: string): string => {
+    const validPath = TestUtils.validateFilePathWithReadPermission(filePath);
+    return fs.readFileSync(validPath, { encoding: 'utf8'});
   }
 
 }

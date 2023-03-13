@@ -38,4 +38,7 @@ export class TestLogger extends TestLoggerBase {
   ): string => {
     return `[${TestContext.getItId()}]: message=${message}, epSdkError=${epSdkError}`;
   };
+  public static createNotEpSdkErrorMessage = (e: Error): string => {
+    return `[${TestContext.getItId()}]: error is not an instance of EpSdkError, name=${e.name}, message=${e.message}`;
+  }
 }

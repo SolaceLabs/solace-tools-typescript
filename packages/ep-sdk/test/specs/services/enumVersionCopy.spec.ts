@@ -178,54 +178,41 @@ describe(`${scriptName}`, () => {
     try {
       for (const enumInfo of EnumInfoList) {
         // get latest source version
-        const latestSourceTopicAddressEnumVersion: TopicAddressEnumVersion =
-          await EpSdkEnumVersionsService.getLatestVersionForEnumId({
-            applicationDomainId: SourceApplicationDomainId,
-            enumId: enumInfo.sourceEnumId,
-          });
+        const latestSourceTopicAddressEnumVersion: TopicAddressEnumVersion = await EpSdkEnumVersionsService.getLatestVersionForEnumId({
+          applicationDomainId: SourceApplicationDomainId,
+          enumId: enumInfo.sourceEnumId,
+        });
         // copy
-        const copiedTopicAddressEnumVersion: TopicAddressEnumVersion =
-          await EpSdkEnumVersionsService.copyLastestVersionById_IfNotExists({
-            enumVersionId: latestSourceTopicAddressEnumVersion.id,
-            fromApplicationDomainId: SourceApplicationDomainId,
-            toApplicationDomainId: TargetApplicationDomainId,
-          });
+        const copiedTopicAddressEnumVersion: TopicAddressEnumVersion = await EpSdkEnumVersionsService.copyLastestVersionById_IfNotExists({
+          enumVersionId: latestSourceTopicAddressEnumVersion.id,
+          fromApplicationDomainId: SourceApplicationDomainId,
+          toApplicationDomainId: TargetApplicationDomainId,
+        });
         enumInfo.targetEnumId = copiedTopicAddressEnumVersion.enumId;
         // get latest target version
-        const latestTargetTopicAddressEnumVersion: TopicAddressEnumVersion =
-          await EpSdkEnumVersionsService.getLatestVersionForEnumId({
-            applicationDomainId: TargetApplicationDomainId,
-            enumId: copiedTopicAddressEnumVersion.enumId,
-          });
-        let message = TestLogger.createLogMessage("source & target", {
-          latestSourceTopicAddressEnumVersion:
-            latestSourceTopicAddressEnumVersion,
-          latestTargetTopicAddressEnumVersion:
-            latestTargetTopicAddressEnumVersion,
+        const latestTargetTopicAddressEnumVersion: TopicAddressEnumVersion = await EpSdkEnumVersionsService.getLatestVersionForEnumId({
+          applicationDomainId: TargetApplicationDomainId,
+          enumId: copiedTopicAddressEnumVersion.enumId,
         });
-        const sourceCompare: Partial<TopicAddressEnumVersion> =
-          createCompareObject(latestSourceTopicAddressEnumVersion);
-        const targetCompare: Partial<TopicAddressEnumVersion> =
-          createCompareObject(latestTargetTopicAddressEnumVersion);
+        let message = TestLogger.createLogMessage("source & target", {
+          latestSourceTopicAddressEnumVersion: latestSourceTopicAddressEnumVersion,
+          latestTargetTopicAddressEnumVersion: latestTargetTopicAddressEnumVersion,
+        });
+        const sourceCompare: Partial<TopicAddressEnumVersion> = createCompareObject(latestSourceTopicAddressEnumVersion);
+        const targetCompare: Partial<TopicAddressEnumVersion> = createCompareObject(latestTargetTopicAddressEnumVersion);
         expect(sourceCompare, message).to.be.deep.equal(targetCompare);
         message = TestLogger.createLogMessage("copied & latest", {
           copiedTopicAddressEnumVersion: copiedTopicAddressEnumVersion,
-          latestTargetTopicAddressEnumVersion:
-            latestTargetTopicAddressEnumVersion,
+          latestTargetTopicAddressEnumVersion: latestTargetTopicAddressEnumVersion,
         });
-        expect(copiedTopicAddressEnumVersion, message).to.be.deep.equal(
-          latestTargetTopicAddressEnumVersion
-        );
+        expect(copiedTopicAddressEnumVersion, message).to.be.deep.equal(latestTargetTopicAddressEnumVersion);
         // // DEBUG
         // expect(false, message).to.be.true;
       }
     } catch (e) {
-      if (e instanceof ApiError)
-        expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
-        .to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
-        .true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 

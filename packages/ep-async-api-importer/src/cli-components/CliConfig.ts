@@ -78,6 +78,7 @@ enum ECliConfigEnvVarNames {
   CLI_IMPORT_ASSETS_TARGET_VERSION_STRATEGY = "CLI_IMPORT_ASSETS_TARGET_VERSION_STRATEGY",
   CLI_IMPORT_ASSETS_OUTPUT_DIR = "CLI_IMPORT_ASSETS_OUTPUT_DIR",
   CLI_IMPORT_CREATE_API_APPLICATION = "CLI_IMPORT_CREATE_API_APPLICATION",
+  CLI_IMPORT_CREATE_API_EVENT_API = "CLI_IMPORT_CREATE_API_EVENT_API",
   CLI_IMPORT_BROKER_TYPE = "CLI_IMPORT_BROKER_TYPE",
   CLI_IMPORT_CHANNEL_DELIMITER = "CLI_IMPORT_CHANNEL_DELIMITER",
   CLI_TEST_SETUP_DOMAINS_FOR_APIS = "CLI_TEST_SETUP_DOMAINS_FOR_APIS",
@@ -101,6 +102,7 @@ const DEFAULT_CLI_IMPORT_ASSETS_TARGET_LIFECYLE_STATE = ECliAssetImport_TargetLi
 const DEFAULT_CLI_IMPORT_ASSETS_TARGET_VERSION_STRATEGY = ECliAssetImport_TargetVersionStrategy.BUMP_PATCH;
 const DEFAULT_CLI_IMPORT_ASSET_OUTPUT_DIR = "./tmp/output";
 const DEFAULT_CLI_IMPORT_CREATE_API_APPLICATION = false;
+const DEFAULT_CLI_IMPORT_CREATE_API_EVENT_API = true;
 const DEFAULT_CLI_TEST_SETUP_DOMAINS_FOR_APIS = false;
 const DEFAULT_CLI_VALIDATE_API_BEST_PRACTICES = true;
 
@@ -217,10 +219,16 @@ const CliConfigEnvVarConfigList: Array<TCliConfigEnvVarConfig> = [
   },
   {
     envVarName: ECliConfigEnvVarNames.CLI_IMPORT_CREATE_API_APPLICATION,
-    description:
-      "Flag to create also an application representing the Event API.",
+    description: "Flag to create an Event Portal Application representing the API Spec.",
     required: false,
     default: String(DEFAULT_CLI_IMPORT_CREATE_API_APPLICATION),
+    options: Object.values(ECliConfigBooleanOptions),
+  },
+  {
+    envVarName: ECliConfigEnvVarNames.CLI_IMPORT_CREATE_API_EVENT_API,
+    description: "Flag to create an Event Portal Event API representing the API Spec.",
+    required: false,
+    default: String(DEFAULT_CLI_IMPORT_CREATE_API_EVENT_API),
     options: Object.values(ECliConfigBooleanOptions),
   },
   {
@@ -499,7 +507,8 @@ class CliConfig {
         cliImporterManagerMode: this.getOptionalEnvVarValueAsString_From_Options_WithDefault(ECliConfigEnvVarNames.CLI_MODE, Object.values(ECliImporterManagerMode), DEFAULT_CLI_MODE) as ECliImporterManagerMode,
         applicationDomainName: applicationDomainName,
         assetApplicationDomainName: assetApplicationDomainName,
-        createEventApiApplication: this.getOptionalEnvVarValueAsBoolean_WithDefault(ECliConfigEnvVarNames.CLI_IMPORT_CREATE_API_APPLICATION, DEFAULT_CLI_IMPORT_CREATE_API_APPLICATION),
+        createApiApplication: this.getOptionalEnvVarValueAsBoolean_WithDefault(ECliConfigEnvVarNames.CLI_IMPORT_CREATE_API_APPLICATION, DEFAULT_CLI_IMPORT_CREATE_API_APPLICATION),
+        createApiEventApi: this.getOptionalEnvVarValueAsBoolean_WithDefault(ECliConfigEnvVarNames.CLI_IMPORT_CREATE_API_EVENT_API, DEFAULT_CLI_IMPORT_CREATE_API_EVENT_API),
         cliTestSetupDomainsForApis: this.getOptionalEnvVarValueAsBoolean_WithDefault(ECliConfigEnvVarNames.CLI_TEST_SETUP_DOMAINS_FOR_APIS, DEFAULT_CLI_TEST_SETUP_DOMAINS_FOR_APIS),
         cliImporterOptions: {
           runId: runId,

@@ -1,4 +1,5 @@
 import {
+  CustomAttributeDefinition,
   Pagination,
   SchemaObject,
   SchemasService,
@@ -8,7 +9,7 @@ import {
   StateChangeRequestResponse,
 } from "@solace-labs/ep-openapi-node";
 import { EpSdkApiContentError, EpSdkServiceError } from "../utils";
-import { EpApiMaxPageSize } from "../constants";
+import { EpApiMaxPageSize, EpSdkCustomAttributeNameSourceApplicationDomainId } from "../constants";
 import {
   EEpSdkTask_Action,
   EEpSdkTask_TargetState,
@@ -320,39 +321,20 @@ export class EpSdkSchemaVersionsServiceClass extends EpSdkVersionServiceClass {
     const logName = `${EpSdkSchemaVersionsServiceClass.name}.${funcName}()`;
 
     // get the source schema version
-    const fromSchemaVersionResponse: SchemaVersionResponse =
-      await SchemasService.getSchemaVersion({
-        xContextId,
-        versionId: schemaVersionId,
-      });
-    if (fromSchemaVersionResponse.data === undefined)
-      throw new EpSdkServiceError(
-        logName,
-        this.constructor.name,
-        "fromSchemaVersionResponse.data === undefined",
-        {
-          fromSchemaVersionResponse: fromSchemaVersionResponse,
-        }
-      );
+    const fromSchemaVersionResponse: SchemaVersionResponse = await SchemasService.getSchemaVersion({
+      xContextId,
+      versionId: schemaVersionId,
+    });
+    if (fromSchemaVersionResponse.data === undefined) throw new EpSdkServiceError(logName, this.constructor.name, "fromSchemaVersionResponse.data === undefined", {
+      fromSchemaVersionResponse: fromSchemaVersionResponse,
+    });
     const fromSchemaVersion: SchemaVersion = fromSchemaVersionResponse.data;
-    if (fromSchemaVersion.stateId === undefined)
-      throw new EpSdkServiceError(
-        logName,
-        this.constructor.name,
-        "fromSchemaVersion.stateId === undefined",
-        {
-          fromSchemaVersion: fromSchemaVersion,
-        }
-      );
-    if (fromSchemaVersion.content === undefined)
-      throw new EpSdkServiceError(
-        logName,
-        this.constructor.name,
-        "fromSchemaVersion.content === undefined",
-        {
-          fromSchemaVersion: fromSchemaVersion,
-        }
-      );
+    if (fromSchemaVersion.stateId === undefined) throw new EpSdkServiceError(logName, this.constructor.name, "fromSchemaVersion.stateId === undefined", {
+      fromSchemaVersion: fromSchemaVersion,
+    });
+    if (fromSchemaVersion.content === undefined) throw new EpSdkServiceError(logName, this.constructor.name, "fromSchemaVersion.content === undefined", {
+      fromSchemaVersion: fromSchemaVersion,
+    });
     // get the source schema object
     const fromSchemaObject: SchemaObject = await EpSdkSchemasService.getById({
       xContextId,
@@ -380,6 +362,15 @@ export class EpSdkSchemaVersionsServiceClass extends EpSdkVersionServiceClass {
       });
       if (targetSchemaVersion !== undefined) return targetSchemaVersion;
     }
+    // add the source application domain id to custom attribute
+    await EpSdkSchemasService.setCustomAttributes({
+      xContextId: xContextId,
+      schemaId: epSdkSchemaTask_ExecuteReturn.epObjectKeys.epObjectId,
+      scope: CustomAttributeDefinition.scope.APPLICATION_DOMAIN,
+      epSdkCustomAttributeList: [ 
+        { name: EpSdkCustomAttributeNameSourceApplicationDomainId, value: fromApplicationDomainId }
+      ]
+    });    
     // create target schema version
     const epSdkSchemaVersionTask = new EpSdkSchemaVersionTask({
       epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
@@ -389,7 +380,7 @@ export class EpSdkSchemaVersionsServiceClass extends EpSdkVersionServiceClass {
       versionStrategy: EEpSdk_VersionTaskStrategy.EXACT_VERSION,
       schemaVersionSettings: {
         stateId: fromSchemaVersion.stateId,
-        displayName: fromSchemaVersion.displayName ? fromSchemaVersion.displayName : fromSchemaObject.name,
+        displayName: fromSchemaVersion.displayName ? fromSchemaVersion.displayName : '',
         description: fromSchemaVersion.description ? fromSchemaVersion.description : "",
         content: fromSchemaVersion.content,
       },

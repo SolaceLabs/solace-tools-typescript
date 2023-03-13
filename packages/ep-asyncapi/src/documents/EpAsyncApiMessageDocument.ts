@@ -3,6 +3,10 @@ import {
   Schema 
 } from '@asyncapi/parser';
 import { 
+  EpMessageExtensions, 
+  EpSchemaExtensions 
+} from '../constants';
+import { 
   EpAsyncApiUtils, 
   EpAsyncApiMessageError, 
   EpAsyncApiBestPracticesError 
@@ -22,9 +26,9 @@ export enum E_EpAsyncApiSchemaFormatType {
 
 export class EpAsyncApiMessageDocument {
   private epAsyncApiDocument: EpAsyncApiDocument;
-  private epAsyncApiChannelDocument: EpAsyncApiChannelDocument | undefined;
-  private asyncApiMessageKey: string;
+  private epAsyncApiChannelDocument: EpAsyncApiChannelDocument;
   private asyncApiMessage: Message;
+  private asyncApiMessageKey: string;
   private contentType: E_EpAsyncApiContentTypes;
   private schemaFormatType: E_EpAsyncApiSchemaFormatType;
   public static readonly ContentTypeIssue = 'contentType === undefined, neither message has a contentType nor api has a defaultContentType';
@@ -76,6 +80,11 @@ export class EpAsyncApiMessageDocument {
   private extractMessageKey(asyncApiMessage: Message): string {
     const funcName = 'extractMessageKey';
     const logName = `${EpAsyncApiMessageDocument.name}.${funcName}()`;
+    // try ep extension first
+    if(asyncApiMessage.hasExtension(EpMessageExtensions.xEpEventName)) {
+      const eventName = asyncApiMessage.extension(EpMessageExtensions.xEpEventName);
+      if(eventName && eventName.length > 0) return eventName;
+    }
     // 2.4.0
     if(asyncApiMessage.name()) return asyncApiMessage.name();
     // 2.0.0
@@ -89,11 +98,11 @@ export class EpAsyncApiMessageDocument {
     });
   }
 
-  constructor(epAsyncApiDocument: EpAsyncApiDocument, epAsyncApiChannelDocument: EpAsyncApiChannelDocument | undefined, asyncApiMessageKey: string | undefined, asyncApiMessage: Message) {
+  constructor(epAsyncApiDocument: EpAsyncApiDocument, epAsyncApiChannelDocument: EpAsyncApiChannelDocument, asyncApiMessage: Message) {
     this.epAsyncApiDocument = epAsyncApiDocument;
     this.epAsyncApiChannelDocument = epAsyncApiChannelDocument;
-    this.asyncApiMessageKey = asyncApiMessageKey ? asyncApiMessageKey : this.extractMessageKey(asyncApiMessage);
     this.asyncApiMessage = asyncApiMessage;
+    this.asyncApiMessageKey = this.extractMessageKey(asyncApiMessage);
     this.contentType = this.determineContentType();
     this.schemaFormatType = this.determineSchemaFormatType();
   }
@@ -117,18 +126,6 @@ export class EpAsyncApiMessageDocument {
     }
   }
 
-  public getMessageKey(): string { return this.asyncApiMessageKey; }
-
-  public getMessageName(): string {
-    // const funcName = 'getMessageName';
-    // const logName = `${EpAsyncApiMessageDocument.name}.${funcName}()`;
-    // Note: message name must NOT contain slashes '/', otherwise exported async api channel will reference a message which will NOT be found.
-    //eslint-disable-next-line
-    let name: string = this.asyncApiMessageKey.replaceAll(/[^0-9a-zA-Z\._]+/g, '-');
-    if(this.asyncApiMessage.name() !== undefined) name = this.asyncApiMessage.name();
-    return name;
-  }
-
   public getContentType(): E_EpAsyncApiContentTypes { return this.contentType; }
 
   public getSchemaFormatType(): E_EpAsyncApiSchemaFormatType { return this.schemaFormatType; }
@@ -142,11 +139,21 @@ export class EpAsyncApiMessageDocument {
     return JSON.stringify(schema.json());
   }
 
-  public getDescription(): string {
+  public getMessageName(): string { return this.asyncApiMessageKey; }
+
+  public getMessageDisplayName(): string {
+    if(this.asyncApiMessage.hasExtension(EpMessageExtensions.xEpEventVersionDisplayName)) {
+      const displayName = this.asyncApiMessage.extension(EpMessageExtensions.xEpEventVersionDisplayName);
+      if(displayName && displayName.length > 0) return displayName;
+    }
+    return '';
+  }
+
+  public getMessageDescription(): string {
     const description: string | null = this.asyncApiMessage.description();
     const summary: string | null = this.asyncApiMessage.summary();
-    if(description) return description;
-    if(summary) return summary;
+    if(description && description.length > 0) return description;
+    if(summary && summary.length > 0) return summary;
     return '';
   }
 
@@ -156,9 +163,37 @@ export class EpAsyncApiMessageDocument {
 
   public getPayloadSchemaName(): string {
     const schema: Schema = this.asyncApiMessage.payload();
-    let name: string | undefined = schema.title();
-    if(!name) name = this.getMessageName();
-    return name;
+    if(!schema) return this.getMessageName();
+    try { 
+      const title = schema.title();
+      if(title && title !== '') return title;
+      throw new Error('no title found');
+    } catch(e) { 
+      if(schema.hasExtension(EpSchemaExtensions.xEpSchemaName)) {
+        return schema.extension(EpSchemaExtensions.xEpSchemaName);
+      }
+      return this.getMessageName();
+    }
+  }
+
+  public getPayloadSchemaDisplayName(): string {
+    const schema: Schema = this.asyncApiMessage.payload();
+    if(!schema) return '';
+    if(schema.hasExtension(EpSchemaExtensions.xEpSchemaVersionDisplayName)) {
+      return schema.extension(EpSchemaExtensions.xEpSchemaVersionDisplayName);
+    }
+    return '';
+  }
+
+  public getPayloadSchemaDescription(): string {
+    const schema: Schema = this.asyncApiMessage.payload();
+    try { 
+      const descr = schema.description();
+      if(descr && descr.length > 0) return descr;
+    } catch(e) { 
+      // no op
+    }
+    return '';
   }
 
   public getSchemaFileName(): string {
@@ -183,10 +218,12 @@ export class EpAsyncApiMessageDocument {
     // should never get here
     return undefined;
   }
+
   public getSchemaAsSanitizedJson(): any {
     const anySchema: any = this.getPayloadSchema();
     const sanitized = JSON.parse(JSON.stringify(anySchema, (k,v) => {
       if(k.startsWith("x-parser")) return undefined;
+      if(k.startsWith("x-ep")) return undefined;
       return v;
     }));
     return sanitized;

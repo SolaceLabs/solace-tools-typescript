@@ -27,6 +27,13 @@ export class TestConfigBase {
     return absoluteDir;
   }
 
+  protected createReadWriteDir = (baseDir: string, subDir?: string): string => {
+    const absoluteDir = subDir ? path.resolve(baseDir, subDir) : path.resolve(baseDir);
+    if(!fs.existsSync(absoluteDir)) fs.mkdirSync(absoluteDir, { recursive: true });
+    fs.accessSync(absoluteDir, fs.constants.W_OK);
+    return absoluteDir;
+  }
+
   protected getMandatoryEnvVarValueAsString = (envVarName: string): string => {
     const value: string | undefined = process.env[envVarName];
     if (!value) throw new Error(`mandatory env var missing: ${envVarName}`);    

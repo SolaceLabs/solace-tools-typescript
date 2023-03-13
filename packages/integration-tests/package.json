@@ -1,0 +1,21 @@
+{
+  "name": "@internal/integration-tests",
+  "version": "0.1.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "license": "Apache-2.0",
+  "private": true,
+  "scripts": {
+    "clean": "rm -rf dist && rm -rf .turbo",
+    "build:test": "yarn tsc",
+    "test:x": "yarn build:test && . ./source.env.sh && mocha --config .mocharc.yml src/**/**.x-spec.ts && unset_source_env",
+    "test:xsd": "yarn build:test && . ./source.env.sh && mocha --config .mocharc.yml src/**/**.xsd-spec.ts && unset_source_env"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@solace-labs/ep-asyncapi": "0.53.2",
+    "@solace-labs/ep-openapi-node": "^2.53.0",
+    "@solace-labs/ep-sdk": "0.56.1",
+    "libxmljs2-xsd": "^0.30.1"
+  }
+}

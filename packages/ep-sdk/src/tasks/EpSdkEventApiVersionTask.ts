@@ -37,9 +37,7 @@ export type TEpSdkEventApiVersionTask_Settings = Required<
     | "consumedEventVersionIds"
   >
 >;
-type TEpSdkEventApiVersionTask_CompareObject =
-  Partial<TEpSdkEventApiVersionTask_Settings> &
-    Pick<EventApiVersion, "version">;
+type TEpSdkEventApiVersionTask_CompareObject = Partial<TEpSdkEventApiVersionTask_Settings> & Pick<EventApiVersion, "version">;
 
 /** @category Tasks */
 export interface IEpSdkEventApiVersionTask_Config
@@ -76,16 +74,14 @@ export interface IEpSdkEventApiVersionTask_ExecuteReturn
 
 /** @category Tasks */
 export class EpSdkEventApiVersionTask extends EpSdkVersionTask {
-  private readonly Empty_IEpSdkEventApiVersionTask_GetFuncReturn: IEpSdkEventApiVersionTask_GetFuncReturn =
-    {
-      epObjectKeys: this.getDefaultEpObjectKeys(),
-      epObject: undefined,
-      epObjectExists: false,
-    };
-  private readonly Default_TEpSdkEventApiVersionTask_Settings: Partial<TEpSdkEventApiVersionTask_Settings> =
-    {
-      // description: `Created by ${EpSdkConfig.getAppName()}.`,
-    };
+  private readonly Empty_IEpSdkEventApiVersionTask_GetFuncReturn: IEpSdkEventApiVersionTask_GetFuncReturn = {
+    epObjectKeys: this.getDefaultEpObjectKeys(),
+    epObject: undefined,
+    epObjectExists: false,
+  };
+  private readonly Default_TEpSdkEventApiVersionTask_Settings: Partial<TEpSdkEventApiVersionTask_Settings> = {
+    // no defaults
+  };
   private getTaskConfig(): IEpSdkEventApiVersionTask_Config {
     return this.epSdkTask_Config as IEpSdkEventApiVersionTask_Config;
   }
@@ -93,17 +89,17 @@ export class EpSdkEventApiVersionTask extends EpSdkVersionTask {
     return {
       ...this.Default_TEpSdkEventApiVersionTask_Settings,
       ...this.getTaskConfig().eventApiVersionSettings,
+      description: this.getTaskConfig().eventApiVersionSettings.description ? this.getTaskConfig().eventApiVersionSettings.description : '',
+      displayName: this.getTaskConfig().eventApiVersionSettings.displayName ? this.getTaskConfig().eventApiVersionSettings.displayName : '',      
     };
   }
 
-  protected transform_EpSdkTask_Config(
-    epSdkEventApiVersionTask_Config: IEpSdkEventApiVersionTask_Config
+  protected transform_EpSdkTask_Config(epSdkEventApiVersionTask_Config: IEpSdkEventApiVersionTask_Config
   ): IEpSdkEventApiVersionTask_Config {
-    epSdkEventApiVersionTask_Config.eventApiVersionSettings.displayName =
-      this.truncate(
-        epSdkEventApiVersionTask_Config.eventApiVersionSettings.displayName,
-        $EventApiVersion.properties.displayName.maxLength
-      );
+    epSdkEventApiVersionTask_Config.eventApiVersionSettings.displayName = this.truncate(
+      epSdkEventApiVersionTask_Config.eventApiVersionSettings.displayName,
+      $EventApiVersion.properties.displayName.maxLength
+    );
     return epSdkEventApiVersionTask_Config;
   }
 
@@ -119,33 +115,19 @@ export class EpSdkEventApiVersionTask extends EpSdkVersionTask {
     };
   }
 
-  protected getEpObjectKeys(
-    epObject: EventApiVersion | undefined
-  ): IEpSdkVersionTask_EpObjectKeys {
+  protected getEpObjectKeys(epObject: EventApiVersion | undefined): IEpSdkVersionTask_EpObjectKeys {
     const funcName = "getEpObjectKeys";
     const logName = `${EpSdkEventApiVersionTask.name}.${funcName}()`;
 
     if (epObject === undefined) return this.getDefaultEpObjectKeys();
     /* istanbul ignore next */
-    if (epObject.id === undefined)
-      throw new EpSdkApiContentError(
-        logName,
-        this.constructor.name,
-        "epObject.id === undefined",
-        {
-          epObject: epObject,
-        }
-      );
+    if (epObject.id === undefined) throw new EpSdkApiContentError(logName,this.constructor.name,"epObject.id === undefined", {
+      epObject: epObject,
+    });
     /* istanbul ignore next */
-    if (epObject.eventApiId === undefined)
-      throw new EpSdkApiContentError(
-        logName,
-        this.constructor.name,
-        "epObject.eventApiId === undefined",
-        {
-          epObject: epObject,
-        }
-      );
+    if (epObject.eventApiId === undefined) throw new EpSdkApiContentError(logName,this.constructor.name,"epObject.eventApiId === undefined",{
+      epObject: epObject,
+    });
     return {
       ...this.getDefaultEpObjectKeys(),
       epObjectId: epObject.eventApiId,
@@ -163,21 +145,13 @@ export class EpSdkEventApiVersionTask extends EpSdkVersionTask {
   /**
    * Get the latest EventVersion.
    */
-  protected async getFunc(
-    epSdkEventApiVersionTask_Keys: IEpSdkEventApiVersionTask_Keys
-  ): Promise<IEpSdkEventApiVersionTask_GetFuncReturn> {
+  protected async getFunc(epSdkEventApiVersionTask_Keys: IEpSdkEventApiVersionTask_Keys): Promise<IEpSdkEventApiVersionTask_GetFuncReturn> {
     const funcName = "getFunc";
     const logName = `${EpSdkEventApiVersionTask.name}.${funcName}()`;
 
-    EpSdkLogger.trace(
-      EpSdkLogger.createLogEntry(logName, {
-        code: EEpSdkLoggerCodes.TASK_EXECUTE_START_GET,
-        module: this.constructor.name,
-        details: {
-          epSdkEventApiVersionTask_Keys: epSdkEventApiVersionTask_Keys,
-        },
-      })
-    );
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, {code: EEpSdkLoggerCodes.TASK_EXECUTE_START_GET,module: this.constructor.name,details: {
+      epSdkEventApiVersionTask_Keys: epSdkEventApiVersionTask_Keys,
+    }}));
 
     const eventApiVersion: EventApiVersion | undefined = await EpSdkEventApiVersionsService.getLatestVersionForEventApiId({
       xContextId: this.xContextId,
@@ -185,84 +159,52 @@ export class EpSdkEventApiVersionTask extends EpSdkVersionTask {
       eventApiId: epSdkEventApiVersionTask_Keys.eventApiId,
     });
 
-    EpSdkLogger.trace(
-      EpSdkLogger.createLogEntry(logName, {
-        code: EEpSdkLoggerCodes.TASK_EXECUTE_API_GET,
-        module: this.constructor.name,
-        details: {
-          epSdkEventApiVersionTask_Keys: epSdkEventApiVersionTask_Keys,
-          eventApiVersion: eventApiVersion ? eventApiVersion : "undefined",
-        },
-      })
-    );
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, {code: EEpSdkLoggerCodes.TASK_EXECUTE_API_GET,module: this.constructor.name,details: {
+      epSdkEventApiVersionTask_Keys: epSdkEventApiVersionTask_Keys,
+      eventApiVersion: eventApiVersion ? eventApiVersion : "undefined",
+    }}));
 
-    if (eventApiVersion === undefined)
-      return this.Empty_IEpSdkEventApiVersionTask_GetFuncReturn;
+    if (eventApiVersion === undefined) return this.Empty_IEpSdkEventApiVersionTask_GetFuncReturn;
 
-    const epSdkEventApiVersionTask_GetFuncReturn: IEpSdkEventApiVersionTask_GetFuncReturn =
-      {
-        epObjectKeys: this.getEpObjectKeys(eventApiVersion),
-        epObject: eventApiVersion,
-        epObjectExists: true,
-      };
+    const epSdkEventApiVersionTask_GetFuncReturn: IEpSdkEventApiVersionTask_GetFuncReturn = {
+      epObjectKeys: this.getEpObjectKeys(eventApiVersion),
+      epObject: eventApiVersion,
+      epObjectExists: true,
+    };
     return epSdkEventApiVersionTask_GetFuncReturn;
   }
 
-  protected async isUpdateRequiredFunc(
-    epSdkEventApiVersionTask_GetFuncReturn: IEpSdkEventApiVersionTask_GetFuncReturn
-  ): Promise<IEpSdkTask_IsUpdateRequiredFuncReturn> {
+  protected async isUpdateRequiredFunc(epSdkEventApiVersionTask_GetFuncReturn: IEpSdkEventApiVersionTask_GetFuncReturn): Promise<IEpSdkTask_IsUpdateRequiredFuncReturn> {
     const funcName = "isUpdateRequired";
     const logName = `${EpSdkEventApiVersionTask.name}.${funcName}()`;
 
-    EpSdkLogger.trace(
-      EpSdkLogger.createLogEntry(logName, {
-        code: EEpSdkLoggerCodes.TASK_EXECUTE_START_IS_UPDATE_REQUIRED,
-        module: this.constructor.name,
-        details: {
-          epSdkEventApiVersionTask_GetFuncReturn:
-            epSdkEventApiVersionTask_GetFuncReturn,
-        },
-      })
-    );
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, {code: EEpSdkLoggerCodes.TASK_EXECUTE_START_IS_UPDATE_REQUIRED,module: this.constructor.name,details: {
+      epSdkEventApiVersionTask_GetFuncReturn: epSdkEventApiVersionTask_GetFuncReturn,
+    }}));
 
-    if (epSdkEventApiVersionTask_GetFuncReturn.epObject === undefined)
-      throw new EpSdkInternalTaskError(
-        logName,
-        this.constructor.name,
-        "epSdkEventApiVersionTask_GetFuncReturn.epObject === undefined"
-      );
+    if (epSdkEventApiVersionTask_GetFuncReturn.epObject === undefined) throw new EpSdkInternalTaskError(logName,this.constructor.name,"epSdkEventApiVersionTask_GetFuncReturn.epObject === undefined");
     /* istanbul ignore next */
-    if (epSdkEventApiVersionTask_GetFuncReturn.epObject.version === undefined)
-      throw new EpSdkApiContentError(
-        logName,
-        this.constructor.name,
-        "epSdkEventApiVersionTask_GetFuncReturn.epObject.version === undefined",
-        {
-          epObject: epSdkEventApiVersionTask_GetFuncReturn.epObject,
-        }
-      );
+    if (epSdkEventApiVersionTask_GetFuncReturn.epObject.version === undefined) throw new EpSdkApiContentError(logName,this.constructor.name,"epSdkEventApiVersionTask_GetFuncReturn.epObject.version === undefined",{
+      epObject: epSdkEventApiVersionTask_GetFuncReturn.epObject,
+    });
 
-    const existingObject: EventApiVersion =
-      epSdkEventApiVersionTask_GetFuncReturn.epObject;
+    const existingObject: EventApiVersion = epSdkEventApiVersionTask_GetFuncReturn.epObject;
     const existingCompareObject: TEpSdkEventApiVersionTask_CompareObject = {
-      description: existingObject.description,
-      displayName: existingObject.displayName,
+      description: existingObject.description ? existingObject.description : '',
+      displayName: existingObject.displayName ? existingObject.displayName : '',
       stateId: existingObject.stateId,
       producedEventVersionIds: existingObject.producedEventVersionIds,
       consumedEventVersionIds: existingObject.consumedEventVersionIds,
     };
-    const requestedCompareObject: TEpSdkEventApiVersionTask_CompareObject =
-      this.createObjectSettings();
+    const requestedCompareObject: TEpSdkEventApiVersionTask_CompareObject = this.createObjectSettings();
     if (this.versionStrategy === EEpSdk_VersionTaskStrategy.EXACT_VERSION) {
-      existingCompareObject.version =
-        epSdkEventApiVersionTask_GetFuncReturn.epObject.version;
+      existingCompareObject.version = epSdkEventApiVersionTask_GetFuncReturn.epObject.version;
       requestedCompareObject.version = this.versionString;
     }
-    const epSdkTask_IsUpdateRequiredFuncReturn: IEpSdkTask_IsUpdateRequiredFuncReturn =
-      this.create_IEpSdkTask_IsUpdateRequiredFuncReturn({
-        existingObject: existingCompareObject,
-        requestedObject: requestedCompareObject,
-      });
+    const epSdkTask_IsUpdateRequiredFuncReturn: IEpSdkTask_IsUpdateRequiredFuncReturn = this.create_IEpSdkTask_IsUpdateRequiredFuncReturn({
+      existingObject: existingCompareObject,
+      requestedObject: requestedCompareObject,
+    });
     // // DEBUG:
     // if(epSdkTask_IsUpdateRequiredFuncReturn.isUpdateRequired) {
     //   EpSdkLogger.debug(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_DONE_IS_UPDATE_REQUIRED, module: this.constructor.name, details: {

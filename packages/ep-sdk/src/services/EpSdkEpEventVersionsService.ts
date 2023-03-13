@@ -11,7 +11,8 @@ import {
   EventsResponse,
   Pagination,
   EventResponse,
-  StateChangeRequestResponse
+  StateChangeRequestResponse,
+  CustomAttributeDefinition
 } from '@solace-labs/ep-openapi-node';
 import { 
   EpSdkApiContentError, 
@@ -22,7 +23,7 @@ import {
   EpSdkPagination 
 } from "../types";
 import { 
-  EpApiMaxPageSize 
+  EpApiMaxPageSize, EpSdkCustomAttributeNameSourceApplicationDomainId 
 } from '../constants';
 import { 
   EpSdkEpEventTask, 
@@ -479,6 +480,15 @@ export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
       });
       if(targetEventVersion !== undefined) return targetEventVersion;
     }
+    // add the source application domain id to custom attribute
+    await EpSdkEpEventsService.setCustomAttributes({
+      xContextId: xContextId,
+      eventId: epSdkEpEventTask_ExecuteReturn.epObjectKeys.epObjectId,
+      scope: CustomAttributeDefinition.scope.APPLICATION_DOMAIN,
+      epSdkCustomAttributeList: [ 
+        { name: EpSdkCustomAttributeNameSourceApplicationDomainId, value: fromApplicationDomainId }
+      ]
+    });        
     // create target event version
     const epSdkEpEventVersionTask = new EpSdkEpEventVersionTask({
       epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
@@ -489,7 +499,7 @@ export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
       topicString: this.createTopicStringFromAddress({ address: targetEventVersionDeliveryDescriptorAddress }),
       eventVersionSettings: {
         stateId: fromEventVersion.stateId,
-        displayName: fromEventVersion.displayName ? fromEventVersion.displayName : fromEvent.name,
+        displayName: fromEventVersion.displayName ? fromEventVersion.displayName : '',
         description: fromEventVersion.description ? fromEventVersion.description : '',
         schemaVersionId: targetSchemaVersion.id,
       },

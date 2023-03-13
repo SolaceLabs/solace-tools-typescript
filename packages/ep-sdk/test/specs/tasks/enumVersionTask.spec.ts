@@ -147,35 +147,20 @@ describe(`${scriptName}`, () => {
           groupTransactionId: "groupTransactionId",
         },
       });
-
-      const epSdkEnumVersionTask_ExecuteReturn: IEpSdkEnumVersionTask_ExecuteReturn =
-        await epSdkEnumVersionTask.execute();
-
-      const message = TestLogger.createLogMessage(
-        "epSdkEnumVersionTask_ExecuteReturn",
-        epSdkEnumVersionTask_ExecuteReturn
-      );
-      expect(
-        epSdkEnumVersionTask_ExecuteReturn.epSdkTask_TransactionLogData
-          .epSdkTask_Action,
-        message
-      ).to.eq(EEpSdkTask_Action.CREATE_FIRST_VERSION);
-
+      const epSdkEnumVersionTask_ExecuteReturn: IEpSdkEnumVersionTask_ExecuteReturn = await epSdkEnumVersionTask.execute();
+      const message = TestLogger.createLogMessage("epSdkEnumVersionTask_ExecuteReturn",epSdkEnumVersionTask_ExecuteReturn);
+      expect(epSdkEnumVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action,message).to.eq(EEpSdkTask_Action.CREATE_FIRST_VERSION);
       EnumVersionId = epSdkEnumVersionTask_ExecuteReturn.epObject.id;
-
       // // DEBUG
       // expect(false, message).to.be.true;
     } catch (e) {
-      if (e instanceof ApiError)
-        expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
-        .to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
-        .true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 
-  it(`${scriptName}: enum version present: create`, async () => {
+  it(`${scriptName}: enum version present: create: idempotency no action`, async () => {
     try {
       const epSdkEnumVersionTask = new EpSdkEnumVersionTask({
         epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
@@ -192,23 +177,10 @@ describe(`${scriptName}`, () => {
           groupTransactionId: "groupTransactionId",
         },
       });
-
-      const epSdkEnumVersionTask_ExecuteReturn: IEpSdkEnumVersionTask_ExecuteReturn =
-        await epSdkEnumVersionTask.execute();
-
-      const message = TestLogger.createLogMessage(
-        "epSdkEnumVersionTask_ExecuteReturn",
-        epSdkEnumVersionTask_ExecuteReturn
-      );
-      expect(
-        epSdkEnumVersionTask_ExecuteReturn.epSdkTask_TransactionLogData
-          .epSdkTask_Action,
-        message
-      ).to.eq(EEpSdkTask_Action.NO_ACTION);
-      expect(epSdkEnumVersionTask_ExecuteReturn.epObject.id, message).to.eq(
-        EnumVersionId
-      );
-
+      const epSdkEnumVersionTask_ExecuteReturn: IEpSdkEnumVersionTask_ExecuteReturn = await epSdkEnumVersionTask.execute();
+      const message = TestLogger.createLogMessage("epSdkEnumVersionTask_ExecuteReturn", epSdkEnumVersionTask_ExecuteReturn);
+      expect(epSdkEnumVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action,message).to.eq(EEpSdkTask_Action.NO_ACTION);
+      expect(epSdkEnumVersionTask_ExecuteReturn.epObject.id, message).to.eq(EnumVersionId);
       // // DEBUG
       // expect(false, message).to.be.true;
     } catch (e) {

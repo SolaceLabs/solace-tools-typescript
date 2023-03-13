@@ -2,6 +2,9 @@ import {
   ChannelParameter, 
   Schema, 
 } from '@asyncapi/parser';
+import { 
+  EpParameterExtensions 
+} from '../constants';
 
 export class EpAsyncApiChannelParameterDocument {
   private channelParameterName: string;
@@ -24,11 +27,17 @@ export class EpAsyncApiChannelParameterDocument {
 
   public getDescription(): string {
     const description: string | null = this.asyncApiChannelParameter.description();
-    if(description) return description;
+    if(description && description.length > 0) return description;
     return '';
   }
 
-  public getDisplayName(): string { return this.channelParameterName; }
+  public getDisplayName(): string {
+    if(this.asyncApiChannelParameter.hasExtension(EpParameterExtensions.xEpEnumVersionDisplayName)) {
+      const displayName = this.asyncApiChannelParameter.extension(EpParameterExtensions.xEpEnumVersionDisplayName);
+      if(displayName && displayName.length > 0) return displayName;
+    }
+    return '';
+  }
 
   public getParameterEnumValueList(): Array<string> {
     const schema: Schema = this.asyncApiChannelParameter.schema();

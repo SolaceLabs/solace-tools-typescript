@@ -5,13 +5,13 @@ info:
   version: '1.2.0'
 defaultContentType: application/json
 channels:
-  ep-asyncapi/test/very-long-event-name/very/very/very/very/very/very/very/very/very/very/very/very/very/very/very/very/very/veryvery/very/very/very/very/very/very/very/very/very/very/very/very/very/very/very/very/very/very/very/very/very/very/very/very/very/very/very/very/very/very/very/very/very/very/long:
+  ep-asyncapi/test:
     publish:
       message:
-        $ref: '#/components/messages/message-1'
+        $ref: '#/components/messages/very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name'
 components:
   messages:
-    message-1:
+    very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name:
      payload:
        type: string
 

@@ -1,6 +1,7 @@
 import { 
   ApiError,
   CustomAttribute,
+  CustomAttributeDefinition,
   Event as EPEvent,
   EventResponse, 
   EventsResponse,
@@ -62,20 +63,24 @@ export class EpSdkEpEventsServiceClass extends EpSdkServiceClass {
    * @param param0 
    * @returns 
    */
-  public async setCustomAttributes({ xContextId, eventId, epSdkCustomAttributeList}:{
+  public async setCustomAttributes({ xContextId, eventId, epSdkCustomAttributeList, scope}:{
     xContextId?: string;
     eventId: string;
     epSdkCustomAttributeList: TEpSdkCustomAttributeList;
+    scope?: CustomAttributeDefinition.scope;
   }): Promise<EpSdkEvent> {
     const epSdkEvent: EpSdkEvent = await this.getById({
       xContextId,
       eventId: eventId
     });
+    scope;
     const customAttributes: Array<CustomAttribute> = await EpSdkCustomAttributesService.createCustomAttributesWithNew({
       xContextId,
       existingCustomAttributes: epSdkEvent.customAttributes,
       epSdkCustomAttributeList: epSdkCustomAttributeList,
-      epSdkCustomAttributeEntityType: EEpSdkCustomAttributeEntityTypes.EVENT
+      epSdkCustomAttributeEntityType: EEpSdkCustomAttributeEntityTypes.EVENT,
+      // note: adding scope if not organization currently causes EP to return an internal server error
+      // scope: scope
     });
     return await this.updateEpEvent({
       xContextId,
