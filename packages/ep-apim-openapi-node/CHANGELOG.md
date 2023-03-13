@@ -1,5 +1,11 @@
 # @solace-labs/ep-apim-openapi-node
 
+## 0.5.0
+
+### Minor Changes
+
+- 7022ec48: update to ea.14 spec
+
 ## 0.4.0
 
 ### Minor Changes
