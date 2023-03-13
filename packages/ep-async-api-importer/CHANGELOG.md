@@ -1,5 +1,35 @@
 # @solace-labs/ep-async-api-importer
 
+## 0.53.0
+
+### Minor Changes
+
+- d5cb94fd: Added support for additional ep extensions
+
+  - see CHANGELOG.md for ep-asyncapi.
+
+  Added new CLI environment variable:
+
+  ```bash
+  export CLI_IMPORT_CREATE_API_EVENT_API=true/false
+  ```
+
+  if set to true, the importer will create the Event API.
+  if set to false, the import will not create the Event API.
+
+  Use in conjunction with:
+
+  ```bash
+  export CLI_IMPORT_CREATE_API_APPLICATION=true/false
+  ```
+
+### Patch Changes
+
+- Updated dependencies [af8c368c]
+- Updated dependencies [3e7f1b30]
+  - @solace-labs/ep-asyncapi@0.54.0
+  - @solace-labs/ep-sdk@0.57.0
+
 ## 0.52.7
 
 ### Patch Changes
