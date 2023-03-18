@@ -13,10 +13,13 @@ import {
   SchemaVersion,
   Event as EPEvent,
   TopicAddressEnum,
+  CustomAttribute,
 } from "@solace-labs/ep-openapi-node";
 import {
+  EEpSdkTask_Action,
   EEpSdkTask_TargetState,
   EpSdkApplicationDomainTask,
+  EpSdkCustomAttributeNameSourceApplicationDomainId,
   EpSdkEnumTask,
   EpSdkEnumVersionTask,
   EpSdkEpEventTask,
@@ -44,6 +47,7 @@ import {
   ECliChannelOperationType,
   ECliRunSummary_Type,
   CliRunSummary,
+  CliImporterTestRunNotAllowedToChangeError,
 } from "../cli-components";
 import { CliAsyncApiDocumentService } from "../services";
 import {
@@ -339,6 +343,28 @@ export abstract class CliAssetsImporter extends CliImporter {
     return epSdkSchemaVersionTask_ExecuteReturn.epObject;
   };
 
+  private isAllowedToChange({ targetApplicationDomainId, epObjectCustomAttributes }:{
+    targetApplicationDomainId: string;
+    epObjectCustomAttributes?: Array<CustomAttribute>;
+  }): boolean {
+    if(epObjectCustomAttributes === undefined) return true;
+    const sourceApplicationDomainIdAttribute = epObjectCustomAttributes.find( (x) => { return x.customAttributeDefinitionName === EpSdkCustomAttributeNameSourceApplicationDomainId; });
+    if(sourceApplicationDomainIdAttribute === undefined) return true;
+    const sourceApplicationDomainId = sourceApplicationDomainIdAttribute.value;
+    if(sourceApplicationDomainId === undefined) return true;
+    return sourceApplicationDomainId === targetApplicationDomainId;
+  }
+
+  private getSourceApplicationDomainId({ epObjectCustomAttributes }:{
+    epObjectCustomAttributes?: Array<CustomAttribute>;
+  }): string | undefined {
+    if(epObjectCustomAttributes === undefined) return undefined;
+    const sourceApplicationDomainIdAttribute = epObjectCustomAttributes.find( (x) => { return x.customAttributeDefinitionName === EpSdkCustomAttributeNameSourceApplicationDomainId; });
+    if(sourceApplicationDomainIdAttribute === undefined) return undefined;
+    const sourceApplicationDomainId = sourceApplicationDomainIdAttribute.value;
+    return sourceApplicationDomainId;
+  }
+
   private run_present_enum_version = async ({
     assetApplicationDomainId,
     enumObject,
@@ -366,9 +392,18 @@ export abstract class CliAssetsImporter extends CliImporter {
       enumObject: enumObject,
     });
 
+    // const isAllowedToChange = this.isAllowedToChange({
+    //   epObjectCustomAttributes: enumObject.customAttributes,
+    //   targetApplicationDomainId: 'define it upfront'
+    // });
+
+    // get the actual domain for external objects
+    const actualApplicationDomainId: string = this.getSourceApplicationDomainId({ epObjectCustomAttributes: enumObject.customAttributes }) || assetApplicationDomainId;
+
     const epSdkEnumVersionTask = new EpSdkEnumVersionTask({
       epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
-      applicationDomainId: assetApplicationDomainId,
+      applicationDomainId: actualApplicationDomainId,
+      // applicationDomainId: assetApplicationDomainId,
       enumId: enumObject.id,
       versionString: specVersion,
       versionStrategy: this.get_EEpSdk_VersionTaskStrategy(),
@@ -385,6 +420,30 @@ export abstract class CliAssetsImporter extends CliImporter {
       epSdkTask: epSdkEnumVersionTask,
       expectNoAction: checkmode,
     });
+
+    const log = {
+      checkmode,
+      assetApplicationDomainId,
+      actualApplicationDomainId,
+      enumObject,
+      // isAllowedToChange: isAllowedToChange,
+      epSdkEnumVersionTask_ExecuteReturn: epSdkEnumVersionTask_ExecuteReturn
+    }
+    console.log(`${logName}: log=${JSON.stringify(log, null, 2)}`);
+    // const test=true; if(test) throw new Error(`${logName}: continue here`);
+    // const test=true; if(test) process.exit(1);
+
+    // if(epSdkEnumVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action !== EEpSdkTask_Action.NO_ACTION && !isAllowedToChange) {
+    //   throw new CliImporterTestRunNotAllowedToChangeError(logName, {
+    //     epObject: enumObject,
+    //     sourceApplicationDomainName: 'sourceApplicationDomainName',
+    //     targetApplicationDomainName: 'targetApplicationDomainName',
+    //     epSdkTask_TransactionLogData: epSdkEnumVersionTask_ExecuteReturn.epSdkTask_TransactionLogData,
+    //   });
+    // }
+    // const test=true; if(test) throw new Error(`${logName}: continue here`);
+    // const test=true; if(test) process.exit(1);
+
     CliLogger.trace(CliLogger.createLogEntry(logName, {code: ECliStatusCodes.IMPORTING_EP_ENUM_VERSION, details: {
       epSdkEnumVersionTask_ExecuteReturn: epSdkEnumVersionTask_ExecuteReturn,
     }}));
@@ -422,15 +481,6 @@ export abstract class CliAssetsImporter extends CliImporter {
       }}));
       // only create the enum if there are any values in the list
       if (parameterEnumList.length > 0) {
-
-        // problem: 
-        // - only create the enum + version if not from a different applicationDomainId than 
-        //   the actual target assetApplicationDomainId
-        // - if they are from a different domain, then fail if there is a change, otherwise ??
-        // how to check for the original applicationDomainId (if it even existed)
-        //  
-        // checkmode = true for test_pass_2
-        
         // present enum
         const epSdkEnumTask = new EpSdkEnumTask({
           epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,

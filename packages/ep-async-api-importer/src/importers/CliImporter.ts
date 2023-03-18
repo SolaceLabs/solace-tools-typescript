@@ -124,50 +124,34 @@ export abstract class CliImporter {
     };
   };
 
-  protected async executeTask({
-    epSdkTask,
-    expectNoAction,
-  }: {
+  protected async executeTask({ epSdkTask, expectNoAction }: {
     epSdkTask: EpSdkTask;
     expectNoAction: boolean;
   }): Promise<IEpSdkTask_ExecuteReturn> {
     const funcName = "executeTask";
     const logName = `${CliImporter.name}.${funcName}()`;
 
-    const epSdkTask_ExecuteReturn: IEpSdkTask_ExecuteReturn =
-      await epSdkTask.execute();
+    const epSdkTask_ExecuteReturn: IEpSdkTask_ExecuteReturn = await epSdkTask.execute();
     // save in global log
     CliRunExecuteReturnLog.add(epSdkTask_ExecuteReturn);
-
-    if (
-      expectNoAction &&
-      epSdkTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action !==
-        EEpSdkTask_Action.NO_ACTION
-    ) {
+    if (expectNoAction && epSdkTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action !== EEpSdkTask_Action.NO_ACTION) {
       throw new CliImporterTestRunAssetsInconsistencyError(logName, {
         message: `expect epSdkTask_TransactionLogData.epSdkTask_Action = '${EEpSdkTask_Action.NO_ACTION}', instead got '${epSdkTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action}'`,
-        epSdkTask_TransactionLogData:
-          epSdkTask_ExecuteReturn.epSdkTask_TransactionLogData,
+        epSdkTask_TransactionLogData: epSdkTask_ExecuteReturn.epSdkTask_TransactionLogData,
       });
     }
     return epSdkTask_ExecuteReturn;
   }
 
-  protected abstract generate_assets_ouput({
-    cliImporterGenerateAssetsOptions,
-  }: {
+  protected abstract generate_assets_ouput({ cliImporterGenerateAssetsOptions }: {
     cliImporterGenerateAssetsOptions: ICliImporterGenerateAssetsOptions;
   }): Promise<ICliImporterGenerateAssetsReturn>;
 
-  protected abstract run_present({
-    cliImporterRunPresentOptions,
-  }: {
+  protected abstract run_present({ cliImporterRunPresentOptions }: {
     cliImporterRunPresentOptions: ICliImporterRunPresentOptions;
   }): Promise<ICliImporterRunPresentReturn>;
 
-  protected abstract run({
-    cliImporterRunOptions,
-  }: {
+  protected abstract run({ cliImporterRunOptions }: {
     cliImporterRunOptions: ICliImporterRunOptions;
   }): Promise<ICliImporterRunReturn>;
 }
