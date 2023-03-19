@@ -13,11 +13,11 @@ components:
       x-ep-enum-version-id: djdr3j6basz
       x-ep-enum-id: 45l5cb5f4hh
       x-ep-parameter-name: Consumed_Enum_1_Name
-      x-ep-application-domain-name: TEST_EP_ASYNC_API_IMPORTER/ep-multi-domain-manual.x-spec.ts/Assets-1
+      x-ep-application-domain-name: TEST_EP_ASYNC_API_IMPORTER/ep-multi-domain-manual.spec.ts/Assets-1
 
   schemas:
     Consumed_Schema_2_Name:
-      x-ep-application-domain-name: TEST_EP_ASYNC_API_IMPORTER/ep-multi-domain-manual.x-spec.ts/Assets-2
+      x-ep-application-domain-name: TEST_EP_ASYNC_API_IMPORTER/ep-multi-domain-manual.spec.ts/Assets-2
 
       x-ep-schema-version: 1.0.0
       x-ep-schema-state-id: '2'
@@ -44,7 +44,7 @@ components:
         - storeId
       x-ep-schema-version-displayname: Schema_2_Id
     Consumed_Schema_1_Name:
-      x-ep-application-domain-name: TEST_EP_ASYNC_API_IMPORTER/ep-multi-domain-manual.x-spec.ts/Assets-1
+      x-ep-application-domain-name: TEST_EP_ASYNC_API_IMPORTER/ep-multi-domain-manual.spec.ts/Assets-1
 
       x-ep-schema-version: 1.0.0
       x-ep-schema-state-id: '2'
@@ -93,7 +93,7 @@ components:
       contentType: application/json
       x-ep-event-state-id: '2'
       x-ep-event-state-name: RELEASED
-      x-ep-application-domain-name: TEST_EP_ASYNC_API_IMPORTER/ep-multi-domain-manual.x-spec.ts/Assets-1
+      x-ep-application-domain-name: TEST_EP_ASYNC_API_IMPORTER/ep-multi-domain-manual.spec.ts/Assets-1
 
     Produced_Event_1_Name:
       payload:
@@ -114,7 +114,7 @@ components:
       contentType: application/json
       x-ep-event-state-id: '2'
       x-ep-event-state-name: RELEASED
-      x-ep-application-domain-name: TEST_EP_ASYNC_API_IMPORTER/ep-multi-domain-manual.x-spec.ts/Assets-2
+      x-ep-application-domain-name: TEST_EP_ASYNC_API_IMPORTER/ep-multi-domain-manual.spec.ts/Assets-2
 
 channels:
   consumed/topic/{Consumed_Enum_2_Name}/_2_/{unbounded}:
@@ -138,7 +138,7 @@ channels:
         x-ep-enum-version-id: bjwi7gb86cn
         x-ep-enum-id: 5f18ksd0dcv
         x-ep-parameter-name: Consumed_Enum_2_Name
-        x-ep-application-domain-name: TEST_EP_ASYNC_API_IMPORTER/ep-multi-domain-manual.x-spec.ts/Assets-2
+        x-ep-application-domain-name: TEST_EP_ASYNC_API_IMPORTER/ep-multi-domain-manual.spec.ts/Assets-2
 
   consumed/topic/{Consumed_Enum_1_Name}/_1_/{unbounded}:
     publish:
@@ -175,4 +175,4 @@ info:
   version: 2.0.0
   x-ep-state-id: '2'
   x-ep-event-api-version-id: diff8d8tnjp
-  x-ep-application-domain-name: TEST_EP_ASYNC_API_IMPORTER/ep-multi-domain-manual.x-spec.ts/Main
+  x-ep-application-domain-name: TEST_EP_ASYNC_API_IMPORTER/ep-multi-domain-manual.spec.ts/Main
