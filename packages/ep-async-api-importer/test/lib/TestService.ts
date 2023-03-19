@@ -97,15 +97,20 @@ export class TestService {
     return true;
   };
 
-  public static applicationDomainTask = async({ applicationDomainName, epSdkTask_TargetState}:{
+  public static applicationDomainTask = async({ scriptName, applicationDomainName, epSdkTask_TargetState}:{
+    scriptName: string;
     applicationDomainName: string;
     epSdkTask_TargetState: EEpSdkTask_TargetState;
   }): Promise<void> => {
-    const task = new EpSdkApplicationDomainTask({
-      applicationDomainName: applicationDomainName,
-      epSdkTask_TargetState: epSdkTask_TargetState
-    });
-    const task_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn = await task.execute('xContextId');
+    try {
+      const task = new EpSdkApplicationDomainTask({
+        applicationDomainName: applicationDomainName,
+        epSdkTask_TargetState: epSdkTask_TargetState
+      });
+      const task_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn = await task.execute('xContextId');
+    } catch(e) {
+      console.log(`${scriptName}: e = ${JSON.stringify(e, null, 2)}`);
+    }
   }
   
 }

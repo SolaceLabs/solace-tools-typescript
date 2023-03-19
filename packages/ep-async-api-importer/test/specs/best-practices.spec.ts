@@ -61,7 +61,7 @@ describe(`${scriptName}`, () => {
 
   after(async () => {
     TestContext.newItId();
-    await TestService.applicationDomainTask({ applicationDomainName: ApplicationDomainName, epSdkTask_TargetState: EEpSdkTask_TargetState.ABSENT});
+    await TestService.applicationDomainTask({ scriptName, applicationDomainName: ApplicationDomainName, epSdkTask_TargetState: EEpSdkTask_TargetState.ABSENT});
   });
 
   it(`${scriptName}: should import spec with validate best practices ON`, async () => {
