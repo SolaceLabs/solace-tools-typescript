@@ -51,6 +51,9 @@ Modify NewEvent:
 Import NewApplication Async Api
 +++++++++++++++++++++++++++++++
 
+You can download the example spec :download:`here <files/NewApplication.yaml>`.
+
+
 .. code-block:: bash
 
   export CLI_SOLACE_CLOUD_TOKEN={your token}
