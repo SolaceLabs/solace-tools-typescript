@@ -13,13 +13,10 @@ import {
   SchemaVersion,
   Event as EPEvent,
   TopicAddressEnum,
-  CustomAttribute,
 } from "@solace-labs/ep-openapi-node";
 import {
-  EEpSdkTask_Action,
   EEpSdkTask_TargetState,
   EpSdkApplicationDomainTask,
-  EpSdkCustomAttributeNameSourceApplicationDomainId,
   EpSdkEnumTask,
   EpSdkEnumVersionTask,
   EpSdkEpEventTask,
@@ -30,6 +27,7 @@ import {
   IEpSdkEnumTask_ExecuteReturn,
   IEpSdkEnumVersionTask_ExecuteReturn,
   IEpSdkEpEventTask_ExecuteReturn,
+  IEpSdkEpEventVersionTask_EnumInfo,
   IEpSdkEpEventVersionTask_ExecuteReturn,
   IEpSdkSchemaTask_ExecuteReturn,
   IEpSdkSchemaVersionTask_ExecuteReturn,
@@ -47,7 +45,7 @@ import {
   ECliChannelOperationType,
   ECliRunSummary_Type,
   CliRunSummary,
-  CliImporterTestRunNotAllowedToChangeError,
+  ECliRunContext_RunMode,
 } from "../cli-components";
 import { CliAsyncApiDocumentService } from "../services";
 import {
@@ -76,8 +74,11 @@ export interface ICliAssetsImporterRunOptions extends ICliImporterRunOptions {}
 export interface ICliAssetsImporterRunReturn extends ICliImporterRunReturn {}
 
 export abstract class CliAssetsImporter extends CliImporter {
-  constructor(cliAssetImporterOptions: ICliAssetsImporterOptions) {
-    super(cliAssetImporterOptions);
+
+  private enumInfoMap: Map<string, IEpSdkEpEventVersionTask_EnumInfo> = new Map<string, IEpSdkEpEventVersionTask_EnumInfo>();
+
+  constructor(cliAssetImporterOptions: ICliAssetsImporterOptions, runMode: ECliRunContext_RunMode) {
+    super(cliAssetImporterOptions, runMode);
   }
 
   private run_present_event_version = async ({
@@ -122,6 +123,7 @@ export abstract class CliAssetsImporter extends CliImporter {
       versionStrategy: this.get_EEpSdk_VersionTaskStrategy(),
       topicString: channelTopic,
       topicDelimiter: epAsyncApiChannelDocument.getChannelDelimiter(),
+      enumInfoMap: this.enumInfoMap,
       eventVersionSettings: {
         description: epAsyncApiChannelDocument.getEpEventDescription(),
         displayName: epAsyncApiChannelDocument.getEpEventVersionName(),
@@ -164,16 +166,8 @@ export abstract class CliAssetsImporter extends CliImporter {
     const logName = `${CliAssetsImporter.name}.${funcName}()`;
 
     const epEventName: string = epAsyncApiChannelDocument.getEpEventName();
-    const channelTopic: string =
-      epAsyncApiChannelDocument.getAsyncApiChannelKey();
+    const channelTopic: string = epAsyncApiChannelDocument.getAsyncApiChannelKey();
 
-    // const rctxt: ICliApiRunContext_Channel_Event = {
-    //   channelTopic: channelTopic,
-    //   epEventName: epEventName
-    // };
-    // CliRunContext.updateContext({
-    //   runContext: rctxt
-    // });
     CliLogger.debug(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.IMPORTING_API_CHANNEL_MESSAGE, details: {
       epEventName: epEventName,
       channelTopic: channelTopic,
@@ -181,10 +175,16 @@ export abstract class CliAssetsImporter extends CliImporter {
     CliLogger.trace(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.IMPORTING_API_CHANNEL_MESSAGE, details: {
       epAsyncApiMessageDocument: epAsyncApiMessageDocument,
     }}));
+
+    const eventApplicationDomainId = await this.getAssetApplicationDomainId({
+      assetApplicationDomainId: assetApplicationDomainId,
+      overrideAssetApplicationDomainName: epAsyncApiMessageDocument.getMessageEpApplicationDomainName()
+    });
+
     // present event
     const epSdkEpEventTask = new EpSdkEpEventTask({
       epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
-      applicationDomainId: assetApplicationDomainId,
+      applicationDomainId: eventApplicationDomainId,
       eventName: epEventName,
       eventObjectSettings: {
         shared: true,
@@ -192,24 +192,18 @@ export abstract class CliAssetsImporter extends CliImporter {
       epSdkTask_TransactionConfig: this.get_IEpSdkTask_TransactionConfig(),
       checkmode: checkmode,
     });
-    const epSdkEpEventTask_ExecuteReturn: IEpSdkEpEventTask_ExecuteReturn =
-      await this.executeTask({
-        epSdkTask: epSdkEpEventTask,
-        expectNoAction: checkmode,
-      });
+    const epSdkEpEventTask_ExecuteReturn: IEpSdkEpEventTask_ExecuteReturn = await this.executeTask({
+      epSdkTask: epSdkEpEventTask,
+      expectNoAction: checkmode,
+    });
 
-    CliLogger.trace(
-      CliLogger.createLogEntry(logName, {
-        code: ECliStatusCodes.IMPORTING_EP_EVENT,
-        details: {
-          epSdkEpEventTask_ExecuteReturn: epSdkEpEventTask_ExecuteReturn,
-        },
-      })
-    );
+    CliLogger.trace(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.IMPORTING_EP_EVENT, details: {
+      epSdkEpEventTask_ExecuteReturn: epSdkEpEventTask_ExecuteReturn,
+    }}));
 
     // present the event version
     const xvoid: void = await this.run_present_event_version({
-      applicationDomainId: assetApplicationDomainId,
+      applicationDomainId: eventApplicationDomainId,
       eventObject: epSdkEpEventTask_ExecuteReturn.epObject,
       specVersion: specVersion,
       epAsyncApiChannelDocument: epAsyncApiChannelDocument,
@@ -305,20 +299,19 @@ export abstract class CliAssetsImporter extends CliImporter {
       epAsyncApiMessageDocument: epAsyncApiMessageDocument,
     }}));
 
+    const schemaApplicationDomainId = await this.getAssetApplicationDomainId({
+      assetApplicationDomainId: assetApplicationDomainId,
+      overrideAssetApplicationDomainName: epAsyncApiMessageDocument.getPayloadSchemaEpApplicationDomainName()
+    });
+
     // present schema
     const epSdkSchemaTask = new EpSdkSchemaTask({
       epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
-      applicationDomainId: assetApplicationDomainId,
+      applicationDomainId: schemaApplicationDomainId,
       schemaName: epAsyncApiMessageDocument.getPayloadSchemaName(),
       schemaObjectSettings: {
-        contentType:
-          CliAsyncApiDocumentService.map_MessageDocumentContentType_To_EpSchemaContentType(
-            epAsyncApiMessageDocument.getContentType()
-          ),
-        schemaType:
-          CliAsyncApiDocumentService.map_MessageDocumentSchemaFormatType_To_EpSchemaFormatType(
-            epAsyncApiMessageDocument.getSchemaFormatType()
-          ),
+        contentType: CliAsyncApiDocumentService.map_MessageDocumentContentType_To_EpSchemaContentType(epAsyncApiMessageDocument.getContentType()),
+        schemaType: CliAsyncApiDocumentService.map_MessageDocumentSchemaFormatType_To_EpSchemaFormatType(epAsyncApiMessageDocument.getSchemaFormatType()),
         shared: true,
       },
       epSdkTask_TransactionConfig: this.get_IEpSdkTask_TransactionConfig(),
@@ -336,34 +329,12 @@ export abstract class CliAssetsImporter extends CliImporter {
       schemaObject: epSdkSchemaTask_ExecuteReturn.epObject,
       specVersion: specVersion,
       epAsyncApiMessageDocument: epAsyncApiMessageDocument,
-      applicationDomainId: assetApplicationDomainId,
+      applicationDomainId: schemaApplicationDomainId,
       checkmode: checkmode,
     });
     CliRunContext.pop();
     return epSdkSchemaVersionTask_ExecuteReturn.epObject;
   };
-
-  private isAllowedToChange({ targetApplicationDomainId, epObjectCustomAttributes }:{
-    targetApplicationDomainId: string;
-    epObjectCustomAttributes?: Array<CustomAttribute>;
-  }): boolean {
-    if(epObjectCustomAttributes === undefined) return true;
-    const sourceApplicationDomainIdAttribute = epObjectCustomAttributes.find( (x) => { return x.customAttributeDefinitionName === EpSdkCustomAttributeNameSourceApplicationDomainId; });
-    if(sourceApplicationDomainIdAttribute === undefined) return true;
-    const sourceApplicationDomainId = sourceApplicationDomainIdAttribute.value;
-    if(sourceApplicationDomainId === undefined) return true;
-    return sourceApplicationDomainId === targetApplicationDomainId;
-  }
-
-  private getSourceApplicationDomainId({ epObjectCustomAttributes }:{
-    epObjectCustomAttributes?: Array<CustomAttribute>;
-  }): string | undefined {
-    if(epObjectCustomAttributes === undefined) return undefined;
-    const sourceApplicationDomainIdAttribute = epObjectCustomAttributes.find( (x) => { return x.customAttributeDefinitionName === EpSdkCustomAttributeNameSourceApplicationDomainId; });
-    if(sourceApplicationDomainIdAttribute === undefined) return undefined;
-    const sourceApplicationDomainId = sourceApplicationDomainIdAttribute.value;
-    return sourceApplicationDomainId;
-  }
 
   private run_present_enum_version = async ({
     assetApplicationDomainId,
@@ -397,13 +368,9 @@ export abstract class CliAssetsImporter extends CliImporter {
     //   targetApplicationDomainId: 'define it upfront'
     // });
 
-    // get the actual domain for external objects
-    const actualApplicationDomainId: string = this.getSourceApplicationDomainId({ epObjectCustomAttributes: enumObject.customAttributes }) || assetApplicationDomainId;
-
     const epSdkEnumVersionTask = new EpSdkEnumVersionTask({
       epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
-      applicationDomainId: actualApplicationDomainId,
-      // applicationDomainId: assetApplicationDomainId,
+      applicationDomainId: assetApplicationDomainId,
       enumId: enumObject.id,
       versionString: specVersion,
       versionStrategy: this.get_EEpSdk_VersionTaskStrategy(),
@@ -420,16 +387,29 @@ export abstract class CliAssetsImporter extends CliImporter {
       epSdkTask: epSdkEnumVersionTask,
       expectNoAction: checkmode,
     });
+    // collect enum version info for event version task
+    /* istanbul ignore next */
+    if (epSdkEnumVersionTask_ExecuteReturn.epObject.id === undefined) throw new CliEPApiContentError(logName, "epSdkEnumVersionTask_ExecuteReturn.epObject.id", {
+      epSdkEnumVersionTask_ExecuteReturn: epSdkEnumVersionTask_ExecuteReturn,
+    });
+    const enumInfo: IEpSdkEpEventVersionTask_EnumInfo = {
+      enumId: enumObject.id,
+      enumName: enumObject.name,
+      applicationDomainId: enumObject.applicationDomainId,
+      enumVersionId: epSdkEnumVersionTask_ExecuteReturn.epObject.id
+    };
+    this.enumInfoMap.set(enumInfo.enumName, enumInfo);
 
-    const log = {
-      checkmode,
-      assetApplicationDomainId,
-      actualApplicationDomainId,
-      enumObject,
-      // isAllowedToChange: isAllowedToChange,
-      epSdkEnumVersionTask_ExecuteReturn: epSdkEnumVersionTask_ExecuteReturn
-    }
-    console.log(`${logName}: log=${JSON.stringify(log, null, 2)}`);
+    // DEBUG
+    // const log = {
+    //   checkmode,
+    //   assetApplicationDomainId,
+    //   actualApplicationDomainId,
+    //   enumObject,
+    //   // isAllowedToChange: isAllowedToChange,
+    //   epSdkEnumVersionTask_ExecuteReturn: epSdkEnumVersionTask_ExecuteReturn
+    // }
+    // console.log(`${logName}: log=${JSON.stringify(log, null, 2)}`);
     // const test=true; if(test) throw new Error(`${logName}: continue here`);
     // const test=true; if(test) process.exit(1);
 
@@ -481,10 +461,14 @@ export abstract class CliAssetsImporter extends CliImporter {
       }}));
       // only create the enum if there are any values in the list
       if (parameterEnumList.length > 0) {
+        const enumApplicationDomainId = await this.getAssetApplicationDomainId({
+          assetApplicationDomainId: assetApplicationDomainId,
+          overrideAssetApplicationDomainName: epAsyncApiChannelParameterDocument.getEpApplicationDomainName()
+        });
         // present enum
         const epSdkEnumTask = new EpSdkEnumTask({
           epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
-          applicationDomainId: assetApplicationDomainId,
+          applicationDomainId: enumApplicationDomainId,
           enumName: parameterName,
           enumObjectSettings: {
             shared: true,
@@ -505,7 +489,7 @@ export abstract class CliAssetsImporter extends CliImporter {
         CliRunSummary.processedEnum({epSdkEnumTask_ExecuteReturn: epSdkEnumTask_ExecuteReturn });
         // present the enum version
         const xvoid: void = await this.run_present_enum_version({
-          assetApplicationDomainId: assetApplicationDomainId,
+          assetApplicationDomainId: enumApplicationDomainId,
           enumObject: enumObject,
           specVersion: specVersion,
           epAsyncApiChannelParameterDocument: epAsyncApiChannelParameterDocument,
@@ -539,7 +523,7 @@ export abstract class CliAssetsImporter extends CliImporter {
     CliRunSummary.processingApiChannel({ cliRunSummary_ApiChannel: {
       type: ECliRunSummary_Type.ApiChannel,
       channelTopic: channelTopic,
-      applicationDomainName: epAsyncApiChannelDocument.getApplicationDomainName(),
+      // applicationDomainName: epAsyncApiChannelDocument.getApplicationDomainName(),
     }});
     CliLogger.trace(CliLogger.createLogEntry(logName, {code: ECliStatusCodes.IMPORTING_API_CHANNEL,details: {
       epAsyncApiChannelDocument: epAsyncApiChannelDocument,

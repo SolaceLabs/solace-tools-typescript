@@ -11,12 +11,14 @@ import {
   EventApi,
   EventApIsService,
   EventApiVersion,
+  EventVersion,
 } from "@solace-labs/ep-openapi-node";
 import {
   EEpSdkTask_Action,
   EEpSdkTask_TargetState,
   EEpSdk_VersionTaskStrategy,
   EpSdkApplicationDomainTask,
+  EpSdkEpEventVersionsService,
   EpSdkEventApisService,
   EpSdkEventApiTask,
   EpSdkEventApiVersionsService,
@@ -41,6 +43,7 @@ import {
   ECliRunSummary_Type,
   CliUtils,
   CliRunExecuteReturnLog,
+  CliImporterError,
 } from "../cli-components";
 import {
   ICliPubSubEventVersionIds,
@@ -104,9 +107,70 @@ export interface ICliEventApiImporterRunReturn extends ICliAssetsImporterRunRetu
 }
 
 export class CliEventApiImporter extends CliAssetsImporter {
-  constructor(cliEventApiImporterOptions: ICliEventApiImporterOptions) {
-    super(cliEventApiImporterOptions);
+  constructor(cliEventApiImporterOptions: ICliEventApiImporterOptions, runMode: ECliRunContext_RunMode) {
+    super(cliEventApiImporterOptions, runMode);
   }
+
+  // protected get_pub_sub_event_version_ids = async ({applicationDomainId, epAsyncApiDocument }: {
+  //   applicationDomainId: string;
+  //   epAsyncApiDocument: EpAsyncApiDocument;
+  // }): Promise<ICliPubSubEventVersionIds> => {
+  //   const funcName = "get_pub_sub_event_version_ids";
+  //   const logName = `${CliEventApiImporter.name}.${funcName}()`;
+
+  //   const publishEventVersionIdList: Array<string> = [];
+  //   const subscribeEventVersionIdList: Array<string> = [];
+
+  //   const channelDocumentMap = epAsyncApiDocument.getEpAsyncApiChannelDocumentMap();
+  //   for(const [key, epAsyncApiChannelDocument] of channelDocumentMap) {
+  //     const epAsynApiChannelPublishOperation = epAsyncApiChannelDocument.getEpAsyncApiChannelPublishOperation();
+  //     if(epAsynApiChannelPublishOperation) {
+  //       const epAsyncApiMessageDocument = epAsynApiChannelPublishOperation.getEpAsyncApiMessageDocument();
+  //       const eventApplicationDomainId = await this.getAssetApplicationDomainId({
+  //         assetApplicationDomainId: applicationDomainId,
+  //         overrideAssetApplicationDomainName: epAsyncApiMessageDocument.getMessageEpApplicationDomainName()
+  //       });
+  //       const eventVersion: EventVersion | undefined = await EpSdkEpEventVersionsService.getLatestVersionForEventName({
+  //         eventName: epAsyncApiMessageDocument.getMessageName(),
+  //         applicationDomainId: eventApplicationDomainId,
+  //       });
+  //       if (eventVersion === undefined) throw new CliImporterError(logName, "eventVersion === undefined", {
+  //         eventName: epAsyncApiMessageDocument.getMessageName(),
+  //         applicationDomainId: eventApplicationDomainId,
+  //       });
+  //       /* istanbul ignore next */
+  //       if (eventVersion.id === undefined) throw new CliEPApiContentError(logName, "eventVersion.id === undefined", {
+  //         eventVersion: eventVersion,
+  //       });
+  //       publishEventVersionIdList.push(eventVersion.id);
+  //     }
+  //     const epAsynApiChannelSubscribeOperation = epAsyncApiChannelDocument.getEpAsyncApiChannelSubscribeOperation();
+  //     if(epAsynApiChannelSubscribeOperation) {
+  //       const epAsyncApiMessageDocument = epAsynApiChannelSubscribeOperation.getEpAsyncApiMessageDocument();
+  //       const eventApplicationDomainId = await this.getAssetApplicationDomainId({
+  //         assetApplicationDomainId: applicationDomainId,
+  //         overrideAssetApplicationDomainName: epAsyncApiMessageDocument.getMessageEpApplicationDomainName()
+  //       });
+  //       const eventVersion: EventVersion | undefined = await EpSdkEpEventVersionsService.getLatestVersionForEventName({
+  //         eventName: epAsyncApiMessageDocument.getMessageName(),
+  //         applicationDomainId: eventApplicationDomainId,
+  //       });
+  //       if (eventVersion === undefined) throw new CliImporterError(logName, "eventVersion === undefined", {
+  //         eventName: epAsyncApiMessageDocument.getMessageName(),
+  //         applicationDomainId: eventApplicationDomainId,
+  //       });
+  //       /* istanbul ignore next */
+  //       if (eventVersion.id === undefined) throw new CliEPApiContentError(logName, "eventVersion.id === undefined", {
+  //         eventVersion: eventVersion,
+  //       });
+  //       subscribeEventVersionIdList.push(eventVersion.id);
+  //     }
+  //   }
+  //   return {
+  //     publishEventVersionIdList: publishEventVersionIdList,
+  //     subscribeEventVersionIdList: subscribeEventVersionIdList,
+  //   };
+  // }
 
   private run_present_event_api_version = async ({
     applicationDomainId,
@@ -130,7 +194,7 @@ export class CliEventApiImporter extends CliAssetsImporter {
     });
     // const latestExistingEventApiVersionString: string | undefined = latestExistingEventApiVersionObjectBefore?.version;
     // get the list of pub and sub events
-    const cliPubSubEventVersionIds: ICliPubSubEventVersionIds = await CliAsyncApiDocumentService.get_pub_sub_event_version_ids({
+    const cliPubSubEventVersionIds: ICliPubSubEventVersionIds = await this.get_pub_sub_event_version_ids({
       applicationDomainId: assetApplicationDomainId,
       epAsyncApiDocument: epAsyncApiDocument,
     });

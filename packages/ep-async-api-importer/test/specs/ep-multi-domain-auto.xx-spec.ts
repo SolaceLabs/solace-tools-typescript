@@ -39,7 +39,10 @@ import {
   EpSdkEpEventsService,
   EpSdkEvent,
   EpSdkCustomAttributeNameSourceApplicationDomainId,
-  EpSdkEventApisService
+  EpSdkEventApisService,
+  EpSdkEnumVersionsService,
+  EpSdkSchemaVersionsService,
+  EpSdkEpEventVersionsService
 } from "@solace-labs/ep-sdk";
 import { TestContext, TestUtils } from "@internal/tools/src";
 import {
@@ -56,6 +59,7 @@ import {
   ICliRunSummary_Base,
 } from "../../src/cli-components";
 import { EpAsyncApiDocument, EpAsyncApiDocumentService } from "@solace-labs/ep-asyncapi";
+import { ECliAssetImport_TargetVersionStrategy } from "../../src/importers";
 
 const scriptName: string = path.basename(__filename);
 const TestSpecName = scriptName;
@@ -138,7 +142,15 @@ let AppAsyncApiSpecFileNameJson: string;
 // let AsyncApiSpecFile_X_EpApplicationDomainName: string;
 // let AsyncApiSpecFile_X_EpAssetApplicationDomainName: string;
 
+const newProducedChannel = {
 
+};
+const newProducedMessage = {
+
+}
+const newProducedSchema = {
+
+}
 
 
 const initializeGlobals = () => {
@@ -595,30 +607,57 @@ describe(`${scriptName}`, () => {
     }
   });
 
-
   it(`${scriptName}: should import event api spec without any changes`, async () => {
     try {
       CliConfig.getCliImporterManagerOptions().asyncApiFileList = [EventApiAsyncApiSpecFileNameJson];
       CliConfig.getCliImporterManagerOptions().cliImporterManagerMode = ECliImporterManagerMode.RELEASE_MODE;
       // CliConfig.getCliImporterManagerOptions().runId = scriptName;
       // // DEBUG
-      CliConfig.getCliImporterManagerOptions().cliImporterManagerMode = ECliImporterManagerMode.TEST_MODE_KEEP;
+      // CliConfig.getCliImporterManagerOptions().cliImporterManagerMode = ECliImporterManagerMode.TEST_MODE_KEEP;
       // CliConfig.getCliImporterManagerOptions().applicationDomainName = 'release_mode';
       CliConfig.getCliImporterManagerOptions().createApiApplication = false;
+      CliConfig.getCliImporterManagerOptions().createApiEventApi = true;
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_BrokerType = undefined;
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_ChannelDelimiter = undefined;
+      // CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_TargetVersionStrategy = ECliAssetImport_TargetVersionStrategy.BUMP_PATCH;
 
       const cliImporter = new CliImporterManager(CliConfig.getCliImporterManagerOptions());
       const xvoid: void = await cliImporter.run();
       // // DEBUG
       // const cliRunSummaryList: Array<ICliRunSummary_Base> = CliRunSummary.getSummaryLogList();
       // expect(false, JSON.stringify(cliRunSummaryList, null, 2)).to.be.true;
-
-      expect(false, "not idempotent - needs to respect source app domains of all objects").to.be.true;
     } catch (e) {
       TestLogger.logMessageWithId(TestLogger.createTestFailMessageForError('error', e));
       expect( e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
       expect(false, TestLogger.createTestFailMessageWithCliError("failed", e)).to.be.true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
+    }
+  });
+
+  it(`${scriptName}: should check no new version created for event api`, async () => {
+    try {
+      const enum_1_id_versions = await EpSdkEnumVersionsService.getVersionsForEnumId({enumId: Enum_1_Id});
+      expect(enum_1_id_versions.length,'enum_1_id_versions.length not 1').to.equal(1);
+      const enum_2_id_versions = await EpSdkEnumVersionsService.getVersionsForEnumId({enumId: Enum_2_Id});
+      expect(enum_2_id_versions.length,'enum_2_id_versions.length not 1').to.equal(1);
+
+      const schema_1_id_versions = await EpSdkSchemaVersionsService.getVersionsForSchemaId({ schemaId: Schema_1_Id });
+      expect(schema_1_id_versions.length,'schema_1_id_versions.length not 1').to.equal(1);
+      const schema_2_id_versions = await EpSdkSchemaVersionsService.getVersionsForSchemaId({ schemaId: Schema_2_Id });
+      expect(schema_2_id_versions.length,'schema_2_id_versions.length not 1').to.equal(1);
+
+      const event_1_id_versions = await EpSdkEpEventVersionsService.getVersionsForEventId({ eventId: Event_1_Id });
+      expect(event_1_id_versions.length,'event_1_id_versions.length not 1').to.equal(1);
+      const event_2_id_versions = await EpSdkEpEventVersionsService.getVersionsForEventId({ eventId: Event_2_Id });
+      expect(event_2_id_versions.length,'event_2_id_versions.length not 1').to.equal(1);
+
+      const event_api_versions = await EpSdkEventApiVersionsService.getVersionsForEventApiId({ eventApiId: EventApi_Id });
+      expect(event_api_versions.length,'event_api_versions.length not 1').to.equal(1);
+
+    } catch (e) {
+      TestLogger.logMessageWithId(TestLogger.createTestFailMessageForError('error', e));
       if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
       expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
       expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;

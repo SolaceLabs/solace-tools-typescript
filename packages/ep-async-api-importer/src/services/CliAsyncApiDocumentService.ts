@@ -2,20 +2,16 @@ import { EventVersion } from "@solace-labs/ep-openapi-node";
 import {
   EEpSdkSchemaContentType,
   EEpSdkSchemaType,
-  EpSdkEpEventVersionsService,
 } from "@solace-labs/ep-sdk";
 import {
   EpAsyncApiDocument,
   EpAsyncApiDocumentService,
   E_EpAsyncApiContentTypes,
   E_EpAsyncApiSchemaFormatType,
-  T_EpAsyncApiEventNames,
 } from "@solace-labs/ep-asyncapi";
 
 import {
-  CliEPApiContentError,
   CliErrorFactory,
-  CliImporterError,
   CliInternalCodeInconsistencyError,
   CliLogger,
   ECliStatusCodes,
@@ -79,70 +75,6 @@ class CliAsyncApiDocumentService {
       }}));
       throw cliError;
     }
-  };
-
-  public get_pub_sub_event_version_ids = async ({
-    applicationDomainId,
-    epAsyncApiDocument,
-  }: {
-    applicationDomainId: string;
-    epAsyncApiDocument: EpAsyncApiDocument;
-  }): Promise<ICliPubSubEventVersionIds> => {
-    const funcName = "get_pub_sub_event_version_ids";
-    const logName = `${CliAsyncApiDocumentService.name}.${funcName}()`;
-
-    const epAsyncApiEventNames: T_EpAsyncApiEventNames =
-      epAsyncApiDocument.getEpAsyncApiEventNames();
-    const publishEventVersionIdList: Array<string> = [];
-    for (const publishEventName of epAsyncApiEventNames.publishEventNames) {
-      const eventVersion: EventVersion | undefined =
-        await EpSdkEpEventVersionsService.getLatestVersionForEventName({
-          eventName: publishEventName,
-          applicationDomainId: applicationDomainId,
-        });
-      if (eventVersion === undefined)
-        throw new CliImporterError(logName, "eventVersion === undefined", {
-          eventName: publishEventName,
-          applicationDomainId: applicationDomainId,
-        });
-      /* istanbul ignore next */
-      if (eventVersion.id === undefined)
-        throw new CliEPApiContentError(
-          logName,
-          "eventVersion.id === undefined",
-          {
-            eventVersion: eventVersion,
-          }
-        );
-      publishEventVersionIdList.push(eventVersion.id);
-    }
-    const subscribeEventVersionIdList: Array<string> = [];
-    for (const subscribeEventName of epAsyncApiEventNames.subscribeEventNames) {
-      const eventVersion: EventVersion | undefined =
-        await EpSdkEpEventVersionsService.getLatestVersionForEventName({
-          eventName: subscribeEventName,
-          applicationDomainId: applicationDomainId,
-        });
-      if (eventVersion === undefined)
-        throw new CliImporterError(logName, "eventVersion === undefined", {
-          eventName: subscribeEventName,
-          applicationDomainId: applicationDomainId,
-        });
-      /* istanbul ignore next */
-      if (eventVersion.id === undefined)
-        throw new CliEPApiContentError(
-          logName,
-          "eventVersion.id === undefined",
-          {
-            eventVersion: eventVersion,
-          }
-        );
-      subscribeEventVersionIdList.push(eventVersion.id);
-    }
-    return {
-      publishEventVersionIdList: publishEventVersionIdList,
-      subscribeEventVersionIdList: subscribeEventVersionIdList,
-    };
   };
 
   public map_MessageDocumentContentType_To_EpSchemaContentType(

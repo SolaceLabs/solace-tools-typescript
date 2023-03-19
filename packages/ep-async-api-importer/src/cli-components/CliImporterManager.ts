@@ -155,19 +155,15 @@ export class CliImporterManager {
         runMode: ECliRunContext_RunMode.TEST_PASS_1,
       };
       CliRunContext.push(rctxt);
-      CliRunSummary.startRun({
-        cliRunSummary_StartRun: {
-          type: ECliRunSummary_Type.StartRun,
-          runMode: ECliRunContext_RunMode.TEST_PASS_1,
-        },
-      });
+      CliRunSummary.startRun({cliRunSummary_StartRun: {
+        type: ECliRunSummary_Type.StartRun,
+        runMode: ECliRunContext_RunMode.TEST_PASS_1,
+      }});
       // validate each api first
       const epAsyncApiDocumentList: Array<EpAsyncApiDocument> = [];
       for (const asyncApiFile of this.cliImporterManagerOptions.asyncApiFileList) {
         CliRunExecuteReturnLog.reset();
-        const rctxt: ICliApiFileRunContext = {
-          apiFile: asyncApiFile,
-        };
+        const rctxt: ICliApiFileRunContext = { apiFile: asyncApiFile };
         CliRunContext.push(rctxt);
         CliRunSummary.processingApiFile({cliRunSummary_ApiFile: {
           type: ECliRunSummary_Type.ApiFile,
@@ -203,10 +199,10 @@ export class CliImporterManager {
 
       for (const asyncApiFile of this.cliImporterManagerOptions.asyncApiFileList) {
         CliRunExecuteReturnLog.reset();
-        const rctxt: ICliApiFileRunContext = {apiFile: asyncApiFile, };
+        const rctxt: ICliApiFileRunContext = {apiFile: asyncApiFile };
         CliRunContext.push(rctxt);
 
-        const cliEventApiImporter = new CliEventApiImporter(this.cliImporterManagerOptions.cliImporterOptions);
+        const cliEventApiImporter = new CliEventApiImporter(this.cliImporterManagerOptions.cliImporterOptions, ECliRunContext_RunMode.TEST_PASS_1);
         const cliEventApiImporterRunReturn: ICliEventApiImporterRunReturn = await cliEventApiImporter.run({ cliImporterRunOptions: {
           apiFile: asyncApiFile,
           applicationDomainName: this.cliImporterManagerOptions.applicationDomainName,
@@ -225,7 +221,7 @@ export class CliImporterManager {
           const cliApplicationImporter = new CliApplicationImporter({
             ...this.cliImporterManagerOptions.cliImporterOptions,
             applicationDomainName: cliEventApiImporterRunReturn.applicationDomainName,
-          });
+          }, ECliRunContext_RunMode.TEST_PASS_1);
           const cliApplicationImporterRunReturn: ICliApplicationImporterRunReturn = await cliApplicationImporter.run({ cliImporterRunOptions: {
             apiFile: asyncApiFile,
             applicationDomainName: this.cliImporterManagerOptions.applicationDomainName,
@@ -247,30 +243,22 @@ export class CliImporterManager {
         runMode: ECliRunContext_RunMode.TEST_PASS_2,
       };
       CliRunContext.push(rctxt);
-      CliRunSummary.startRun({
-        cliRunSummary_StartRun: {
-          type: ECliRunSummary_Type.StartRun,
-          runMode: ECliRunContext_RunMode.TEST_PASS_2,
-        },
-      });
+      CliRunSummary.startRun({cliRunSummary_StartRun: {
+        type: ECliRunSummary_Type.StartRun,
+        runMode: ECliRunContext_RunMode.TEST_PASS_2,
+      }});
 
       for (const asyncApiFile of this.cliImporterManagerOptions
         .asyncApiFileList) {
         CliRunExecuteReturnLog.reset();
-        const rctxt: ICliApiFileRunContext = {
-          apiFile: asyncApiFile,
-        };
+        const rctxt: ICliApiFileRunContext = { apiFile: asyncApiFile };
         CliRunContext.push(rctxt);
-        CliRunSummary.processingApiFile({
-          cliRunSummary_ApiFile: {
-            type: ECliRunSummary_Type.ApiFile,
-            apiFile: asyncApiFile,
-          },
-        });
+        CliRunSummary.processingApiFile({cliRunSummary_ApiFile: {
+          type: ECliRunSummary_Type.ApiFile,
+          apiFile: asyncApiFile,
+        }});
 
-        const cliEventApiImporter = new CliEventApiImporter(
-          this.cliImporterManagerOptions.cliImporterOptions
-        );
+        const cliEventApiImporter = new CliEventApiImporter(this.cliImporterManagerOptions.cliImporterOptions, ECliRunContext_RunMode.TEST_PASS_2);
         const cliEventApiImporterRunReturn: ICliEventApiImporterRunReturn = await cliEventApiImporter.run({ cliImporterRunOptions: {
           apiFile: asyncApiFile,
           applicationDomainName: this.cliImporterManagerOptions.applicationDomainName,
@@ -293,9 +281,8 @@ export class CliImporterManager {
         if (this.cliImporterManagerOptions.createApiApplication) {
           const cliApplicationImporter = new CliApplicationImporter({
             ...this.cliImporterManagerOptions.cliImporterOptions,
-            applicationDomainName:
-              cliEventApiImporterRunReturn.applicationDomainName,
-          });
+            applicationDomainName: cliEventApiImporterRunReturn.applicationDomainName,
+          }, ECliRunContext_RunMode.TEST_PASS_2);
           const cliApplicationImporterRunReturn: ICliApplicationImporterRunReturn = await cliApplicationImporter.run({ cliImporterRunOptions: {
             apiFile: asyncApiFile,
             applicationDomainName: this.cliImporterManagerOptions.applicationDomainName,
@@ -311,24 +298,16 @@ export class CliImporterManager {
       }
       // clean up if specified
       if (cleanUp) {
-        let xvoid: void = await CliApplicationDomainsService.absent_ApplicationDomains({
-          applicationDomainNameList: applicationDomainNameList,
-        });
-        xvoid = await CliApplicationDomainsService.absent_ApplicationDomains({
-          applicationDomainNameList: assetApplicationDomainNameList,
-        });
+        let xvoid: void = await CliApplicationDomainsService.absent_ApplicationDomains({applicationDomainNameList: applicationDomainNameList });
+        xvoid = await CliApplicationDomainsService.absent_ApplicationDomains({ applicationDomainNameList: assetApplicationDomainNameList });
         /* istanbul ignore next */
         xvoid;
       }
       CliRunContext.pop();
     } catch (e) {
       if (cleanUp) {
-        let xvoid: void = await CliApplicationDomainsService.absent_ApplicationDomains({
-          applicationDomainNameList: applicationDomainNameList,
-        });
-        xvoid = await CliApplicationDomainsService.absent_ApplicationDomains({
-          applicationDomainNameList: assetApplicationDomainNameList,
-        });
+        let xvoid: void = await CliApplicationDomainsService.absent_ApplicationDomains({ applicationDomainNameList: applicationDomainNameList });
+        xvoid = await CliApplicationDomainsService.absent_ApplicationDomains({ applicationDomainNameList: assetApplicationDomainNameList });
         /* istanbul ignore next */
         xvoid;
       }
@@ -352,12 +331,10 @@ export class CliImporterManager {
       runMode: ECliRunContext_RunMode.RELEASE,
     };
     CliRunContext.push(rctxt);
-    CliRunSummary.startRun({
-      cliRunSummary_StartRun: {
-        type: ECliRunSummary_Type.StartRun,
-        runMode: ECliRunContext_RunMode.RELEASE,
-      },
-    });
+    CliRunSummary.startRun({cliRunSummary_StartRun: {
+      type: ECliRunSummary_Type.StartRun,
+      runMode: ECliRunContext_RunMode.RELEASE,
+    }});
 
     for (const asyncApiFile of this.cliImporterManagerOptions
       .asyncApiFileList) {
@@ -373,9 +350,7 @@ export class CliImporterManager {
         },
       });
 
-      const cliEventApiImporter = new CliEventApiImporter(
-        this.cliImporterManagerOptions.cliImporterOptions
-      );
+      const cliEventApiImporter = new CliEventApiImporter(this.cliImporterManagerOptions.cliImporterOptions, ECliRunContext_RunMode.RELEASE);
       const cliEventApiImporterRunReturn: ICliEventApiImporterRunReturn = await cliEventApiImporter.run({ cliImporterRunOptions: {
         apiFile: asyncApiFile,
         applicationDomainName: this.cliImporterManagerOptions.applicationDomainName,
@@ -394,7 +369,7 @@ export class CliImporterManager {
         const cliApplicationImporter = new CliApplicationImporter({
           ...this.cliImporterManagerOptions.cliImporterOptions,
           applicationDomainName: cliEventApiImporterRunReturn.applicationDomainName,
-        });
+        }, ECliRunContext_RunMode.RELEASE);
         const cliApplicationImporterRunReturn: ICliApplicationImporterRunReturn = await cliApplicationImporter.run({ cliImporterRunOptions: {
           apiFile: asyncApiFile,
           applicationDomainName: this.cliImporterManagerOptions.applicationDomainName,
