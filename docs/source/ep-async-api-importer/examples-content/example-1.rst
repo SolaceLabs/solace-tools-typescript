@@ -1,7 +1,7 @@
 .. _examples-content-example-1:
 
-Example
-=======
+Example 1: Importing 2 Apis
+===========================
 
 Apis
 ++++
