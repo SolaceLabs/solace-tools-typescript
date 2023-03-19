@@ -1,0 +1,91 @@
+components:
+
+  parameters:
+    parameter_one:
+      schema:
+        type: string
+        enum:
+          - parameter_one_value_1
+          - parameter_one_value_2
+      x-ep-enum-name: parameter_one name
+      x-ep-enum-version-displayname: parameter_one_displayName
+      # x-ep-parameter-name: Consumed_Enum_1_Name
+      x-ep-application-domain-name: domain/parameter_one
+
+    parameter_two:
+      schema:
+        type: string
+        enum:
+          - parameter_two_value_1
+          - parameter_two_value_2
+      x-ep-enum-name: parameter_two name
+      x-ep-enum-version-displayname: parameter_two_displayName
+      # x-ep-parameter-name: Consumed_Enum_1_Name
+      x-ep-application-domain-name: domain/parameter_two
+
+  schemas:
+    schema_one:
+      x-ep-application-domain-name: domain/schema_one
+      x-ep-schema-name: schema_one
+      x-ep-schema-version-displayname: schema_one_displayName
+      type: object
+      properties:
+        property_one:
+          format: string
+
+    schema_two:
+      x-ep-application-domain-name: domain/schema_two
+      x-ep-schema-name: schema_two
+      x-ep-schema-version-displayname: schema_two_displayName
+      type: object
+      properties:
+        property_one:
+          format: string
+
+
+  messages:
+    message_one:
+      x-ep-event-name: message_one
+      x-ep-event-version-displayname: message_one_displayName
+      x-ep-application-domain-name: domain/message_one
+      payload:
+        $ref: '#/components/schemas/schema_one'
+      schemaFormat: application/vnd.aai.asyncapi+json;version=2.0.0
+      contentType: application/json
+
+    message_two:
+      x-ep-event-name: message_two
+      x-ep-event-version-displayname: message_two_displayName
+      x-ep-application-domain-name: domain/message_two
+      payload:
+        $ref: '#/components/schemas/schema_two'
+      schemaFormat: application/vnd.aai.asyncapi+json;version=2.0.0
+      contentType: application/json
+
+
+channels:
+  cahnnel/one/{parameter_one}:
+    publish:
+      message:
+        $ref: '#/components/messages/message_one'
+    parameters:
+      parameter_one:
+        $ref: '#/components/parameters/parameter_one'
+
+  channel/two/{parameter_two}:
+    subscribe:
+      message:
+        $ref: '#/components/messages/message_two'
+    parameters:
+      parameter_two:
+        $ref: '#/components/parameters/parameter_two'
+
+asyncapi: 2.5.0
+info:
+  description: Multi-Domain EventApi Description
+  x-ep-displayname: Multi_Domain_Api_DisplayName
+  title: Multi_Domain_Api_Name
+  version: 1.0.0
+  x-ep-application-domain-name: domain/api
+  x-ep-assets-application-domain-name: domain/assets
+

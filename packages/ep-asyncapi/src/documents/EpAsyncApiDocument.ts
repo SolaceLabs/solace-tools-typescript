@@ -417,26 +417,16 @@ export class EpAsyncApiDocument {
       publishEventNames: [],
       subscribeEventNames: [],
     };
-    const epAsyncApiChannelDocumentMap: T_EpAsyncApiChannelDocumentMap =
-      this.getEpAsyncApiChannelDocumentMap();
-    for (const [
-      topic,
-      epAsyncApiChannelDocument,
-    ] of epAsyncApiChannelDocumentMap) {
+    const epAsyncApiChannelDocumentMap: T_EpAsyncApiChannelDocumentMap = this.getEpAsyncApiChannelDocumentMap();
+    for (const [topic, epAsyncApiChannelDocument ] of epAsyncApiChannelDocumentMap) {
       topic;
       const epEventName: string = epAsyncApiChannelDocument.getEpEventName();
-      const epAsynApiChannelPublishOperation:
-        | EpAsynApiChannelPublishOperation
-        | undefined =
-        epAsyncApiChannelDocument.getEpAsyncApiChannelPublishOperation();
+      const epAsynApiChannelPublishOperation: EpAsynApiChannelPublishOperation | undefined = epAsyncApiChannelDocument.getEpAsyncApiChannelPublishOperation();
       if (epAsynApiChannelPublishOperation !== undefined) {
         // const epAsyncApiMessageDocument: EpAsyncApiMessageDocument = epAsynApiChannelPublishOperation.getEpAsyncApiMessageDocument()
         epAsyncApiEventNames.publishEventNames.push(epEventName);
       }
-      const epAsyncApiChannelSubscribeOperation:
-        | EpAsyncApiChannelSubscribeOperation
-        | undefined =
-        epAsyncApiChannelDocument.getEpAsyncApiChannelSubscribeOperation();
+      const epAsyncApiChannelSubscribeOperation: EpAsyncApiChannelSubscribeOperation | undefined = epAsyncApiChannelDocument.getEpAsyncApiChannelSubscribeOperation();
       if (epAsyncApiChannelSubscribeOperation !== undefined) {
         // const epAsyncApiMessageDocument: EpAsyncApiMessageDocument = epAsyncApiChannelSubscribeOperation.getEpAsyncApiMessageDocument()
         epAsyncApiEventNames.subscribeEventNames.push(epEventName);

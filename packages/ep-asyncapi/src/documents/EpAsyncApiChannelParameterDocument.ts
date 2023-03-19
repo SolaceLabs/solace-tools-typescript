@@ -3,6 +3,7 @@ import {
   Schema, 
 } from '@asyncapi/parser';
 import { 
+  EpGeneralExtensions,
   EpParameterExtensions 
 } from '../constants';
 
@@ -37,6 +38,20 @@ export class EpAsyncApiChannelParameterDocument {
       if(displayName && displayName.length > 0) return displayName;
     }
     return '';
+  }
+
+  // public getEpApplicationDomainId(): string | undefined {
+  //   if(this.asyncApiChannelParameter.hasExtension(EpGeneralExtensions.xEpApplicationDomainId)) {
+  //     const applicationDomainId = this.asyncApiChannelParameter.extension(EpGeneralExtensions.xEpApplicationDomainId);
+  //     if(applicationDomainId && applicationDomainId.length > 0) return applicationDomainId;
+  //   }
+  // }
+
+  public getEpApplicationDomainName(): string | undefined {
+    if(this.asyncApiChannelParameter.hasExtension(EpGeneralExtensions.xEpApplicationDomainName)) {
+      const applicationDomainName = this.asyncApiChannelParameter.extension(EpGeneralExtensions.xEpApplicationDomainName);
+      if(applicationDomainName && applicationDomainName.length > 0) return applicationDomainName;
+    }
   }
 
   public getParameterEnumValueList(): Array<string> {

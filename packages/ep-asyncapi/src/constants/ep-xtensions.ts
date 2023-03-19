@@ -1,4 +1,10 @@
 /** extensions used by EP when exporting spec */
+
+export enum EpGeneralExtensions {
+  xEpApplicationDomainName = "x-ep-application-domain-name",
+  // xEpApplicationDomainId = "x-ep-application-domain-id"
+}
+
 export enum EpParameterExtensions {
   xEpEnumName = "x-ep-enum-name",
   xEpParameterName = "x-ep-parameter-name",
