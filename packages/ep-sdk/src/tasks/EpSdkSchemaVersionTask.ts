@@ -42,23 +42,19 @@ export interface IEpSdkSchemaVersionTask_Keys extends IEpSdkTask_Keys {
   schemaId: string;
 }
 /** @category Tasks */
-export interface IEpSdkSchemaVersionTask_GetFuncReturn
-  extends Omit<IEpSdkTask_GetFuncReturn, "epObject"> {
+export interface IEpSdkSchemaVersionTask_GetFuncReturn extends Omit<IEpSdkTask_GetFuncReturn, "epObject"> {
   epObject: SchemaVersion | undefined;
 }
 /** @category Tasks */
-export interface IEpSdkSchemaVersionTask_CreateFuncReturn
-  extends Omit<IEpSdkTask_CreateFuncReturn, "epObject"> {
+export interface IEpSdkSchemaVersionTask_CreateFuncReturn extends Omit<IEpSdkTask_CreateFuncReturn, "epObject"> {
   epObject: SchemaVersion;
 }
 /** @category Tasks */
-export interface IEpSdkSchemaVersionTask_UpdateFuncReturn
-  extends Omit<IEpSdkTask_UpdateFuncReturn, "epObject"> {
+export interface IEpSdkSchemaVersionTask_UpdateFuncReturn extends Omit<IEpSdkTask_UpdateFuncReturn, "epObject"> {
   epObject: SchemaVersion;
 }
 /** @category Tasks */
-export interface IEpSdkSchemaVersionTask_ExecuteReturn
-  extends Omit<IEpSdkTask_ExecuteReturn, "epObject"> {
+export interface IEpSdkSchemaVersionTask_ExecuteReturn extends Omit<IEpSdkTask_ExecuteReturn, "epObject"> {
   epObject: SchemaVersion;
 }
 
@@ -79,6 +75,10 @@ export class EpSdkSchemaVersionTask extends EpSdkVersionTask {
     return {
       ...this.Default_TEpSdkSchemaVersionTask_Settings,      
       ...this.getTaskConfig().schemaVersionSettings,
+      // NOTE: using the description will result in non-idempotent behaviour, not exported by EP into spec
+      // description: this.getTaskConfig().schemaVersionSettings.description ? this.getTaskConfig().schemaVersionSettings.description : '',
+      description: '',
+      displayName: this.getTaskConfig().schemaVersionSettings.displayName ? this.getTaskConfig().schemaVersionSettings.displayName : '',      
     };
   }
 
@@ -184,8 +184,9 @@ export class EpSdkSchemaVersionTask extends EpSdkVersionTask {
     }
     const existingCompareObject: TEpSdkSchemaVersionTask_CompareObject = {
       content: existingContent,
-      // content: existingObject.content,
-      description: existingObject.description ? existingObject.description : '',
+      // NOTE: using the description will result in non-idempotent behaviour, not exported by EP into spec
+      // description: existingObject.description ? existingObject.description : '',
+      description: '',
       displayName: existingObject.displayName ? existingObject.displayName : '',
       stateId: existingObject.stateId,
     };

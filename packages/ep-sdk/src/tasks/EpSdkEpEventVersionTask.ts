@@ -41,12 +41,21 @@ export type TEpSdkEpEventVersionTask_Settings = Required<Pick<EventVersion, "sta
 type TEpSdkEpEventVersionTask_CompareObject = Partial<TEpSdkEpEventVersionTask_Settings> & Pick<EventVersion, "deliveryDescriptor"> & Partial<Pick<EventVersion, "version">>;
 
 /** @category Tasks */
+export interface IEpSdkEpEventVersionTask_EnumInfo {
+  enumName: string;
+  enumId: string;
+  applicationDomainId: string;
+  enumVersionId: string;
+}
+
+/** @category Tasks */
 export interface IEpSdkEpEventVersionTask_Config extends IEpSdkVersionTask_Config {
   applicationDomainId: string;
   eventId: string;
   eventVersionSettings: TEpSdkEpEventVersionTask_Settings;
   topicString: string;
   topicDelimiter?: string[1];
+  enumInfoMap?: Map<string, IEpSdkEpEventVersionTask_EnumInfo>;
 }
 /** @category Tasks */
 export interface IEpSdkEpEventVersionTask_Keys extends IEpSdkTask_Keys {
@@ -87,6 +96,22 @@ export class EpSdkEpEventVersionTask extends EpSdkVersionTask {
   private getTaskConfig(): IEpSdkEpEventVersionTask_Config {
     return this.epSdkTask_Config as IEpSdkEpEventVersionTask_Config;
   }
+  
+  private async getEnumVersionId(enumName: string): Promise<string | undefined> {
+    // try find it in the same application domain
+    const topicAddressEnumVersion: TopicAddressEnumVersion | undefined = await EpSdkEnumVersionsService.getLatestVersionForEnumName({
+      xContextId: this.xContextId,
+      enumName,
+      applicationDomainId: this.getTaskConfig().applicationDomainId,
+    });
+    if(topicAddressEnumVersion !== undefined) return topicAddressEnumVersion.id;
+    if(this.getTaskConfig().enumInfoMap) {
+      // try find it in the map
+      const enumInfo = this.getTaskConfig().enumInfoMap.get(enumName);
+      if(enumInfo) return enumInfo.enumVersionId;
+    }
+  }
+
   private initializeTopicAddressLevels = async ({ topicString, topicDelimiter }: {
     topicString: string;
     topicDelimiter: string[1];
@@ -99,13 +124,7 @@ export class EpSdkEpEventVersionTask extends EpSdkVersionTask {
       if (topicLevel.includes("{")) {
         topicLevel = topicLevel.replace("}", "").replace("{", "");
         type = AddressLevel.addressLevelType.VARIABLE;
-        // get the enumVersionId if it exists
-        const topicAddressEnumVersion: TopicAddressEnumVersion | undefined = await EpSdkEnumVersionsService.getLatestVersionForEnumName({
-          xContextId: this.xContextId,
-          enumName: topicLevel,
-          applicationDomainId: this.getTaskConfig().applicationDomainId,
-        });
-        if (topicAddressEnumVersion !== undefined) enumVersionId = topicAddressEnumVersion.id;
+        enumVersionId = await this.getEnumVersionId(topicLevel);
       }
       addressLevels.push({
         name: topicLevel,
