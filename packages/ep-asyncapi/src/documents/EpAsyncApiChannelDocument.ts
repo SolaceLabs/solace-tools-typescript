@@ -283,6 +283,7 @@ export class EpAsyncApiChannelDocument {
     if (epAsyncApiChannelParameterDocumentMap !== undefined) {
       for (const [_parameterName, epAsyncApiChannelParameterDocument] of epAsyncApiChannelParameterDocumentMap) {
         epAsyncApiChannelParameterDocument.validate_BestPractices();
+        _parameterName;
       }
     }
     // channel operations

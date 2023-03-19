@@ -1,5 +1,4 @@
 import { EpAsyncApiDocument } from "@solace-labs/ep-asyncapi";
-import { EEpSdkTask_TargetState, EpSdkEventApisService, EpSdkEventApiTask } from "@solace-labs/ep-sdk";
 import {
   CliApplicationImporter,
   ICliApplicationImporterRunReturn,

@@ -1,4 +1,3 @@
-import { EventVersion } from "@solace-labs/ep-openapi-node";
 import {
   EEpSdkSchemaContentType,
   EEpSdkSchemaType,

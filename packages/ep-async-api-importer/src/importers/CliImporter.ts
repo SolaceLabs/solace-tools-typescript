@@ -116,6 +116,7 @@ export abstract class CliImporter {
 
     const channelDocumentMap = epAsyncApiDocument.getEpAsyncApiChannelDocumentMap();
     for(const [key, epAsyncApiChannelDocument] of channelDocumentMap) {
+      key;
       const epAsynApiChannelPublishOperation = epAsyncApiChannelDocument.getEpAsyncApiChannelPublishOperation();
       if(epAsynApiChannelPublishOperation) {
         const epAsyncApiMessageDocument = epAsynApiChannelPublishOperation.getEpAsyncApiMessageDocument();

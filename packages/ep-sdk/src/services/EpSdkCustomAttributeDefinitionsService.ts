@@ -1,7 +1,5 @@
 import {
-  ApiError,
   CustomAttributeDefinition,
-  CustomAttributeDefinitionResponse,
   CustomAttributeDefinitionsResponse,
   CustomAttributeDefinitionsService,
   Pagination,
