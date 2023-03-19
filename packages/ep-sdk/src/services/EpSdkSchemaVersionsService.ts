@@ -307,11 +307,7 @@ export class EpSdkSchemaVersionsServiceClass extends EpSdkVersionServiceClass {
     return createdSchemaVersion;
   };
 
-  public copyLastestVersionById_IfNotExists = async ({
-    xContextId, schemaVersionId,
-    fromApplicationDomainId,
-    toApplicationDomainId,
-  }: {
+  public copyLastestVersionById_IfNotExists = async ({xContextId, schemaVersionId, fromApplicationDomainId, toApplicationDomainId }: {
     xContextId?: string;
     schemaVersionId: string;
     fromApplicationDomainId: string;
@@ -319,7 +315,6 @@ export class EpSdkSchemaVersionsServiceClass extends EpSdkVersionServiceClass {
   }): Promise<SchemaVersion> => {
     const funcName = "copyLastestVersionById_IfNotExists";
     const logName = `${EpSdkSchemaVersionsServiceClass.name}.${funcName}()`;
-
     // get the source schema version
     const fromSchemaVersionResponse: SchemaVersionResponse = await SchemasService.getSchemaVersion({
       xContextId,
@@ -365,6 +360,7 @@ export class EpSdkSchemaVersionsServiceClass extends EpSdkVersionServiceClass {
     // add the source application domain id to custom attribute
     await EpSdkSchemasService.setCustomAttributes({
       xContextId: xContextId,
+      applicationDomainId: toApplicationDomainId,
       schemaId: epSdkSchemaTask_ExecuteReturn.epObjectKeys.epObjectId,
       scope: CustomAttributeDefinition.scope.APPLICATION_DOMAIN,
       epSdkCustomAttributeList: [ 

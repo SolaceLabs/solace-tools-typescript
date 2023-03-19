@@ -46,11 +46,12 @@ export class EpSdkEnumsServiceClass extends EpSdkServiceClass {
    * Sets the custom attributes in the list on the event api product.
    * Creates attribute definitions / adds entity type 'eventApiProduct' if it doesn't exist.
    */
-  public async setCustomAttributes({ xContextId, enumId, epSdkCustomAttributeList, scope}:{
+  public async setCustomAttributes({ xContextId, enumId, epSdkCustomAttributeList, scope, applicationDomainId}:{
     xContextId?: string;
     enumId: string;
     epSdkCustomAttributeList: TEpSdkCustomAttributeList;
     scope?: CustomAttributeDefinition.scope;
+    applicationDomainId?: string;
   }): Promise<TopicAddressEnum> {
     // const funcName = 'setCustomAttributes';
     // const logName = `${EpSdkEnumsServiceClass.name}.${funcName}()`;
@@ -64,6 +65,7 @@ export class EpSdkEnumsServiceClass extends EpSdkServiceClass {
       existingCustomAttributes: topicAddressEnum.customAttributes,
       epSdkCustomAttributeList: epSdkCustomAttributeList,
       epSdkCustomAttributeEntityType: EEpSdkCustomAttributeEntityTypes.ENUM,
+      applicationDomainId: applicationDomainId
       // note: adding scope if not organization currently causes EP to return an internal server error
       // scope: scope
     });

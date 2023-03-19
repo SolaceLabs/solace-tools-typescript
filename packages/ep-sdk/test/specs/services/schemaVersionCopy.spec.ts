@@ -90,34 +90,28 @@ describe(`${scriptName}`, () => {
   before(async () => {
     initializeGlobals();
     TestContext.newItId();
-    const sourceEpSdkApplicationDomainTask_absent =
-      new EpSdkApplicationDomainTask({
-        epSdkTask_TargetState: EEpSdkTask_TargetState.ABSENT,
-        applicationDomainName: SourceApplicationDomainName,
-      });
+    const sourceEpSdkApplicationDomainTask_absent = new EpSdkApplicationDomainTask({
+      epSdkTask_TargetState: EEpSdkTask_TargetState.ABSENT,
+      applicationDomainName: SourceApplicationDomainName,
+    });
     await sourceEpSdkApplicationDomainTask_absent.execute();
     const sourceEpSdkApplicationDomainTask = new EpSdkApplicationDomainTask({
       epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
       applicationDomainName: SourceApplicationDomainName,
     });
-    const sourceEpSdkApplicationDomainTask_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn =
-      await sourceEpSdkApplicationDomainTask.execute();
-    SourceApplicationDomainId =
-      sourceEpSdkApplicationDomainTask_ExecuteReturn.epObject.id;
-    const targetEpSdkApplicationDomainTask_absent =
-      new EpSdkApplicationDomainTask({
-        epSdkTask_TargetState: EEpSdkTask_TargetState.ABSENT,
-        applicationDomainName: TargetApplicationDomainName,
-      });
+    const sourceEpSdkApplicationDomainTask_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn = await sourceEpSdkApplicationDomainTask.execute();
+    SourceApplicationDomainId = sourceEpSdkApplicationDomainTask_ExecuteReturn.epObject.id;
+    const targetEpSdkApplicationDomainTask_absent = new EpSdkApplicationDomainTask({
+      epSdkTask_TargetState: EEpSdkTask_TargetState.ABSENT,
+      applicationDomainName: TargetApplicationDomainName,
+    });
     await targetEpSdkApplicationDomainTask_absent.execute();
     const targetEpSdkApplicationDomainTask = new EpSdkApplicationDomainTask({
       epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
       applicationDomainName: TargetApplicationDomainName,
     });
-    const targetEpSdkApplicationDomainTask_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn =
-      await targetEpSdkApplicationDomainTask.execute();
-    TargetApplicationDomainId =
-      targetEpSdkApplicationDomainTask_ExecuteReturn.epObject.id;
+    const targetEpSdkApplicationDomainTask_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn = await targetEpSdkApplicationDomainTask.execute();
+    TargetApplicationDomainId = targetEpSdkApplicationDomainTask_ExecuteReturn.epObject.id;
   });
 
   beforeEach(() => {
@@ -127,12 +121,8 @@ describe(`${scriptName}`, () => {
   after(async () => {
     TestContext.newItId();
     // delete application domains
-    await EpSdkApplicationDomainsService.deleteById({
-      applicationDomainId: SourceApplicationDomainId,
-    });
-    await EpSdkApplicationDomainsService.deleteById({
-      applicationDomainId: TargetApplicationDomainId,
-    });
+    await EpSdkApplicationDomainsService.deleteById({ applicationDomainId: SourceApplicationDomainId });
+    await EpSdkApplicationDomainsService.deleteById({ applicationDomainId: TargetApplicationDomainId });
   });
 
   it(`${scriptName}: should create source schemas`, async () => {
@@ -146,8 +136,7 @@ describe(`${scriptName}`, () => {
             shared: true,
           },
         });
-        const epSdkSchemaTask_ExecuteReturn: IEpSdkSchemaTask_ExecuteReturn =
-          await epSdkSchemaTask.execute();
+        const epSdkSchemaTask_ExecuteReturn: IEpSdkSchemaTask_ExecuteReturn = await epSdkSchemaTask.execute();
         schemaInfo.sourceSchemaId = epSdkSchemaTask_ExecuteReturn.epObject.id;
         for (const versionInfo of schemaInfo.versionInfoList) {
           const epSdkSchemaVersionTask = new EpSdkSchemaVersionTask({
@@ -162,19 +151,14 @@ describe(`${scriptName}`, () => {
               content: schemaInfo.schemaContent,
             },
           });
-          const epSdkSchemaVersionTask_ExecuteReturn: IEpSdkSchemaVersionTask_ExecuteReturn =
-            await epSdkSchemaVersionTask.execute();
-          versionInfo.schemaVersionId =
-            epSdkSchemaVersionTask_ExecuteReturn.epObject.id;
+          const epSdkSchemaVersionTask_ExecuteReturn: IEpSdkSchemaVersionTask_ExecuteReturn = await epSdkSchemaVersionTask.execute();
+          versionInfo.schemaVersionId = epSdkSchemaVersionTask_ExecuteReturn.epObject.id;
         }
       }
     } catch (e) {
-      if (e instanceof ApiError)
-        expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
-        .to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
-        .true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 
@@ -182,53 +166,41 @@ describe(`${scriptName}`, () => {
     try {
       for (const schemaInfo of SchemaInfoList) {
         // get latest source version
-        const latestSourceSchemaVersion: SchemaVersion =
-          await EpSdkSchemaVersionsService.getLatestVersionForSchemaId({
-            applicationDomainId: SourceApplicationDomainId,
-            schemaId: schemaInfo.sourceSchemaId,
-          });
+        const latestSourceSchemaVersion: SchemaVersion = await EpSdkSchemaVersionsService.getLatestVersionForSchemaId({
+          applicationDomainId: SourceApplicationDomainId,
+          schemaId: schemaInfo.sourceSchemaId,
+        });
         // copy
-        const copiedSchemaVersion: SchemaVersion =
-          await EpSdkSchemaVersionsService.copyLastestVersionById_IfNotExists({
-            schemaVersionId: latestSourceSchemaVersion.id,
-            fromApplicationDomainId: SourceApplicationDomainId,
-            toApplicationDomainId: TargetApplicationDomainId,
-          });
+        const copiedSchemaVersion: SchemaVersion = await EpSdkSchemaVersionsService.copyLastestVersionById_IfNotExists({
+          schemaVersionId: latestSourceSchemaVersion.id,
+          fromApplicationDomainId: SourceApplicationDomainId,
+          toApplicationDomainId: TargetApplicationDomainId,
+        });
         schemaInfo.targetSchemaId = copiedSchemaVersion.schemaId;
         // get latest target version
-        const latestTargetSchemaVersion: SchemaVersion =
-          await EpSdkSchemaVersionsService.getLatestVersionForSchemaId({
-            applicationDomainId: TargetApplicationDomainId,
-            schemaId: copiedSchemaVersion.schemaId,
-          });
+        const latestTargetSchemaVersion: SchemaVersion = await EpSdkSchemaVersionsService.getLatestVersionForSchemaId({
+          applicationDomainId: TargetApplicationDomainId,
+          schemaId: copiedSchemaVersion.schemaId,
+        });
         let message = TestLogger.createLogMessage("source & target", {
           latestSourceSchemaVersion: latestSourceSchemaVersion,
           latestTargetSchemaVersion: latestTargetSchemaVersion,
         });
-        const sourceCompare: Partial<SchemaVersion> = createCompareObject(
-          latestSourceSchemaVersion
-        );
-        const targetCompare: Partial<SchemaVersion> = createCompareObject(
-          latestTargetSchemaVersion
-        );
+        const sourceCompare: Partial<SchemaVersion> = createCompareObject(latestSourceSchemaVersion );
+        const targetCompare: Partial<SchemaVersion> = createCompareObject(latestTargetSchemaVersion );
         expect(sourceCompare, message).to.be.deep.equal(targetCompare);
         message = TestLogger.createLogMessage("copied & latest", {
           copiedSchemaVersion: copiedSchemaVersion,
           latestTargetSchemaVersion: latestTargetSchemaVersion,
         });
-        expect(copiedSchemaVersion, message).to.be.deep.equal(
-          latestTargetSchemaVersion
-        );
+        expect(copiedSchemaVersion, message).to.be.deep.equal(latestTargetSchemaVersion);
         // // DEBUG
         // expect(false, message).to.be.true;
       }
     } catch (e) {
-      if (e instanceof ApiError)
-        expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
-        .to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
-        .true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 
@@ -249,19 +221,14 @@ describe(`${scriptName}`, () => {
               content: schemaInfo.schemaContent,
             },
           });
-          const epSdkSchemaVersionTask_ExecuteReturn: IEpSdkSchemaVersionTask_ExecuteReturn =
-            await epSdkSchemaVersionTask.execute();
-          versionInfo.schemaVersionId =
-            epSdkSchemaVersionTask_ExecuteReturn.epObject.id;
+          const epSdkSchemaVersionTask_ExecuteReturn: IEpSdkSchemaVersionTask_ExecuteReturn = await epSdkSchemaVersionTask.execute();
+          versionInfo.schemaVersionId = epSdkSchemaVersionTask_ExecuteReturn.epObject.id;
         }
       }
     } catch (e) {
-      if (e instanceof ApiError)
-        expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
-        .to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
-        .true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 

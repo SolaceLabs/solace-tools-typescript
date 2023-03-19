@@ -32,11 +32,13 @@ type TEpSdkCustomAttributeDefinitionTask_CompareObject = TEpSdkCustomAttributeDe
 export interface IEpSdkCustomAttributeDefinitionTask_Config
   extends IEpSdkTask_Config {
   attributeName: string;
+  applicationDomainId?: string;
   customAttributeDefinitionObjectSettings: TEpSdkCustomAttributeDefinitionTask_Settings;
 }
 /** @category Tasks */
 export interface IEpSdkCustomAttributeDefinitionTask_Keys extends IEpSdkTask_Keys {
   attributeName: string;
+  applicationDomainId?: string;
 }
 /** @category Tasks */
 export interface IEpSdkCustomAttributeDefinitionTask_GetFuncReturn extends Omit<IEpSdkTask_GetFuncReturn, "epObject"> {
@@ -66,21 +68,17 @@ export interface IEpSdkCustomAttributeDefinitionTask_ExecuteReturn extends Omit<
  * @category Tasks
  */
 export class EpSdkCustomAttributeDefinitionTask extends EpSdkTask {
-  private readonly Empty_IEpSdkCustomAttributeDefinitionTask_GetFuncReturn: IEpSdkCustomAttributeDefinitionTask_GetFuncReturn =
-    {
-      epObjectKeys: this.getDefaultEpObjectKeys(),
-      epObject: undefined,
-      epObjectExists: false,
-    };
-  private readonly Default_TEpSdkCustomAttributeDefinitionTask_Settings: Required<TEpSdkCustomAttributeDefinitionTask_Settings> =
-    {
-      valueType: CustomAttributeDefinition.valueType.STRING,
-      scope: CustomAttributeDefinition.scope.ORGANIZATION,
-      associatedEntityTypes: [],
-    };
-  private getTaskConfig(): IEpSdkCustomAttributeDefinitionTask_Config {
-    return this.epSdkTask_Config as IEpSdkCustomAttributeDefinitionTask_Config;
-  }
+  private readonly Empty_IEpSdkCustomAttributeDefinitionTask_GetFuncReturn: IEpSdkCustomAttributeDefinitionTask_GetFuncReturn = {
+    epObjectKeys: this.getDefaultEpObjectKeys(),
+    epObject: undefined,
+    epObjectExists: false,
+  };
+  private readonly Default_TEpSdkCustomAttributeDefinitionTask_Settings: Required<TEpSdkCustomAttributeDefinitionTask_Settings> = {
+    valueType: CustomAttributeDefinition.valueType.STRING,
+    scope: CustomAttributeDefinition.scope.ORGANIZATION,
+    associatedEntityTypes: [],
+  };
+  private getTaskConfig(): IEpSdkCustomAttributeDefinitionTask_Config { return this.epSdkTask_Config as IEpSdkCustomAttributeDefinitionTask_Config; }
   private createObjectSettings(): Required<TEpSdkCustomAttributeDefinitionTask_Settings> {
     return {
       ...this.Default_TEpSdkCustomAttributeDefinitionTask_Settings,
@@ -102,12 +100,9 @@ export class EpSdkCustomAttributeDefinitionTask extends EpSdkTask {
   protected getEpObjectKeys(epObject: CustomAttributeDefinition | undefined): IEpSdkTask_EpObjectKeys {
     const funcName = "getEpObjectKeys";
     const logName = `${EpSdkCustomAttributeDefinitionTask.name}.${funcName}()`;
-
     if (epObject === undefined) return this.getDefaultEpObjectKeys();
     /* istanbul ignore next */
-    if (epObject.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "epObject.id === undefined", {
-      epObject: epObject,
-    });
+    if (epObject.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "epObject.id === undefined", { epObject: epObject });
     return {
       ...this.getDefaultEpObjectKeys(),
       epObjectId: epObject.id,
@@ -115,8 +110,9 @@ export class EpSdkCustomAttributeDefinitionTask extends EpSdkTask {
   }
 
   protected getTaskKeys(): IEpSdkCustomAttributeDefinitionTask_Keys {
-    return {
-      attributeName: this.getTaskConfig().attributeName,
+    return { 
+      attributeName: this.getTaskConfig().attributeName, 
+      applicationDomainId: this.getTaskConfig().applicationDomainId
     };
   }
 
@@ -131,6 +127,7 @@ export class EpSdkCustomAttributeDefinitionTask extends EpSdkTask {
     const customAttributeDefinition: CustomAttributeDefinition | undefined = await EpSdkCustomAttributeDefinitionsService.getByName({
       xContextId: this.xContextId,
       attributeName: epSdkCustomAttributeDefinitionTask_Keys.attributeName,
+      applicationDomainId: epSdkCustomAttributeDefinitionTask_Keys.applicationDomainId
     });
 
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_API_GET, module: this.constructor.name, details: {
@@ -207,12 +204,19 @@ export class EpSdkCustomAttributeDefinitionTask extends EpSdkTask {
         }),
       };
     }
-
-    const customAttributeDefinitionResponse: CustomAttributeDefinitionResponse = await CustomAttributeDefinitionsService.createCustomAttributeDefinition({
-      xContextId: this.xContextId,
-      requestBody: create,
-    });
-
+    let customAttributeDefinitionResponse: CustomAttributeDefinitionResponse;
+    if(this.getTaskConfig().applicationDomainId) {
+      customAttributeDefinitionResponse = await CustomAttributeDefinitionsService.createCustomAttributeDefinitionByApplicationDomain({
+        xContextId: this.xContextId,
+        applicationDomainId: this.getTaskConfig().applicationDomainId,
+        requestBody: create,
+      });  
+    } else {
+      customAttributeDefinitionResponse = await CustomAttributeDefinitionsService.createCustomAttributeDefinition({
+        xContextId: this.xContextId,
+        requestBody: create,
+      });  
+    }
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_CREATE, module: this.constructor.name, details: {
       epSdkApplicationTask_Config: this.getTaskConfig(),
       create: create,
@@ -280,12 +284,21 @@ export class EpSdkCustomAttributeDefinitionTask extends EpSdkTask {
         epObjectKeys: this.getEpObjectKeys(wouldBe_EpObject),
       };
     }
-
-    const customAttributeDefinitionResponse: CustomAttributeDefinitionResponse = await CustomAttributeDefinitionsService.updateCustomAttributeDefinition({
-      xContextId: this.xContextId,
-      id: epSdkCustomAttributeDefinitionTask_GetFuncReturn.epObject.id,
-      requestBody: update,
-    });
+    let customAttributeDefinitionResponse: CustomAttributeDefinitionResponse;
+    if(this.getTaskConfig().applicationDomainId) {
+      customAttributeDefinitionResponse = await CustomAttributeDefinitionsService.updateCustomAttributeDefinitionByApplicationDomain({
+        xContextId: this.xContextId,
+        applicationDomainId: this.getTaskConfig().applicationDomainId,
+        customAttributeId: epSdkCustomAttributeDefinitionTask_GetFuncReturn.epObject.id,
+        requestBody: update,
+      });  
+    } else {
+      customAttributeDefinitionResponse = await CustomAttributeDefinitionsService.updateCustomAttributeDefinition({
+        xContextId: this.xContextId,
+        id: epSdkCustomAttributeDefinitionTask_GetFuncReturn.epObject.id,
+        requestBody: update,
+      });  
+    }
 
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_UPDATE, module: this.constructor.name, details: {
       epSdkApplicationDomainTask_Config: this.getTaskConfig(),
@@ -324,17 +337,14 @@ export class EpSdkCustomAttributeDefinitionTask extends EpSdkTask {
       return {
         epSdkTask_Action: this.getDeleteFuncAction(),
         epObject: epSdkCustomAttributeDefinitionTask_GetFuncReturn.epObject,
-        epObjectKeys: this.getEpObjectKeys(
-          epSdkCustomAttributeDefinitionTask_GetFuncReturn.epObject
-        ),
+        epObjectKeys: this.getEpObjectKeys(epSdkCustomAttributeDefinitionTask_GetFuncReturn.epObject),
       };
     }
-
     const customAttributeDefinition: CustomAttributeDefinition = await EpSdkCustomAttributeDefinitionsService.deleteById({
       xContextId: this.xContextId,
+      applicationDomainId: this.getTaskConfig().applicationDomainId,
       customAttributeDefinitionId: epSdkCustomAttributeDefinitionTask_GetFuncReturn.epObject.id,
     });
-
     const epSdkCustomAttributeDefinitionTask_DeleteFuncReturn: IEpSdkCustomAttributeDefinitionTask_DeleteFuncReturn = {
       epSdkTask_Action: this.getDeleteFuncAction(),
       epObject: customAttributeDefinition,

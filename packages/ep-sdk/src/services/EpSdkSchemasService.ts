@@ -57,10 +57,11 @@ export class EpSdkSchemasServiceClass extends EpSdkServiceClass {
    * Sets the custom attributes in the list on the event api product.
    * Creates attribute definitions / adds entity type 'eventApiProduct' if it doesn't exist.
    */
-  public async setCustomAttributes({ xContextId, schemaId, epSdkCustomAttributeList, scope}:{
+  public async setCustomAttributes({ xContextId, schemaId, epSdkCustomAttributeList, scope, applicationDomainId }:{
     xContextId?: string;
     schemaId: string;
     epSdkCustomAttributeList: TEpSdkCustomAttributeList;
+    applicationDomainId?: string;
     scope?: CustomAttributeDefinition.scope;
   }): Promise<SchemaObject> {
     const schemaObject: SchemaObject = await this.getById({
@@ -73,6 +74,7 @@ export class EpSdkSchemasServiceClass extends EpSdkServiceClass {
       existingCustomAttributes: schemaObject.customAttributes,
       epSdkCustomAttributeList: epSdkCustomAttributeList,
       epSdkCustomAttributeEntityType: EEpSdkCustomAttributeEntityTypes.SCHEMA_OBJECT,
+      applicationDomainId: applicationDomainId,
       // note: adding scope if not organization currently causes EP to return an internal server error
       // scope: scope
     });

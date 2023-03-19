@@ -63,11 +63,12 @@ export class EpSdkEpEventsServiceClass extends EpSdkServiceClass {
    * @param param0 
    * @returns 
    */
-  public async setCustomAttributes({ xContextId, eventId, epSdkCustomAttributeList, scope}:{
+  public async setCustomAttributes({ xContextId, eventId, epSdkCustomAttributeList, scope, applicationDomainId }:{
     xContextId?: string;
     eventId: string;
     epSdkCustomAttributeList: TEpSdkCustomAttributeList;
     scope?: CustomAttributeDefinition.scope;
+    applicationDomainId?: string;
   }): Promise<EpSdkEvent> {
     const epSdkEvent: EpSdkEvent = await this.getById({
       xContextId,
@@ -79,6 +80,7 @@ export class EpSdkEpEventsServiceClass extends EpSdkServiceClass {
       existingCustomAttributes: epSdkEvent.customAttributes,
       epSdkCustomAttributeList: epSdkCustomAttributeList,
       epSdkCustomAttributeEntityType: EEpSdkCustomAttributeEntityTypes.EVENT,
+      applicationDomainId: applicationDomainId,
       // note: adding scope if not organization currently causes EP to return an internal server error
       // scope: scope
     });
