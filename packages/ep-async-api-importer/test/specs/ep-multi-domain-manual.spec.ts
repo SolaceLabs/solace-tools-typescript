@@ -133,6 +133,7 @@ describe(`${scriptName}`, () => {
       CliConfig.getCliImporterManagerOptions().asyncApiFileList = [Start_EventApiAsyncApiSpecFile];
       CliConfig.getCliImporterManagerOptions().cliImporterManagerMode = ECliImporterManagerMode.RELEASE_MODE;
       CliConfig.getCliImporterManagerOptions().applicationDomainName = undefined;
+      CliConfig.getCliImporterManagerOptions().assetApplicationDomainName = undefined;    
       // // DEBUG
       // CliConfig.getCliImporterManagerOptions().cliImporterManagerMode = ECliImporterManagerMode.TEST_MODE_KEEP;
       CliConfig.getCliImporterManagerOptions().createApiApplication = false;

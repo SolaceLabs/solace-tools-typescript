@@ -474,6 +474,8 @@ describe(`${scriptName}`, () => {
       CliConfig.getCliImporterManagerOptions().asyncApiFileList = [AppAsyncApiSpecFileNameJson];
       CliConfig.getCliImporterManagerOptions().cliImporterManagerMode = ECliImporterManagerMode.RELEASE_MODE;
       CliConfig.getCliImporterManagerOptions().cliTestSetupDomainsForApis = true;
+      CliConfig.getCliImporterManagerOptions().applicationDomainName = undefined;
+      CliConfig.getCliImporterManagerOptions().assetApplicationDomainName = undefined;    
       // CliConfig.getCliImporterManagerOptions().runId = scriptName;
       // // DEBUG
       // CliConfig.getCliImporterManagerOptions().cliImporterManagerMode = ECliImporterManagerMode.TEST_MODE_KEEP;
