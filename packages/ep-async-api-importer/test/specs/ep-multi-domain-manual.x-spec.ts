@@ -63,12 +63,16 @@ const absentApplicationDomains = async() => {
   // remove them backwards
   for(let i=TestApplicationDomainNames.length -1; i>=0; i--) {
     try {
+      // console.log(`deleting TestApplicationDomainNames[${i}]="${TestApplicationDomainNames[i]}"`);
       const task = new EpSdkApplicationDomainTask({
         applicationDomainName: TestApplicationDomainNames[i],
         epSdkTask_TargetState: EEpSdkTask_TargetState.ABSENT
       });
       const task_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn = await task.execute('xContextId');
-    } catch(e) {}
+      // console.log(`deleted TestApplicationDomainNames[${i}]="${TestApplicationDomainNames[i]}"`);
+    } catch(e) {
+      console.log(`e=${JSON.stringify(e, null, 2)}`);
+    }
   }
 }
 
@@ -98,6 +102,7 @@ describe(`${scriptName}`, () => {
       for(const [key, epAsyncApiChannelDocument] of epAsyncApiChannelDocumentMap) {
         const epAsyncApiChannelParameterDocumentMap: T_EpAsyncApiChannelParameterDocumentMap = epAsyncApiChannelDocument.getEpAsyncApiChannelParameterDocumentMap();
         for(const [key, epAsyncApiChannelParameterDocument] of epAsyncApiChannelParameterDocumentMap) {
+          expect(epAsyncApiChannelParameterDocument.getEpApplicationDomainName(), `failed for key=${key}`).to.not.be.undefined;  
           TestApplicationDomainNames.push(epAsyncApiChannelParameterDocument.getEpApplicationDomainName());
         }
         const epAsynApiChannelPublishOperation = epAsyncApiChannelDocument.getEpAsyncApiChannelPublishOperation();
@@ -113,12 +118,9 @@ describe(`${scriptName}`, () => {
           TestApplicationDomainNames.push(epAsyncApiSubscribeMessageDocument.getPayloadSchemaEpApplicationDomainName());  
         }
       }
-      try {
-        await absentApplicationDomains();
-      } catch(e) {}
-      try {
-        await absentApplicationDomains();
-      } catch(e) {}
+      // console.log(`TestApplicationDomainNames=${JSON.stringify(TestApplicationDomainNames, null, 2)}`);
+      try { await absentApplicationDomains(); } catch(e) { console.log(`e=${JSON.stringify(e, null, 2)}`)}
+      try { await absentApplicationDomains(); } catch(e) { console.log(`e=${JSON.stringify(e, null, 2)}`)}
     } catch (e) {
       if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
       expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;

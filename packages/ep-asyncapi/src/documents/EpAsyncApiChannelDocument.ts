@@ -336,7 +336,7 @@ export class EpAsyncApiChannelDocument {
     const paramRecords: Record<string, ChannelParameter> = this.asyncApiChannel.parameters();
     const epAsyncApiChannelParameterDocumentMap: T_EpAsyncApiChannelParameterDocumentMap = new Map<string, EpAsyncApiChannelParameterDocument>();
     for (const [name, parameter] of Object.entries(paramRecords)) {
-      const epAsyncApiChannelParameterDocument = new EpAsyncApiChannelParameterDocument(name, parameter);
+      const epAsyncApiChannelParameterDocument = new EpAsyncApiChannelParameterDocument(this.epAsyncApiDocument, name, parameter);
       epAsyncApiChannelParameterDocumentMap.set(name, epAsyncApiChannelParameterDocument);
     }
     return epAsyncApiChannelParameterDocumentMap;

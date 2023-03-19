@@ -59,3 +59,18 @@ Import NewApplication Async Api
 
   ep-async-api-importer -fp 'NewApplication.yaml'
 
+
+.. warning::
+
+  The importer does not currently check if any of the previously existing object (events, schemas, enums), e.g. ExistingEvent_1 or ExistingEvent_2, have been modified
+  and will create new versions of the objects in their respective application domains.
+
+  You should avoid modifying existing objects - most likely other Applications or Event Apis make use of them and will not be updated to the new version.
+
+
+.. note::
+
+  If no specific application domain name is specified on the object, the importer defaults the application domain name:
+
+  - assets application domain name, if specified, otherwise
+  - api application domain name

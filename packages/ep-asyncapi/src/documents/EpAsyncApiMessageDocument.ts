@@ -155,6 +155,7 @@ export class EpAsyncApiMessageDocument {
       const name = this.asyncApiMessage.extension(EpGeneralExtensions.xEpApplicationDomainName);
       if(name && name.length > 0) return name;
     }
+    return this.epAsyncApiDocument.getAssetsApplicationDomainName();
   }
 
   // public getMessageEpApplicationDomainId(): string | undefined {
@@ -202,11 +203,12 @@ export class EpAsyncApiMessageDocument {
 
   public getPayloadSchemaEpApplicationDomainName(): string | undefined {
     const schema: Schema = this.asyncApiMessage.payload();
-    if(!schema) return this.getMessageEpApplicationDomainName();
+    if(!schema) return this.epAsyncApiDocument.getAssetsApplicationDomainName();
     if(schema.hasExtension(EpGeneralExtensions.xEpApplicationDomainName)) {
       const name = schema.extension(EpGeneralExtensions.xEpApplicationDomainName);
       if(name && name.length > 0) return name;
     }
+    return this.epAsyncApiDocument.getAssetsApplicationDomainName();
   }
 
   // public getPayloadSchemaEpApplicationDomainId(): string | undefined {
