@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Example 2: Exporting &amp; Importing Api with Assets in various Application Domains &mdash; Solace Tools r0.0.2 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/contentui.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/contentui.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Concepts" href="../concepts.html" />
+    <link rel="prev" title="Example 1: Importing 2 Apis" href="example-1.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Solace Tools
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Packages</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../ep-openapi/index.html">Solace Event Portal OpenAPI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ep-apim-openapi/index.html">Solace Event Portal APIM OpenAPI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sempv2-config-openapi/index.html">Solace SempV2 Config OpenAPI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ep-asyncapi/index.html">Solace Event Portal AsyncAPI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ep-sdk/index.html">Solace Event Portal SDK</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Solace Event Portal Async API Importer</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../install.html">Install</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../usage.html">Usage</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../examples.html">Examples</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="example-1.html">Example 1: Importing 2 Apis</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Example 2: Exporting &amp; Importing Api with Assets in various Application Domains</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#scenario">Scenario</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#download-newapplication-async-api">Download NewApplication Async Api</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#modify-newapplication-async-api">Modify NewApplication Async Api</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#import-newapplication-async-api">Import NewApplication Async Api</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../concepts.html">Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../apis.html">Async Apis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#resources">Resources</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../reference-doc/tsdocs.html">TypeScript TypeDoc</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Solace Tools</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Solace Event Portal Async API Importer</a></li>
+          <li class="breadcrumb-item"><a href="../examples.html">Examples</a></li>
+      <li class="breadcrumb-item active">Example 2: Exporting &amp; Importing Api with Assets in various Application Domains</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/ep-async-api-importer/examples-content/example-2.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="example-2-exporting-importing-api-with-assets-in-various-application-domains">
+<span id="examples-content-example-2"></span><h1>Example 2: Exporting &amp; Importing Api with Assets in various Application Domains<a class="headerlink" href="#example-2-exporting-importing-api-with-assets-in-various-application-domains" title="Permalink to this heading"></a></h1>
+<div class="section" id="scenario">
+<h2>Scenario<a class="headerlink" href="#scenario" title="Permalink to this heading"></a></h2>
+<p>Develop a new Application Service that:</p>
+<ul class="simple">
+<li><p>consumes 2 existing Events provided by other systems</p></li>
+<li><p>produces 1 new Event</p></li>
+</ul>
+<p>The 2 existing Events are modelled in separate application domains and shared:</p>
+<ul class="simple">
+<li><p>ExistingEvent_1 in ApplicationDomain_1</p></li>
+<li><p>ExistingEvent_2 in ApplicationDomain_2</p></li>
+</ul>
+<p>The application domain for the new Application (NewApplication) &amp; new Event (NewEvent) is:</p>
+<ul class="simple">
+<li><p>NewApplicationDomain</p></li>
+</ul>
+<p>Model NewEvent in NewApplicationDomain.</p>
+<p>Model NewApplication in NewApplicationDomain:</p>
+<ul class="simple">
+<li><p>subscribe to ExistingEvent_1</p></li>
+<li><p>subscribe to ExistingEvent_2</p></li>
+<li><p>publish NewEvent</p></li>
+</ul>
+</div>
+<div class="section" id="download-newapplication-async-api">
+<h2>Download NewApplication Async Api<a class="headerlink" href="#download-newapplication-async-api" title="Permalink to this heading"></a></h2>
+<p>File: NewApplication.yaml</p>
+<p>The spec contains EP Extensions detailing which application domains the various objects are modelled in:</p>
+<ul class="simple">
+<li><p>enums: parameters</p></li>
+<li><p>schemas: schemas</p></li>
+<li><p>events: messages</p></li>
+</ul>
+</div>
+<div class="section" id="modify-newapplication-async-api">
+<h2>Modify NewApplication Async Api<a class="headerlink" href="#modify-newapplication-async-api" title="Permalink to this heading"></a></h2>
+<p>Modify NewEvent:</p>
+<ul class="simple">
+<li><p>topic</p></li>
+<li><p>schema</p></li>
+<li><p>enum(s)</p></li>
+</ul>
+</div>
+<div class="section" id="import-newapplication-async-api">
+<h2>Import NewApplication Async Api<a class="headerlink" href="#import-newapplication-async-api" title="Permalink to this heading"></a></h2>
+<p>You can download the example spec <a class="reference download internal" download="" href="../../_downloads/e9a67e71f1ee16d5850cca31030e9570/NewApplication.yaml"><code class="xref download docutils literal notranslate"><span class="pre">here</span></code></a>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">CLI_SOLACE_CLOUD_TOKEN</span><span class="o">={</span>your<span class="w"> </span>token<span class="o">}</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">CLI_IMPORT_CREATE_API_APPLICATION</span><span class="o">=</span><span class="nb">true</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">CLI_IMPORT_CREATE_API_EVENT_API</span><span class="o">=</span><span class="nb">false</span>
+
+ep-async-api-importer<span class="w"> </span>-fp<span class="w"> </span><span class="s1">&#39;NewApplication.yaml&#39;</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The importer does not currently check if any of the previously existing object (events, schemas, enums), e.g. ExistingEvent_1 or ExistingEvent_2, have been modified
+and will create new versions of the objects in their respective application domains.</p>
+<p>You should avoid modifying existing objects - most likely other Applications or Event Apis make use of them and will not be updated to the new version.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Validation of apis and their objects (events, schemas, enums) assumes globally unique names, even if they use different application domains.
+Ensure all your objects have unique names.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If no specific application domain name is specified on the object, the importer defaults the application domain name</p>
+<ul class="simple">
+<li><p>to the assets application domain name, if specified, otherwise</p></li>
+<li><p>to api application domain name</p></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="example-1.html" class="btn btn-neutral float-left" title="Example 1: Importing 2 Apis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../concepts.html" class="btn btn-neutral float-right" title="Concepts" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Solace Corporation, Ricardo Gomez-Ulmke, &lt;ricardo.gomez-ulmke@solace.com&gt;.
+      <span class="lastupdated">Last updated on 20 Mar 2023 at 09:39.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

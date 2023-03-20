@@ -7,3 +7,4 @@ Examples
   :maxdepth: 1
 
   examples-content/example-1
+  examples-content/example-2
