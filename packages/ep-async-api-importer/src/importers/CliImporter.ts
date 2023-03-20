@@ -117,6 +117,7 @@ export abstract class CliImporter {
     const channelDocumentMap = epAsyncApiDocument.getEpAsyncApiChannelDocumentMap();
     for(const [key, epAsyncApiChannelDocument] of channelDocumentMap) {
       key;
+      const epEventName: string = epAsyncApiChannelDocument.getEpEventName();
       const epAsynApiChannelPublishOperation = epAsyncApiChannelDocument.getEpAsyncApiChannelPublishOperation();
       if(epAsynApiChannelPublishOperation) {
         const epAsyncApiMessageDocument = epAsynApiChannelPublishOperation.getEpAsyncApiMessageDocument();
@@ -124,12 +125,20 @@ export abstract class CliImporter {
           assetApplicationDomainId: applicationDomainId,
           overrideAssetApplicationDomainName: epAsyncApiMessageDocument.getMessageEpApplicationDomainName()
         });
+        // console.log(`${logName}: ************************************`);
+        // const log = {
+        //   runMode: this.runMode,
+        //   eventApplicationDomainId,
+        //   epEventName,
+        // }
+        // console.log(`${logName}: log=${JSON.stringify(log, null, 2)}`);
+        // console.log(`${logName}: ************************************`);
         const eventVersion: EventVersion | undefined = await EpSdkEpEventVersionsService.getLatestVersionForEventName({
-          eventName: epAsyncApiMessageDocument.getMessageName(),
+          eventName: epEventName,
           applicationDomainId: eventApplicationDomainId,
         });
         if (eventVersion === undefined) throw new CliImporterError(logName, "eventVersion === undefined", {
-          eventName: epAsyncApiMessageDocument.getMessageName(),
+          eventName: epEventName,
           applicationDomainId: eventApplicationDomainId,
         });
         /* istanbul ignore next */
@@ -146,11 +155,11 @@ export abstract class CliImporter {
           overrideAssetApplicationDomainName: epAsyncApiMessageDocument.getMessageEpApplicationDomainName()
         });
         const eventVersion: EventVersion | undefined = await EpSdkEpEventVersionsService.getLatestVersionForEventName({
-          eventName: epAsyncApiMessageDocument.getMessageName(),
+          eventName: epEventName,
           applicationDomainId: eventApplicationDomainId,
         });
         if (eventVersion === undefined) throw new CliImporterError(logName, "eventVersion === undefined", {
-          eventName: epAsyncApiMessageDocument.getMessageName(),
+          eventName: epEventName,
           applicationDomainId: eventApplicationDomainId,
         });
         /* istanbul ignore next */
@@ -172,11 +181,21 @@ export abstract class CliImporter {
   }): Promise<string> => {
     const funcName = "getAssetApplicationDomainId";
     const logName = `${CliImporter.name}.${funcName}()`;
-    let appDomainId: string = assetApplicationDomainId;
+
+    // console.log(`${logName}: ************************************`);
+    // const log = {
+    //   runMode: this.runMode,
+    //   assetApplicationDomainId,
+    //   overrideAssetApplicationDomainName: overrideAssetApplicationDomainName ? overrideAssetApplicationDomainName : 'undefined'
+    // }
+    // console.log(`${logName}: log=${JSON.stringify(log, null, 2)}`);
+    // console.log(`${logName}: ************************************`);
+    
+
     if(this.runMode !== ECliRunContext_RunMode.RELEASE) return assetApplicationDomainId;
     if(overrideAssetApplicationDomainName) {
       try {
-        appDomainId = await this.get_ApplicationDomainId(overrideAssetApplicationDomainName);
+        return await this.get_ApplicationDomainId(overrideAssetApplicationDomainName);
       } catch(e) {
         if(e instanceof CliInternalCodeInconsistencyError) {
           // create it
@@ -189,13 +208,13 @@ export abstract class CliImporter {
           if(epSdkApplicationDomainTask_ExecuteReturn.epObject.id === undefined) throw new CliEPApiContentError(logName, "epSdkApplicationDomainTask_ExecuteReturn.epObject.id === undefined", {
             epSdkApplicationDomainTask_ExecuteReturn: epSdkApplicationDomainTask_ExecuteReturn,
           });
-          appDomainId = epSdkApplicationDomainTask_ExecuteReturn.epObject.id
+          return epSdkApplicationDomainTask_ExecuteReturn.epObject.id
         } else {
           throw e;
         }
       }
     }
-    return appDomainId;
+    return assetApplicationDomainId;
   }
 
   protected get_ApplicationDomainId = async (applicationDomainName: string): Promise<string> => {
