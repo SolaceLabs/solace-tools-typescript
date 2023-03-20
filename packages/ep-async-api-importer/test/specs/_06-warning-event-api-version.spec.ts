@@ -47,10 +47,11 @@ const initializeGlobals = () => {
   );
   // set test specific importer options
   CliConfig.getCliImporterManagerOptions().asyncApiFileList = FileList;
-  CliConfig.getCliImporterManagerOptions().cliImporterManagerMode =
-    ECliImporterManagerMode.RELEASE_MODE;
+  CliConfig.getCliImporterManagerOptions().cliImporterManagerMode = ECliImporterManagerMode.RELEASE_MODE;
   CliConfig.getCliImporterManagerOptions().cliTestSetupDomainsForApis = false;
   CliConfig.getCliImporterManagerOptions().createApiApplication = true;
+  CliConfig.getCliImporterManagerOptions().applicationDomainName = undefined;
+  CliConfig.getCliImporterManagerOptions().assetApplicationDomainName = undefined;    
 };
 
 describe(`${scriptName}`, () => {
@@ -69,12 +70,8 @@ describe(`${scriptName}`, () => {
         });
       const xvoid: void = await TestService.absent_ApplicationDomains(false);
     } catch (e) {
-      expect(
-        e instanceof CliError,
-        TestLogger.createNotCliErrorMesssage(e.message)
-      ).to.be.true;
-      expect(false, TestLogger.createTestFailMessageWithCliError("failed", e))
-        .to.be.true;
+      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
+      expect(false, TestLogger.createTestFailMessageWithCliError("failed", e)).to.be.true;
     }
   });
 
@@ -91,13 +88,9 @@ describe(`${scriptName}`, () => {
     } catch (e) {
       err = e;
     } finally {
-      const xvoid: void = await TestService.absent_ApplicationDomains(
-        CliConfig.getCliImporterManagerOptions().cliImporterManagerMode ===
-          ECliImporterManagerMode.TEST_MODE_KEEP
-      );
+      const xvoid: void = await TestService.absent_ApplicationDomains(CliConfig.getCliImporterManagerOptions().cliImporterManagerMode ===ECliImporterManagerMode.TEST_MODE_KEEP);
     }
-    expect(err, TestLogger.createNotCliErrorMesssage(JSON.stringify(err))).to.be
-      .undefined;
+    expect(err, TestLogger.createNotCliErrorMesssage(JSON.stringify(err))).to.be.undefined;
   });
 
   it(`${scriptName}: should import specs`, async () => {

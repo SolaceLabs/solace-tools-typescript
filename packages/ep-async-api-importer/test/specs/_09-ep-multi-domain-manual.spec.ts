@@ -71,7 +71,7 @@ const absentApplicationDomains = async() => {
       const task_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn = await task.execute('xContextId');
       // console.log(`deleted TestApplicationDomainNames[${i}]="${TestApplicationDomainNames[i]}"`);
     } catch(e) {
-      console.log(`e=${JSON.stringify(e, null, 2)}`);
+      // console.log(`scriptName=${scriptName}, e=${JSON.stringify(e, null, 2)}`);
     }
   }
 }
