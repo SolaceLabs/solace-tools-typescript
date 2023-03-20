@@ -52,23 +52,19 @@ export interface IEpSdkEventApiVersionTask_Keys extends IEpSdkTask_Keys {
   eventApiId: string;
 }
 /** @category Tasks */
-export interface IEpSdkEventApiVersionTask_GetFuncReturn
-  extends Omit<IEpSdkTask_GetFuncReturn, "epObject"> {
+export interface IEpSdkEventApiVersionTask_GetFuncReturn extends Omit<IEpSdkTask_GetFuncReturn, "epObject"> {
   epObject: EventApiVersion | undefined;
 }
 /** @category Tasks */
-export interface IEpSdkEventApiVersionTask_CreateFuncReturn
-  extends Omit<IEpSdkTask_CreateFuncReturn, "epObject"> {
+export interface IEpSdkEventApiVersionTask_CreateFuncReturn extends Omit<IEpSdkTask_CreateFuncReturn, "epObject"> {
   epObject: EventApiVersion;
 }
 /** @category Tasks */
-export interface IEpSdkEventApiVersionTask_UpdateFuncReturn
-  extends Omit<IEpSdkTask_UpdateFuncReturn, "epObject"> {
+export interface IEpSdkEventApiVersionTask_UpdateFuncReturn extends Omit<IEpSdkTask_UpdateFuncReturn, "epObject"> {
   epObject: EventApiVersion;
 }
 /** @category Tasks */
-export interface IEpSdkEventApiVersionTask_ExecuteReturn
-  extends Omit<IEpSdkTask_ExecuteReturn, "epObject"> {
+export interface IEpSdkEventApiVersionTask_ExecuteReturn extends Omit<IEpSdkTask_ExecuteReturn, "epObject"> {
   epObject: EventApiVersion;
 }
 

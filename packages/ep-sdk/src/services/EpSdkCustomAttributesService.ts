@@ -22,12 +22,13 @@ export class EpSdkCustomAttributesServiceClass {
    * Returns full custom attributes including existing & new ones.
    * Ensures any missing definitions are created or their entity types added.
    */
-  public async createCustomAttributesWithNew({ xContextId, existingCustomAttributes, epSdkCustomAttributeList, epSdkCustomAttributeEntityType, scope }:{
+  public async createCustomAttributesWithNew({ xContextId, existingCustomAttributes, epSdkCustomAttributeList, epSdkCustomAttributeEntityType, scope, applicationDomainId }:{
     xContextId?: string;
     existingCustomAttributes?: Array<CustomAttribute>;
     epSdkCustomAttributeList: TEpSdkCustomAttributeList;
     epSdkCustomAttributeEntityType: EEpSdkCustomAttributeEntityTypes;
     scope?: CustomAttributeDefinition.scope;
+    applicationDomainId?: string;
   }): Promise<Array<CustomAttribute>> {
     const funcName = 'createCustomAttributesWithNew';
     const logName = `${EpSdkCustomAttributesServiceClass.name}.${funcName}()`;
@@ -44,6 +45,7 @@ export class EpSdkCustomAttributesServiceClass {
       const epSdkCustomAttributeDefinitionTask = new EpSdkCustomAttributeDefinitionTask({
         epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
         attributeName: epSdkCustomAttribute.name,
+        applicationDomainId: applicationDomainId,
         customAttributeDefinitionObjectSettings: {
           associatedEntityTypes: associatedEntityTypes,
           scope: scope ? scope : CustomAttributeDefinition.scope.ORGANIZATION

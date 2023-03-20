@@ -72,7 +72,8 @@ let SchemaVersion_1_Id: string | undefined;
 let Schema_2_Name: string;
 let Schema_2_Id: string | undefined;
 let SchemaVersion_2_Id: string | undefined;
-const SchemaContent = `{
+const SchemaContent = `
+{
   "description": "Generic message header.",
   "type": "object",
   "properties": {
@@ -95,7 +96,8 @@ const SchemaContent = `{
     "transactionId",
     "storeId"
   ]
-}`;
+}
+`;
 
 let Enum_1_Name: string;
 let Enum_1_Id: string | undefined;
@@ -203,7 +205,7 @@ describe(`${scriptName}`, () => {
         schemaVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
           displayName: `${Schema_1_Name} displayName`,
-          // description: 'Schema_1_Id',
+          description: `${Schema_1_Name} description`,
           content: JSON.stringify(JSON.parse(SchemaContent)),
         },
       });
@@ -229,7 +231,7 @@ describe(`${scriptName}`, () => {
         schemaVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
           displayName: `${Schema_2_Name} displayName`,
-          // description: 'Schema_2_Id',
+          description: `${Schema_2_Name} description`,
           content: JSON.stringify(JSON.parse(SchemaContent)),
         },
       });
@@ -262,6 +264,7 @@ describe(`${scriptName}`, () => {
         enumVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
           displayName: `${Enum_1_Name} displayName`,
+          description: `${Enum_1_Name} description`,
         },
         enumValues: EnumValues
       });
@@ -286,6 +289,7 @@ describe(`${scriptName}`, () => {
         enumVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
           displayName: `${Enum_2_Name} displayName`,
+          description: `${Enum_2_Name} description`,
         },
         enumValues: EnumValues
       });
@@ -470,6 +474,8 @@ describe(`${scriptName}`, () => {
       CliConfig.getCliImporterManagerOptions().asyncApiFileList = [AppAsyncApiSpecFileNameJson];
       CliConfig.getCliImporterManagerOptions().cliImporterManagerMode = ECliImporterManagerMode.RELEASE_MODE;
       CliConfig.getCliImporterManagerOptions().cliTestSetupDomainsForApis = true;
+      CliConfig.getCliImporterManagerOptions().applicationDomainName = undefined;
+      CliConfig.getCliImporterManagerOptions().assetApplicationDomainName = undefined;    
       // CliConfig.getCliImporterManagerOptions().runId = scriptName;
       // // DEBUG
       // CliConfig.getCliImporterManagerOptions().cliImporterManagerMode = ECliImporterManagerMode.TEST_MODE_KEEP;

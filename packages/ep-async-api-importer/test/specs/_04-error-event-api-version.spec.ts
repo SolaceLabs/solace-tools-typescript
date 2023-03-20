@@ -1,19 +1,18 @@
 import "mocha";
 import { expect } from "chai";
 import path from "path";
-import { EpAsyncApiDocument } from "@solace-labs/ep-asyncapi";
-import {
-  EEpSdk_VersionStrategy,
-  EpSdkApplicationDomainsService,
-  EpSdkApplicationVersionsService,
-  EpSdkEventApiVersionsService,
-  EpSdkSemVerUtils,
-} from "@solace-labs/ep-sdk";
 import {
   ApplicationDomain,
-  ApplicationVersion,
   EventApiVersion,
 } from "@solace-labs/ep-openapi-node";
+import { EpAsyncApiDocument } from "@solace-labs/ep-asyncapi";
+import {
+  EEpSdkTask_Action,
+  EpSdkApplicationDomainsService,
+  EpSdkEventApiVersionsService,
+  EpSdkSemVerUtils,
+  EEpSdk_VersionStrategy,
+} from "@solace-labs/ep-sdk";
 import { TestContext } from "@internal/tools/src";
 import {
   TestConfig,
@@ -24,12 +23,14 @@ import {
 import {
   CliConfig,
   CliError,
+  CliImporterTestRunAssetsInconsistencyError,
   CliRunSummary,
+  ECliRunSummary_Type,
   ICliRunSummary_Base,
+  ICliRunSummary_Task_VersionObject,
   CliImporterManager,
   ECliImporterManagerMode,
   CliUtils,
-  ICliImportSummary,
 } from "../../src/cli-components";
 
 const scriptName: string = path.basename(__filename);
@@ -47,16 +48,18 @@ const initializeGlobals = () => {
   );
   // set test specific importer options
   CliConfig.getCliImporterManagerOptions().asyncApiFileList = FileList;
-  CliConfig.getCliImporterManagerOptions().cliImporterManagerMode =
-    ECliImporterManagerMode.RELEASE_MODE;
-  CliConfig.getCliImporterManagerOptions().cliTestSetupDomainsForApis = false;
-  CliConfig.getCliImporterManagerOptions().createApiApplication = true;
+  CliConfig.getCliImporterManagerOptions().cliImporterManagerMode = ECliImporterManagerMode.RELEASE_MODE;
+  CliConfig.getCliImporterManagerOptions().applicationDomainName = undefined;
+  CliConfig.getCliImporterManagerOptions().assetApplicationDomainName = undefined;
+  CliConfig.getCliImporterManagerOptions().cliTestSetupDomainsForApis = true;
+  CliConfig.getCliImporterManagerOptions().createApiApplication = false;
 };
 
 describe(`${scriptName}`, () => {
   before(async () => {
     TestContext.newItId();
     initializeGlobals();
+    //parse all specs
     try {
       const testApiSpecRecordList: Array<TTestApiSpecRecord> =
         await TestService.createTestApiSpecRecordList({
@@ -64,9 +67,10 @@ describe(`${scriptName}`, () => {
           overrideApplicationDomainName: CliConfig.getCliImporterManagerOptions().applicationDomainName,
           overrideAssetApplicationDomainName: CliConfig.getCliImporterManagerOptions().assetApplicationDomainName,
           overrideBrokerType: CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_BrokerType,
-          overrideChannelDelimiter: CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_ChannelDelimiter, 
-          validateBestPractices: CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliValidateApiSpecBestPractices,   
+          overrideChannelDelimiter: CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_ChannelDelimiter,  
+          validateBestPractices: CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliValidateApiSpecBestPractices
         });
+      // ensure all app domains are absent
       const xvoid: void = await TestService.absent_ApplicationDomains(false);
     } catch (e) {
       expect(
@@ -86,6 +90,7 @@ describe(`${scriptName}`, () => {
     TestContext.newItId();
     let err: Error | undefined = undefined;
     try {
+      // test ep assets & versions are correctly imported as in epAsyncApiDocument
       const pass: boolean = await TestService.checkAssetsCreatedAsExpected();
       expect(pass, `${scriptName}: AFTER checks not passed`).to.be.true;
     } catch (e) {
@@ -120,7 +125,7 @@ describe(`${scriptName}`, () => {
     }
   });
 
-  it(`${scriptName}: should create new event api version`, async () => {
+  it(`${scriptName}: should create new version`, async () => {
     try {
       const testApiSpecRecordList: Array<TTestApiSpecRecord> =
         TestService.getTestApiSpecRecordList();
@@ -177,13 +182,6 @@ describe(`${scriptName}`, () => {
         },
         targetLifecycleStateId: latestEventApiVersion.stateId,
       });
-      // const newEventApiVersion: EventApiVersion = await EpSdkEventApiVersionsService.getLatestVersionForEventApiId({ applicationDomainId: applicationDomainId, eventApiId: eventApiId });
-      // expect(newEventApiVersion.version, TestLogger.createLogMessage('newEventApiVersion.version !== newVersionString', {
-      //   newEventApiVersion: newEventApiVersion,
-      //   newVersionString: newVersionString
-      // })).to.eq(newVersionString);
-      // DEBUG
-      // expect(false, JSON.stringify(cliRunSummaryList, null, 2)).to.be.true;
     } catch (e) {
       expect(
         e instanceof CliError,
@@ -194,97 +192,66 @@ describe(`${scriptName}`, () => {
     }
   });
 
-  it(`${scriptName}: should create new application version`, async () => {
-    try {
-      const testApiSpecRecordList: Array<TTestApiSpecRecord> =
-        TestService.getTestApiSpecRecordList();
-      expect(
-        testApiSpecRecordList.length,
-        TestLogger.createLogMessage(
-          "testApiSpecRecordList.length !== 1",
-          testApiSpecRecordList
-        )
-      ).to.eq(1);
-      const epAsyncApiDocument: EpAsyncApiDocument =
-        testApiSpecRecordList[0].epAsyncApiDocument;
-      // get latest version
-      const applicationDomainName =
-        epAsyncApiDocument.getApplicationDomainName();
-      const applicationDomain: ApplicationDomain | undefined =
-        await EpSdkApplicationDomainsService.getByName({
-          applicationDomainName: applicationDomainName,
-        });
-      expect(
-        applicationDomain,
-        TestLogger.createLogMessage("applicationDomain undefined", {
-          applicationDomainName: applicationDomainName,
-        })
-      ).not.to.be.undefined;
-      const applicationDomainId = applicationDomain.id;
-      const applicationName = epAsyncApiDocument.getTitle();
-      const latestApplicationVersion: ApplicationVersion =
-        await EpSdkApplicationVersionsService.getLatestVersionForApplicationName(
-          {
-            applicationDomainId: applicationDomainId,
-            applicationName: applicationName,
-          }
-        );
-      expect(
-        latestApplicationVersion,
-        TestLogger.createLogMessage("latestApplicationVersion undefined", {
-          applicationDomainId: applicationDomainId,
-          applicationName: applicationName,
-        })
-      ).not.to.be.undefined;
-      // create a new version
-      const applicationId = latestApplicationVersion.applicationId;
-      const latestVersionString = latestApplicationVersion.version;
-      const newVersionString = EpSdkSemVerUtils.createNextVersionByStrategy({
-        fromVersionString: latestVersionString,
-        strategy: EEpSdk_VersionStrategy.BUMP_MINOR,
-      });
-
-      await EpSdkApplicationVersionsService.createApplicationVersion({
-        applicationDomainId: applicationDomainId,
-        applicationId: applicationId,
-        applicationVersion: {
-          ...latestApplicationVersion,
-          version: newVersionString,
-          description: "new description",
-        },
-        targetLifecycleStateId: latestApplicationVersion.stateId,
-      });
-    } catch (e) {
-      expect(
-        e instanceof CliError,
-        TestLogger.createNotCliErrorMesssage(e.message)
-      ).to.be.true;
-      expect(false, TestLogger.createTestFailMessageWithCliError("failed", e))
-        .to.be.true;
-    }
-  });
-
-  it(`${scriptName}: should import specs: with warnings`, async () => {
+  it(`${scriptName}: should import specs: with error`, async () => {
     try {
       const cliImporter = new CliImporterManager(
         CliConfig.getCliImporterManagerOptions()
       );
-      const xvoid: void = await cliImporter.run();
+      try {
+        const xvoid: void = await cliImporter.run();
+      } catch (e) {
+        expect(
+          e instanceof CliError,
+          TestLogger.createNotCliErrorMesssage(e.message)
+        ).to.be.true;
+        // // DEBUG:
+        // const cliError: CliError = e;
+        // console.log(`>>>>> cliError=\n ${JSON.stringify(cliError, null, 2)}`);
+        expect(
+          e instanceof CliImporterTestRunAssetsInconsistencyError,
+          `e not instance of CliImporterTestRunAssetsInconsistencyError, message=${e.message}`
+        ).to.be.true;
+        const ciiImporterTestRunAssetsInconsistencyError: CliImporterTestRunAssetsInconsistencyError =
+          e;
+        const details = ciiImporterTestRunAssetsInconsistencyError.details;
+        const requestedUpdates = details.requestedUpdates;
+        expect(requestedUpdates, "requestedUpdates is undefined").to.be.not
+          .undefined;
+        expect(
+          JSON.stringify(requestedUpdates),
+          "wrong requestedUpdates"
+        ).to.include("description");
+        expect(
+          JSON.stringify(requestedUpdates),
+          "wrong requestedUpdates"
+        ).to.include("version");
+      }
       const cliRunSummaryList: Array<ICliRunSummary_Base> =
         CliRunSummary.getSummaryLogList();
-      const cliImportSummary: ICliImportSummary =
-        CliRunSummary.createImportSummary(
-          CliConfig.getCliImporterManagerOptions().cliImporterManagerMode
-        );
-      expect(
-        cliImportSummary.warnings.length,
-        TestLogger.createLogMessage(
-          "cliImportSummary.warnings.length !== 2",
-          cliImportSummary.warnings
-        )
-      ).to.eq(2);
       // // DEBUG
-      // expect(false, JSON.stringify(cliRunSummaryList, null, 2)).to.be.true;
+      // console.log(`>>>>> cliRunSummaryList=\n ${JSON.stringify(cliRunSummaryList, null, 2)}`);
+
+      const thirdLastEntry: ICliRunSummary_Base =
+        cliRunSummaryList[cliRunSummaryList.length - 3];
+      expect(
+        thirdLastEntry.type,
+        `wrong type = ${thirdLastEntry.type}`
+      ).to.equal(ECliRunSummary_Type.EventApiVersioningError);
+
+      const secondLastEntry: ICliRunSummary_Base =
+        cliRunSummaryList[cliRunSummaryList.length - 2];
+      expect(
+        secondLastEntry.type,
+        `wrong type = ${secondLastEntry.type}`
+      ).to.equal(ECliRunSummary_Type.VersionObject);
+      const versionObjectEntry: ICliRunSummary_Task_VersionObject =
+        secondLastEntry as ICliRunSummary_Task_VersionObject;
+      expect(
+        versionObjectEntry.action,
+        `wrong action = ${versionObjectEntry.action}`
+      ).to.equal(
+        EEpSdkTask_Action.WOULD_FAIL_CREATE_NEW_VERSION_ON_EXACT_VERSION_REQUIREMENT
+      );
     } catch (e) {
       expect(
         e instanceof CliError,

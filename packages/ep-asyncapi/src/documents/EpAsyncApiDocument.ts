@@ -1,5 +1,8 @@
 import yaml from "js-yaml";
-import { AsyncAPIDocument, Message, Channel } from "@asyncapi/parser";
+import { 
+  AsyncAPIDocument, 
+  Channel 
+} from "@asyncapi/parser";
 import { Validator, ValidatorResult } from "jsonschema";
 import { $EventApi, $EventApiVersion } from "@solace-labs/ep-openapi-node";
 import {
@@ -9,9 +12,16 @@ import {
   EpAsyncApiValidationError,
   EpAsyncApiXtensionError,
 } from "../utils";
-import { EpAsyncApiMessageDocument } from "./EpAsyncApiMessageDocument";
-import { EpAsyncApiChannelDocument, EpAsyncApiChannelOperationType } from "./EpAsyncApiChannelDocument";
-import { EpAsyncApiChannelParameterDocument } from "./EpAsyncApiChannelParameterDocument";
+import { 
+  EpAsyncApiMessageDocument 
+} from "./EpAsyncApiMessageDocument";
+import { 
+  EpAsyncApiChannelDocument, 
+  EpAsyncApiChannelOperationType 
+} from "./EpAsyncApiChannelDocument";
+import { 
+  EpAsyncApiChannelParameterDocument 
+} from "./EpAsyncApiChannelParameterDocument";
 import {
   EpAsynApiChannelPublishOperation,
   EpAsyncApiChannelSubscribeOperation,
@@ -417,26 +427,16 @@ export class EpAsyncApiDocument {
       publishEventNames: [],
       subscribeEventNames: [],
     };
-    const epAsyncApiChannelDocumentMap: T_EpAsyncApiChannelDocumentMap =
-      this.getEpAsyncApiChannelDocumentMap();
-    for (const [
-      topic,
-      epAsyncApiChannelDocument,
-    ] of epAsyncApiChannelDocumentMap) {
+    const epAsyncApiChannelDocumentMap: T_EpAsyncApiChannelDocumentMap = this.getEpAsyncApiChannelDocumentMap();
+    for (const [topic, epAsyncApiChannelDocument ] of epAsyncApiChannelDocumentMap) {
       topic;
       const epEventName: string = epAsyncApiChannelDocument.getEpEventName();
-      const epAsynApiChannelPublishOperation:
-        | EpAsynApiChannelPublishOperation
-        | undefined =
-        epAsyncApiChannelDocument.getEpAsyncApiChannelPublishOperation();
+      const epAsynApiChannelPublishOperation: EpAsynApiChannelPublishOperation | undefined = epAsyncApiChannelDocument.getEpAsyncApiChannelPublishOperation();
       if (epAsynApiChannelPublishOperation !== undefined) {
         // const epAsyncApiMessageDocument: EpAsyncApiMessageDocument = epAsynApiChannelPublishOperation.getEpAsyncApiMessageDocument()
         epAsyncApiEventNames.publishEventNames.push(epEventName);
       }
-      const epAsyncApiChannelSubscribeOperation:
-        | EpAsyncApiChannelSubscribeOperation
-        | undefined =
-        epAsyncApiChannelDocument.getEpAsyncApiChannelSubscribeOperation();
+      const epAsyncApiChannelSubscribeOperation: EpAsyncApiChannelSubscribeOperation | undefined = epAsyncApiChannelDocument.getEpAsyncApiChannelSubscribeOperation();
       if (epAsyncApiChannelSubscribeOperation !== undefined) {
         // const epAsyncApiMessageDocument: EpAsyncApiMessageDocument = epAsyncApiChannelSubscribeOperation.getEpAsyncApiMessageDocument()
         epAsyncApiEventNames.subscribeEventNames.push(epEventName);
@@ -458,9 +458,11 @@ export class EpAsyncApiDocument {
   public getEpAsyncApiMessageDocumentMap(): T_EpAsyncApiMessageDocumentMap {
     const epAsyncApiMessageDocumentMap: T_EpAsyncApiMessageDocumentMap = new Map<string, EpAsyncApiMessageDocument>();
     const topicChannelDocumentMap: Map<string, EpAsyncApiChannelDocument> = this.getEpAsyncApiChannelDocumentMap(); 
-    for(const [_topic, channelDocument] of topicChannelDocumentMap) {
+    for(const [topic, channelDocument] of topicChannelDocumentMap) {
+      topic;
       const operationMessageDocumentMap: Map<EpAsyncApiChannelOperationType, EpAsyncApiMessageDocument[]> = channelDocument.getAllChannelMessageDocuments();
-      for(const [_operation, messageDocuments] of operationMessageDocumentMap) {
+      for(const [operation, messageDocuments] of operationMessageDocumentMap) {
+        operation;
         for(const messageDocument of messageDocuments) {
           epAsyncApiMessageDocumentMap.set(messageDocument.getMessageName(), messageDocument);
         }

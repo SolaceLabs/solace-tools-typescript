@@ -3,16 +3,20 @@ import {
   Schema, 
 } from '@asyncapi/parser';
 import { 
+  EpGeneralExtensions,
   EpParameterExtensions 
 } from '../constants';
+import { EpAsyncApiDocument } from './EpAsyncApiDocument';
 
 export class EpAsyncApiChannelParameterDocument {
+  private epAsyncApiDocument: EpAsyncApiDocument;
   private channelParameterName: string;
   private asyncApiChannelParameter: ChannelParameter;
 
-  constructor(channelParameterName: string, asyncApiChannelParameter: ChannelParameter) {
+  constructor(epAsyncApiDocument: EpAsyncApiDocument, channelParameterName: string, asyncApiChannelParameter: ChannelParameter) {
     this.channelParameterName = channelParameterName;
     this.asyncApiChannelParameter = asyncApiChannelParameter;
+    this.epAsyncApiDocument = epAsyncApiDocument;
   }
 
   public validate(): void {
@@ -37,6 +41,21 @@ export class EpAsyncApiChannelParameterDocument {
       if(displayName && displayName.length > 0) return displayName;
     }
     return '';
+  }
+
+  // public getEpApplicationDomainId(): string | undefined {
+  //   if(this.asyncApiChannelParameter.hasExtension(EpGeneralExtensions.xEpApplicationDomainId)) {
+  //     const applicationDomainId = this.asyncApiChannelParameter.extension(EpGeneralExtensions.xEpApplicationDomainId);
+  //     if(applicationDomainId && applicationDomainId.length > 0) return applicationDomainId;
+  //   }
+  // }
+
+  public getEpApplicationDomainName(): string | undefined {
+    if(this.asyncApiChannelParameter.hasExtension(EpGeneralExtensions.xEpApplicationDomainName)) {
+      const applicationDomainName = this.asyncApiChannelParameter.extension(EpGeneralExtensions.xEpApplicationDomainName);
+      if(applicationDomainName && applicationDomainName.length > 0) return applicationDomainName;
+    }
+    return this.epAsyncApiDocument.getAssetsApplicationDomainName();
   }
 
   public getParameterEnumValueList(): Array<string> {

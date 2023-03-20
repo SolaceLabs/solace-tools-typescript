@@ -3,6 +3,7 @@ import {
   Schema 
 } from '@asyncapi/parser';
 import { 
+  EpGeneralExtensions,
   EpMessageExtensions, 
   EpSchemaExtensions 
 } from '../constants';
@@ -149,6 +150,21 @@ export class EpAsyncApiMessageDocument {
     return '';
   }
 
+  public getMessageEpApplicationDomainName(): string | undefined {
+    if(this.asyncApiMessage.hasExtension(EpGeneralExtensions.xEpApplicationDomainName)) {
+      const name = this.asyncApiMessage.extension(EpGeneralExtensions.xEpApplicationDomainName);
+      if(name && name.length > 0) return name;
+    }
+    return this.epAsyncApiDocument.getAssetsApplicationDomainName();
+  }
+
+  // public getMessageEpApplicationDomainId(): string | undefined {
+  //   if(this.asyncApiMessage.hasExtension(EpGeneralExtensions.xEpApplicationDomainId)) {
+  //     const id = this.asyncApiMessage.extension(EpGeneralExtensions.xEpApplicationDomainId);
+  //     if(id && id.length > 0) return id;
+  //   }
+  // }
+
   public getMessageDescription(): string {
     const description: string | null = this.asyncApiMessage.description();
     const summary: string | null = this.asyncApiMessage.summary();
@@ -184,6 +200,25 @@ export class EpAsyncApiMessageDocument {
     }
     return '';
   }
+
+  public getPayloadSchemaEpApplicationDomainName(): string | undefined {
+    const schema: Schema = this.asyncApiMessage.payload();
+    if(!schema) return this.epAsyncApiDocument.getAssetsApplicationDomainName();
+    if(schema.hasExtension(EpGeneralExtensions.xEpApplicationDomainName)) {
+      const name = schema.extension(EpGeneralExtensions.xEpApplicationDomainName);
+      if(name && name.length > 0) return name;
+    }
+    return this.epAsyncApiDocument.getAssetsApplicationDomainName();
+  }
+
+  // public getPayloadSchemaEpApplicationDomainId(): string | undefined {
+  //   const schema: Schema = this.asyncApiMessage.payload();
+  //   if(!schema) return this.getMessageEpApplicationDomainId();
+  //   if(schema.hasExtension(EpGeneralExtensions.xEpApplicationDomainId)) {
+  //     const id = schema.extension(EpGeneralExtensions.xEpApplicationDomainId);
+  //     if(id && id.length > 0) return id;
+  //   }
+  // }
 
   public getPayloadSchemaDescription(): string {
     const schema: Schema = this.asyncApiMessage.payload();

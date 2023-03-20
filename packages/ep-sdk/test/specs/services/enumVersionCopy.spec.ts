@@ -122,12 +122,8 @@ describe(`${scriptName}`, () => {
   after(async () => {
     TestContext.newItId();
     // delete application domains
-    await EpSdkApplicationDomainsService.deleteById({
-      applicationDomainId: SourceApplicationDomainId,
-    });
-    await EpSdkApplicationDomainsService.deleteById({
-      applicationDomainId: TargetApplicationDomainId,
-    });
+    await EpSdkApplicationDomainsService.deleteById({applicationDomainId: SourceApplicationDomainId });
+    await EpSdkApplicationDomainsService.deleteById({applicationDomainId: TargetApplicationDomainId });
   });
 
   it(`${scriptName}: should create source enums`, async () => {
@@ -141,8 +137,7 @@ describe(`${scriptName}`, () => {
             shared: true,
           },
         });
-        const epSdkEnumTask_ExecuteReturn: IEpSdkEnumTask_ExecuteReturn =
-          await epSdkEnumTask.execute();
+        const epSdkEnumTask_ExecuteReturn: IEpSdkEnumTask_ExecuteReturn = await epSdkEnumTask.execute();
         enumInfo.sourceEnumId = epSdkEnumTask_ExecuteReturn.epObject.id;
         // // DEBUG
         // expect(false, `enumInfo=${JSON.stringify(enumInfo, null, 2)}`).to.be.true;
@@ -158,19 +153,14 @@ describe(`${scriptName}`, () => {
             },
             enumValues: enumInfo.enumValues,
           });
-          const epSdkEnumVersionTask_ExecuteReturn: IEpSdkEnumVersionTask_ExecuteReturn =
-            await epSdkEnumVersionTask.execute();
-          versionInfo.enumVersionId =
-            epSdkEnumVersionTask_ExecuteReturn.epObject.id;
+          const epSdkEnumVersionTask_ExecuteReturn: IEpSdkEnumVersionTask_ExecuteReturn = await epSdkEnumVersionTask.execute();
+          versionInfo.enumVersionId = epSdkEnumVersionTask_ExecuteReturn.epObject.id;
         }
       }
     } catch (e) {
-      if (e instanceof ApiError)
-        expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
-        .to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
-        .true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 

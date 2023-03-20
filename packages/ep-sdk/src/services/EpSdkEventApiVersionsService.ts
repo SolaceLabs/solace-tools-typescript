@@ -408,6 +408,7 @@ export class EpSdkEventApiVersionsServiceClass extends EpSdkVersionServiceClass 
     // add the source application domain id to custom attribute
     await EpSdkEventApisService.setCustomAttributes({
       xContextId: xContextId,
+      applicationDomainId: toApplicationDomainId,
       eventApiId: epSdkEventApiTask_ExecuteReturn.epObjectKeys.epObjectId,
       scope: CustomAttributeDefinition.scope.APPLICATION_DOMAIN,
       epSdkCustomAttributeList: [ 

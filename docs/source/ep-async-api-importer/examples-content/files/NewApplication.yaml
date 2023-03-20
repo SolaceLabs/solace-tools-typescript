@@ -1,0 +1,70 @@
+components:
+  schemas:
+    Schema_1:
+      x-ep-application-domain-name: ApplicationDomain_1
+      type: object
+      properties:
+        one:
+          type: string
+
+    Schema_2:
+      x-ep-application-domain-name: ApplicationDomain_2
+      type: object
+      properties:
+        one:
+          type: string
+        two:
+          type: string
+
+    NewSchema:
+      type: object
+      properties:
+        one:
+          type: string
+        two:
+          type: string
+        three:
+          type: string
+
+  messages:
+    ExistingEvent_1:
+      payload:
+        $ref: '#/components/schemas/Schema_1'
+      schemaFormat: application/vnd.aai.asyncapi+json;version=2.0.0
+      contentType: application/json
+      x-ep-application-domain-name: ApplicationDomain_1
+
+    ExistingEvent_2:
+      payload:
+        $ref: '#/components/schemas/Schema_2'
+      schemaFormat: application/vnd.aai.asyncapi+json;version=2.0.0
+      contentType: application/json
+      x-ep-application-domain-name: ApplicationDomain_2
+
+    NewEvent:
+      payload:
+        $ref: '#/components/schemas/NewSchema'
+      schemaFormat: application/vnd.aai.asyncapi+json;version=2.0.0
+      contentType: application/json
+
+channels:
+  consumed/existing/event-1:
+    publish:
+      message:
+        $ref: '#/components/messages/ExistingEvent_1'
+
+  consumed/existing/event-2:
+    publish:
+      message:
+        $ref: '#/components/messages/ExistingEvent_2'
+
+  produced/new/event:
+    publish:
+      message:
+        $ref: '#/components/messages/NewEvent'
+
+asyncapi: 2.5.0
+info:
+  title: New Application
+  version: 2.0.0
+  x-ep-application-domain-name: NewApplicationDomain

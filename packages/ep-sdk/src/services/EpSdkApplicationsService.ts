@@ -208,11 +208,9 @@ export class EpSdkApplicationsServiceClass extends EpSdkServiceClass {
       applicationDomainId: applicationDomainId,
       name: applicationName
     });
-    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, {
-      code: EEpSdkLoggerCodes.SERVICE_GET, module: this.constructor.name, details: {
-        applicationsResponse: applicationsResponse
-      }
-    }));
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, {code: EEpSdkLoggerCodes.SERVICE_GET, module: this.constructor.name, details: {
+      applicationsResponse: applicationsResponse
+    }}));
 
     if (applicationsResponse.data === undefined || applicationsResponse.data.length === 0) return undefined;
     /* istanbul ignore next */

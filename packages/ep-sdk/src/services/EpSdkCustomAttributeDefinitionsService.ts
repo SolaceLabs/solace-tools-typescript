@@ -1,6 +1,5 @@
 import {
   CustomAttributeDefinition,
-  CustomAttributeDefinitionResponse,
   CustomAttributeDefinitionsResponse,
   CustomAttributeDefinitionsService,
   Pagination,
@@ -141,9 +140,10 @@ export class EpSdkCustomAttributeDefinitionsServiceClass extends EpSdkServiceCla
   /**
    * Get attribute definition by name. Name is unique.
    */
-  public getByName = async ({ xContextId, attributeName, pageSize = EpApiMaxPageSize }: {
+  public getByName = async ({ xContextId, attributeName, applicationDomainId, pageSize = EpApiMaxPageSize }: {
     xContextId?: string;
     attributeName: string;
+    applicationDomainId?: string;
     pageSize?: number; /** for testing */
   }): Promise<CustomAttributeDefinition | undefined> => {
     const funcName = 'getByName';
@@ -153,11 +153,21 @@ export class EpSdkCustomAttributeDefinitionsServiceClass extends EpSdkServiceCla
     let nextPage: number | undefined | null = 1;
 
     while(nextPage !== null) {
-      const customAttributeDefinitionsResponse: CustomAttributeDefinitionsResponse = await CustomAttributeDefinitionsService.getCustomAttributeDefinitions({
-        xContextId: xContextId,
-        pageSize: pageSize,
-        pageNumber: nextPage,
-      });
+      let customAttributeDefinitionsResponse: CustomAttributeDefinitionsResponse
+      if(applicationDomainId) {
+        customAttributeDefinitionsResponse = await CustomAttributeDefinitionsService.getCustomAttributeDefinitionsByApplicationDomain({
+          xContextId: xContextId,
+          applicationDomainId: applicationDomainId,
+          pageSize: pageSize,
+          pageNumber: nextPage,
+        });
+      } else {
+        customAttributeDefinitionsResponse = await CustomAttributeDefinitionsService.getCustomAttributeDefinitions({
+          xContextId: xContextId,
+          pageSize: pageSize,
+          pageNumber: nextPage,
+        });  
+      }
       if(customAttributeDefinitionsResponse.data === undefined || customAttributeDefinitionsResponse.data.length === 0) nextPage = null;
       else {
         const filteredList = customAttributeDefinitionsResponse.data.filter( (customAttributeDefinition: CustomAttributeDefinition) => {
@@ -192,47 +202,69 @@ export class EpSdkCustomAttributeDefinitionsServiceClass extends EpSdkServiceCla
     return customAttributeDefinitionList[0];
   }
 
-  public getById = async ({ xContextId, customAttributeDefinitionId }: {
+  public getById = async ({ xContextId, customAttributeDefinitionId, applicationDomainId }: {
     xContextId?: string;
     customAttributeDefinitionId: string;
+    applicationDomainId?: string;
   }): Promise<CustomAttributeDefinition> => {
     const funcName = 'getById';
     const logName = `${EpSdkCustomAttributeDefinitionsServiceClass.name}.${funcName}()`;
 
-    const customAttributeDefinitionResponse: CustomAttributeDefinitionResponse = await CustomAttributeDefinitionsService.getCustomAttributeDefinition({
-      xContextId: xContextId,
-      id: customAttributeDefinitionId,
-    })
-    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, {
-      code: EEpSdkLoggerCodes.SERVICE_GET, module: this.constructor.name, details: {
-        customAttributeDefinitionResponse: customAttributeDefinitionResponse
-      }
-    }));
-
-    /* istanbul ignore next */
-    if (customAttributeDefinitionResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "customAttributeDefinitionResponse.data === undefined", {
-      customAttributeDefinitionId: customAttributeDefinitionId
-    });
-    const customAttributeDefinition: CustomAttributeDefinition = customAttributeDefinitionResponse.data;
+    let customAttributeDefinition: CustomAttributeDefinition;
+    if(applicationDomainId) {
+      const customAttributeDefinitionsResponse: CustomAttributeDefinitionsResponse = await CustomAttributeDefinitionsService.getCustomAttributeDefinitionsByApplicationDomain({
+        xContextId: xContextId,
+        applicationDomainId: applicationDomainId,
+      });
+      /* istanbul ignore next */
+      if(customAttributeDefinitionsResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "customAttributeDefinitionsResponse.data === undefined", {
+        customAttributeDefinitionsResponse: customAttributeDefinitionsResponse
+      });
+      const customAttributeDefinition = customAttributeDefinitionsResponse.data.find((x)=> { return x.id === customAttributeDefinitionId; });
+      if(customAttributeDefinition === undefined) throw new Error(`customAttributeDefinitionId=${customAttributeDefinitionId} in applcationDomainId=${applicationDomainId} not found`);
+    } else {
+      const customAttributeDefinitionResponse = await CustomAttributeDefinitionsService.getCustomAttributeDefinition({
+        xContextId: xContextId,
+        id: customAttributeDefinitionId,
+      });
+      /* istanbul ignore next */
+      if (customAttributeDefinitionResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "customAttributeDefinitionResponse.data === undefined", {
+        customAttributeDefinitionId: customAttributeDefinitionId
+      });
+      customAttributeDefinition = customAttributeDefinitionResponse.data;      
+    }
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, {code: EEpSdkLoggerCodes.SERVICE_GET, module: this.constructor.name, details: {
+      customAttributeDefinition: customAttributeDefinition
+    }}));
     return customAttributeDefinition;
   }
 
-  public deleteById = async ({ xContextId, customAttributeDefinitionId }: {
+  public deleteById = async ({ xContextId, applicationDomainId, customAttributeDefinitionId }: {
     xContextId?: string;
     customAttributeDefinitionId: string;
+    applicationDomainId?: string;
   }): Promise<CustomAttributeDefinition> => {
     const customAttributeDefinition: CustomAttributeDefinition = await this.getById({
       xContextId: xContextId,
       customAttributeDefinitionId: customAttributeDefinitionId,
+      applicationDomainId: applicationDomainId
     });
-    const xvoid: void = await CustomAttributeDefinitionsService.deleteCustomAttributeDefinition({
-      xContextId: xContextId,
-      id: customAttributeDefinitionId,
-    });
-    xvoid;
+    if(applicationDomainId) {
+      const xvoid: void = await CustomAttributeDefinitionsService.deleteCustomAttributeDefinitionOfApplicationDomain({
+        xContextId: xContextId,
+        applicationDomainId: applicationDomainId,
+        customAttributeId: customAttributeDefinitionId
+      });
+      xvoid;
+    } else {
+      const xvoid: void = await CustomAttributeDefinitionsService.deleteCustomAttributeDefinition({
+        xContextId: xContextId,
+        id: customAttributeDefinitionId,
+      });
+      xvoid;  
+    }
     return customAttributeDefinition;
   }
-
 
 }
 

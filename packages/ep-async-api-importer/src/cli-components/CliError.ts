@@ -1,7 +1,10 @@
 /* istanbul ignore file */
 
 import { ApiError } from "@solace-labs/ep-openapi-node";
-import { EpSdkError } from "@solace-labs/ep-sdk";
+import { 
+  EpSdkError, 
+  IEpSdkTask_TransactionLogData 
+} from "@solace-labs/ep-sdk";
 import {
   EpAsyncApiError,
   EpAsyncApiParserError,
@@ -330,14 +333,25 @@ export class CliImporterFeatureNotSupportedError extends CliError {
 }
 
 export class CliImporterTestRunAssetsInconsistencyError extends CliError {
-  protected static DefaultDescription =
-    "Importer Test Run Assets Inconsistency Error";
+  protected static DefaultDescription = "Importer Test Run Assets Inconsistency Error";
   public details: any;
   constructor(internalLogName: string, details: any) {
-    super(
-      internalLogName,
-      CliImporterTestRunAssetsInconsistencyError.DefaultDescription
-    );
+    super(internalLogName, CliImporterTestRunAssetsInconsistencyError.DefaultDescription);
+    this.details = details;
+  }
+}
+
+export type CliImporterTestRunNotAllowedToChangeErrorDetails = {
+  epObject: any;
+  sourceApplicationDomainName: string;
+  targetApplicationDomainName: string;
+  epSdkTask_TransactionLogData: IEpSdkTask_TransactionLogData;
+}
+export class CliImporterTestRunNotAllowedToChangeError extends CliError {
+  protected static DefaultDescription = "Not Authorized to Modify Object in Application Domain Error";
+  public details: CliImporterTestRunNotAllowedToChangeErrorDetails;
+  constructor(internalLogName: string, details: CliImporterTestRunNotAllowedToChangeErrorDetails) {
+    super(internalLogName, CliImporterTestRunNotAllowedToChangeError.DefaultDescription);
     this.details = details;
   }
 }

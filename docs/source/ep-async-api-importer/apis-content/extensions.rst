@@ -61,8 +61,12 @@ In addition, it uses the following Event Portal extensions:
      - The Event version name for the message.
 
        Defaults to empty string if omitted.
+   * - x-ep-application-domain-name
+     - The application domain name for the Event.
 
+       Defaults to `$.info.x-ep-assets-application-domain-name` if omitted.
 
+       
 .. list-table:: Event Portal Schema Extensions
    :widths: 30 100
    :header-rows: 1
@@ -77,6 +81,10 @@ In addition, it uses the following Event Portal extensions:
      - The Schema version name for the schema.
 
        Defaults to empty string if omitted.
+   * - x-ep-application-domain-name
+     - The application domain name for the Schema.
+
+       Defaults to `$.info.x-ep-assets-application-domain-name` if omitted.
 
 
 .. list-table:: Event Portal Channel Parameter Extensions
@@ -93,4 +101,9 @@ In addition, it uses the following Event Portal extensions:
      - The Enum version name for the parameter.
 
        Defaults to empty string if omitted.
+   * - x-ep-application-domain-name
+     - The application domain name for the Enum.
+
+       Defaults to `$.info.x-ep-assets-application-domain-name` if omitted.
+
 

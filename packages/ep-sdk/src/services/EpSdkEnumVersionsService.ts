@@ -264,6 +264,7 @@ export class EpSdkEnumVersionsServiceClass extends EpSdkVersionServiceClass {
     // add the source application domain id to custom attribute
     await EpSdkEnumsService.setCustomAttributes({
       xContextId: xContextId,
+      applicationDomainId: toApplicationDomainId,
       enumId: epSdkEnumTask_ExecuteReturn.epObjectKeys.epObjectId,
       scope: CustomAttributeDefinition.scope.APPLICATION_DOMAIN,
       epSdkCustomAttributeList: [ 

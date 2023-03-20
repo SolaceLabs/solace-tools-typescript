@@ -107,7 +107,7 @@ export interface ICliRunSummary_GenerateApiOutput extends ICliRunSummary_Base {
 export interface ICliRunSummary_ApiChannel extends ICliRunSummary_Base {
   type: ECliRunSummary_Type.ApiChannel;
   channelTopic: string;
-  applicationDomainName: string;
+  // applicationDomainName: string;
 }
 export interface ICliRunSummary_ApiChannel_Operation
   extends ICliRunSummary_Base {
@@ -375,9 +375,12 @@ Start Run: ${cliRunSummary_StartRun.runMode} ------------------------
   public processingApiChannel = ({ cliRunSummary_ApiChannel, }: {
     cliRunSummary_ApiChannel: ICliRunSummary_ApiChannel;
   }): void => {
+    // const consoleOutput = `
+    //   Processing Api Channel: ${cliRunSummary_ApiChannel.channelTopic}
+    //     Application Domain: ${cliRunSummary_ApiChannel.applicationDomainName}
+    // `;
     const consoleOutput = `
       Processing Api Channel: ${cliRunSummary_ApiChannel.channelTopic}
-        Application Domain: ${cliRunSummary_ApiChannel.applicationDomainName}
     `;
     this.log(
       ECliSummaryStatusCodes.PROCESSING_API_CHANNEL,

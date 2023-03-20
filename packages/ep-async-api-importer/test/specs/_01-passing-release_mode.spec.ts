@@ -38,6 +38,8 @@ const initializeGlobals = () => {
   CliConfig.getCliImporterManagerOptions().cliImporterManagerMode = ECliImporterManagerMode.RELEASE_MODE;
   CliConfig.getCliImporterManagerOptions().cliTestSetupDomainsForApis = true;
   CliConfig.getCliImporterManagerOptions().createApiApplication = false;
+  CliConfig.getCliImporterManagerOptions().applicationDomainName = undefined;
+  CliConfig.getCliImporterManagerOptions().assetApplicationDomainName = undefined;    
 }
 
 describe(`${scriptName}`, () => {

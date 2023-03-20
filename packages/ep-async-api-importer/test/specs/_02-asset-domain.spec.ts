@@ -42,6 +42,8 @@ const initializeGlobals = () => {
   // set test specific importer options
   CliConfig.getCliImporterManagerOptions().asyncApiFileList = FileList;
   CliConfig.getCliImporterManagerOptions().cliImporterManagerMode = ECliImporterManagerMode.RELEASE_MODE;
+  CliConfig.getCliImporterManagerOptions().applicationDomainName = undefined;
+  CliConfig.getCliImporterManagerOptions().assetApplicationDomainName = undefined;
   // CliConfig.getCliImporterManagerOptions().runId = scriptName;
   // // DEBUG
   // CliConfig.getCliImporterManagerOptions().cliImporterManagerMode = ECliImporterManagerMode.TEST_MODE_KEEP;

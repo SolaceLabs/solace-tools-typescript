@@ -283,6 +283,7 @@ export class EpAsyncApiChannelDocument {
     if (epAsyncApiChannelParameterDocumentMap !== undefined) {
       for (const [_parameterName, epAsyncApiChannelParameterDocument] of epAsyncApiChannelParameterDocumentMap) {
         epAsyncApiChannelParameterDocument.validate_BestPractices();
+        _parameterName;
       }
     }
     // channel operations
@@ -326,16 +327,16 @@ export class EpAsyncApiChannelDocument {
     return this.epEventDescription;
   }
 
-  public getApplicationDomainName(): string {
-    return this.epAsyncApiDocument.getAssetsApplicationDomainName();
-  }
+  // public getApplicationDomainName(): string {
+  //   return this.epAsyncApiDocument.getAssetsApplicationDomainName();
+  // }
 
   public getEpAsyncApiChannelParameterDocumentMap(): T_EpAsyncApiChannelParameterDocumentMap | undefined {
     if (!this.asyncApiChannel.hasParameters()) return undefined;
     const paramRecords: Record<string, ChannelParameter> = this.asyncApiChannel.parameters();
     const epAsyncApiChannelParameterDocumentMap: T_EpAsyncApiChannelParameterDocumentMap = new Map<string, EpAsyncApiChannelParameterDocument>();
     for (const [name, parameter] of Object.entries(paramRecords)) {
-      const epAsyncApiChannelParameterDocument = new EpAsyncApiChannelParameterDocument(name, parameter);
+      const epAsyncApiChannelParameterDocument = new EpAsyncApiChannelParameterDocument(this.epAsyncApiDocument, name, parameter);
       epAsyncApiChannelParameterDocumentMap.set(name, epAsyncApiChannelParameterDocument);
     }
     return epAsyncApiChannelParameterDocumentMap;

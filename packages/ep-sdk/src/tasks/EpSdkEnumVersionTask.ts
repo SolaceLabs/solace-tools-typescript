@@ -92,7 +92,9 @@ export class EpSdkEnumVersionTask extends EpSdkVersionTask {
       ...this.Default_TEpSdkEnumVersionTask_Settings,
       ...this.getTaskConfig().enumVersionSettings,
       values: this.createEnumValueList(this.getTaskConfig().enumValues),
-      description: this.getTaskConfig().enumVersionSettings.description ? this.getTaskConfig().enumVersionSettings.description : '',
+      // NOTE: using the description will result in non-idempotent behaviour, not exported by EP into spec
+      // description: this.getTaskConfig().enumVersionSettings.description ? this.getTaskConfig().enumVersionSettings.description : '',
+      description: "",
       displayName: this.getTaskConfig().enumVersionSettings.displayName ? this.getTaskConfig().enumVersionSettings.displayName : '',
     };
   }
@@ -204,7 +206,9 @@ export class EpSdkEnumVersionTask extends EpSdkVersionTask {
     });
     const existingObject: TopicAddressEnumVersion = epSdkEnumVersionTask_GetFuncReturn.epObject;
     const existingCompareObject: TEpSdkEnumVersionTask_CompareObject = {
-      description: existingObject.description ? existingObject.description : '',
+      // NOTE: using the description will result in non-idempotent behaviour, not exported by EP into spec
+      // description: existingObject.description ? existingObject.description : '',
+      description: '',
       displayName: existingObject.displayName ? existingObject.displayName: '',
       stateId: existingObject.stateId,
       values: this.createCompareEnumValueList_From_EP({ epEnumValueList: existingObject.values }),

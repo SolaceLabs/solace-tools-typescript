@@ -104,8 +104,8 @@ export interface ICliEventApiImporterRunReturn extends ICliAssetsImporterRunRetu
 }
 
 export class CliEventApiImporter extends CliAssetsImporter {
-  constructor(cliEventApiImporterOptions: ICliEventApiImporterOptions) {
-    super(cliEventApiImporterOptions);
+  constructor(cliEventApiImporterOptions: ICliEventApiImporterOptions, runMode: ECliRunContext_RunMode) {
+    super(cliEventApiImporterOptions, runMode);
   }
 
   private run_present_event_api_version = async ({
@@ -130,7 +130,7 @@ export class CliEventApiImporter extends CliAssetsImporter {
     });
     // const latestExistingEventApiVersionString: string | undefined = latestExistingEventApiVersionObjectBefore?.version;
     // get the list of pub and sub events
-    const cliPubSubEventVersionIds: ICliPubSubEventVersionIds = await CliAsyncApiDocumentService.get_pub_sub_event_version_ids({
+    const cliPubSubEventVersionIds: ICliPubSubEventVersionIds = await this.get_pub_sub_event_version_ids({
       applicationDomainId: assetApplicationDomainId,
       epAsyncApiDocument: epAsyncApiDocument,
     });

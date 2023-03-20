@@ -48,8 +48,9 @@ export interface ICliApplicationImporterRunOptions extends ICliImporterRunOption
 export interface ICliApplicationImporterRunReturn extends ICliImporterRunReturn {}
 
 export class CliApplicationImporter extends CliImporter {
-  constructor(cliApplicationImporterOptions: ICliApplicationImporterOptions) {
-    super(cliApplicationImporterOptions);
+
+  constructor(cliApplicationImporterOptions: ICliApplicationImporterOptions, runMode: ECliRunContext_RunMode) {
+    super(cliApplicationImporterOptions, runMode);
   }
 
   protected generate_assets_ouput = async ({cliImporterGenerateAssetsOptions}: {
@@ -87,11 +88,10 @@ export class CliApplicationImporter extends CliImporter {
     // const latestExistingApplicationVersionString: string | undefined = latestExistingApplicationVersionObjectBefore?.version;
 
     // get the list of pub and sub events
-    const cliPubSubEventVersionIds: ICliPubSubEventVersionIds =
-      await CliAsyncApiDocumentService.get_pub_sub_event_version_ids({
-        applicationDomainId: assetApplicationDomainId,
-        epAsyncApiDocument: epAsyncApiDocument,
-      });
+    const cliPubSubEventVersionIds: ICliPubSubEventVersionIds = await this.get_pub_sub_event_version_ids({
+      applicationDomainId: assetApplicationDomainId,
+      epAsyncApiDocument: epAsyncApiDocument,
+    });
     // const rctxtVersion: ICliAsyncApiRunContext_ApplicationVersion = {
     //   epTargetApplicationVersion: epAsyncApiDocument.getVersion(),
     //   epLatestExistingApplicationVersion: latestExistingApplicationVersionString
