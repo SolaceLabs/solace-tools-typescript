@@ -71,9 +71,14 @@ You can download the example spec :download:`here <files/NewApplication.yaml>`.
   You should avoid modifying existing objects - most likely other Applications or Event Apis make use of them and will not be updated to the new version.
 
 
+.. warning::
+
+  Validation of apis and their objects (events, schemas, enums) assumes globally unique names, even if they use different application domains.
+  Ensure all your objects have unique names. 
+
 .. note::
 
-  If no specific application domain name is specified on the object, the importer defaults the application domain name:
+  If no specific application domain name is specified on the object, the importer defaults the application domain name
 
-  - assets application domain name, if specified, otherwise
-  - api application domain name
+  - to the assets application domain name, if specified, otherwise
+  - to api application domain name
