@@ -1,5 +1,11 @@
 # @solace-labs/ep-apim-openapi-node
 
+## 0.6.0
+
+### Minor Changes
+
+- 86e1472e: upgrade to version 2.0.0-ea.15
+
 ## 0.5.0
 
 ### Minor Changes
