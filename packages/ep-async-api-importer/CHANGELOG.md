@@ -1,5 +1,11 @@
 # @solace-labs/ep-async-api-importer
 
+## 0.55.0
+
+### Minor Changes
+
+- b97f4e2b: Modify payload format to JSON with correct tabbing
+
 ## 0.54.0
 
 ### Minor Changes
