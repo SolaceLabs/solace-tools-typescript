@@ -305,28 +305,22 @@ describe(`${scriptName}`, () => {
           content: SchemaContent,
         },
       });
-      const epSdkSchemaVersionTask_ExecuteReturn: IEpSdkSchemaVersionTask_ExecuteReturn =
-        await epSdkSchemaVersionTask.execute();
-      AvroSourceSchemaVersionId =
-        epSdkSchemaVersionTask_ExecuteReturn.epObject.id;
+      const epSdkSchemaVersionTask_ExecuteReturn: IEpSdkSchemaVersionTask_ExecuteReturn = await epSdkSchemaVersionTask.execute();
+      AvroSourceSchemaVersionId = epSdkSchemaVersionTask_ExecuteReturn.epObject.id;
     } catch (e) {
-      if (e instanceof ApiError)
-        expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
-        .to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
-        .true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 
   it(`${scriptName}: should copy avro schema version from source domain to target domain`, async () => {
     try {
       // get latest source version
-      const latestSourceSchemaVersion: SchemaVersion =
-        await EpSdkSchemaVersionsService.getLatestVersionForSchemaId({
-          applicationDomainId: SourceApplicationDomainId,
-          schemaId: AvroSourceSchemaId,
-        });
+      const latestSourceSchemaVersion: SchemaVersion = await EpSdkSchemaVersionsService.getLatestVersionForSchemaId({
+        applicationDomainId: SourceApplicationDomainId,
+        schemaId: AvroSourceSchemaId,
+      });
       // copy
       const copiedSchemaVersion: SchemaVersion = await EpSdkSchemaVersionsService.copyLastestVersionById_IfNotExists({
         schemaVersionId: latestSourceSchemaVersion.id,

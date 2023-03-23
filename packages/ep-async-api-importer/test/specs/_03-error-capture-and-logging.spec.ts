@@ -111,8 +111,8 @@ describe(`${scriptName}`, () => {
       expect(e instanceof CliImporterTestRunAssetsInconsistencyError, TestLogger.createWrongCliErrorInstance(ce.constructor.name, e)).to.be.true;
 
       const cliRunSummaryList: Array<ICliRunSummary_Base> = CliRunSummary.getSummaryLogList();
-      // DEBUG
-      console.log(`>>>>> cliRunSummaryList=\n ${JSON.stringify(cliRunSummaryList, null, 2)}`);
+      // // DEBUG
+      // console.log(`>>>>> cliRunSummaryList=\n ${JSON.stringify(cliRunSummaryList, null, 2)}`);
 
       const thirdLastEntry: ICliRunSummary_Base = cliRunSummaryList[cliRunSummaryList.length - 3];
       expect(thirdLastEntry.type, TestLogger.createLogMessage("thirdLastEntry.type, wrong type", {
