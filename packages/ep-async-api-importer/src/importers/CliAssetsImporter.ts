@@ -95,19 +95,22 @@ export abstract class CliAssetsImporter extends CliImporter {
     epObjectName: string;
   }): Promise<void> {
     if(this.cliImporterOptions.cliAssetsApplicationDomainEnforcementPolicy === ECliAssetsApplicationDomainEnforcementPolicies.OFF) return;
-    const assertModifyPermissionLog = {
-      logName,
-      runMode: this.runMode,
-      cliAssetsApplicationDomainEnforcementPolicy: this.cliImporterOptions.cliAssetsApplicationDomainEnforcementPolicy,
-      epObjectName,
-      epObjectType: epSdkTask_ExecuteReturn.epObjectKeys.epObjectType,
-      epSdkTask_Action: epSdkTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action,
-      epObjectCustomAttributes: epObjectCustomAttributes || 'undefined',
-      // sourceApplicationDomainName: await this.getSourceApplicationDomainName({ epObjectCustomAttributes }) || 'unknown',
-      targetApplicationDomainName,
-      allowedApplicationDomainName
-    }
-    console.log(`assertModifyPermissionLog = ${JSON.stringify(assertModifyPermissionLog, null, 2)}`);
+    epObjectCustomAttributes;
+    // // DEBUG
+    // const assertModifyPermissionLog = {
+    //   logName,
+    //   runMode: this.runMode,
+    //   cliAssetsApplicationDomainEnforcementPolicy: this.cliImporterOptions.cliAssetsApplicationDomainEnforcementPolicy,
+    //   epObjectName,
+    //   epObjectType: epSdkTask_ExecuteReturn.epObjectKeys.epObjectType,
+    //   epSdkTask_Action: epSdkTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action,
+    //   epObjectCustomAttributes: epObjectCustomAttributes || 'undefined',
+    //   // sourceApplicationDomainName: await this.getSourceApplicationDomainName({ epObjectCustomAttributes }) || 'unknown',
+    //   targetApplicationDomainName,
+    //   allowedApplicationDomainName
+    // }
+    // console.log(`assertModifyPermissionLog = ${JSON.stringify(assertModifyPermissionLog, null, 2)}`);
+    // // end DEBUG
     if(epSdkTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action !== EEpSdkTask_Action.NO_ACTION) {
       if(this.cliImporterOptions.cliAssetsApplicationDomainEnforcementPolicy === ECliAssetsApplicationDomainEnforcementPolicies.LAX && epSdkTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action === EEpSdkTask_Action.CREATE_FIRST_VERSION) return;
       // const sourceApplicationDomainName = await this.getSourceApplicationDomainName({ epObjectCustomAttributes }) || 'unknown';
@@ -115,7 +118,7 @@ export abstract class CliAssetsImporter extends CliImporter {
         throw new CliImporterTestRunAssetsApplicationDomainPolicyViolationError(logName, {
           cliAssetsApplicationDomainEnforcementPolicy: this.cliImporterOptions.cliAssetsApplicationDomainEnforcementPolicy,
           runMode: this.runMode,
-          epObjectName: epSdkTask_ExecuteReturn.epObject.name,
+          epObjectName: epObjectName,
           // sourceApplicationDomainName: sourceApplicationDomainName,
           targetApplicationDomainName,
           allowedApplicationDomainName,

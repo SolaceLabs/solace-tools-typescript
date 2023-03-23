@@ -98,7 +98,9 @@ describe(`${scriptName}`, () => {
 
   after(async () => {
     TestContext.newItId();
-    await absentApplicationDomains();
+    try { await absentApplicationDomains(); } catch(e) { console.log(`e=${JSON.stringify(e, null, 2)}`)}
+    try { await absentApplicationDomains(); } catch(e) { console.log(`e=${JSON.stringify(e, null, 2)}`)}
+    try { await absentApplicationDomains(); } catch(e) { console.log(`e=${JSON.stringify(e, null, 2)}`)}
   });
 
   it(`${scriptName}: should parse the Start_EventApiAsyncApiSpecFile and remove domains`, async () => {
@@ -129,6 +131,7 @@ describe(`${scriptName}`, () => {
         }
       }
       // console.log(`TestApplicationDomainNames=${JSON.stringify(TestApplicationDomainNames, null, 2)}`);
+      try { await absentApplicationDomains(); } catch(e) { console.log(`e=${JSON.stringify(e, null, 2)}`)}
       try { await absentApplicationDomains(); } catch(e) { console.log(`e=${JSON.stringify(e, null, 2)}`)}
       try { await absentApplicationDomains(); } catch(e) { console.log(`e=${JSON.stringify(e, null, 2)}`)}
     } catch (e) {
@@ -307,12 +310,9 @@ describe(`${scriptName}`, () => {
           TestApplicationDomainNames.push(epAsyncApiSubscribeMessageDocument.getPayloadSchemaEpApplicationDomainName());  
         }
       }
-      try {
-        await absentApplicationDomains();
-      } catch(e) {}
-      try {
-        await absentApplicationDomains();
-      } catch(e) {}
+      try { await absentApplicationDomains(); } catch(e) { console.log(`e=${JSON.stringify(e, null, 2)}`)}
+      try { await absentApplicationDomains(); } catch(e) { console.log(`e=${JSON.stringify(e, null, 2)}`)}
+      try { await absentApplicationDomains(); } catch(e) { console.log(`e=${JSON.stringify(e, null, 2)}`)}
     } catch (e) {
       TestLogger.logMessageWithId(TestLogger.createTestFailMessageForError('error', e));
       if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
