@@ -89,7 +89,7 @@ export abstract class CliImporter {
   }
 
   protected async getApplicationDomainName(applicationDomainId: string): Promise<string> {
-    let applicationDomainName: string | undefined = this.applicationDomainCache.get(applicationDomainId);
+    const applicationDomainName: string | undefined = this.applicationDomainCache.get(applicationDomainId);
     if(applicationDomainName) return applicationDomainName;
     const applicationDomain = await EpSdkApplicationDomainsService.getById({ applicationDomainId });
     this.applicationDomainCache.set(applicationDomainId, applicationDomain.name);
