@@ -46,6 +46,11 @@ export enum ECliConfigRunIdGeneration {
   AUTO = "auto",
   CUSTOM = "custom-run-id",
 }
+export enum ECliAssetsApplicationDomainEnforcementPolicies {
+  STRICT = "strict",
+  LAX = "lax",
+  OFF = "off"
+}
 
 export type TCliConfigEnvVarConfig = {
   envVarName: ECliConfigEnvVarNames;
@@ -82,7 +87,8 @@ enum ECliConfigEnvVarNames {
   CLI_IMPORT_BROKER_TYPE = "CLI_IMPORT_BROKER_TYPE",
   CLI_IMPORT_CHANNEL_DELIMITER = "CLI_IMPORT_CHANNEL_DELIMITER",
   CLI_TEST_SETUP_DOMAINS_FOR_APIS = "CLI_TEST_SETUP_DOMAINS_FOR_APIS",
-  CLI_VALIDATE_API_BEST_PRACTICES = "CLI_VALIDATE_API_BEST_PRACTICES"
+  CLI_VALIDATE_API_BEST_PRACTICES = "CLI_VALIDATE_API_BEST_PRACTICES",
+  CLI_ASSETS_APPLICATION_DOMAIN_ENFORCEMENT_POLICY = "CLI_ASSETS_APPLICATION_DOMAIN_ENFORCEMENT_POLICY"
 }
 
 const DEFAULT_CLI_MODE = ECliImporterManagerMode.RELEASE_MODE;
@@ -105,6 +111,7 @@ const DEFAULT_CLI_IMPORT_CREATE_API_APPLICATION = false;
 const DEFAULT_CLI_IMPORT_CREATE_API_EVENT_API = true;
 const DEFAULT_CLI_TEST_SETUP_DOMAINS_FOR_APIS = true;
 const DEFAULT_CLI_VALIDATE_API_BEST_PRACTICES = true;
+const DEFAULT_CLI_ASSET_APPLICATION_DOMAIN_ENFORCEMENT_POLICY = ECliAssetsApplicationDomainEnforcementPolicies.STRICT;
 
 const CliConfigEnvVarConfigList: Array<TCliConfigEnvVarConfig> = [
   {
@@ -258,6 +265,14 @@ const CliConfigEnvVarConfigList: Array<TCliConfigEnvVarConfig> = [
     required: false,
     default: String(DEFAULT_CLI_VALIDATE_API_BEST_PRACTICES),
     options: Object.values(ECliConfigBooleanOptions),
+  },
+  {
+    envVarName: ECliConfigEnvVarNames.CLI_ASSETS_APPLICATION_DOMAIN_ENFORCEMENT_POLICY,
+    description: "Assets application domain objects create/update policy. [strict]: neither create nor update allowed outside of assets application domain. [lax]: creating first versions allowed, updating versions disallowed.",
+    required: false,
+    default: String(DEFAULT_CLI_ASSET_APPLICATION_DOMAIN_ENFORCEMENT_POLICY),
+    options: Object.values(ECliAssetsApplicationDomainEnforcementPolicies),
+    hidden: true
   },
 ];
 
@@ -526,6 +541,7 @@ class CliConfig {
           cliAssetImport_ChannelDelimiter: this.getOptionalEnvVarValueAsString_From_Options(ECliConfigEnvVarNames.CLI_IMPORT_CHANNEL_DELIMITER, Object.values(EChannelDelimiters) as Array<string>) as EChannelDelimiters,
           assetOutputDir: importAssetOutputDir,
           cliValidateApiSpecBestPractices: this.getOptionalEnvVarValueAsBoolean_WithDefault(ECliConfigEnvVarNames.CLI_VALIDATE_API_BEST_PRACTICES, DEFAULT_CLI_VALIDATE_API_BEST_PRACTICES),
+          cliAssetsApplicationDomainEnforcementPolicy: this.getOptionalEnvVarValueAsString_From_Options_WithDefault(ECliConfigEnvVarNames.CLI_ASSETS_APPLICATION_DOMAIN_ENFORCEMENT_POLICY, Object.values(ECliAssetsApplicationDomainEnforcementPolicies) as Array<string>, ECliAssetsApplicationDomainEnforcementPolicies.STRICT) as ECliAssetsApplicationDomainEnforcementPolicies,
         },
       },
     };

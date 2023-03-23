@@ -18,8 +18,8 @@ export class TestLogger extends TestLoggerBase {
     )}\ncliError=${JSON.stringify(e, null, 2)}\n`;
   };
 
-  public static createNotCliErrorMesssage = (message: string): string => {
-    return `[${TestContext.getItId()}]: error is not an instance of CliError, error=${message}`;
+  public static createNotCliErrorMesssage = (message: string, err?: any): string => {
+    return `[${TestContext.getItId()}]: error is not an instance of CliError, message=${message}, error=${JSON.stringify(err)}`;
   };
   public static createWrongCliErrorInstance = (
     expectedCliErrorInstance: string,

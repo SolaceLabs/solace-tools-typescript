@@ -26,7 +26,7 @@ export enum E_EpAsyncApiSchemaFormatType {
 }
 
 export class EpAsyncApiMessageDocument {
-  private epAsyncApiDocument: EpAsyncApiDocument;
+  public epAsyncApiDocument: EpAsyncApiDocument;
   private epAsyncApiChannelDocument: EpAsyncApiChannelDocument;
   private asyncApiMessage: Message;
   private asyncApiMessageKey: string;
@@ -150,7 +150,7 @@ export class EpAsyncApiMessageDocument {
     return '';
   }
 
-  public getMessageEpApplicationDomainName(): string | undefined {
+  public getMessageEpApplicationDomainName(): string {
     if(this.asyncApiMessage.hasExtension(EpGeneralExtensions.xEpApplicationDomainName)) {
       const name = this.asyncApiMessage.extension(EpGeneralExtensions.xEpApplicationDomainName);
       if(name && name.length > 0) return name;
@@ -201,7 +201,7 @@ export class EpAsyncApiMessageDocument {
     return '';
   }
 
-  public getPayloadSchemaEpApplicationDomainName(): string | undefined {
+  public getPayloadSchemaEpApplicationDomainName(): string {
     const schema: Schema = this.asyncApiMessage.payload();
     if(!schema) return this.epAsyncApiDocument.getAssetsApplicationDomainName();
     if(schema.hasExtension(EpGeneralExtensions.xEpApplicationDomainName)) {

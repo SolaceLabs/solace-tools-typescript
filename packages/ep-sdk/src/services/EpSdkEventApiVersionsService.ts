@@ -359,7 +359,6 @@ export class EpSdkEventApiVersionsServiceClass extends EpSdkVersionServiceClass 
       });
       if(existingTargetVersion !== undefined) return undefined;
     }
-
     // get list of consumed & produced event versions
     const targetConsumedEventVersions: Array<EventVersion> = [];
     const targetProducedEventVersions: Array<EventVersion> = [];
@@ -368,7 +367,6 @@ export class EpSdkEventApiVersionsServiceClass extends EpSdkVersionServiceClass 
         const eventVersion: EventVersion | undefined = await EpSdkEpEventVersionsService.deepCopyLastestVersionById_IfNotExists({ 
           xContextId,
           eventVersionId: eventVersionId,
-          fromApplicationDomainId: fromAssetsApplicationDomainId,
           toApplicationDomainId: toAssetsApplicationDomainId,
         });
         targetConsumedEventVersions.push(eventVersion);
@@ -379,7 +377,6 @@ export class EpSdkEventApiVersionsServiceClass extends EpSdkVersionServiceClass 
         const eventVersion: EventVersion | undefined = await EpSdkEpEventVersionsService.deepCopyLastestVersionById_IfNotExists({ 
           xContextId,
           eventVersionId: eventVersionId,
-          fromApplicationDomainId: fromAssetsApplicationDomainId,
           toApplicationDomainId: toAssetsApplicationDomainId,
         });
         targetProducedEventVersions.push(eventVersion);
@@ -412,7 +409,7 @@ export class EpSdkEventApiVersionsServiceClass extends EpSdkVersionServiceClass 
       eventApiId: epSdkEventApiTask_ExecuteReturn.epObjectKeys.epObjectId,
       scope: CustomAttributeDefinition.scope.APPLICATION_DOMAIN,
       epSdkCustomAttributeList: [ 
-        { name: EpSdkCustomAttributeNameSourceApplicationDomainId, value: fromApplicationDomainId }
+        { name: EpSdkCustomAttributeNameSourceApplicationDomainId, value: fromEventApi.applicationDomainId }
       ]
     });
     // create target event api version

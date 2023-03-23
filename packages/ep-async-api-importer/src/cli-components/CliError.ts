@@ -9,7 +9,7 @@ import {
   EpAsyncApiError,
   EpAsyncApiParserError,
 } from "@solace-labs/ep-asyncapi";
-import CliConfig from "./CliConfig";
+import CliConfig, { ECliAssetsApplicationDomainEnforcementPolicies } from "./CliConfig";
 import { CliLogger, ECliStatusCodes } from "./CliLogger";
 
 export class CliErrorFactory {
@@ -341,18 +341,22 @@ export class CliImporterTestRunAssetsInconsistencyError extends CliError {
   }
 }
 
-export type CliImporterTestRunNotAllowedToChangeErrorDetails = {
-  epObject: any;
+export type CliImporterTestRunAssetsApplicationDomainPolicyViolationErrorDetails = {
+  // epObject: any;
+  cliAssetsApplicationDomainEnforcementPolicy: ECliAssetsApplicationDomainEnforcementPolicies;
   sourceApplicationDomainName: string;
   targetApplicationDomainName: string;
+  allowedApplicationDomainName: string;
   epSdkTask_TransactionLogData: IEpSdkTask_TransactionLogData;
 }
-export class CliImporterTestRunNotAllowedToChangeError extends CliError {
-  protected static DefaultDescription = "Not Authorized to Modify Object in Application Domain Error";
-  public details: CliImporterTestRunNotAllowedToChangeErrorDetails;
-  constructor(internalLogName: string, details: CliImporterTestRunNotAllowedToChangeErrorDetails) {
-    super(internalLogName, CliImporterTestRunNotAllowedToChangeError.DefaultDescription);
+export class CliImporterTestRunAssetsApplicationDomainPolicyViolationError extends CliError {
+  private static Name = "CliImporterTestRunAssetsApplicationDomainPolicyViolationError";
+  protected static DefaultDescription = "Not Authorized to Modify Object in Assets Application Domain - Policy Violation";
+  public details: CliImporterTestRunAssetsApplicationDomainPolicyViolationErrorDetails;
+  constructor(internalLogName: string, details: CliImporterTestRunAssetsApplicationDomainPolicyViolationErrorDetails) {
+    super(internalLogName, CliImporterTestRunAssetsApplicationDomainPolicyViolationError.DefaultDescription);
     this.details = details;
+    this.name = CliImporterTestRunAssetsApplicationDomainPolicyViolationError.Name;
   }
 }
 

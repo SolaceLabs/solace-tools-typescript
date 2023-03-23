@@ -1,4 +1,5 @@
 import {
+  ApplicationDomainsService,
   CustomAttributeDefinition,
   EnumsService,
   Pagination,
@@ -212,10 +213,9 @@ export class EpSdkEnumVersionsServiceClass extends EpSdkVersionServiceClass {
     return createdTopicAddressEnumVersion;
   }
 
-  public copyLastestVersionById_IfNotExists = async({ xContextId, enumVersionId, fromApplicationDomainId, toApplicationDomainId }: {
+  public copyLastestVersionById_IfNotExists = async({ xContextId, enumVersionId, toApplicationDomainId }: {
     xContextId?: string;
     enumVersionId: string;
-    fromApplicationDomainId: string;
     toApplicationDomainId: string;
   }): Promise<TopicAddressEnumVersion> => {
     const funcName = 'copyLastestVersionById_IfNotExists';
@@ -235,11 +235,9 @@ export class EpSdkEnumVersionsServiceClass extends EpSdkVersionServiceClass {
     if(fromTopicAddressEnumVersion.stateId === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'fromTopicAddressEnumVersion.stateId === undefined', {
       fromTopicAddressEnumVersion: fromTopicAddressEnumVersion
     });
-    
     // get the source enum
     const fromTopicAddressEnum: TopicAddressEnum = await EpSdkEnumsService.getById({
       xContextId,
-      applicationDomainId: fromApplicationDomainId,
       enumId: fromTopicAddressEnumVersion.enumId
     });
     // ensure target enum exists
@@ -268,7 +266,7 @@ export class EpSdkEnumVersionsServiceClass extends EpSdkVersionServiceClass {
       enumId: epSdkEnumTask_ExecuteReturn.epObjectKeys.epObjectId,
       scope: CustomAttributeDefinition.scope.APPLICATION_DOMAIN,
       epSdkCustomAttributeList: [ 
-        { name: EpSdkCustomAttributeNameSourceApplicationDomainId, value: fromApplicationDomainId }
+        { name: EpSdkCustomAttributeNameSourceApplicationDomainId, value: fromTopicAddressEnum.applicationDomainId }
       ]
     });
     // create target enum version
