@@ -173,7 +173,6 @@ describe(`${scriptName}`, () => {
         // copy
         const copiedSchemaVersion: SchemaVersion = await EpSdkSchemaVersionsService.copyLastestVersionById_IfNotExists({
           schemaVersionId: latestSourceSchemaVersion.id,
-          fromApplicationDomainId: SourceApplicationDomainId,
           toApplicationDomainId: TargetApplicationDomainId,
         });
         schemaInfo.targetSchemaId = copiedSchemaVersion.schemaId;
@@ -248,35 +247,24 @@ describe(`${scriptName}`, () => {
             schemaId: schemaInfo.targetSchemaId,
           });
         // copy
-        const copiedSchemaVersion: SchemaVersion =
-          await EpSdkSchemaVersionsService.copyLastestVersionById_IfNotExists({
-            schemaVersionId: latestSourceSchemaVersion.id,
-            fromApplicationDomainId: SourceApplicationDomainId,
-            toApplicationDomainId: TargetApplicationDomainId,
-          });
-        const message = TestLogger.createLogMessage(
-          "latest target & copied target",
-          {
-            latestTargetSchemaVersion: latestTargetSchemaVersion,
-            copiedSchemaVersion: copiedSchemaVersion,
-          }
-        );
-        const latestTargetCompare: Partial<SchemaVersion> = createCompareObject(
-          latestTargetSchemaVersion
-        );
-        const copiedCompare: Partial<SchemaVersion> =
-          createCompareObject(copiedSchemaVersion);
+        const copiedSchemaVersion: SchemaVersion = await EpSdkSchemaVersionsService.copyLastestVersionById_IfNotExists({
+          schemaVersionId: latestSourceSchemaVersion.id,
+          toApplicationDomainId: TargetApplicationDomainId,
+        });
+        const message = TestLogger.createLogMessage("latest target & copied target", {
+          latestTargetSchemaVersion: latestTargetSchemaVersion,
+          copiedSchemaVersion: copiedSchemaVersion,
+        });
+        const latestTargetCompare: Partial<SchemaVersion> = createCompareObject(latestTargetSchemaVersion);
+        const copiedCompare: Partial<SchemaVersion> = createCompareObject(copiedSchemaVersion);
         expect(latestTargetCompare, message).to.be.deep.equal(copiedCompare);
         // // DEBUG
         // expect(false, message).to.be.true;
       }
     } catch (e) {
-      if (e instanceof ApiError)
-        expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
-        .to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
-        .true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 
@@ -340,29 +328,22 @@ describe(`${scriptName}`, () => {
           schemaId: AvroSourceSchemaId,
         });
       // copy
-      const copiedSchemaVersion: SchemaVersion =
-        await EpSdkSchemaVersionsService.copyLastestVersionById_IfNotExists({
-          schemaVersionId: latestSourceSchemaVersion.id,
-          fromApplicationDomainId: SourceApplicationDomainId,
-          toApplicationDomainId: TargetApplicationDomainId,
-        });
+      const copiedSchemaVersion: SchemaVersion = await EpSdkSchemaVersionsService.copyLastestVersionById_IfNotExists({
+        schemaVersionId: latestSourceSchemaVersion.id,
+        toApplicationDomainId: TargetApplicationDomainId,
+      });
       AvroTargetSchemaVersionId = copiedSchemaVersion.schemaId;
       // get latest target version
-      const latestTargetSchemaVersion: SchemaVersion =
-        await EpSdkSchemaVersionsService.getLatestVersionForSchemaId({
-          applicationDomainId: TargetApplicationDomainId,
-          schemaId: copiedSchemaVersion.schemaId,
-        });
+      const latestTargetSchemaVersion: SchemaVersion = await EpSdkSchemaVersionsService.getLatestVersionForSchemaId({
+        applicationDomainId: TargetApplicationDomainId,
+        schemaId: copiedSchemaVersion.schemaId,
+      });
       let message = TestLogger.createLogMessage("source & target", {
         latestSourceSchemaVersion: latestSourceSchemaVersion,
         latestTargetSchemaVersion: latestTargetSchemaVersion,
       });
-      const sourceCompare: Partial<SchemaVersion> = createCompareObject(
-        latestSourceSchemaVersion
-      );
-      const targetCompare: Partial<SchemaVersion> = createCompareObject(
-        latestTargetSchemaVersion
-      );
+      const sourceCompare: Partial<SchemaVersion> = createCompareObject(latestSourceSchemaVersion);
+      const targetCompare: Partial<SchemaVersion> = createCompareObject(latestTargetSchemaVersion);
       expect(sourceCompare, message).to.be.deep.equal(targetCompare);
       message = TestLogger.createLogMessage("copied & latest", {
         copiedSchemaVersion: copiedSchemaVersion,
@@ -372,12 +353,9 @@ describe(`${scriptName}`, () => {
         latestTargetSchemaVersion
       );
     } catch (e) {
-      if (e instanceof ApiError)
-        expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
-        .to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
-        .true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 });

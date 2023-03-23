@@ -65,8 +65,14 @@ You can download the example spec :download:`here <files/NewApplication.yaml>`.
 
 .. note::
 
-  The importer checks if assets (events, schemas, enums), e.g. ExistingEvent_1 or ExistingEvent_2, in other application domains than the assets application domain 
+  By default, the importer checks if assets (events, schemas, enums), e.g. ExistingEvent_1 or ExistingEvent_2, in other application domains than the assets application domain 
   have been modified and will raise an error if so.
+
+  You can control this policy using the environment variable `CLI_ASSETS_APPLICATION_DOMAIN_ENFORCEMENT_POLICY` (run `ep-async-api-importer -h for more details`). 
+  
+  For example, to switch this policy off:
+    
+    `export CLI_ASSETS_APPLICATION_DOMAIN_ENFORCEMENT_POLICY=off`
 
 .. note::
 

@@ -68,12 +68,9 @@ describe(`${scriptName}`, () => {
       });
       SchemaId = schemaResponse.data.id;
     } catch (e) {
-      if (e instanceof ApiError)
-        expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
-        .to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
-        .true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 
@@ -100,36 +97,22 @@ describe(`${scriptName}`, () => {
 
   it(`${scriptName}: should get schema by id`, async () => {
     try {
-      const schemaObject: SchemaObject | undefined =
-        await EpSdkSchemasService.getById({
-          applicationDomainId: ApplicationDomainId,
-          schemaId: SchemaId,
-        });
-      expect(
-        schemaObject.id,
-        TestLogger.createApiTestFailMessage("failed")
-      ).to.eq(SchemaId);
-      expect(
-        schemaObject.applicationDomainId,
-        TestLogger.createApiTestFailMessage("failed")
-      ).to.eq(ApplicationDomainId);
+      const schemaObject: SchemaObject | undefined = await EpSdkSchemasService.getById({ schemaId: SchemaId });
+      expect(schemaObject.id, TestLogger.createApiTestFailMessage("failed")).to.eq(SchemaId);
+      expect(schemaObject.applicationDomainId, TestLogger.createApiTestFailMessage("failed")).to.eq(ApplicationDomainId);
     } catch (e) {
-      if (e instanceof ApiError)
-        expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
-        .to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
-        .true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 
   it(`${scriptName}: should delete schema by id`, async () => {
     try {
-      const schemaObject: SchemaObject | undefined =
-        await EpSdkSchemasService.deleteById({
-          applicationDomainId: ApplicationDomainId,
-          schemaId: SchemaId,
-        });
+      const schemaObject: SchemaObject | undefined = await EpSdkSchemasService.deleteById({
+        applicationDomainId: ApplicationDomainId,
+        schemaId: SchemaId,
+      });
       expect(
         schemaObject.id,
         TestLogger.createApiTestFailMessage("failed")

@@ -268,11 +268,10 @@ const CliConfigEnvVarConfigList: Array<TCliConfigEnvVarConfig> = [
   },
   {
     envVarName: ECliConfigEnvVarNames.CLI_ASSETS_APPLICATION_DOMAIN_ENFORCEMENT_POLICY,
-    description: "Assets application domain objects create/update policy. [strict]: neither create nor update allowed outside of assets application domain. [lax]: creating first versions allowed, updating versions disallowed.",
+    description: "Assets application domain objects create/update policy. [strict]: neither create nor update allowed outside of assets application domain. [lax]: creating first versions allowed, updating versions disallowed. [off]: no policy enforcement",
     required: false,
     default: String(DEFAULT_CLI_ASSET_APPLICATION_DOMAIN_ENFORCEMENT_POLICY),
     options: Object.values(ECliAssetsApplicationDomainEnforcementPolicies),
-    hidden: true
   },
 ];
 
