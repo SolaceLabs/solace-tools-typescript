@@ -55,7 +55,7 @@ export class EpAsyncApiChannelParameterDocument {
       const applicationDomainName = this.asyncApiChannelParameter.extension(EpGeneralExtensions.xEpApplicationDomainName);
       if(applicationDomainName && applicationDomainName.length > 0) return applicationDomainName;
     }
-    return this.epAsyncApiDocument.getAssetsApplicationDomainName();
+    return this.epAsyncApiDocument.getUnprefixedAssetsApplicationDomainName();
   }
 
   public getParameterEnumValueList(): Array<string> {
