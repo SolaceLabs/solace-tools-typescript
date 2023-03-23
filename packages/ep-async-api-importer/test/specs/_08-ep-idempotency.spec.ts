@@ -37,9 +37,17 @@ import {
   EpSdkError,
   EpSdkEnumVersionsService,
   EpSdkSchemaVersionsService,
-  EpSdkEpEventVersionsService
+  EpSdkEpEventVersionsService,
+  EpSdkApplicationVersionsService
 } from "@solace-labs/ep-sdk";
-import { TestContext, TestUtils } from "@internal/tools/src";
+import { 
+  EpAsyncApiDocument, 
+  EpAsyncApiDocumentService 
+} from "@solace-labs/ep-asyncapi";
+import { 
+  TestContext, 
+  TestUtils 
+} from "@internal/tools/src";
 import {
   TestConfig,
   TestLogger,
@@ -53,11 +61,8 @@ import {
   ECliImporterManagerMode,
 } from "../../src/cli-components";
 import { 
-  EpAsyncApiDocument, 
-  EpAsyncApiDocumentService 
-} from "@solace-labs/ep-asyncapi";
-import { ECliAssetImport_TargetVersionStrategy } from "../../src/importers";
-import { EpSdkApplicationVersionsService } from "@solace-labs/ep-sdk";
+  ECliAssetImport_TargetVersionStrategy 
+} from "../../src/importers";
 
 const scriptName: string = path.basename(__filename);
 const TestSpecName = scriptName;

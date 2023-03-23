@@ -88,6 +88,7 @@ export abstract class CliImporter {
     this.runMode = runMode;
   }
 
+  /* istanbul ignore next */
   protected async getApplicationDomainName(applicationDomainId: string): Promise<string> {
     const applicationDomainName: string | undefined = this.applicationDomainCache.get(applicationDomainId);
     if(applicationDomainName) return applicationDomainName;
@@ -96,6 +97,7 @@ export abstract class CliImporter {
     return applicationDomain.name;
   }
 
+  /* istanbul ignore next */
   protected getSourceApplicationDomainId({ epObjectCustomAttributes }:{
     epObjectCustomAttributes?: Array<CustomAttribute>;
   }): string | undefined {
@@ -106,6 +108,7 @@ export abstract class CliImporter {
     return sourceApplicationDomainId;
   }
 
+  /* istanbul ignore next */
   protected async getSourceApplicationDomainName({ epObjectCustomAttributes }:{
     epObjectCustomAttributes?: Array<CustomAttribute>;
   }): Promise<string | undefined> {

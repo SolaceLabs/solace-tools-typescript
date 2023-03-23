@@ -11,6 +11,7 @@ import {
 } from "@solace-labs/ep-asyncapi";
 import CliConfig, { ECliAssetsApplicationDomainEnforcementPolicies } from "./CliConfig";
 import { CliLogger, ECliStatusCodes } from "./CliLogger";
+import { ECliRunContext_RunMode } from "./CliRunContext";
 
 export class CliErrorFactory {
   public static createCliError = ({logName, error}: {
@@ -342,9 +343,10 @@ export class CliImporterTestRunAssetsInconsistencyError extends CliError {
 }
 
 export type CliImporterTestRunAssetsApplicationDomainPolicyViolationErrorDetails = {
-  // epObject: any;
   cliAssetsApplicationDomainEnforcementPolicy: ECliAssetsApplicationDomainEnforcementPolicies;
-  sourceApplicationDomainName: string;
+  runMode: ECliRunContext_RunMode;
+  epObjectName: string;
+  // sourceApplicationDomainName: string; // same as target
   targetApplicationDomainName: string;
   allowedApplicationDomainName: string;
   epSdkTask_TransactionLogData: IEpSdkTask_TransactionLogData;

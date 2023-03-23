@@ -13,6 +13,7 @@ import {
   SchemaVersion,
   Event as EPEvent,
   TopicAddressEnum,
+  CustomAttribute,
 } from "@solace-labs/ep-openapi-node";
 import {
   EEpSdkTask_Action,
@@ -85,29 +86,37 @@ export abstract class CliAssetsImporter extends CliImporter {
     super(cliAssetImporterOptions, runMode);
   }
 
-  private async assertModifyPermission({ logName, targetApplicationDomainName, allowedApplicationDomainName, epSdkTask_ExecuteReturn }:{
+  private async assertModifyPermission({ logName, targetApplicationDomainName, allowedApplicationDomainName, epSdkTask_ExecuteReturn, epObjectCustomAttributes, epObjectName }:{
     logName: string;
     targetApplicationDomainName: string;
     allowedApplicationDomainName: string;
     epSdkTask_ExecuteReturn: IEpSdkTask_ExecuteReturn;
+    epObjectCustomAttributes: Array<CustomAttribute>;
+    epObjectName: string;
   }): Promise<void> {
     if(this.cliImporterOptions.cliAssetsApplicationDomainEnforcementPolicy === ECliAssetsApplicationDomainEnforcementPolicies.OFF) return;
-    // const log = {
-    //   logName,
-    //   cliAssetsApplicationDomainEnforcementPolicy: this.cliImporterOptions.cliAssetsApplicationDomainEnforcementPolicy,
-    //   epSdkTask_Action: epSdkTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action,
-    //   sourceApplicationDomainName: await this.getSourceApplicationDomainName({ epObjectCustomAttributes: epSdkTask_ExecuteReturn.epObject.customAttributes }),
-    //   targetApplicationDomainName,
-    //   allowedApplicationDomainName
-    // }
-    // console.log(`logn = ${JSON.stringify(log, null, 2)}`);
+    const assertModifyPermissionLog = {
+      logName,
+      runMode: this.runMode,
+      cliAssetsApplicationDomainEnforcementPolicy: this.cliImporterOptions.cliAssetsApplicationDomainEnforcementPolicy,
+      epObjectName,
+      epObjectType: epSdkTask_ExecuteReturn.epObjectKeys.epObjectType,
+      epSdkTask_Action: epSdkTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action,
+      epObjectCustomAttributes: epObjectCustomAttributes || 'undefined',
+      // sourceApplicationDomainName: await this.getSourceApplicationDomainName({ epObjectCustomAttributes }) || 'unknown',
+      targetApplicationDomainName,
+      allowedApplicationDomainName
+    }
+    console.log(`assertModifyPermissionLog = ${JSON.stringify(assertModifyPermissionLog, null, 2)}`);
     if(epSdkTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action !== EEpSdkTask_Action.NO_ACTION) {
       if(this.cliImporterOptions.cliAssetsApplicationDomainEnforcementPolicy === ECliAssetsApplicationDomainEnforcementPolicies.LAX && epSdkTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action === EEpSdkTask_Action.CREATE_FIRST_VERSION) return;
-      const sourceApplicationDomainName = await this.getSourceApplicationDomainName({ epObjectCustomAttributes: epSdkTask_ExecuteReturn.epObject.customAttributes }) || 'unknown';
+      // const sourceApplicationDomainName = await this.getSourceApplicationDomainName({ epObjectCustomAttributes }) || 'unknown';
       if(targetApplicationDomainName !== allowedApplicationDomainName) {
         throw new CliImporterTestRunAssetsApplicationDomainPolicyViolationError(logName, {
           cliAssetsApplicationDomainEnforcementPolicy: this.cliImporterOptions.cliAssetsApplicationDomainEnforcementPolicy,
-          sourceApplicationDomainName: sourceApplicationDomainName,
+          runMode: this.runMode,
+          epObjectName: epSdkTask_ExecuteReturn.epObject.name,
+          // sourceApplicationDomainName: sourceApplicationDomainName,
           targetApplicationDomainName,
           allowedApplicationDomainName,
           epSdkTask_TransactionLogData: epSdkTask_ExecuteReturn.epSdkTask_TransactionLogData,
@@ -168,8 +177,10 @@ export abstract class CliAssetsImporter extends CliImporter {
     await this.assertModifyPermission({
       logName,
       targetApplicationDomainName: epAsyncApiMessageDocument.getMessageEpApplicationDomainName(),
-      allowedApplicationDomainName: epAsyncApiMessageDocument.epAsyncApiDocument.getAssetsApplicationDomainName(),
-      epSdkTask_ExecuteReturn: epSdkEpEventVersionTask_ExecuteReturn
+      allowedApplicationDomainName: epAsyncApiMessageDocument.epAsyncApiDocument.getUnprefixedAssetsApplicationDomainName(),
+      epSdkTask_ExecuteReturn: epSdkEpEventVersionTask_ExecuteReturn,
+      epObjectCustomAttributes: eventObject.customAttributes || [],
+      epObjectName: eventObject.name,
     });
     
     CliLogger.trace(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.IMPORTING_EP_EVENT_VERSION, details: {
@@ -297,8 +308,10 @@ export abstract class CliAssetsImporter extends CliImporter {
     await this.assertModifyPermission({
       logName,
       targetApplicationDomainName: epAsyncApiMessageDocument.getPayloadSchemaEpApplicationDomainName(),
-      allowedApplicationDomainName: epAsyncApiMessageDocument.epAsyncApiDocument.getAssetsApplicationDomainName(),
-      epSdkTask_ExecuteReturn: epSdkSchemaVersionTask_ExecuteReturn
+      allowedApplicationDomainName: epAsyncApiMessageDocument.epAsyncApiDocument.getUnprefixedAssetsApplicationDomainName(),
+      epSdkTask_ExecuteReturn: epSdkSchemaVersionTask_ExecuteReturn,
+      epObjectCustomAttributes: schemaObject.customAttributes || [],
+      epObjectName: schemaObject.name,
     });
     
     CliLogger.trace(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.IMPORTING_EP_SCHEMA_VERSION, details: {
@@ -362,13 +375,7 @@ export abstract class CliAssetsImporter extends CliImporter {
     return epSdkSchemaVersionTask_ExecuteReturn.epObject;
   };
 
-  private run_present_enum_version = async ({
-    assetApplicationDomainId,
-    enumObject,
-    specVersion,
-    epAsyncApiChannelParameterDocument,
-    checkmode,
-  }: {
+  private run_present_enum_version = async ({assetApplicationDomainId, enumObject, specVersion, epAsyncApiChannelParameterDocument, checkmode }: {
     assetApplicationDomainId: string;
     enumObject: TopicAddressEnum;
     specVersion: string;
@@ -412,8 +419,10 @@ export abstract class CliAssetsImporter extends CliImporter {
     await this.assertModifyPermission({
       logName,
       targetApplicationDomainName: epAsyncApiChannelParameterDocument.getEpApplicationDomainName(),
-      allowedApplicationDomainName: epAsyncApiChannelParameterDocument.epAsyncApiDocument.getAssetsApplicationDomainName(),
-      epSdkTask_ExecuteReturn: epSdkEnumVersionTask_ExecuteReturn
+      allowedApplicationDomainName: epAsyncApiChannelParameterDocument.epAsyncApiDocument.getUnprefixedAssetsApplicationDomainName(),
+      epSdkTask_ExecuteReturn: epSdkEnumVersionTask_ExecuteReturn,
+      epObjectCustomAttributes: enumObject.customAttributes || [],
+      epObjectName: enumObject.name
     });
     // collect enum version info for event version task
     /* istanbul ignore next */
