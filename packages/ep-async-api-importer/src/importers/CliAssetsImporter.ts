@@ -250,7 +250,7 @@ export abstract class CliAssetsImporter extends CliImporter {
       versionString: specVersion,
       versionStrategy: this.get_EEpSdk_VersionTaskStrategy(),
       schemaVersionSettings: { 
-        content: JSON.stringify(epAsyncApiMessageDocument.getSchemaAsSanitizedJson()),
+        content: JSON.stringify(epAsyncApiMessageDocument.getSchemaAsSanitizedJson(), null, 2),
         // don't set the description, it remains in the schema
         // otherwise no idempotency 
         // description: epAsyncApiMessageDocument.getPayloadSchemaDescription(),
