@@ -187,7 +187,7 @@ export abstract class CliAssetsImporter extends CliImporter {
       applicationDomainId: eventApplicationDomainId,
       eventName: epEventName,
       eventObjectSettings: {
-        shared: true,
+        shared: epAsyncApiChannelDocument.isEventShared(),
       },
       epSdkTask_TransactionConfig: this.get_IEpSdkTask_TransactionConfig(),
       checkmode: checkmode,
@@ -312,7 +312,7 @@ export abstract class CliAssetsImporter extends CliImporter {
       schemaObjectSettings: {
         contentType: CliAsyncApiDocumentService.map_MessageDocumentContentType_To_EpSchemaContentType(epAsyncApiMessageDocument.getContentType()),
         schemaType: CliAsyncApiDocumentService.map_MessageDocumentSchemaFormatType_To_EpSchemaFormatType(epAsyncApiMessageDocument.getSchemaFormatType()),
-        shared: true,
+        shared: epAsyncApiMessageDocument.isSchemaShared(),
       },
       epSdkTask_TransactionConfig: this.get_IEpSdkTask_TransactionConfig(),
       checkmode: checkmode,
@@ -471,7 +471,7 @@ export abstract class CliAssetsImporter extends CliImporter {
           applicationDomainId: enumApplicationDomainId,
           enumName: parameterName,
           enumObjectSettings: {
-            shared: true,
+            shared: epAsyncApiChannelParameterDocument.isParameterShared(),
           },
           epSdkTask_TransactionConfig: this.get_IEpSdkTask_TransactionConfig(),
           // TODO: checkmode?

@@ -141,8 +141,10 @@ describe(`${scriptName}`, () => {
             if(getEpAsyncApiChannelParameterDocumentMap) {
               for(const [key, epAsyncApiChannelParameterDocument] of getEpAsyncApiChannelParameterDocumentMap) {
                 const parameterName = key;
+                const isParameterShared = epAsyncApiChannelParameterDocument.isParameterShared()
                 const parameterDisplayName = epAsyncApiChannelParameterDocument.getDisplayName();
                 const parameterAppDomainName = epAsyncApiChannelParameterDocument.getEpApplicationDomainName();
+                expect(isParameterShared).to.be.false
                 expect(parameterDisplayName, TestLogger.createLogMessage('failed', { parameterDisplayName })).to.equal(`${parameterName}_displayName`);
                 expect(parameterAppDomainName, TestLogger.createLogMessage('failed', { parameterAppDomainName })).to.equal(`domain/${parameterName}`);
               }
@@ -154,8 +156,10 @@ describe(`${scriptName}`, () => {
               const messageName = getEpAsyncApiMessageDocument.getMessageName();
               const messageDisplayName = getEpAsyncApiMessageDocument.getMessageDisplayName();
               const messageAppDomainName = getEpAsyncApiMessageDocument.getMessageEpApplicationDomainName();
+              const isSchemaShared = getEpAsyncApiMessageDocument.isSchemaShared()
               expect(messageDisplayName, TestLogger.createLogMessage('failed', { messageDisplayName })).to.equal(`${messageName}_displayName`);
               expect(messageAppDomainName, TestLogger.createLogMessage('failed', { messageAppDomainName })).to.equal(`domain/${messageName}`);
+              expect(isSchemaShared).to.be.false
   
               const schemaName = getEpAsyncApiMessageDocument.getPayloadSchemaName();
               const schemaDisplayName = getEpAsyncApiMessageDocument.getPayloadSchemaDisplayName();

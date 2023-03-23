@@ -1,7 +1,10 @@
 import { Channel, ChannelParameter, Message } from "@asyncapi/parser";
 import { $Event, $EventVersion } from "@solace-labs/ep-openapi-node";
 import { Validator, ValidatorResult } from "jsonschema";
-import { EpAsyncApiChannelExtensions } from "../constants";
+import { 
+  EpAsyncApiChannelExtensions,
+  EpGeneralExtensions,
+ } from "../constants";
 import { 
   EpAsyncApiInternalError, 
   EpAsyncApiValidationError 
@@ -325,6 +328,13 @@ export class EpAsyncApiChannelDocument {
     const logName = `${EpAsyncApiDocument.name}.${funcName}()`;
     if(this.epEventDescription === undefined) throw new EpAsyncApiInternalError(logName, this.constructor.name, "this.epEventDescription === undefined");
     return this.epEventDescription;
+  }
+
+  public isEventShared(): boolean {
+    if (this.asyncApiChannel.hasPublish())
+      return this.asyncApiChannel.publish().message().extension(EpGeneralExtensions.xEpShared) == "true";
+    else
+      return this.asyncApiChannel.subscribe().message().extension(EpGeneralExtensions.xEpShared) == "true";
   }
 
   // public getApplicationDomainName(): string {

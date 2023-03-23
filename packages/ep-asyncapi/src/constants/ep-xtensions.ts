@@ -3,6 +3,7 @@
 export enum EpGeneralExtensions {
   xEpApplicationDomainName = "x-ep-application-domain-name",
   // xEpApplicationDomainId = "x-ep-application-domain-id"
+  xEpShared = "x-ep-shared",
 }
 
 export enum EpParameterExtensions {

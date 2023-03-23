@@ -43,6 +43,10 @@ export class EpAsyncApiChannelParameterDocument {
     return '';
   }
 
+  public isParameterShared(): boolean {
+    return this.asyncApiChannelParameter.extension(EpGeneralExtensions.xEpShared) == "true";
+  }
+
   // public getEpApplicationDomainId(): string | undefined {
   //   if(this.asyncApiChannelParameter.hasExtension(EpGeneralExtensions.xEpApplicationDomainId)) {
   //     const applicationDomainId = this.asyncApiChannelParameter.extension(EpGeneralExtensions.xEpApplicationDomainId);

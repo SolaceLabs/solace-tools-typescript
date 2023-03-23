@@ -140,6 +140,10 @@ export class EpAsyncApiMessageDocument {
     return JSON.stringify(schema.json());
   }
 
+  public isSchemaShared(): boolean {
+    return this.asyncApiMessage.payload().extension(EpGeneralExtensions.xEpShared) == "true";
+  }
+
   public getMessageName(): string { return this.asyncApiMessageKey; }
 
   public getMessageDisplayName(): string {

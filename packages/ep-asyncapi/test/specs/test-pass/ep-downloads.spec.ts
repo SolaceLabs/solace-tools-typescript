@@ -70,6 +70,7 @@ describe(`${scriptName}`, () => {
           const epEventName = epAsyncApiChannelDocument.getEpEventName();
           const epEventVersionName = epAsyncApiChannelDocument.getEpEventVersionName();
           const epEventDescription = epAsyncApiChannelDocument.getEpEventDescription();
+          const isEventShared = epAsyncApiChannelDocument.isEventShared();
           let epSchemaName: string | undefined = undefined;
           let epSchemaDisplayName: string | undefined = undefined;
           let epSchemaDescription: string | undefined = undefined;
@@ -97,6 +98,7 @@ describe(`${scriptName}`, () => {
             expect(epSchemaDisplayName, 'wrong schema display name').to.equal(ExpectedSchemaDisplayName2);
             expect(epSchemaDescription, 'wrong schema description').to.equal(ExpectedSchemaDescription2);
           } else expect(topic, 'unknonw topic').to.be.false;
+          expect(isEventShared).to.be.false
 
           const epAsyncApiChannelParameterDocumentMap = epAsyncApiChannelDocument.getEpAsyncApiChannelParameterDocumentMap();
           for(const [parameter, epAsyncApiChannelParameterDocument] of epAsyncApiChannelParameterDocumentMap) {
