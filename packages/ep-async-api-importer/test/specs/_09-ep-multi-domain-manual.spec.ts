@@ -343,6 +343,14 @@ describe(`${scriptName}`, () => {
 
   it(`${scriptName}: should import Start_AppAsyncApiSpecFile again, test idempotency`, async () => {
     try {
+      CliConfig.getCliImporterManagerOptions().asyncApiFileList = [Start_AppAsyncApiSpecFile];
+      CliConfig.getCliImporterManagerOptions().cliImporterManagerMode = ECliImporterManagerMode.RELEASE_MODE;
+      // // DEBUG
+      // CliConfig.getCliImporterManagerOptions().cliImporterManagerMode = ECliImporterManagerMode.TEST_MODE_KEEP;
+      CliConfig.getCliImporterManagerOptions().createApiApplication = true;
+      CliConfig.getCliImporterManagerOptions().createApiEventApi = false;
+      CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_BrokerType = undefined;
+      CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_ChannelDelimiter = undefined;
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetsApplicationDomainEnforcementPolicy = ECliAssetsApplicationDomainEnforcementPolicies.STRICT;
       const cliImporter = new CliImporterManager(CliConfig.getCliImporterManagerOptions());
       const xvoid: void = await cliImporter.run();
@@ -366,7 +374,6 @@ describe(`${scriptName}`, () => {
         applicationDomainId: applicationDomain.id
       })
       expect(applicationVersions.length,'applicationVersions.length not 1').to.equal(1);
-
     } catch (e) {
       TestLogger.logMessageWithId(TestLogger.createTestFailMessageForError('error', e));
       if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
