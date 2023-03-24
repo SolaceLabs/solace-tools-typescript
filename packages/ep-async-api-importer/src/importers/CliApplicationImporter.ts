@@ -446,13 +446,8 @@ export class CliApplicationImporter extends CliAssetsImporter {
       epSdkTask_TransactionConfig: this.get_IEpSdkTask_TransactionConfig(),
       checkmode: checkmode,
     });
-    const epSdkApplicationTask_ExecuteReturn: IEpSdkApplicationTask_ExecuteReturn = await this.executeTask({
-      epSdkTask: epSdkApplicationTask,
-      expectNoAction: checkmode,
-    });
-    CliLogger.trace(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.IMPORTING_EP_APPLICATION, details: {
-      epSdkApplicationTask_ExecuteReturn: epSdkApplicationTask_ExecuteReturn,
-    }}));
+    const epSdkApplicationTask_ExecuteReturn: IEpSdkApplicationTask_ExecuteReturn = await this.executeTask({epSdkTask: epSdkApplicationTask, expectNoAction: checkmode });
+    CliLogger.trace(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.IMPORTING_EP_APPLICATION, details: { epSdkApplicationTask_ExecuteReturn: epSdkApplicationTask_ExecuteReturn }}));
     /* istanbul ignore next */
     if (epSdkApplicationTask_ExecuteReturn.epObject.id === undefined) throw new CliEPApiContentError(logName, "epSdkApplicationTask_ExecuteReturn.epObject.id === undefined", {
       epSdkApplicationTask_ExecuteReturn: epSdkApplicationTask_ExecuteReturn,
@@ -609,8 +604,10 @@ export class CliApplicationImporter extends CliAssetsImporter {
   public async run({cliImporterRunOptions}: {
     cliImporterRunOptions: ICliApplicationImporterRunOptions;
   }): Promise<ICliApplicationImporterRunReturn> {
-    // const funcName = "run";
-    // const logName = `${CliApplicationImporter.name}.${funcName}()`;
+    const funcName = "run";
+    const logName = `${CliApplicationImporter.name}.${funcName}()`;
+
+    cliImporterRunOptions.cliAssetsImporterRunPresentReturn?.assetApplicationDomainId
 
     const cliApplicationImporterRunImportReturn: ICliApplicationImporterRunImportReturn = await this.run_import({ cliImporterRunOptions: cliImporterRunOptions, });
     if(cliApplicationImporterRunImportReturn.error !== undefined) return {

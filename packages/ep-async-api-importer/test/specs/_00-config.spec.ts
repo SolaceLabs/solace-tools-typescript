@@ -37,5 +37,18 @@ describe(`${scriptName}`, () => {
     }
   });
 
+  it(`${scriptName}: should report correct error for no create selected`, async () => {
+    try {
+      CliConfig.getCliImporterManagerOptions().createApiEventApi = false;
+      CliConfig.getCliImporterManagerOptions().createApiApplication = false;
+      CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetsApplicationDomainEnforcementPolicy = ECliAssetsApplicationDomainEnforcementPolicies.OFF;
+      CliConfig.validateConfig();
+      expect(false, 'should never get here').to.be.true;
+    } catch(e) {
+      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
+      expect(e instanceof CliConfigInvalidConfigCombinationError).to.be.true;
+    }
+  });
+
 });
 

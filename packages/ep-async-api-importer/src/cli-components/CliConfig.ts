@@ -432,6 +432,13 @@ class CliConfig {
   public validateConfig() {
     const funcName = "validateConfig";
     const logName = `${CliConfig.name}.${funcName}()`;
+    if(!this.config.cliImporterConfig.createApiApplication && !this.config.cliImporterConfig.createApiEventApi) {
+      throw new CliConfigInvalidConfigCombinationError(logName, {
+        issue: `At least one output must be selected`,
+        createApiApplication: String(this.config.cliImporterConfig.createApiApplication),
+        createApiEventApi: String(this.config.cliImporterConfig.createApiEventApi)
+      });
+    }
     if(this.config.cliImporterConfig.cliImporterOptions.cliAssetsApplicationDomainEnforcementPolicy !== ECliAssetsApplicationDomainEnforcementPolicies.OFF) {
       if(this.config.cliImporterConfig.cliTestSetupDomainsForApis === false) {
         throw new CliConfigInvalidConfigCombinationError(logName, {
