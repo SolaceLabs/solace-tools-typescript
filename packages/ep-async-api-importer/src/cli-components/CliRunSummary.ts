@@ -51,6 +51,7 @@ export enum ECliRunSummary_Type {
   VersionObjectCheck = "VersionObjectCheck",
   VersionObjectWarning = "VersionObjectWarning",
   EventApiVersioningError = "EventApiVersioningError",
+  ApplicationVersioningError = "ApplicationVersioningError",
   ImportSummary = "ImportSummary",
 }
 
@@ -155,7 +156,7 @@ interface ICliRunSummary_Task_VersionObject_Warning extends ICliRunSummary_Task_
   type: ECliRunSummary_Type.VersionObjectWarning;
 }
 interface ICliRunSummary_Task_VersionObject_Error extends ICliRunSummary_Task_VersionObject_WarningError_Base {
-  type: ECliRunSummary_Type.EventApiVersioningError;
+  type: ECliRunSummary_Type.EventApiVersioningError | ECliRunSummary_Type.ApplicationVersioningError;
 }
 export interface ICliImportSummary extends ICliRunSummary_LogBase {
   type: ECliRunSummary_Type.ImportSummary;
@@ -544,28 +545,17 @@ Start Run: ${cliRunSummary_StartRun.runMode} ------------------------
         action: epSdkEventApiVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action,
         epObjectType: epSdkEventApiVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epObjectKeys.epObjectType,
         displayName: epSdkEventApiVersionTask_ExecuteReturn.epObject.displayName,
-        existingVersion: latestExistingEventApiVersionObjectBefore.version
-          ? latestExistingEventApiVersionObjectBefore.version
-          : "undefined",
-        existingVersionState: latestExistingEventApiVersionObjectBefore.stateId
-          ? latestExistingEventApiVersionObjectBefore.stateId
-          : "undefined",
+        existingVersion: latestExistingEventApiVersionObjectBefore.version ? latestExistingEventApiVersionObjectBefore.version : "undefined",
+        existingVersionState: latestExistingEventApiVersionObjectBefore.stateId ? latestExistingEventApiVersionObjectBefore.stateId : "undefined",
         targetVersion: targetEventApiVersion,
         targetVersionState: targetEventApiState,
-        newVersion: epSdkEventApiVersionTask_ExecuteReturn.epObject.version
-          ? epSdkEventApiVersionTask_ExecuteReturn.epObject.version
-          : "undefined",
-        newVersionState: epSdkEventApiVersionTask_ExecuteReturn.epObject.stateId
-          ? epSdkEventApiVersionTask_ExecuteReturn.epObject.stateId
-          : "undefined",
+        newVersion: epSdkEventApiVersionTask_ExecuteReturn.epObject.version ? epSdkEventApiVersionTask_ExecuteReturn.epObject.version : "undefined",
+        newVersionState: epSdkEventApiVersionTask_ExecuteReturn.epObject.stateId ? epSdkEventApiVersionTask_ExecuteReturn.epObject.stateId : "undefined",
         requestedUpdates: requestedUpdates,
         applicationDomainName: this.applicationDomainName,
       };
     let consoleOutput: string;
-    if (
-      cliRunSummary_Task_VersionObject_Error.action ===
-      EEpSdkTask_Action.NO_ACTION
-    ) {
+    if ( cliRunSummary_Task_VersionObject_Error.action === EEpSdkTask_Action.NO_ACTION) {
       consoleOutput = `
       Run Error for ${cliRunSummary_Task_VersionObject_Error.epObjectType}:
         Error:    Inconsistent Event Api Versions
@@ -576,10 +566,7 @@ Start Run: ${cliRunSummary_StartRun.runMode} ------------------------
         Target Version:   ${cliRunSummary_Task_VersionObject_Error.targetVersion}
         Target State:     ${cliRunSummary_Task_VersionObject_Error.targetVersionState}
       `;
-    } else if (
-      cliRunSummary_Task_VersionObject_Error.action ===
-      EEpSdkTask_Action.WOULD_FAIL_CREATE_NEW_VERSION_ON_EXACT_VERSION_REQUIREMENT
-    ) {
+    } else if (cliRunSummary_Task_VersionObject_Error.action === EEpSdkTask_Action.WOULD_FAIL_CREATE_NEW_VERSION_ON_EXACT_VERSION_REQUIREMENT) {
       consoleOutput = `
       Run Error for ${cliRunSummary_Task_VersionObject_Error.epObjectType}:
         Error:    Inconsistent Event Api Versions
@@ -606,15 +593,8 @@ Start Run: ${cliRunSummary_StartRun.runMode} ------------------------
         Created State:    ${cliRunSummary_Task_VersionObject_Error.newVersionState}
       `;
     }
-    this.log(
-      ECliSummaryStatusCodes.PROCESSED_EVENT_API_VERSION,
-      this.addTaskElements(cliRunSummary_Task_VersionObject_Error),
-      consoleOutput
-    );
-    this.processedVersionObject(
-      ECliSummaryStatusCodes.PROCESSED_EVENT_API_VERSION,
-      epSdkEventApiVersionTask_ExecuteReturn
-    );
+    this.log(ECliSummaryStatusCodes.PROCESSED_EVENT_API_VERSION, this.addTaskElements(cliRunSummary_Task_VersionObject_Error), consoleOutput );
+    this.processedVersionObject(ECliSummaryStatusCodes.PROCESSED_EVENT_API_VERSION, epSdkEventApiVersionTask_ExecuteReturn);
   };
 
   public processedEventApiVersionWithWarning = ({
@@ -633,28 +613,15 @@ Start Run: ${cliRunSummary_StartRun.runMode} ------------------------
     const cliRunSummary_Task_VersionObject_Warning: ICliRunSummary_Task_VersionObject_Warning =
       {
         type: ECliRunSummary_Type.VersionObjectWarning,
-        action:
-          epSdkEventApiVersionTask_ExecuteReturn.epSdkTask_TransactionLogData
-            .epSdkTask_Action,
-        epObjectType:
-          epSdkEventApiVersionTask_ExecuteReturn.epSdkTask_TransactionLogData
-            .epObjectKeys.epObjectType,
-        displayName:
-          epSdkEventApiVersionTask_ExecuteReturn.epObject.displayName,
-        existingVersion: latestExistingEventApiVersionObjectBefore.version
-          ? latestExistingEventApiVersionObjectBefore.version
-          : "undefined",
-        existingVersionState: latestExistingEventApiVersionObjectBefore.stateId
-          ? latestExistingEventApiVersionObjectBefore.stateId
-          : "undefined",
+        action: epSdkEventApiVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action,
+        epObjectType: epSdkEventApiVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epObjectKeys.epObjectType,
+        displayName: epSdkEventApiVersionTask_ExecuteReturn.epObject.displayName,
+        existingVersion: latestExistingEventApiVersionObjectBefore.version ? latestExistingEventApiVersionObjectBefore.version : "undefined",
+        existingVersionState: latestExistingEventApiVersionObjectBefore.stateId ? latestExistingEventApiVersionObjectBefore.stateId : "undefined",
         targetVersion: targetEventApiVersion,
         targetVersionState: targetEventApiState,
-        newVersion: epSdkEventApiVersionTask_ExecuteReturn.epObject.version
-          ? epSdkEventApiVersionTask_ExecuteReturn.epObject.version
-          : "undefined",
-        newVersionState: epSdkEventApiVersionTask_ExecuteReturn.epObject.stateId
-          ? epSdkEventApiVersionTask_ExecuteReturn.epObject.stateId
-          : "undefined",
+        newVersion: epSdkEventApiVersionTask_ExecuteReturn.epObject.version ? epSdkEventApiVersionTask_ExecuteReturn.epObject.version : "undefined",
+        newVersionState: epSdkEventApiVersionTask_ExecuteReturn.epObject.stateId ? epSdkEventApiVersionTask_ExecuteReturn.epObject.stateId : "undefined",
         requestedUpdates: requestedUpdates,
         applicationDomainName: this.applicationDomainName,
       };
@@ -687,22 +654,11 @@ Start Run: ${cliRunSummary_StartRun.runMode} ------------------------
         New State:        ${cliRunSummary_Task_VersionObject_Warning.newVersionState}
       `;
     }
-    this.log(
-      ECliSummaryStatusCodes.PROCESSED_EVENT_API_VERSION,
-      this.addTaskElements(cliRunSummary_Task_VersionObject_Warning),
-      consoleOutput
-    );
-    this.processedVersionObject(
-      ECliSummaryStatusCodes.PROCESSED_EVENT_API_VERSION,
-      epSdkEventApiVersionTask_ExecuteReturn
-    );
+    this.log(ECliSummaryStatusCodes.PROCESSED_EVENT_API_VERSION, this.addTaskElements(cliRunSummary_Task_VersionObject_Warning), consoleOutput );
+    this.processedVersionObject(ECliSummaryStatusCodes.PROCESSED_EVENT_API_VERSION, epSdkEventApiVersionTask_ExecuteReturn );
   };
 
-  public processingStartEventApiVersion = ({
-    exactTargetVersion,
-    epSdkEventApiVersionTask_ExecuteReturn_Check,
-    latestExistingEventApiVersionObjectBefore,
-  }: {
+  public processingStartEventApiVersion = ({ exactTargetVersion, epSdkEventApiVersionTask_ExecuteReturn_Check, latestExistingEventApiVersionObjectBefore }: {
     exactTargetVersion: string;
     epSdkEventApiVersionTask_ExecuteReturn_Check: IEpSdkEventApiVersionTask_ExecuteReturn;
     latestExistingEventApiVersionObjectBefore?: EventApiVersion;
@@ -750,44 +706,29 @@ Start Run: ${cliRunSummary_StartRun.runMode} ------------------------
     );
   };
 
-  public processingStartApplicationVersion = ({
-    exactTargetVersion,
-    epSdkApplicationVersionTask_ExecuteReturn_Check,
-    latestExistingApplicationVersionObjectBefore,
-  }: {
+  public processingStartApplicationVersion = ({ exactTargetVersion, epSdkApplicationVersionTask_ExecuteReturn_Check, latestExistingApplicationVersionObjectBefore }: {
     exactTargetVersion: string;
     epSdkApplicationVersionTask_ExecuteReturn_Check: IEpSdkApplicationVersionTask_ExecuteReturn;
     latestExistingApplicationVersionObjectBefore?: ApplicationVersion;
   }): void => {
-    const cliRunSummary_Task_VersionObject_Check: ICliRunSummary_Task_VersionObject_Check =
-      {
-        type: ECliRunSummary_Type.VersionObjectCheck,
-        exactTargetVersion: exactTargetVersion,
-        action:
-          epSdkApplicationVersionTask_ExecuteReturn_Check
-            .epSdkTask_TransactionLogData.epSdkTask_Action,
-        epObjectType:
-          epSdkApplicationVersionTask_ExecuteReturn_Check
-            .epSdkTask_TransactionLogData.epObjectKeys.epObjectType,
-        displayName:
-          epSdkApplicationVersionTask_ExecuteReturn_Check.epObject.displayName,
-        version: latestExistingApplicationVersionObjectBefore?.version,
-        state: latestExistingApplicationVersionObjectBefore?.stateId,
-        applicationDomainName: this.applicationDomainName,
-      };
-    const existingVersionOutput = latestExistingApplicationVersionObjectBefore
-      ? `${cliRunSummary_Task_VersionObject_Check.version} (state: ${cliRunSummary_Task_VersionObject_Check.state})`
-      : "None.";
+    const cliRunSummary_Task_VersionObject_Check: ICliRunSummary_Task_VersionObject_Check = {
+      type: ECliRunSummary_Type.VersionObjectCheck,
+      exactTargetVersion: exactTargetVersion,
+      action: epSdkApplicationVersionTask_ExecuteReturn_Check .epSdkTask_TransactionLogData.epSdkTask_Action,
+      epObjectType: epSdkApplicationVersionTask_ExecuteReturn_Check.epSdkTask_TransactionLogData.epObjectKeys.epObjectType,
+      displayName: epSdkApplicationVersionTask_ExecuteReturn_Check.epObject.displayName,
+      version: latestExistingApplicationVersionObjectBefore?.version,
+      state: latestExistingApplicationVersionObjectBefore?.stateId,
+      applicationDomainName: this.applicationDomainName,
+    };
+    const existingVersionOutput = latestExistingApplicationVersionObjectBefore ? `${cliRunSummary_Task_VersionObject_Check.version} (state: ${cliRunSummary_Task_VersionObject_Check.state})` : "None.";
     let consoleOutput = `
       Run Check for ${cliRunSummary_Task_VersionObject_Check.epObjectType}:
         Name:     ${cliRunSummary_Task_VersionObject_Check.displayName}
         Action:   ${cliRunSummary_Task_VersionObject_Check.action}
         Exsiting Version: ${existingVersionOutput}
         Target Version:   ${cliRunSummary_Task_VersionObject_Check.exactTargetVersion}`;
-    if (
-      cliRunSummary_Task_VersionObject_Check.action !==
-      EEpSdkTask_Action.NO_ACTION
-    ) {
+    if(cliRunSummary_Task_VersionObject_Check.action !== EEpSdkTask_Action.NO_ACTION) {
       consoleOutput += `
         Updates Required: See epSdkTask_IsUpdateRequiredFuncReturn in details.
       `;
@@ -795,61 +736,97 @@ Start Run: ${cliRunSummary_StartRun.runMode} ------------------------
       consoleOutput += `
       `;
     }
-    this.log(
-      ECliSummaryStatusCodes.PROCESSING_START_APPLICATION_VERSION,
-      this.addTaskElements(cliRunSummary_Task_VersionObject_Check),
-      consoleOutput
-    );
+    this.log(ECliSummaryStatusCodes.PROCESSING_START_APPLICATION_VERSION, this.addTaskElements(cliRunSummary_Task_VersionObject_Check), consoleOutput );
   };
 
-  public processedApplicationVersionWithWarning = ({
-    targetApplicationState,
-    targetApplicationVersion,
-    epSdkApplicationVersionTask_ExecuteReturn,
-    latestExistingApplicationVersionObjectBefore,
-    requestedUpdates,
-  }: {
+  public processedApplicationVersionWithError = ({ targetApplicationVersion, targetApplicationState, epSdkApplicationVersionTask_ExecuteReturn, latestExistingApplicationVersionObjectBefore, requestedUpdates }: {
     targetApplicationVersion: string;
     targetApplicationState: string;
     epSdkApplicationVersionTask_ExecuteReturn: IEpSdkApplicationVersionTask_ExecuteReturn;
     latestExistingApplicationVersionObjectBefore: ApplicationVersion;
     requestedUpdates: any;
   }): void => {
-    const cliRunSummary_Task_VersionObject_Warning: ICliRunSummary_Task_VersionObject_Warning =
-      {
-        type: ECliRunSummary_Type.VersionObjectWarning,
-        action:
-          epSdkApplicationVersionTask_ExecuteReturn.epSdkTask_TransactionLogData
-            .epSdkTask_Action,
-        epObjectType:
-          epSdkApplicationVersionTask_ExecuteReturn.epSdkTask_TransactionLogData
-            .epObjectKeys.epObjectType,
-        displayName:
-          epSdkApplicationVersionTask_ExecuteReturn.epObject.displayName,
-        existingVersion: latestExistingApplicationVersionObjectBefore.version
-          ? latestExistingApplicationVersionObjectBefore.version
-          : "undefined",
-        existingVersionState:
-          latestExistingApplicationVersionObjectBefore.stateId
-            ? latestExistingApplicationVersionObjectBefore.stateId
-            : "undefined",
+    const cliRunSummary_Task_VersionObject_Error: ICliRunSummary_Task_VersionObject_Error = {
+        type: ECliRunSummary_Type.ApplicationVersioningError,
+        action: epSdkApplicationVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action,
+        epObjectType: epSdkApplicationVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epObjectKeys.epObjectType,
+        displayName: epSdkApplicationVersionTask_ExecuteReturn.epObject.displayName,
+        existingVersion: latestExistingApplicationVersionObjectBefore.version ? latestExistingApplicationVersionObjectBefore.version : "undefined",
+        existingVersionState: latestExistingApplicationVersionObjectBefore.stateId ? latestExistingApplicationVersionObjectBefore.stateId : "undefined",
         targetVersion: targetApplicationVersion,
         targetVersionState: targetApplicationState,
-        newVersion: epSdkApplicationVersionTask_ExecuteReturn.epObject.version
-          ? epSdkApplicationVersionTask_ExecuteReturn.epObject.version
-          : "undefined",
-        newVersionState: epSdkApplicationVersionTask_ExecuteReturn.epObject
-          .stateId
-          ? epSdkApplicationVersionTask_ExecuteReturn.epObject.stateId
-          : "undefined",
+        newVersion: epSdkApplicationVersionTask_ExecuteReturn.epObject.version ? epSdkApplicationVersionTask_ExecuteReturn.epObject.version : "undefined",
+        newVersionState: epSdkApplicationVersionTask_ExecuteReturn.epObject.stateId ? epSdkApplicationVersionTask_ExecuteReturn.epObject.stateId : "undefined",
         requestedUpdates: requestedUpdates,
         applicationDomainName: this.applicationDomainName,
       };
     let consoleOutput: string;
-    if (
-      cliRunSummary_Task_VersionObject_Warning.action ===
-      EEpSdkTask_Action.NO_ACTION
-    ) {
+    if ( cliRunSummary_Task_VersionObject_Error.action === EEpSdkTask_Action.NO_ACTION) {
+      consoleOutput = `
+      Run Error for ${cliRunSummary_Task_VersionObject_Error.epObjectType}:
+        Error:    Inconsistent Application Versions
+        API Name: ${cliRunSummary_Task_VersionObject_Error.displayName}
+        Action:   ${cliRunSummary_Task_VersionObject_Error.action}
+        Existing Version: ${cliRunSummary_Task_VersionObject_Error.existingVersion}
+        Existing State:   ${cliRunSummary_Task_VersionObject_Error.existingVersionState}
+        Target Version:   ${cliRunSummary_Task_VersionObject_Error.targetVersion}
+        Target State:     ${cliRunSummary_Task_VersionObject_Error.targetVersionState}
+      `;
+    } else if (cliRunSummary_Task_VersionObject_Error.action === EEpSdkTask_Action.WOULD_FAIL_CREATE_NEW_VERSION_ON_EXACT_VERSION_REQUIREMENT) {
+      consoleOutput = `
+      Run Error for ${cliRunSummary_Task_VersionObject_Error.epObjectType}:
+        Error:    Inconsistent Application Versions
+        API Name: ${cliRunSummary_Task_VersionObject_Error.displayName}
+        Action:   ${cliRunSummary_Task_VersionObject_Error.action}
+        Existing Version: ${cliRunSummary_Task_VersionObject_Error.existingVersion}
+        Existing State:   ${cliRunSummary_Task_VersionObject_Error.existingVersionState}
+        Target Version:   ${cliRunSummary_Task_VersionObject_Error.targetVersion}
+        Target State:     ${cliRunSummary_Task_VersionObject_Error.targetVersionState}
+        New Version:      ${cliRunSummary_Task_VersionObject_Error.newVersion}
+        New State:        ${cliRunSummary_Task_VersionObject_Error.newVersionState}
+      `;
+    } else {
+      consoleOutput = `
+      Run Error for ${cliRunSummary_Task_VersionObject_Error.epObjectType}:
+        Error:    Inconsistent Application Versions
+        API Name: ${cliRunSummary_Task_VersionObject_Error.displayName}
+        Action:   ${cliRunSummary_Task_VersionObject_Error.action}
+        Existing Version: ${cliRunSummary_Task_VersionObject_Error.existingVersion}
+        Existing State:   ${cliRunSummary_Task_VersionObject_Error.existingVersionState}
+        Target Version:   ${cliRunSummary_Task_VersionObject_Error.targetVersion}
+        Target State:     ${cliRunSummary_Task_VersionObject_Error.targetVersionState}
+        Created Version:  ${cliRunSummary_Task_VersionObject_Error.newVersion}
+        Created State:    ${cliRunSummary_Task_VersionObject_Error.newVersionState}
+      `;
+    }
+    this.log(ECliSummaryStatusCodes.PROCESSED_APPLICATION_VERSION, this.addTaskElements(cliRunSummary_Task_VersionObject_Error), consoleOutput );
+    this.processedVersionObject(ECliSummaryStatusCodes.PROCESSED_APPLICATION_VERSION, epSdkApplicationVersionTask_ExecuteReturn);
+  };
+
+
+  public processedApplicationVersionWithWarning = ({ targetApplicationState, targetApplicationVersion, epSdkApplicationVersionTask_ExecuteReturn, latestExistingApplicationVersionObjectBefore, requestedUpdates }: {
+    targetApplicationVersion: string;
+    targetApplicationState: string;
+    epSdkApplicationVersionTask_ExecuteReturn: IEpSdkApplicationVersionTask_ExecuteReturn;
+    latestExistingApplicationVersionObjectBefore: ApplicationVersion;
+    requestedUpdates: any;
+  }): void => {
+    const cliRunSummary_Task_VersionObject_Warning: ICliRunSummary_Task_VersionObject_Warning = {
+      type: ECliRunSummary_Type.VersionObjectWarning,
+      action: epSdkApplicationVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action,
+      epObjectType: epSdkApplicationVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epObjectKeys.epObjectType,
+      displayName: epSdkApplicationVersionTask_ExecuteReturn.epObject.displayName,
+      existingVersion: latestExistingApplicationVersionObjectBefore.version ? latestExistingApplicationVersionObjectBefore.version : "undefined",
+      existingVersionState: latestExistingApplicationVersionObjectBefore.stateId ? latestExistingApplicationVersionObjectBefore.stateId : "undefined",
+      targetVersion: targetApplicationVersion,
+      targetVersionState: targetApplicationState,
+      newVersion: epSdkApplicationVersionTask_ExecuteReturn.epObject.version ? epSdkApplicationVersionTask_ExecuteReturn.epObject.version : "undefined",
+      newVersionState: epSdkApplicationVersionTask_ExecuteReturn.epObject.stateId ? epSdkApplicationVersionTask_ExecuteReturn.epObject.stateId : "undefined",
+      requestedUpdates: requestedUpdates,
+      applicationDomainName: this.applicationDomainName,
+    };
+    let consoleOutput: string;
+    if(cliRunSummary_Task_VersionObject_Warning.action === EEpSdkTask_Action.NO_ACTION ) {
       consoleOutput = `
       Run Warning for ${cliRunSummary_Task_VersionObject_Warning.epObjectType}:
         Warning:  Inconsistent Application Versions
@@ -874,26 +851,14 @@ Start Run: ${cliRunSummary_StartRun.runMode} ------------------------
         Created State:    ${cliRunSummary_Task_VersionObject_Warning.newVersionState}
       `;
     }
-    this.log(
-      ECliSummaryStatusCodes.PROCESSING_START_EVENT_API_VERSION,
-      this.addTaskElements(cliRunSummary_Task_VersionObject_Warning),
-      consoleOutput
-    );
-    this.processedVersionObject(
-      ECliSummaryStatusCodes.PROCESSED_APPLICATION_VERSION,
-      epSdkApplicationVersionTask_ExecuteReturn
-    );
+    this.log(ECliSummaryStatusCodes.PROCESSING_START_APPLICATION_VERSION, this.addTaskElements(cliRunSummary_Task_VersionObject_Warning), consoleOutput);
+    this.processedVersionObject(ECliSummaryStatusCodes.PROCESSED_APPLICATION_VERSION, epSdkApplicationVersionTask_ExecuteReturn);
   };
 
-  public processedApplicationVersion = ({
-    epSdkApplicationVersionTask_ExecuteReturn,
-  }: {
+  public processedApplicationVersion = ({ epSdkApplicationVersionTask_ExecuteReturn }: {
     epSdkApplicationVersionTask_ExecuteReturn: IEpSdkApplicationVersionTask_ExecuteReturn;
   }): void => {
-    this.processedVersionObject(
-      ECliSummaryStatusCodes.PROCESSED_APPLICATION_VERSION,
-      epSdkApplicationVersionTask_ExecuteReturn
-    );
+    this.processedVersionObject(ECliSummaryStatusCodes.PROCESSED_APPLICATION_VERSION, epSdkApplicationVersionTask_ExecuteReturn );
   };
 
   public createImportSummary = (

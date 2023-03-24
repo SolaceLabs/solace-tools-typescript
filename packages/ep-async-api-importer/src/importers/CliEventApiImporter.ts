@@ -81,6 +81,7 @@ export interface ICliEventApiImporterRunPresentReturn extends ICliAssetsImporter
   applicationDomainId: string;
   eventApiId: string;
   eventApiVersionId: string;
+  cliAssetsImporterRunPresentReturn: ICliAssetsImporterRunPresentReturn;
 }
 export interface ICliEventApiImporterRunPresentEventApiReturn {
   eventApiId: string;
@@ -94,16 +95,18 @@ export interface ICliEventApiImporterRunImportReturn extends ICliAssetsImporterR
   applicationDomainId: string;
   eventApiId: string;
   eventApiVersionId: string;
+  cliAssetsImporterRunPresentReturn: ICliAssetsImporterRunPresentReturn;
 }
 export interface ICliEventApiImporterRunOptions extends ICliAssetsImporterRunOptions {
-  deleteEventApiAfter: boolean;
   generateAssetsOutput: boolean;
 }
 export interface ICliEventApiImporterRunReturn extends ICliAssetsImporterRunReturn {
   cliEventApiImporterGenerateAssetsReturn: ICliEventApiImporterGenerateAssetsReturn;
+  cliAssetsImporterRunPresentReturn: ICliAssetsImporterRunPresentReturn;
 }
 
 export class CliEventApiImporter extends CliAssetsImporter {
+
   constructor(cliEventApiImporterOptions: ICliEventApiImporterOptions, runMode: ECliRunContext_RunMode) {
     super(cliEventApiImporterOptions, runMode);
   }
@@ -210,12 +213,8 @@ export class CliEventApiImporter extends CliAssetsImporter {
             `created new event api version`,
           ],
           targetEventApiVersion: epAsyncApiDocument.getVersion(),
-          createdEventApiVersion: epSdkEventApiVersionTask_ExecuteReturn
-            .epObject.version
-            ? epSdkEventApiVersionTask_ExecuteReturn.epObject.version
-            : "undefined",
-          epSdkEventApiVersionTask_ExecuteReturn:
-            epSdkEventApiVersionTask_ExecuteReturn,
+          createdEventApiVersion: epSdkEventApiVersionTask_ExecuteReturn.epObject.version ? epSdkEventApiVersionTask_ExecuteReturn.epObject.version : "undefined",
+          epSdkEventApiVersionTask_ExecuteReturn: epSdkEventApiVersionTask_ExecuteReturn,
         }}));
         // summary
         CliRunSummary.processedEventApiVersionWithWarning({
@@ -227,9 +226,7 @@ export class CliEventApiImporter extends CliAssetsImporter {
         });
       } else {
         // issue error
-        const requestedUpdates: any = await CliRunExecuteReturnLog.getDeepRequestedUpdates(
-          epSdkEventApiVersionTask_ExecuteReturn_Check
-        );
+        const requestedUpdates: any = await CliRunExecuteReturnLog.getDeepRequestedUpdates(epSdkEventApiVersionTask_ExecuteReturn_Check);
         CliRunSummary.processedEventApiVersionWithError({
           targetEventApiVersion: epAsyncApiDocument.getVersion(),
           targetEventApiState: this.get_EpSdkTask_StateId(),
@@ -276,21 +273,14 @@ export class CliEventApiImporter extends CliAssetsImporter {
         epSdkEventApiVersionTask_ExecuteReturn: epSdkEventApiVersionTask_ExecuteReturn,
       }}));
       // summary
-      CliRunSummary.processedEventApiVersion({
-        epSdkEventApiVersionTask_ExecuteReturn: epSdkEventApiVersionTask_ExecuteReturn,
-      });
+      CliRunSummary.processedEventApiVersion({epSdkEventApiVersionTask_ExecuteReturn: epSdkEventApiVersionTask_ExecuteReturn });
     }
     return {
       eventApiVersionId: eventApiVersionId,
     };
   };
 
-  private run_present_event_api = async ({
-    applicationDomainId,
-    assetApplicationDomainId,
-    epAsyncApiDocument,
-    checkmode,
-  }: {
+  private run_present_event_api = async ({ applicationDomainId, assetApplicationDomainId, epAsyncApiDocument, checkmode }: {
     applicationDomainId: string;
     assetApplicationDomainId: string;
     epAsyncApiDocument: EpAsyncApiDocument;
@@ -393,9 +383,7 @@ export class CliEventApiImporter extends CliAssetsImporter {
       epSdkApplicationDomainTask_ExecuteReturn: epSdkApplicationDomainTask_ExecuteReturn,
     }}));
     // create summary log
-    CliRunSummary.processedApplicationDomain({
-      epSdkApplicationDomainTask_ExecuteReturn: epSdkApplicationDomainTask_ExecuteReturn,
-    });
+    CliRunSummary.processedApplicationDomain({ epSdkApplicationDomainTask_ExecuteReturn: epSdkApplicationDomainTask_ExecuteReturn });
 
     /* istanbul ignore next */
     if (epSdkApplicationDomainTask_ExecuteReturn.epObject.id === undefined) throw new CliEPApiContentError(logName, "epSdkApplicationDomainTask_ExecuteReturn.epObject.id === undefined", {
@@ -415,24 +403,21 @@ export class CliEventApiImporter extends CliAssetsImporter {
       applicationDomainId: epSdkApplicationDomainTask_ExecuteReturn.epObject.id,
       eventApiId: cliEventApiImporterRunPresentEventApiReturn.eventApiId,
       eventApiVersionId: cliEventApiImporterRunPresentEventApiReturn.eventApiVersionId,
+      cliAssetsImporterRunPresentReturn: cliAssetsImporterRunPresentReturn
     };
     CliRunContext.pop();
     return cliEventApiImporterRunPresentReturn;
   }
 
-  protected generate_assets_ouput = async ({
-    cliImporterGenerateAssetsOptions,
-  }: {
+  protected generate_assets_ouput = async ({ cliImporterGenerateAssetsOptions }: {
     cliImporterGenerateAssetsOptions: ICliEventApiImporterGenerateAssetsOptions;
   }): Promise<ICliEventApiImporterGenerateAssetsReturn> => {
     const funcName = "generate_assets_ouput";
     const logName = `${CliEventApiImporter.name}.${funcName}()`;
 
     const rctxt: ICliGenerateApiOutputRunContext = {
-      apiFile:
-        cliImporterGenerateAssetsOptions.cliEventApiImporterRunOptions.apiFile,
-      applicationDomainName:
-        cliImporterGenerateAssetsOptions.applicationDomainName,
+      apiFile: cliImporterGenerateAssetsOptions.cliEventApiImporterRunOptions.apiFile,
+      applicationDomainName: cliImporterGenerateAssetsOptions.applicationDomainName,
       applicationDomainId: cliImporterGenerateAssetsOptions.applicationDomainId,
       eventApiId: cliImporterGenerateAssetsOptions.eventApiId,
       eventApiVersionId: cliImporterGenerateAssetsOptions.eventApiVersionId,
@@ -590,6 +575,9 @@ export class CliEventApiImporter extends CliAssetsImporter {
       applicationDomainName: undefined,
       assetApplicationDomainName: undefined,
       error: undefined,
+      cliAssetsImporterRunPresentReturn: {
+        assetApplicationDomainId: "undefined"
+      }
     };
 
     try {
@@ -644,15 +632,7 @@ export class CliEventApiImporter extends CliAssetsImporter {
         schemasOutputDir: undefined,
         error: undefined,
     }};
-    if(cliImporterRunOptions.deleteEventApiAfter) {
-      const eventApi: EventApi = await EpSdkEventApisService.deleteById({
-        eventApiId: cliEventApiImporterRunImportReturn.eventApiId
-      });
-      CliLogger.trace(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.IMPORTING_EP_EVENT_API_DELETED, details: {
-        eventApiId: cliEventApiImporterRunImportReturn.eventApiId,
-        eventApiName: eventApi.name,
-      }}));
-    } else if (cliImporterRunOptions.generateAssetsOutput) {
+    if (cliImporterRunOptions.generateAssetsOutput) {
       const cliEventApiImporterGenerateAssetsReturn: ICliEventApiImporterGenerateAssetsReturn = await this.generate_assets_ouput({ cliImporterGenerateAssetsOptions: {
         cliEventApiImporterRunOptions: cliImporterRunOptions,
         eventApiId: cliEventApiImporterRunImportReturn.eventApiId,

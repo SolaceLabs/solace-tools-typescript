@@ -43,17 +43,12 @@ export class CliErrorFactory {
     return cliError;
   };
 
-  public static createCliUsageErrorFromCliConfigError = ({
-    logName,
-    cliConfigError,
-  }: {
+  public static createCliUsageErrorFromCliConfigError = ({logName,cliConfigError }: {
     logName: string;
     cliConfigError: CliConfigError;
   }): CliUsageError => {
     if (cliConfigError instanceof CliConfigMissingEnvVarError) {
-      return new CliUsageError(logName, cliConfigError.message, {
-        "Environment Variable": cliConfigError.envVarName,
-      });
+      return new CliUsageError(logName, cliConfigError.message, { "Environment Variable": cliConfigError.envVarName });
     }
     if (cliConfigError instanceof CliConfigInvalidDirEnvVarError) {
       return new CliUsageError(logName, cliConfigError.message, {
@@ -62,7 +57,7 @@ export class CliErrorFactory {
         Details: cliConfigError.cause,
       });
     }
-    if (cliConfigError instanceof CliConfigInvalidUrlEnvVarError) {
+    if(cliConfigError instanceof CliConfigInvalidUrlEnvVarError) {
       return new CliUsageError(logName, cliConfigError.message, {
         "Environment Variable": cliConfigError.envVar,
         Url: cliConfigError.url,
@@ -222,6 +217,17 @@ export class CliConfigInvalidUrlEnvVarError extends CliConfigError {
     this.error = error;
     this.url = url;
     this.envVar = envVar;
+  }
+}
+
+export class CliConfigInvalidConfigCombinationError extends CliConfigError {
+  private static Name = "CliConfigInvalidConfigCombinationError";
+  private static DefaultDescription = "Invalid CLI Config Combination";
+  public details: any;
+  constructor(internalLogName: string, details: any) {
+    super(internalLogName, CliConfigInvalidConfigCombinationError.DefaultDescription);
+    this.details = details;
+    this.name = CliConfigInvalidConfigCombinationError.Name;
   }
 }
 

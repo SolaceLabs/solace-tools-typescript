@@ -488,6 +488,7 @@ describe(`${scriptName}`, () => {
       // CliConfig.getCliImporterManagerOptions().applicationDomainName = 'release_mode';
       CliConfig.getCliImporterManagerOptions().createApiApplication = true;
       CliConfig.getCliImporterManagerOptions().createApiEventApi = false;
+      CliConfig.getCliImporterManagerOptions().cliTestSetupDomainsForApis = false;
 
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_BrokerType = undefined;
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_ChannelDelimiter = undefined;
