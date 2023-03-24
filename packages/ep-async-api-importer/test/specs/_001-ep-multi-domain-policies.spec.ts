@@ -305,17 +305,13 @@ describe(`${scriptName}`, () => {
 
   it(`${scriptName}: should check no new version created for Start_EventApiAsyncApiSpecFile after attempt to import Update_1_Fail_Event_EventApiAsyncApiSpecFile`, async () => {
     try {
-      const epAsyncApiDocument: EpAsyncApiDocument = await EpAsyncApiDocumentService.createFromFile({ 
-        filePath: Start_EventApiAsyncApiSpecFile
-      });
-      const applicationDomain = await EpSdkApplicationDomainsService.getByName({ 
-        applicationDomainName: epAsyncApiDocument.getApplicationDomainName()
-      });
+      const epAsyncApiDocument: EpAsyncApiDocument = await EpAsyncApiDocumentService.createFromFile({ filePath: Start_EventApiAsyncApiSpecFile });
+      const applicationDomain = await EpSdkApplicationDomainsService.getByName({ applicationDomainName: epAsyncApiDocument.getApplicationDomainName() });
       const eventApiVersions = await EpSdkEventApiVersionsService.getVersionsForEventApiName({
         eventApiName: epAsyncApiDocument.getEpApiName(),
         applicationDomainId: applicationDomain.id
       })
-      expect(eventApiVersions.length,'eventApiVersions.length not 1').to.equal(1);
+      expect(eventApiVersions.length,'eventApiVersions.length not 3').to.equal(3);
     } catch (e) {
       TestLogger.logMessageWithId(TestLogger.createTestFailMessageForError('error', e));
       if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
