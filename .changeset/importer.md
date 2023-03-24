@@ -8,3 +8,4 @@ enforcement of application domain permissions
   - strict: no first versions allowed
   - lax: first versins allowed, but no new versions allowed after
   - off: no checks
+  - note: must be used with **CLI_TEST_SETUP_DOMAINS_FOR_APIS=true**
