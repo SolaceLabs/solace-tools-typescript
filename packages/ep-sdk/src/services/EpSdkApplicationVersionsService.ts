@@ -479,14 +479,14 @@ export class EpSdkApplicationVersionsServiceClass extends EpSdkVersionServiceCla
           stateId: fromApplicationVersion.stateId,
           displayName: fromApplicationVersion.displayName,
           description: fromApplicationVersion.description,
-          declaredConsumedEventVersionIds: targetProducedEventVersions.map( (targetConsumedEventVersion: EventVersion) => {
+          declaredConsumedEventVersionIds: targetConsumedEventVersions.map( (targetConsumedEventVersion: EventVersion) => {
             /* istanbul ignore next */
             if(targetConsumedEventVersion.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "targetConsumedEventVersion.id === undefined", {
               targetConsumedEventVersion: targetConsumedEventVersion
             });
             return targetConsumedEventVersion.id; 
           }),
-          declaredProducedEventVersionIds: targetConsumedEventVersions.map( (targetProducedEventVersion: EventVersion) => { 
+          declaredProducedEventVersionIds: targetProducedEventVersions.map( (targetProducedEventVersion: EventVersion) => { 
             /* istanbul ignore next */
             if(targetProducedEventVersion.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "targetProducedEventVersion.id === undefined", {
               targetProducedEventVersion: targetProducedEventVersion
