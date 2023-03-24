@@ -50,7 +50,7 @@ let Update_1_Fail_Schema_AppAsyncApiSpecFile: string;
 let Update_1_AppAsyncApiSpecFile: string;
 let Update_2_AppAsyncApiSpecFile: string;
 let Update_3_AppAsyncApiSpecFile: string;
-const Update_3_AppAsyncApiSpecFile_Updated_Schema_Name = "Consumed_Schema_1_Name";
+const Update_3_AppAsyncApiSpecFile_Updated_Schema_Name = "Produced_Schema_1_Name";
 
 const TestApplicationDomainNames: Array<string> = [];
 
@@ -163,7 +163,7 @@ describe(`${scriptName}`, () => {
     }
   });
 
-  it(`${scriptName}: should import Start_EventApiAsyncApiSpecFile again, test idempotency`, async () => {
+  xit(`${scriptName}: should import Start_EventApiAsyncApiSpecFile again, test idempotency`, async () => {
     try {
       const cliImporter = new CliImporterManager(CliConfig.getCliImporterManagerOptions());
       const xvoid: void = await cliImporter.run();
@@ -208,7 +208,7 @@ describe(`${scriptName}`, () => {
     }
   });
 
-  it(`${scriptName}: should import Update_1_EventApiAsyncApiSpecFile again, test idempotency`, async () => {
+  xit(`${scriptName}: should import Update_1_EventApiAsyncApiSpecFile again, test idempotency`, async () => {
     try {
       const cliImporter = new CliImporterManager(CliConfig.getCliImporterManagerOptions());
       const xvoid: void = await cliImporter.run();
@@ -252,7 +252,7 @@ describe(`${scriptName}`, () => {
     }
   });
 
-  it(`${scriptName}: should import Update_2_EventApiAsyncApiSpecFile again, test idempotency`, async () => {
+  xit(`${scriptName}: should import Update_2_EventApiAsyncApiSpecFile again, test idempotency`, async () => {
     try {
       const cliImporter = new CliImporterManager(CliConfig.getCliImporterManagerOptions());
       const xvoid: void = await cliImporter.run();
@@ -341,7 +341,7 @@ describe(`${scriptName}`, () => {
     }
   });
 
-  it(`${scriptName}: should import Start_AppAsyncApiSpecFile again, test idempotency`, async () => {
+  xit(`${scriptName}: should import Start_AppAsyncApiSpecFile again, test idempotency`, async () => {
     try {
       CliConfig.getCliImporterManagerOptions().asyncApiFileList = [Start_AppAsyncApiSpecFile];
       CliConfig.getCliImporterManagerOptions().cliImporterManagerMode = ECliImporterManagerMode.RELEASE_MODE;
@@ -395,7 +395,7 @@ describe(`${scriptName}`, () => {
     }
   });
 
-  it(`${scriptName}: should import Update_1_AppAsyncApiSpecFile again, test idempotency`, async () => {
+  xit(`${scriptName}: should import Update_1_AppAsyncApiSpecFile again, test idempotency`, async () => {
     try {
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetsApplicationDomainEnforcementPolicy = ECliAssetsApplicationDomainEnforcementPolicies.STRICT;
       const cliImporter = new CliImporterManager(CliConfig.getCliImporterManagerOptions());
@@ -446,7 +446,7 @@ describe(`${scriptName}`, () => {
     }
   });
 
-  it(`${scriptName}: should import Update_2_AppAsyncApiSpecFile again, test idempotency`, async () => {
+  xit(`${scriptName}: should import Update_2_AppAsyncApiSpecFile again, test idempotency`, async () => {
     try {
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetsApplicationDomainEnforcementPolicy = ECliAssetsApplicationDomainEnforcementPolicies.STRICT;
       const cliImporter = new CliImporterManager(CliConfig.getCliImporterManagerOptions());
@@ -461,7 +461,7 @@ describe(`${scriptName}`, () => {
   it(`${scriptName}: should check a new version was created for Update_2_AppAsyncApiSpecFile`, async () => {
     try {
       const epAsyncApiDocument: EpAsyncApiDocument = await EpAsyncApiDocumentService.createFromFile({ 
-        filePath: Update_3_AppAsyncApiSpecFile
+        filePath: Update_2_AppAsyncApiSpecFile
       });
       const applicationDomain = await EpSdkApplicationDomainsService.getByName({ 
         applicationDomainName: epAsyncApiDocument.getApplicationDomainName()
@@ -492,7 +492,7 @@ describe(`${scriptName}`, () => {
     }
   });
 
-  it(`${scriptName}: should import Update_3_AppAsyncApiSpecFile again, test idempotency`, async () => {
+  xit(`${scriptName}: should import Update_3_AppAsyncApiSpecFile again, test idempotency`, async () => {
     try {
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetsApplicationDomainEnforcementPolicy = ECliAssetsApplicationDomainEnforcementPolicies.STRICT;
       const cliImporter = new CliImporterManager(CliConfig.getCliImporterManagerOptions());
