@@ -251,6 +251,10 @@ describe(`${scriptName}`, () => {
     initializeGlobals();
     TestContext.newItId();
     console.log(`\t>>> ${scriptName}: preparing domains ...`);
+
+    const targetApplicationDomain = await TestService.absentPresentApplicationDomain({ applicationDomainName: TargetApplicationDomainName });
+    TargetApplicationDomainId = targetApplicationDomain.id;
+
     await TestService.absentApplicationDomains({
       applicationDomainNames: CreateApplicationInfoList.map( (x) => { return x.applicationDomainName; }).concat(
         CreateEventInfoList.map( (x) => { return x.applicationDomainName; })
@@ -260,9 +264,6 @@ describe(`${scriptName}`, () => {
         CreateEnumInfoList.map( (x) => { return x.applicationDomainName; })
       )
     });
-
-    const targetApplicationDomain = await TestService.absentPresentApplicationDomain({ applicationDomainName: TargetApplicationDomainName });
-    TargetApplicationDomainId = targetApplicationDomain.id;
   });
 
   beforeEach(() => {
@@ -271,15 +272,17 @@ describe(`${scriptName}`, () => {
 
   after(async () => {
     TestContext.newItId();
-    // await TestService.absentApplicationDomains({ 
-    //   applicationDomainNames: SourceEnumInfoList.map( (x) => { return x.applicationDomainName; })
-    // })
-
-    // // delete application domains
-    // await EpSdkApplicationDomainsService.deleteById({ applicationDomainId: SourceApplicationDomainId });
-    // await EpSdkApplicationDomainsService.deleteById({ applicationDomainId: TargetApplicationDomainId });
-    // await EpSdkApplicationDomainsService.deleteById({ applicationDomainId: SourceAssetsApplicationDomainId });
-    // await EpSdkApplicationDomainsService.deleteById({ applicationDomainId: TargetAssetsApplicationDomainId });
+    console.log(`\t>>> ${scriptName}: deleting domains ...`);
+    await TestService.absentApplicationDomain({ applicationDomainName: TargetApplicationDomainName });  
+    await TestService.absentApplicationDomains({
+      applicationDomainNames: CreateApplicationInfoList.map( (x) => { return x.applicationDomainName; }).concat(
+        CreateEventInfoList.map( (x) => { return x.applicationDomainName; })
+      ).concat(
+        CreateSchemaInfoList.map( (x) => { return x.applicationDomainName; })
+      ).concat(
+        CreateEnumInfoList.map( (x) => { return x.applicationDomainName; })
+      )
+    });
   });
 
   it(`${scriptName}: should create source enums`, async () => {
