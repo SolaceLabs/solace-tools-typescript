@@ -345,6 +345,7 @@ export class CliImporterTestRunAssetsInconsistencyError extends CliError {
 export type CliImporterTestRunAssetsApplicationDomainPolicyViolationErrorDetails = {
   cliAssetsApplicationDomainEnforcementPolicy: ECliAssetsApplicationDomainEnforcementPolicies;
   runMode: ECliRunContext_RunMode;
+  apiFile: string;
   epObjectName: string;
   // sourceApplicationDomainName: string; // same as target
   targetApplicationDomainName: string;

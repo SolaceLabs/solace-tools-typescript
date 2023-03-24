@@ -51,6 +51,7 @@ import {
   ECliRunContext_RunMode,
   CliImporterTestRunAssetsApplicationDomainPolicyViolationError,
   ECliAssetsApplicationDomainEnforcementPolicies,
+  ICliApiFileRunContext,
 } from "../cli-components";
 import { CliAsyncApiDocumentService } from "../services";
 import {
@@ -96,22 +97,22 @@ export abstract class CliAssetsImporter extends CliImporter {
   }): Promise<void> {
     if(this.cliImporterOptions.cliAssetsApplicationDomainEnforcementPolicy === ECliAssetsApplicationDomainEnforcementPolicies.OFF) return;
     epObjectCustomAttributes;
-    // DEBUG
-    const assertModifyPermissionLog = {
-      logName,
-      cliRunContext: CliRunContext.get(),
-      runMode: this.runMode,
-      cliAssetsApplicationDomainEnforcementPolicy: this.cliImporterOptions.cliAssetsApplicationDomainEnforcementPolicy,
-      epObjectName,
-      epObjectType: epSdkTask_ExecuteReturn.epObjectKeys.epObjectType,
-      epSdkTask_Action: epSdkTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action,
-      epObjectCustomAttributes: epObjectCustomAttributes || 'undefined',
-      // sourceApplicationDomainName: await this.getSourceApplicationDomainName({ epObjectCustomAttributes }) || 'unknown',
-      targetApplicationDomainName,
-      allowedApplicationDomainName
-    }
-    console.log(`assertModifyPermissionLog = ${JSON.stringify(assertModifyPermissionLog, null, 2)}`);
-    // end DEBUG
+    // // DEBUG
+    // const assertModifyPermissionLog = {
+    //   logName,
+    //   apiFile: (CliRunContext.get() as ICliApiFileRunContext).apiFile,
+    //   runMode: this.runMode,
+    //   cliAssetsApplicationDomainEnforcementPolicy: this.cliImporterOptions.cliAssetsApplicationDomainEnforcementPolicy,
+    //   epObjectName,
+    //   epObjectType: epSdkTask_ExecuteReturn.epObjectKeys.epObjectType,
+    //   epSdkTask_Action: epSdkTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action,
+    //   epObjectCustomAttributes: epObjectCustomAttributes || 'undefined',
+    //   // sourceApplicationDomainName: await this.getSourceApplicationDomainName({ epObjectCustomAttributes }) || 'unknown',
+    //   targetApplicationDomainName,
+    //   allowedApplicationDomainName
+    // }
+    // console.log(`assertModifyPermissionLog = ${JSON.stringify(assertModifyPermissionLog, null, 2)}`);
+    // // end DEBUG
     if(epSdkTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action !== EEpSdkTask_Action.NO_ACTION) {
       if(this.cliImporterOptions.cliAssetsApplicationDomainEnforcementPolicy === ECliAssetsApplicationDomainEnforcementPolicies.LAX && epSdkTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action === EEpSdkTask_Action.CREATE_FIRST_VERSION) return;
       // const sourceApplicationDomainName = await this.getSourceApplicationDomainName({ epObjectCustomAttributes }) || 'unknown';
@@ -119,6 +120,7 @@ export abstract class CliAssetsImporter extends CliImporter {
         throw new CliImporterTestRunAssetsApplicationDomainPolicyViolationError(logName, {
           cliAssetsApplicationDomainEnforcementPolicy: this.cliImporterOptions.cliAssetsApplicationDomainEnforcementPolicy,
           runMode: this.runMode,
+          apiFile: (CliRunContext.get() as ICliApiFileRunContext).apiFile || 'unknown',
           epObjectName: epObjectName,
           // sourceApplicationDomainName: sourceApplicationDomainName,
           targetApplicationDomainName,
@@ -608,33 +610,20 @@ export abstract class CliAssetsImporter extends CliImporter {
           operationType: ECliChannelOperationType.SUBSCRIBE,
         },
       });
-      CliLogger.debug(
-        CliLogger.createLogEntry(logName, {
-          code: ECliStatusCodes.IMPORTING_API_CHANNEL_SUBSCRIBE_OPERATION,
-          details: {},
-        })
-      );
+      CliLogger.debug(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.IMPORTING_API_CHANNEL_SUBSCRIBE_OPERATION, details: {} }));
 
-      const epAsyncApiMessageDocument: EpAsyncApiMessageDocument =
-        epAsyncApiChannelSubscribeOperation.getEpAsyncApiMessageDocument();
-
+      const epAsyncApiMessageDocument: EpAsyncApiMessageDocument = epAsyncApiChannelSubscribeOperation.getEpAsyncApiMessageDocument();
       // present message
-      const schemaVersionObject: SchemaVersion =
-        await this.run_present_channel_message({
-          assetApplicationDomainId: assetApplicationDomainId,
-          epAsyncApiMessageDocument: epAsyncApiMessageDocument,
-          specVersion: specVersion,
-          checkmode: checkmode,
-        });
+      const schemaVersionObject: SchemaVersion = await this.run_present_channel_message({
+        assetApplicationDomainId: assetApplicationDomainId,
+        epAsyncApiMessageDocument: epAsyncApiMessageDocument,
+        specVersion: specVersion,
+        checkmode: checkmode,
+      });
       /* istanbul ignore next */
-      if (schemaVersionObject.id === undefined)
-        throw new CliEPApiContentError(
-          logName,
-          "schemaVersionObject.id === undefined",
-          {
-            schemaVersionObject: schemaVersionObject,
-          }
-        );
+      if (schemaVersionObject.id === undefined) throw new CliEPApiContentError(logName, "schemaVersionObject.id === undefined", {
+        schemaVersionObject: schemaVersionObject,
+      });
       // present event
       xvoid = await this.run_present_channel_event({
         assetApplicationDomainId: assetApplicationDomainId,

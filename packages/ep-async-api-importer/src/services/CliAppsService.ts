@@ -1,24 +1,24 @@
 import {
   ApplicationDomain,
-  EventApiVersion,
+  ApplicationVersion,
 } from "@solace-labs/ep-openapi-node";
 import {
   EEpSdkTask_TargetState,
   EpSdkApplicationDomainsService,
   EpSdkApplicationDomainTask,
-  EpSdkEventApiVersionsService,
+  EpSdkApplicationVersionsService,
   IEpSdkApplicationDomainTask_ExecuteReturn,
 } from "@solace-labs/ep-sdk";
 import { EpAsyncApiDocument } from "@solace-labs/ep-asyncapi";
 import { CliEPApiContentError } from "../cli-components";
 
-class CliEventApisService {
-  public deepCopyLatestEventApiVersion = async ({ epAsyncApiDocument }: {
+class CliAppsService {
+
+  public deepCopyLatestAppVersion = async ({ epAsyncApiDocument }: {
     epAsyncApiDocument: EpAsyncApiDocument;
   }): Promise<boolean> => {
-    const funcName = "deepCopyLatestEventApiVersion";
-    const logName = `${CliEventApisService.name}.${funcName}()`;
-
+    const funcName = "deepCopyLatestAppVersion";
+    const logName = `${CliAppsService.name}.${funcName}()`;
     // create the target application domains
     const fromApplicationDomainName: string = epAsyncApiDocument.getUnprefixedApplicationDomainName();
     let fromApplicationDomainId: string;
@@ -68,18 +68,14 @@ class CliEventApisService {
       });
       toAssetsApplicationDomainId = toAssetsEpSdkApplicationDomainTask_ExecuteReturn.epObject.id;
 
-      const eventApiVersion: EventApiVersion | undefined = await EpSdkEventApiVersionsService.deepCopyLastestVersionById_IfNotExists({
-        eventApiName: epAsyncApiDocument.getTitle(),
+      const applicationVersion: ApplicationVersion | undefined = await EpSdkApplicationVersionsService.deepCopyLastestVersionById_IfNotExists({
+        applicationName: epAsyncApiDocument.getTitle(),
         fromApplicationDomainId: fromApplicationDomainId,
         toApplicationDomainId: toApplicationDomainId,
         fromAssetsApplicationDomainId: fromAssetsApplicationDomainId,
         toAssetsApplicationDomainId: toAssetsApplicationDomainId,
       });
-      // // DEBUG
-      // const test = true; if(test && eventApiVersion === undefined) throw new Error(`${logName}: check test domain setup, should have copied all across ...`);
-      // // end DEBUG
-
-      if (eventApiVersion !== undefined) {
+      if (applicationVersion !== undefined) {
         return true;
       } else {
         return false;
@@ -90,4 +86,4 @@ class CliEventApisService {
   };
 }
 
-export default new CliEventApisService();
+export default new CliAppsService();

@@ -108,13 +108,7 @@ export class CliEventApiImporter extends CliAssetsImporter {
     super(cliEventApiImporterOptions, runMode);
   }
 
-  private run_present_event_api_version = async ({
-    applicationDomainId,
-    assetApplicationDomainId,
-    eventApiId,
-    epAsyncApiDocument,
-    checkmode,
-  }: {
+  private run_present_event_api_version = async ({ applicationDomainId, assetApplicationDomainId, eventApiId, epAsyncApiDocument, checkmode }: {
     applicationDomainId: string;
     assetApplicationDomainId: string;
     eventApiId: string;
@@ -445,53 +439,38 @@ export class CliEventApiImporter extends CliAssetsImporter {
     };
     CliRunContext.push(rctxt);
 
-    CliLogger.info(
-      CliLogger.createLogEntry(logName, {
-        code: ECliStatusCodes.GENERATING_ASSETS_OUTPUT_START,
-        details: {
-          cliImporterGenerateAssetsOptions: cliImporterGenerateAssetsOptions,
-        },
-      })
-    );
+    CliLogger.info(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.GENERATING_ASSETS_OUTPUT_START, details: {
+      cliImporterGenerateAssetsOptions: cliImporterGenerateAssetsOptions,
+    }}));
 
-    const cliEventApiImporterGenerateAssetsReturn: ICliEventApiImporterGenerateAssetsReturn =
-      {
-        assetOutputRootDir: undefined,
-        asyncApiSpecFileNameJson: undefined,
-        asyncApiSpecFileNameYaml: undefined,
-        schemasOutputDir: undefined,
-        error: undefined,
-      };
+    const cliEventApiImporterGenerateAssetsReturn: ICliEventApiImporterGenerateAssetsReturn = {
+      assetOutputRootDir: undefined,
+      asyncApiSpecFileNameJson: undefined,
+      asyncApiSpecFileNameYaml: undefined,
+      schemasOutputDir: undefined,
+      error: undefined,
+    };
 
     try {
       // retrieve the imported event api version
-      const asyncApiJson: any =
-        await EventApIsService.getAsyncApiForEventApiVersion({
-          eventApiVersionId: cliImporterGenerateAssetsOptions.eventApiVersionId,
-          format: "json",
-        });
-      const epAsyncApiDocument: EpAsyncApiDocument =
-        await EpAsyncApiDocumentService.createFromAny({
-          anySpec: asyncApiJson,
-          overrideEpApplicationDomainName:
-            cliImporterGenerateAssetsOptions.applicationDomainName,
-          // overrideEpAssetApplicationDomainName: cliImporterGenerateAssetsOptions.assetApplicationDomainName,
-          // prefixEpApplicationDomainName: cliImporterGenerateAssetsOptions.applicationDomainNamePrefix,
-        });
+      const asyncApiJson: any = await EventApIsService.getAsyncApiForEventApiVersion({
+        eventApiVersionId: cliImporterGenerateAssetsOptions.eventApiVersionId,
+        format: "json",
+      });
+      const epAsyncApiDocument: EpAsyncApiDocument = await EpAsyncApiDocumentService.createFromAny({
+        anySpec: asyncApiJson,
+        overrideEpApplicationDomainName: cliImporterGenerateAssetsOptions.applicationDomainName,
+        // overrideEpAssetApplicationDomainName: cliImporterGenerateAssetsOptions.assetApplicationDomainName,
+        // prefixEpApplicationDomainName: cliImporterGenerateAssetsOptions.applicationDomainNamePrefix,
+      });
       // calculate the asset output dir
-      const applicationDomainNameAsFilePath: string =
-        CliUtils.convertStringToFilePath(
-          epAsyncApiDocument.getApplicationDomainName()
-        );
+      const applicationDomainNameAsFilePath: string = CliUtils.convertStringToFilePath(epAsyncApiDocument.getApplicationDomainName());
       const apiTitleAsFilePath = epAsyncApiDocument.getEpApiNameAsFilePath();
       const assetOutputRootDir: string = CliUtils.ensureDirExists(
         this.cliImporterOptions.assetOutputDir,
         applicationDomainNameAsFilePath + "/" + apiTitleAsFilePath
       );
-      const schemasOutputDir = CliUtils.ensureDirExists(
-        assetOutputRootDir,
-        "schemas"
-      );
+      const schemasOutputDir = CliUtils.ensureDirExists(assetOutputRootDir, "schemas");
       const asyncApiSpecFileNameJson = assetOutputRootDir + "/" + epAsyncApiDocument.getEpApiNameAsFileName("json");
       const asyncApiSpecFileNameYaml = assetOutputRootDir + "/" + epAsyncApiDocument.getEpApiNameAsFileName("yml");
       CliLogger.trace(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.GENERATING_ASSETS_OUTPUT, details: {
@@ -642,9 +621,7 @@ export class CliEventApiImporter extends CliAssetsImporter {
       cliEventApiImporterRunImportReturn.error = CliErrorFactory.createCliError({logName: logName, error: e,});
     } finally {
       if (cliEventApiImporterRunImportReturn.error !== undefined) {
-        CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.IMPORTING_ERROR_API, details: {
-          error: cliEventApiImporterRunImportReturn.error,
-        }}));
+        CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.IMPORTING_ERROR_API, details: { error: cliEventApiImporterRunImportReturn.error }}));
       }
       //eslint-disable-next-line
       return cliEventApiImporterRunImportReturn;

@@ -11,6 +11,7 @@ import {
   CliAsyncApiDocumentService,
   CliEventApisService,
 } from "../services";
+import CliAppsService from "../services/CliAppsService";
 import { CliInternalCodeInconsistencyError } from "./CliError";
 import { CliLogger, ECliStatusCodes } from "./CliLogger";
 import CliRunContext, {
@@ -64,11 +65,7 @@ export class CliImporterManager {
     return `${appName}/test/${runId}`;
   }
 
-  private setup_test_domains = async ({
-    applicationDomainNameList,
-    assetApplicationDomainNameList,
-    epAsyncApiDocumentList,
-  }: {
+  private setup_test_domains = async ({ applicationDomainNameList, assetApplicationDomainNameList, epAsyncApiDocumentList }: {
     applicationDomainNameList: Array<string>;
     assetApplicationDomainNameList: Array<string>;
     epAsyncApiDocumentList: Array<EpAsyncApiDocument>;
@@ -80,12 +77,8 @@ export class CliImporterManager {
     CliRunContext.push(rctxt);
     CliRunSummary.setUpTestDomains({cliRunSummary_SetupTestDomains: { type: ECliRunSummary_Type.SetupTestDomains }});
     // clean application domains before test
-    let xvoid: void = await CliApplicationDomainsService.absent_ApplicationDomains({
-      applicationDomainNameList: applicationDomainNameList,
-    });
-    xvoid = await CliApplicationDomainsService.absent_ApplicationDomains({
-      applicationDomainNameList: assetApplicationDomainNameList,
-    });
+    let xvoid: void = await CliApplicationDomainsService.absent_ApplicationDomains({ applicationDomainNameList: applicationDomainNameList });
+    xvoid = await CliApplicationDomainsService.absent_ApplicationDomains({ applicationDomainNameList: assetApplicationDomainNameList });
     /* istanbul ignore next */
     xvoid;
 
@@ -105,29 +98,43 @@ export class CliImporterManager {
           toAssetsApplicationDomainName: toAssetsApplicationDomainName,
         };
         CliRunContext.push(rctxt);
-        CliRunSummary.setUpTestApi({
-          cliRunSummary_SetupTestApi: {
-            type: ECliRunSummary_Type.SetupTestApi,
-            apiTitle: epAsyncApiDocument.getTitle(),
-          },
-        });
-
-        const copied: boolean = await CliEventApisService.deepCopyLatestEventApiVersion({
-          epAsyncApiDocument: epAsyncApiDocument,
-        });
-        let loggerCode = "";
-        if (copied) {
-          loggerCode = ECliStatusCodes.SETUP_TEST_DOMAIN_EVENT_API_VERSION_COPIED;
-        } else {
-          loggerCode = ECliStatusCodes.SETUP_TEST_DOMAIN_EVENT_API_VERSION_COPY_SKIPPED;
-        }
-        CliLogger.info(CliLogger.createLogEntry(logName, {code: loggerCode, details: {
+        CliRunSummary.setUpTestApi({cliRunSummary_SetupTestApi: {
+          type: ECliRunSummary_Type.SetupTestApi,
           apiTitle: epAsyncApiDocument.getTitle(),
-          fromApplicationDomainName: fromApplicationDomainName,
-          toApplicationDomainName: toApplicationDomainName,
-          fromAssetsApplicationDomainName: fromAssetsApplicationDomainName,
-          toAssetsApplicationDomainName: toAssetsApplicationDomainName,
-        }}));
+        }});
+
+        if(this.cliImporterManagerOptions.createApiEventApi) {
+          let loggerCode = "";
+          const copied: boolean = await CliEventApisService.deepCopyLatestEventApiVersion({ epAsyncApiDocument: epAsyncApiDocument });
+          if (copied) {
+            loggerCode = ECliStatusCodes.SETUP_TEST_DOMAIN_EVENT_API_VERSION_COPIED;
+          } else {
+            loggerCode = ECliStatusCodes.SETUP_TEST_DOMAIN_EVENT_API_VERSION_COPY_SKIPPED;
+          }
+          CliLogger.info(CliLogger.createLogEntry(logName, {code: loggerCode, details: {
+            apiTitle: epAsyncApiDocument.getTitle(),
+            fromApplicationDomainName: fromApplicationDomainName,
+            toApplicationDomainName: toApplicationDomainName,
+            fromAssetsApplicationDomainName: fromAssetsApplicationDomainName,
+            toAssetsApplicationDomainName: toAssetsApplicationDomainName,
+          }}));    
+        }
+        if(this.cliImporterManagerOptions.createApiApplication) {
+          let loggerCode = "";
+          const copied: boolean = await CliAppsService.deepCopyLatestAppVersion({ epAsyncApiDocument: epAsyncApiDocument });
+          if (copied) {
+            loggerCode = ECliStatusCodes.SETUP_TEST_DOMAIN_APP_VERSION_COPIED;
+          } else {
+            loggerCode = ECliStatusCodes.SETUP_TEST_DOMAIN_APP_VERSION_COPY_SKIPPED;
+          }
+          CliLogger.info(CliLogger.createLogEntry(logName, {code: loggerCode, details: {
+            apiTitle: epAsyncApiDocument.getTitle(),
+            fromApplicationDomainName: fromApplicationDomainName,
+            toApplicationDomainName: toApplicationDomainName,
+            fromAssetsApplicationDomainName: fromAssetsApplicationDomainName,
+            toAssetsApplicationDomainName: toAssetsApplicationDomainName,
+          }}));    
+        }
         CliRunContext.pop();
       }
     }
@@ -335,12 +342,9 @@ export class CliImporterManager {
       runMode: ECliRunContext_RunMode.RELEASE,
     }});
 
-    for (const asyncApiFile of this.cliImporterManagerOptions
-      .asyncApiFileList) {
+    for (const asyncApiFile of this.cliImporterManagerOptions.asyncApiFileList) {
       CliRunExecuteReturnLog.reset();
-      const rctxt: ICliApiFileRunContext = {
-        apiFile: asyncApiFile,
-      };
+      const rctxt: ICliApiFileRunContext = { apiFile: asyncApiFile };
       CliRunContext.push(rctxt);
       CliRunSummary.processingApiFile({
         cliRunSummary_ApiFile: {
@@ -403,10 +407,7 @@ export class CliImporterManager {
           await this.run_release_mode();
           break;
         default:
-          CliUtils.assertNever(
-            logName,
-            this.cliImporterManagerOptions.cliImporterManagerMode
-          );
+          CliUtils.assertNever(logName, this.cliImporterManagerOptions.cliImporterManagerMode);
       }
       CliRunSummary.processedImport(logName, this.cliImporterManagerOptions);
     } catch (e) {
