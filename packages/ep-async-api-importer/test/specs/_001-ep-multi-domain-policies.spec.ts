@@ -148,6 +148,7 @@ describe(`${scriptName}`, () => {
       CliConfig.getCliImporterManagerOptions().cliImporterManagerMode = ECliImporterManagerMode.RELEASE_MODE;
       CliConfig.getCliImporterManagerOptions().applicationDomainName = undefined;
       CliConfig.getCliImporterManagerOptions().assetApplicationDomainName = undefined;
+      CliConfig.getCliImporterManagerOptions().cliTestSetupDomainsForApis = true;
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetsApplicationDomainEnforcementPolicy = ECliAssetsApplicationDomainEnforcementPolicies.LAX;
       // // DEBUG
       // CliConfig.getCliImporterManagerOptions().cliImporterManagerMode = ECliImporterManagerMode.TEST_MODE_KEEP;
@@ -332,8 +333,9 @@ describe(`${scriptName}`, () => {
       CliConfig.getCliImporterManagerOptions().createApiEventApi = false;
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_BrokerType = undefined;
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_ChannelDelimiter = undefined;
+      CliConfig.getCliImporterManagerOptions().cliTestSetupDomainsForApis = true;
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetsApplicationDomainEnforcementPolicy = ECliAssetsApplicationDomainEnforcementPolicies.LAX;
-
+      CliConfig.validateConfig();
       const cliImporter = new CliImporterManager(CliConfig.getCliImporterManagerOptions());
       const xvoid: void = await cliImporter.run();
     } catch (e) {
@@ -352,7 +354,9 @@ describe(`${scriptName}`, () => {
       CliConfig.getCliImporterManagerOptions().createApiEventApi = false;
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_BrokerType = undefined;
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_ChannelDelimiter = undefined;
+      CliConfig.getCliImporterManagerOptions().cliTestSetupDomainsForApis = true;
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetsApplicationDomainEnforcementPolicy = ECliAssetsApplicationDomainEnforcementPolicies.STRICT;
+      CliConfig.validateConfig();
       const cliImporter = new CliImporterManager(CliConfig.getCliImporterManagerOptions());
       const xvoid: void = await cliImporter.run();
     } catch (e) {
@@ -364,12 +368,8 @@ describe(`${scriptName}`, () => {
 
   it(`${scriptName}: should check no new version created for Start_AppAsyncApiSpecFile`, async () => {
     try {
-      const epAsyncApiDocument: EpAsyncApiDocument = await EpAsyncApiDocumentService.createFromFile({ 
-        filePath: Start_AppAsyncApiSpecFile
-      });
-      const applicationDomain = await EpSdkApplicationDomainsService.getByName({ 
-        applicationDomainName: epAsyncApiDocument.getApplicationDomainName()
-      });
+      const epAsyncApiDocument: EpAsyncApiDocument = await EpAsyncApiDocumentService.createFromFile({ filePath: Start_AppAsyncApiSpecFile });
+      const applicationDomain = await EpSdkApplicationDomainsService.getByName({ applicationDomainName: epAsyncApiDocument.getApplicationDomainName()});
       const applicationVersions = await EpSdkApplicationVersionsService.getVersionsForApplicationName({
         applicationName: epAsyncApiDocument.getEpApiName(),
         applicationDomainId: applicationDomain.id
@@ -410,12 +410,8 @@ describe(`${scriptName}`, () => {
 
   it(`${scriptName}: should check a new version was created for Update_1_AppAsyncApiSpecFile`, async () => {
     try {
-      const epAsyncApiDocument: EpAsyncApiDocument = await EpAsyncApiDocumentService.createFromFile({ 
-        filePath: Update_1_AppAsyncApiSpecFile
-      });
-      const applicationDomain = await EpSdkApplicationDomainsService.getByName({ 
-        applicationDomainName: epAsyncApiDocument.getApplicationDomainName()
-      });
+      const epAsyncApiDocument: EpAsyncApiDocument = await EpAsyncApiDocumentService.createFromFile({ filePath: Update_1_AppAsyncApiSpecFile });
+      const applicationDomain = await EpSdkApplicationDomainsService.getByName({ applicationDomainName: epAsyncApiDocument.getApplicationDomainName() });
       // console.log('\n\n\n\n******************************')
       // console.log(`epAsyncApiDocument.getApplicationDomainName()=${epAsyncApiDocument.getApplicationDomainName()}`);
       // console.log(`epAsyncApiDocument.getEpApiName()=${epAsyncApiDocument.getEpApiName()}`);
