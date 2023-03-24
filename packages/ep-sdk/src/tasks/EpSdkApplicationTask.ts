@@ -25,9 +25,7 @@ import {
 } from "./EpSdkTask";
 
 /** @category Tasks */
-export type TEpSdkApplicationTask_Settings = Partial<
-  Pick<Application, "applicationType" | "brokerType">
->;
+export type TEpSdkApplicationTask_Settings = Partial<Pick<Application, "applicationType" | "brokerType" >>;
 type TEpSdkApplicationTask_CompareObject = TEpSdkApplicationTask_Settings;
 
 /** @category Tasks */
