@@ -256,7 +256,7 @@ export class EpSdkApplicationsServiceClass extends EpSdkServiceClass {
   public deleteById = async ({ xContextId, applicationId, applicationDomainId }: {
     xContextId?: string;
     applicationId: string;
-    applicationDomainId: string;
+    applicationDomainId?: string;
   }): Promise<Application> => {
     const epApplication: Application = await this.getById({
       xContextId: xContextId,
