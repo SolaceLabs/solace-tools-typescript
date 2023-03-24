@@ -17,6 +17,7 @@ import {
   EpSdkApplicationVersionsService, 
   EpSdkError, 
   EpSdkEventApiVersionsService, 
+  EpSdkSchemaVersionsService, 
   IEpSdkApplicationDomainTask_ExecuteReturn 
 } from "@solace-labs/ep-sdk";
 import { TestContext, TestUtils } from "@internal/tools/src";
@@ -154,7 +155,7 @@ describe(`${scriptName}`, () => {
       CliConfig.getCliImporterManagerOptions().createApiEventApi = true;
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_BrokerType = undefined;
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_ChannelDelimiter = undefined;
-
+      CliConfig.validateConfig();
       const cliImporter = new CliImporterManager(CliConfig.getCliImporterManagerOptions());
       const xvoid: void = await cliImporter.run();
     } catch (e) {
@@ -527,15 +528,16 @@ describe(`${scriptName}`, () => {
 
   it(`${scriptName}: should check a new schema version of Update_3_AppAsyncApiSpecFile_Updated_Schema_Name was created for Update_3_AppAsyncApiSpecFile`, async () => {
     try {
+      const epAsyncApiDocument: EpAsyncApiDocument = await EpAsyncApiDocumentService.createFromFile({ filePath: Update_3_AppAsyncApiSpecFile });
+      const applicationDomain = await EpSdkApplicationDomainsService.getByName({ applicationDomainName: epAsyncApiDocument.getApplicationDomainName()});
       const schemasResponse: SchemasResponse = await SchemasService.getSchemas({
         name: Update_3_AppAsyncApiSpecFile_Updated_Schema_Name,
+        applicationDomainId: applicationDomain.id
       });
       const schemaObjects = schemasResponse.data;
       expect(schemaObjects.length, `wrong number of schemas for schema name ${Update_3_AppAsyncApiSpecFile_Updated_Schema_Name}`).to.equal(1);
       const schemaObject = schemaObjects[0];
-      const schemaVersionsResponse = await SchemasService.getSchemaVersions({
-        schemaIds: [schemaObject.id]
-      });
+      const schemaVersionsResponse = await SchemasService.getSchemaVersions({ schemaIds: [schemaObject.id]});
       const schemaVersionList = schemaVersionsResponse.data;
       expect(schemaVersionList.length, `wrong number of schema versions, schemaName=${Update_3_AppAsyncApiSpecFile_Updated_Schema_Name}, schemaVersionList=${JSON.stringify(schemaVersionList, null, 2)}`).to.equal(2);
     } catch (e) {
