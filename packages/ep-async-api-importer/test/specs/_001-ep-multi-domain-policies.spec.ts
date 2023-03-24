@@ -286,6 +286,120 @@ describe(`${scriptName}`, () => {
     }
   });
 
+  it(`${scriptName}: should fail importing Update_1_Fail_Event_EventApiAsyncApiSpecFile with correct error message`, async () => {
+    try {
+      CliConfig.getCliImporterManagerOptions().asyncApiFileList = [Update_1_Fail_Event_EventApiAsyncApiSpecFile];
+      CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetsApplicationDomainEnforcementPolicy = ECliAssetsApplicationDomainEnforcementPolicies.STRICT;
+      const cliImporter = new CliImporterManager(CliConfig.getCliImporterManagerOptions());
+      const xvoid: void = await cliImporter.run();
+      expect(false, 'should never get here').to.be.true;
+    } catch (e) {
+      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
+      expect(e instanceof CliImporterTestRunAssetsApplicationDomainPolicyViolationError, `error not instance of CliImporterTestRunAssetsApplicationDomainPolicyViolationError, e=${JSON.stringify(e, null, 2)}`).to.be.true;
+      // no further checks at the moment
+      // const cliImporterTestRunNotAllowedToChangeError: CliImporterTestRunNotAllowedToChangeError = e;
+      // TestLogger.logTestFailMessageForError(e);
+      // expect(false, TestLogger.createTestFailMessageWithCliError("failed", e)).to.be.true;
+    }
+  });
+
+  it(`${scriptName}: should check no new version created for Start_EventApiAsyncApiSpecFile after attempt to import Update_1_Fail_Event_EventApiAsyncApiSpecFile`, async () => {
+    try {
+      const epAsyncApiDocument: EpAsyncApiDocument = await EpAsyncApiDocumentService.createFromFile({ 
+        filePath: Start_EventApiAsyncApiSpecFile
+      });
+      const applicationDomain = await EpSdkApplicationDomainsService.getByName({ 
+        applicationDomainName: epAsyncApiDocument.getApplicationDomainName()
+      });
+      const eventApiVersions = await EpSdkEventApiVersionsService.getVersionsForEventApiName({
+        eventApiName: epAsyncApiDocument.getEpApiName(),
+        applicationDomainId: applicationDomain.id
+      })
+      expect(eventApiVersions.length,'eventApiVersions.length not 1').to.equal(1);
+    } catch (e) {
+      TestLogger.logMessageWithId(TestLogger.createTestFailMessageForError('error', e));
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
+    }
+  });
+
+  it(`${scriptName}: should fail importing Update_1_Fail_Schema_EventApiAsyncApiSpecFile with correct error message`, async () => {
+    try {
+      CliConfig.getCliImporterManagerOptions().asyncApiFileList = [Update_1_Fail_Schema_EventApiAsyncApiSpecFile];
+      CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetsApplicationDomainEnforcementPolicy = ECliAssetsApplicationDomainEnforcementPolicies.STRICT;
+      const cliImporter = new CliImporterManager(CliConfig.getCliImporterManagerOptions());
+      const xvoid: void = await cliImporter.run();
+      expect(false, 'should never get here').to.be.true;
+    } catch (e) {
+      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
+      expect(e instanceof CliImporterTestRunAssetsApplicationDomainPolicyViolationError, `error not instance of CliImporterTestRunAssetsApplicationDomainPolicyViolationError, e=${JSON.stringify(e, null, 2)}`).to.be.true;
+      // no further checks at the moment
+      // const cliImporterTestRunNotAllowedToChangeError: CliImporterTestRunNotAllowedToChangeError = e;
+      // TestLogger.logTestFailMessageForError(e);
+      // expect(false, TestLogger.createTestFailMessageWithCliError("failed", e)).to.be.true;
+    }
+  });
+
+  it(`${scriptName}: should check no new version created for Start_EventApiAsyncApiSpecFile after attempt to import Update_1_Fail_Schema_EventApiAsyncApiSpecFile`, async () => {
+    try {
+      const epAsyncApiDocument: EpAsyncApiDocument = await EpAsyncApiDocumentService.createFromFile({ 
+        filePath: Start_EventApiAsyncApiSpecFile
+      });
+      const applicationDomain = await EpSdkApplicationDomainsService.getByName({ 
+        applicationDomainName: epAsyncApiDocument.getApplicationDomainName()
+      });
+      const eventApiVersions = await EpSdkEventApiVersionsService.getVersionsForEventApiName({
+        eventApiName: epAsyncApiDocument.getEpApiName(),
+        applicationDomainId: applicationDomain.id
+      })
+      expect(eventApiVersions.length,'eventApiVersions.length not 1').to.equal(1);
+    } catch (e) {
+      TestLogger.logMessageWithId(TestLogger.createTestFailMessageForError('error', e));
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
+    }
+  });
+
+  it(`${scriptName}: should fail importing Update_1_Fail_Enum_EventApiAsyncApiSpecFile with correct error message`, async () => {
+    try {
+      CliConfig.getCliImporterManagerOptions().asyncApiFileList = [Update_1_Fail_Enum_EventApiAsyncApiSpecFile];
+      CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetsApplicationDomainEnforcementPolicy = ECliAssetsApplicationDomainEnforcementPolicies.STRICT;
+      const cliImporter = new CliImporterManager(CliConfig.getCliImporterManagerOptions());
+      const xvoid: void = await cliImporter.run();
+      expect(false, 'should never get here').to.be.true;
+    } catch (e) {
+      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
+      expect(e instanceof CliImporterTestRunAssetsApplicationDomainPolicyViolationError, `error not instance of CliImporterTestRunAssetsApplicationDomainPolicyViolationError, e=${JSON.stringify(e, null, 2)}`).to.be.true;
+      // no further checks at the moment
+      // const cliImporterTestRunNotAllowedToChangeError: CliImporterTestRunNotAllowedToChangeError = e;
+      // TestLogger.logTestFailMessageForError(e);
+      // expect(false, TestLogger.createTestFailMessageWithCliError("failed", e)).to.be.true;
+    }
+  });
+
+  it(`${scriptName}: should check no new version created for Start_EventApiAsyncApiSpecFile after attempt to import Update_1_Fail_Enum_EventApiAsyncApiSpecFile`, async () => {
+    try {
+      const epAsyncApiDocument: EpAsyncApiDocument = await EpAsyncApiDocumentService.createFromFile({ 
+        filePath: Start_EventApiAsyncApiSpecFile
+      });
+      const applicationDomain = await EpSdkApplicationDomainsService.getByName({ 
+        applicationDomainName: epAsyncApiDocument.getApplicationDomainName()
+      });
+      const eventApiVersions = await EpSdkEventApiVersionsService.getVersionsForEventApiName({
+        eventApiName: epAsyncApiDocument.getEpApiName(),
+        applicationDomainId: applicationDomain.id
+      })
+      expect(eventApiVersions.length,'eventApiVersions.length not 1').to.equal(1);
+    } catch (e) {
+      TestLogger.logMessageWithId(TestLogger.createTestFailMessageForError('error', e));
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
+    }
+  });
+
   it(`${scriptName}: should parse the Start_AppAsyncApiSpecFile and remove domains`, async () => {
     try {
       const epAsyncApiDocument: EpAsyncApiDocument = await EpAsyncApiDocumentService.createFromFile({ 
@@ -569,120 +683,6 @@ describe(`${scriptName}`, () => {
         applicationDomainId: applicationDomain.id
       })
       expect(applicationVersions.length,'applicationVersions.length not 4').to.equal(4);
-    } catch (e) {
-      TestLogger.logMessageWithId(TestLogger.createTestFailMessageForError('error', e));
-      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
-    }
-  });
-
-  it(`${scriptName}: should fail importing Update_1_Fail_Event_EventApiAsyncApiSpecFile with correct error message`, async () => {
-    try {
-      CliConfig.getCliImporterManagerOptions().asyncApiFileList = [Update_1_Fail_Event_EventApiAsyncApiSpecFile];
-      CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetsApplicationDomainEnforcementPolicy = ECliAssetsApplicationDomainEnforcementPolicies.STRICT;
-      const cliImporter = new CliImporterManager(CliConfig.getCliImporterManagerOptions());
-      const xvoid: void = await cliImporter.run();
-      expect(false, 'should never get here').to.be.true;
-    } catch (e) {
-      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
-      expect(e instanceof CliImporterTestRunAssetsApplicationDomainPolicyViolationError, `error not instance of CliImporterTestRunAssetsApplicationDomainPolicyViolationError, e=${JSON.stringify(e, null, 2)}`).to.be.true;
-      // no further checks at the moment
-      // const cliImporterTestRunNotAllowedToChangeError: CliImporterTestRunNotAllowedToChangeError = e;
-      // TestLogger.logTestFailMessageForError(e);
-      // expect(false, TestLogger.createTestFailMessageWithCliError("failed", e)).to.be.true;
-    }
-  });
-
-  it(`${scriptName}: should check no new version created for Start_EventApiAsyncApiSpecFile after attempt to import Update_1_Fail_Event_EventApiAsyncApiSpecFile`, async () => {
-    try {
-      const epAsyncApiDocument: EpAsyncApiDocument = await EpAsyncApiDocumentService.createFromFile({ 
-        filePath: Start_EventApiAsyncApiSpecFile
-      });
-      const applicationDomain = await EpSdkApplicationDomainsService.getByName({ 
-        applicationDomainName: epAsyncApiDocument.getApplicationDomainName()
-      });
-      const eventApiVersions = await EpSdkEventApiVersionsService.getVersionsForEventApiName({
-        eventApiName: epAsyncApiDocument.getEpApiName(),
-        applicationDomainId: applicationDomain.id
-      })
-      expect(eventApiVersions.length,'eventApiVersions.length not 1').to.equal(1);
-    } catch (e) {
-      TestLogger.logMessageWithId(TestLogger.createTestFailMessageForError('error', e));
-      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
-    }
-  });
-
-  it(`${scriptName}: should fail importing Update_1_Fail_Schema_EventApiAsyncApiSpecFile with correct error message`, async () => {
-    try {
-      CliConfig.getCliImporterManagerOptions().asyncApiFileList = [Update_1_Fail_Schema_EventApiAsyncApiSpecFile];
-      CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetsApplicationDomainEnforcementPolicy = ECliAssetsApplicationDomainEnforcementPolicies.STRICT;
-      const cliImporter = new CliImporterManager(CliConfig.getCliImporterManagerOptions());
-      const xvoid: void = await cliImporter.run();
-      expect(false, 'should never get here').to.be.true;
-    } catch (e) {
-      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
-      expect(e instanceof CliImporterTestRunAssetsApplicationDomainPolicyViolationError, `error not instance of CliImporterTestRunAssetsApplicationDomainPolicyViolationError, e=${JSON.stringify(e, null, 2)}`).to.be.true;
-      // no further checks at the moment
-      // const cliImporterTestRunNotAllowedToChangeError: CliImporterTestRunNotAllowedToChangeError = e;
-      // TestLogger.logTestFailMessageForError(e);
-      // expect(false, TestLogger.createTestFailMessageWithCliError("failed", e)).to.be.true;
-    }
-  });
-
-  it(`${scriptName}: should check no new version created for Start_EventApiAsyncApiSpecFile after attempt to import Update_1_Fail_Schema_EventApiAsyncApiSpecFile`, async () => {
-    try {
-      const epAsyncApiDocument: EpAsyncApiDocument = await EpAsyncApiDocumentService.createFromFile({ 
-        filePath: Start_EventApiAsyncApiSpecFile
-      });
-      const applicationDomain = await EpSdkApplicationDomainsService.getByName({ 
-        applicationDomainName: epAsyncApiDocument.getApplicationDomainName()
-      });
-      const eventApiVersions = await EpSdkEventApiVersionsService.getVersionsForEventApiName({
-        eventApiName: epAsyncApiDocument.getEpApiName(),
-        applicationDomainId: applicationDomain.id
-      })
-      expect(eventApiVersions.length,'eventApiVersions.length not 1').to.equal(1);
-    } catch (e) {
-      TestLogger.logMessageWithId(TestLogger.createTestFailMessageForError('error', e));
-      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
-    }
-  });
-
-  it(`${scriptName}: should fail importing Update_1_Fail_Enum_EventApiAsyncApiSpecFile with correct error message`, async () => {
-    try {
-      CliConfig.getCliImporterManagerOptions().asyncApiFileList = [Update_1_Fail_Enum_EventApiAsyncApiSpecFile];
-      CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetsApplicationDomainEnforcementPolicy = ECliAssetsApplicationDomainEnforcementPolicies.STRICT;
-      const cliImporter = new CliImporterManager(CliConfig.getCliImporterManagerOptions());
-      const xvoid: void = await cliImporter.run();
-      expect(false, 'should never get here').to.be.true;
-    } catch (e) {
-      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
-      expect(e instanceof CliImporterTestRunAssetsApplicationDomainPolicyViolationError, `error not instance of CliImporterTestRunAssetsApplicationDomainPolicyViolationError, e=${JSON.stringify(e, null, 2)}`).to.be.true;
-      // no further checks at the moment
-      // const cliImporterTestRunNotAllowedToChangeError: CliImporterTestRunNotAllowedToChangeError = e;
-      // TestLogger.logTestFailMessageForError(e);
-      // expect(false, TestLogger.createTestFailMessageWithCliError("failed", e)).to.be.true;
-    }
-  });
-
-  it(`${scriptName}: should check no new version created for Start_EventApiAsyncApiSpecFile after attempt to import Update_1_Fail_Enum_EventApiAsyncApiSpecFile`, async () => {
-    try {
-      const epAsyncApiDocument: EpAsyncApiDocument = await EpAsyncApiDocumentService.createFromFile({ 
-        filePath: Start_EventApiAsyncApiSpecFile
-      });
-      const applicationDomain = await EpSdkApplicationDomainsService.getByName({ 
-        applicationDomainName: epAsyncApiDocument.getApplicationDomainName()
-      });
-      const eventApiVersions = await EpSdkEventApiVersionsService.getVersionsForEventApiName({
-        eventApiName: epAsyncApiDocument.getEpApiName(),
-        applicationDomainId: applicationDomain.id
-      })
-      expect(eventApiVersions.length,'eventApiVersions.length not 1').to.equal(1);
     } catch (e) {
       TestLogger.logMessageWithId(TestLogger.createTestFailMessageForError('error', e));
       if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
