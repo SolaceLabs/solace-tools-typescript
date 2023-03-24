@@ -44,13 +44,11 @@ const initializeGlobals = () => {
   CliConfig.getCliImporterManagerOptions().cliImporterManagerMode = ECliImporterManagerMode.RELEASE_MODE;
   CliConfig.getCliImporterManagerOptions().applicationDomainName = undefined;
   CliConfig.getCliImporterManagerOptions().assetApplicationDomainName = undefined;
-  // CliConfig.getCliImporterManagerOptions().runId = scriptName;
-  // // DEBUG
-  // CliConfig.getCliImporterManagerOptions().cliImporterManagerMode = ECliImporterManagerMode.TEST_MODE_KEEP;
-  // CliConfig.getCliImporterManagerOptions().applicationDomainName = 'release_mode';
+  CliConfig.getCliImporterManagerOptions().createApiEventApi = true;
   CliConfig.getCliImporterManagerOptions().createApiApplication = false;
   CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_BrokerType = undefined;
   CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_ChannelDelimiter = undefined;
+  CliConfig.validateConfig();
 };
 
 describe(`${scriptName}`, () => {
@@ -59,19 +57,14 @@ describe(`${scriptName}`, () => {
     initializeGlobals();
     //parse all specs
     try {
-      const testApiSpecRecordList: Array<TTestApiSpecRecord> =
-        await TestService.createTestApiSpecRecordList({
-          apiFileList: FileList,
-          overrideApplicationDomainName: CliConfig.getCliImporterManagerOptions().applicationDomainName,
-          overrideAssetApplicationDomainName: CliConfig.getCliImporterManagerOptions().assetApplicationDomainName,
-          // prefixApplicationDomainName: CliImporterManager.createApplicationDomainPrefix({
-          //   appName: CliConfig.getCliImporterManagerOptions().appName,
-          //   runId: CliConfig.getCliImporterManagerOptions().runId
-          // })
-          overrideBrokerType: CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_BrokerType,
-          overrideChannelDelimiter: CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_ChannelDelimiter,
-          validateBestPractices: CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliValidateApiSpecBestPractices
-        });
+      const testApiSpecRecordList: Array<TTestApiSpecRecord> = await TestService.createTestApiSpecRecordList({
+        apiFileList: FileList,
+        overrideApplicationDomainName: CliConfig.getCliImporterManagerOptions().applicationDomainName,
+        overrideAssetApplicationDomainName: CliConfig.getCliImporterManagerOptions().assetApplicationDomainName,
+        overrideBrokerType: CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_BrokerType,
+        overrideChannelDelimiter: CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_ChannelDelimiter,
+        validateBestPractices: CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliValidateApiSpecBestPractices
+      });
       // ensure all app domains are absent
       const xvoid: void = await TestService.absent_ApplicationDomains(false);
       expect(testApiSpecRecordList.length, "expecting only 1 api file").to.equal(1);
@@ -98,20 +91,17 @@ describe(`${scriptName}`, () => {
       err = e;
     } finally {
       // ensure all app domains are absent
-      const xvoid: void = await TestService.absent_ApplicationDomains(CliConfig.getCliImporterManagerOptions().cliImporterManagerMode === ECliImporterManagerMode.TEST_MODE_KEEP);
+      // const xvoid: void = await TestService.absent_ApplicationDomains(CliConfig.getCliImporterManagerOptions().cliImporterManagerMode === ECliImporterManagerMode.TEST_MODE_KEEP);
     }
     expect(err, TestLogger.createNotCliErrorMesssage(JSON.stringify(err))).to.be.undefined;
   });
 
   it(`${scriptName}: should import spec`, async () => {
     try {
-      const cliImporter = new CliImporterManager(
-        CliConfig.getCliImporterManagerOptions()
-      );
+      const cliImporter = new CliImporterManager(CliConfig.getCliImporterManagerOptions());
       const xvoid: void = await cliImporter.run();
-      const cliRunSummaryList: Array<ICliRunSummary_Base> =
-        CliRunSummary.getSummaryLogList();
       // DEBUG
+      // const cliRunSummaryList: Array<ICliRunSummary_Base> = CliRunSummary.getSummaryLogList();
       // expect(false, JSON.stringify(cliRunSummaryList, null, 2)).to.be.true;
     } catch (e) {
       expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
@@ -122,19 +112,14 @@ describe(`${scriptName}`, () => {
   it(`${scriptName}: check app domains`, async () => {
     try {
       // check api app domain
-      const applicationDomain: ApplicationDomain =
-        await EpSdkApplicationDomainsService.getByName({
-          applicationDomainName: AsyncApiSpecFile_X_EpApplicationDomainName,
-        });
-      const eventApisResponse: EventApisResponse =
-        await EventApIsService.getEventApis({
-          applicationDomainId: applicationDomain.id,
-        });
-      let message = `eventApisResponse=${JSON.stringify(
-        eventApisResponse,
-        null,
-        2
-      )}`;
+      const applicationDomain: ApplicationDomain | undefined = await EpSdkApplicationDomainsService.getByName({
+        applicationDomainName: AsyncApiSpecFile_X_EpApplicationDomainName,
+      });
+      expect(applicationDomain, `applicationDomain undefined for AsyncApiSpecFile_X_EpApplicationDomainName=${AsyncApiSpecFile_X_EpApplicationDomainName}`).to.not.be.undefined;
+      const eventApisResponse: EventApisResponse = await EventApIsService.getEventApis({
+        applicationDomainId: applicationDomain.id,
+      });
+      let message = `eventApisResponse=${JSON.stringify(eventApisResponse, null, 2)}`;
       expect(eventApisResponse.data.length, message).to.equal(1);
       let eventsResponse: EventsResponse = await EventsService.getEvents({
         applicationDomainId: applicationDomain.id,

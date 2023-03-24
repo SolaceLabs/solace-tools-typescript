@@ -49,6 +49,7 @@ const initializeGlobals = () => {
   CliConfig.getCliImporterManagerOptions().cliTestSetupDomainsForApis = true;
   CliConfig.getCliImporterManagerOptions().createApiEventApi = true;
   CliConfig.getCliImporterManagerOptions().createApiApplication = false;
+  CliConfig.validateConfig();
 };
 
 describe(`${scriptName}`, () => {
