@@ -2,7 +2,7 @@ import "mocha";
 import { expect } from "chai";
 import path from "path";
 import {
-  ApiError, SchemasResponse, SchemasService,
+  ApiError, SchemasResponse, SchemasService, SchemaVersion,
 } from "@solace-labs/ep-openapi-node";
 import { 
   EpAsyncApiDocument, 
@@ -165,7 +165,7 @@ describe(`${scriptName}`, () => {
     }
   });
 
-  xit(`${scriptName}: should import Start_EventApiAsyncApiSpecFile again, test idempotency`, async () => {
+  it(`${scriptName}: should import Start_EventApiAsyncApiSpecFile again, test idempotency`, async () => {
     try {
       const cliImporter = new CliImporterManager(CliConfig.getCliImporterManagerOptions());
       const xvoid: void = await cliImporter.run();
@@ -210,7 +210,7 @@ describe(`${scriptName}`, () => {
     }
   });
 
-  xit(`${scriptName}: should import Update_1_EventApiAsyncApiSpecFile again, test idempotency`, async () => {
+  it(`${scriptName}: should import Update_1_EventApiAsyncApiSpecFile again, test idempotency`, async () => {
     try {
       const cliImporter = new CliImporterManager(CliConfig.getCliImporterManagerOptions());
       const xvoid: void = await cliImporter.run();
@@ -254,7 +254,7 @@ describe(`${scriptName}`, () => {
     }
   });
 
-  xit(`${scriptName}: should import Update_2_EventApiAsyncApiSpecFile again, test idempotency`, async () => {
+  it(`${scriptName}: should import Update_2_EventApiAsyncApiSpecFile again, test idempotency`, async () => {
     try {
       const cliImporter = new CliImporterManager(CliConfig.getCliImporterManagerOptions());
       const xvoid: void = await cliImporter.run();
@@ -344,7 +344,7 @@ describe(`${scriptName}`, () => {
     }
   });
 
-  xit(`${scriptName}: should import Start_AppAsyncApiSpecFile again, test idempotency`, async () => {
+  it(`${scriptName}: should import Start_AppAsyncApiSpecFile again, test idempotency`, async () => {
     try {
       CliConfig.getCliImporterManagerOptions().asyncApiFileList = [Start_AppAsyncApiSpecFile];
       CliConfig.getCliImporterManagerOptions().cliImporterManagerMode = ECliImporterManagerMode.RELEASE_MODE;
@@ -396,7 +396,7 @@ describe(`${scriptName}`, () => {
     }
   });
 
-  xit(`${scriptName}: should import Update_1_AppAsyncApiSpecFile again, test idempotency`, async () => {
+  it(`${scriptName}: should import Update_1_AppAsyncApiSpecFile again, test idempotency`, async () => {
     try {
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetsApplicationDomainEnforcementPolicy = ECliAssetsApplicationDomainEnforcementPolicies.STRICT;
       const cliImporter = new CliImporterManager(CliConfig.getCliImporterManagerOptions());
@@ -443,7 +443,7 @@ describe(`${scriptName}`, () => {
     }
   });
 
-  xit(`${scriptName}: should import Update_2_AppAsyncApiSpecFile again, test idempotency`, async () => {
+  it(`${scriptName}: should import Update_2_AppAsyncApiSpecFile again, test idempotency`, async () => {
     try {
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetsApplicationDomainEnforcementPolicy = ECliAssetsApplicationDomainEnforcementPolicies.STRICT;
       const cliImporter = new CliImporterManager(CliConfig.getCliImporterManagerOptions());
@@ -480,6 +480,7 @@ describe(`${scriptName}`, () => {
     try {
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetsApplicationDomainEnforcementPolicy = ECliAssetsApplicationDomainEnforcementPolicies.STRICT;
       CliConfig.getCliImporterManagerOptions().asyncApiFileList = [Update_3_AppAsyncApiSpecFile];
+      CliConfig.validateConfig();
       const cliImporter = new CliImporterManager(CliConfig.getCliImporterManagerOptions());
       const xvoid: void = await cliImporter.run();
     } catch (e) {
@@ -489,7 +490,7 @@ describe(`${scriptName}`, () => {
     }
   });
 
-  xit(`${scriptName}: should import Update_3_AppAsyncApiSpecFile again, test idempotency`, async () => {
+  it(`${scriptName}: should import Update_3_AppAsyncApiSpecFile again, test idempotency`, async () => {
     try {
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetsApplicationDomainEnforcementPolicy = ECliAssetsApplicationDomainEnforcementPolicies.STRICT;
       const cliImporter = new CliImporterManager(CliConfig.getCliImporterManagerOptions());
@@ -526,16 +527,11 @@ describe(`${scriptName}`, () => {
     try {
       const epAsyncApiDocument: EpAsyncApiDocument = await EpAsyncApiDocumentService.createFromFile({ filePath: Update_3_AppAsyncApiSpecFile });
       const applicationDomain = await EpSdkApplicationDomainsService.getByName({ applicationDomainName: epAsyncApiDocument.getApplicationDomainName()});
-      const schemasResponse: SchemasResponse = await SchemasService.getSchemas({
-        name: Update_3_AppAsyncApiSpecFile_Updated_Schema_Name,
-        applicationDomainId: applicationDomain.id
+      const schemaVersions: Array<SchemaVersion> = await EpSdkSchemaVersionsService.getVersionsForSchemaName({
+        applicationDomainId: applicationDomain.id,
+        schemaName: Update_3_AppAsyncApiSpecFile_Updated_Schema_Name,
       });
-      const schemaObjects = schemasResponse.data;
-      expect(schemaObjects.length, `wrong number of schemas for schema name ${Update_3_AppAsyncApiSpecFile_Updated_Schema_Name}`).to.equal(1);
-      const schemaObject = schemaObjects[0];
-      const schemaVersionsResponse = await SchemasService.getSchemaVersions({ schemaIds: [schemaObject.id]});
-      const schemaVersionList = schemaVersionsResponse.data;
-      expect(schemaVersionList.length, `wrong number of schema versions, schemaName=${Update_3_AppAsyncApiSpecFile_Updated_Schema_Name}, schemaVersionList=${JSON.stringify(schemaVersionList, null, 2)}`).to.equal(2);
+      expect(schemaVersions.length, `wrong number of schema versions, schemaName=${Update_3_AppAsyncApiSpecFile_Updated_Schema_Name}, schemaVersions=${JSON.stringify(schemaVersions, null, 2)}`).to.equal(3);
     } catch (e) {
       TestLogger.logMessageWithId(TestLogger.createTestFailMessageForError('error', e));
       if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
