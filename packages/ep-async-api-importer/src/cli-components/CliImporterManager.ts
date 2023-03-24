@@ -292,6 +292,7 @@ export class CliImporterManager {
               generateAssetsOutput: false
             }});
             if (cliApplicationImporterRunReturn.error !== undefined) throw cliApplicationImporterRunReturn.error;
+          }
         } else if(this.cliImporterManagerOptions.createApiApplication) {
           const cliApplicationImporter = new CliApplicationImporter(this.cliImporterManagerOptions.cliImporterOptions, ECliRunContext_RunMode.TEST_PASS_1);
           const cliApplicationImporterRunReturn: ICliApplicationImporterRunReturn = await cliApplicationImporter.run({ cliImporterRunOptions: {
@@ -300,7 +301,6 @@ export class CliImporterManager {
             generateAssetsOutput: false
           }});
           if(cliApplicationImporterRunReturn.error !== undefined) throw cliApplicationImporterRunReturn.error;
-        }
         }
         CliRunContext.pop();
       }

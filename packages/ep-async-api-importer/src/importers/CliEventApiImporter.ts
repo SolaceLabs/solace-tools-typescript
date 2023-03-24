@@ -17,7 +17,6 @@ import {
   EEpSdkTask_TargetState,
   EEpSdk_VersionTaskStrategy,
   EpSdkApplicationDomainTask,
-  EpSdkEventApisService,
   EpSdkEventApiTask,
   EpSdkEventApiVersionsService,
   EpSdkEventApiVersionTask,
@@ -619,8 +618,8 @@ export class CliEventApiImporter extends CliAssetsImporter {
   public async run({ cliImporterRunOptions, }: {
     cliImporterRunOptions: ICliEventApiImporterRunOptions;
   }): Promise<ICliEventApiImporterRunReturn> {
-    const funcName = 'run';
-    const logName = `${CliEventApiImporter.name}.${funcName}()`;
+    // const funcName = 'run';
+    // const logName = `${CliEventApiImporter.name}.${funcName}()`;
 
     const cliEventApiImporterRunImportReturn: ICliEventApiImporterRunImportReturn = await this.run_import({ cliImporterRunOptions: cliImporterRunOptions, });
     if (cliEventApiImporterRunImportReturn.error !== undefined) return {
