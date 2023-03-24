@@ -137,7 +137,7 @@ info:
   x-ep-application-version-id: hy54h1qaf7t
   x-ep-application-id: l0e797s3gmt
   description: Multi-Domain Application
-  x-ep-displayname: App_Id
+  x-ep-displayname: Multi-Domain Application display name
   x-ep-state-name: RELEASED
   title: Multi-Domain Application
   x-ep-application-domain-id: 53ai6w6z4rz

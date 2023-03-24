@@ -2,7 +2,9 @@ import "mocha";
 import { expect } from "chai";
 import path from "path";
 import {
-  ApiError, SchemasResponse, SchemasService,
+  ApiError, 
+  ApplicationsService, 
+  ApplicationVersion, 
 } from "@solace-labs/ep-openapi-node";
 import { 
   EpAsyncApiDocument, 
@@ -16,10 +18,11 @@ import {
   EpSdkApplicationDomainTask, 
   EpSdkApplicationVersionsService, 
   EpSdkError, 
-  EpSdkEventApiVersionsService, 
-  IEpSdkApplicationDomainTask_ExecuteReturn 
 } from "@solace-labs/ep-sdk";
-import { TestContext, TestUtils } from "@internal/tools/src";
+import { 
+  TestContext, 
+  TestUtils 
+} from "@internal/tools/src";
 import {
   TestConfig,
   TestLogger,
@@ -29,6 +32,7 @@ import {
   CliConfig,
   CliError,
   CliImporterManager,
+  CliUtils,
   ECliAssetsApplicationDomainEnforcementPolicies,
   ECliImporterManagerMode,
 } from "../../src/cli-components";
@@ -40,6 +44,7 @@ TestLogger.logMessage(scriptName, ">>> starting ...");
 
 let Start_AppAsyncApiSpecFile: string;
 const TestApplicationDomainNames: Array<string> = [];
+let DownloadedAsyncApiSpecFileNameJson: string;
 
 const absentApplicationDomains = async() => {
   // remove them backwards
@@ -73,9 +78,9 @@ describe(`${scriptName}`, () => {
 
   after(async () => {
     TestContext.newItId();
-    // try { await absentApplicationDomains(); } catch(e) { console.log(`e=${JSON.stringify(e, null, 2)}`)}
-    // try { await absentApplicationDomains(); } catch(e) { console.log(`e=${JSON.stringify(e, null, 2)}`)}
-    // try { await absentApplicationDomains(); } catch(e) { console.log(`e=${JSON.stringify(e, null, 2)}`)}
+    try { await absentApplicationDomains(); } catch(e) { console.log(`e=${JSON.stringify(e, null, 2)}`)}
+    try { await absentApplicationDomains(); } catch(e) { console.log(`e=${JSON.stringify(e, null, 2)}`)}
+    try { await absentApplicationDomains(); } catch(e) { console.log(`e=${JSON.stringify(e, null, 2)}`)}
   });
 
   it(`${scriptName}: should parse the Start_AppAsyncApiSpecFile and remove domains`, async () => {
@@ -136,12 +141,39 @@ describe(`${scriptName}`, () => {
     }
   });
 
-  it(`${scriptName}: should import Start_AppAsyncApiSpecFile again, test idempotency`, async () => {
+  it(`${scriptName}: should download the imported app spec and save it to file`, async () => {
     try {
-      CliConfig.getCliImporterManagerOptions().asyncApiFileList = [Start_AppAsyncApiSpecFile];
+      const epAsyncApiDocument: EpAsyncApiDocument = await EpAsyncApiDocumentService.createFromFile({ 
+        filePath: Start_AppAsyncApiSpecFile,
+      });
+      const applicationDomainName = epAsyncApiDocument.getApplicationDomainName();
+      const applicationName = epAsyncApiDocument.getEpApiName();
+      const applicationDomain = await EpSdkApplicationDomainsService.getByName({ applicationDomainName: applicationDomainName });
+      const applicationVersionList: Array<ApplicationVersion> = await EpSdkApplicationVersionsService.getVersionsForApplicationName({
+        applicationName: applicationName,
+        applicationDomainId: applicationDomain.id
+      });
+      expect(applicationVersionList.length, 'wrong number of versions').to.equal(1);
+      const asyncApiSpec = await ApplicationsService.getAsyncApiForApplicationVersion({
+        applicationVersionId: applicationVersionList[0].id
+      });
+      DownloadedAsyncApiSpecFileNameJson = TestConfig.getConfig().tmpDir + "/" + epAsyncApiDocument.getEpApiNameAsFileName("json");
+      CliUtils.saveContents2File({
+        filePath: DownloadedAsyncApiSpecFileNameJson,
+        content: JSON.stringify(asyncApiSpec, null, 2 ),
+      });
+    } catch (e) {
+      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
+      expect(false, TestLogger.createTestFailMessageWithCliError("failed", e)).to.be.true;
+    }
+  });
+
+  it(`${scriptName}: should import donwload application spec without any changes`, async () => {
+    try {
+      CliConfig.getCliImporterManagerOptions().asyncApiFileList = [DownloadedAsyncApiSpecFileNameJson];
       CliConfig.getCliImporterManagerOptions().cliImporterManagerMode = ECliImporterManagerMode.RELEASE_MODE;
-      // DEBUG
-      CliConfig.getCliImporterManagerOptions().cliImporterManagerMode = ECliImporterManagerMode.TEST_MODE_KEEP;
+      // // DEBUG
+      // CliConfig.getCliImporterManagerOptions().cliImporterManagerMode = ECliImporterManagerMode.TEST_MODE_KEEP;
       // end DEBUG
       CliConfig.getCliImporterManagerOptions().createApiApplication = true;
       CliConfig.getCliImporterManagerOptions().createApiEventApi = false;
@@ -158,7 +190,29 @@ describe(`${scriptName}`, () => {
     }
   });
 
-  xit(`${scriptName}: should check no new version created for Start_AppAsyncApiSpecFile`, async () => {
+  it(`${scriptName}: should import Start_AppAsyncApiSpecFile again, test idempotency`, async () => {
+    try {
+      CliConfig.getCliImporterManagerOptions().asyncApiFileList = [Start_AppAsyncApiSpecFile];
+      CliConfig.getCliImporterManagerOptions().cliImporterManagerMode = ECliImporterManagerMode.RELEASE_MODE;
+      // // DEBUG
+      // CliConfig.getCliImporterManagerOptions().cliImporterManagerMode = ECliImporterManagerMode.TEST_MODE_KEEP;
+      // // end DEBUG
+      CliConfig.getCliImporterManagerOptions().createApiApplication = true;
+      CliConfig.getCliImporterManagerOptions().createApiEventApi = false;
+      CliConfig.getCliImporterManagerOptions().cliTestSetupDomainsForApis = true;
+      CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_BrokerType = undefined;
+      CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_ChannelDelimiter = undefined;
+      CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetsApplicationDomainEnforcementPolicy = ECliAssetsApplicationDomainEnforcementPolicies.STRICT;
+      const cliImporter = new CliImporterManager(CliConfig.getCliImporterManagerOptions());
+      const xvoid: void = await cliImporter.run();
+    } catch (e) {
+      TestLogger.logMessageWithId(TestLogger.createTestFailMessageForError('error', e));
+      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
+      expect(false, TestLogger.createTestFailMessageWithCliError("failed", e)).to.be.true;
+    }
+  });
+
+  it(`${scriptName}: should check no new version created for Start_AppAsyncApiSpecFile`, async () => {
     try {
       const epAsyncApiDocument: EpAsyncApiDocument = await EpAsyncApiDocumentService.createFromFile({ 
         filePath: Start_AppAsyncApiSpecFile
