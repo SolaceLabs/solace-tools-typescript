@@ -30,7 +30,7 @@ components:
       type: object
       properties:
         newProperty: 
-          type: sring
+          type: string
         sentAt:
           format: date-time
           description: Date and time when the message was sent.

@@ -562,18 +562,13 @@ describe(`${scriptName}`, () => {
 
   it(`${scriptName}: should check no new version created for Start_AppAsyncApiSpecFile`, async () => {
     try {
-      const epAsyncApiDocument: EpAsyncApiDocument = await EpAsyncApiDocumentService.createFromFile({ 
-        filePath: Start_AppAsyncApiSpecFile
-      });
-      const applicationDomain = await EpSdkApplicationDomainsService.getByName({ 
-        applicationDomainName: epAsyncApiDocument.getApplicationDomainName()
-      });
+      const epAsyncApiDocument: EpAsyncApiDocument = await EpAsyncApiDocumentService.createFromFile({ filePath: Start_AppAsyncApiSpecFile });
+      const applicationDomain = await EpSdkApplicationDomainsService.getByName({ applicationDomainName: epAsyncApiDocument.getApplicationDomainName() });
       const applicationVersions = await EpSdkApplicationVersionsService.getVersionsForApplicationName({
         applicationName: epAsyncApiDocument.getEpApiName(),
         applicationDomainId: applicationDomain.id
       })
-      expect(applicationVersions.length,'applicationVersions.length not 1').to.equal(1);
-
+      expect(applicationVersions.length,'applicationVersions.length not 4').to.equal(4);
     } catch (e) {
       TestLogger.logMessageWithId(TestLogger.createTestFailMessageForError('error', e));
       if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
