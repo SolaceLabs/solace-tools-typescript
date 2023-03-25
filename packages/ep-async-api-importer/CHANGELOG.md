@@ -1,5 +1,30 @@
 # @solace-labs/ep-async-api-importer
 
+## 0.56.0
+
+### Minor Changes
+
+- 75f8b29b: enforcement of application domain permissions
+
+  - new environment varible: `CLI_ASSETS_APPLICATION_DOMAIN_ENFORCEMENT_POLICY`
+
+    - strict: no first versions allowed
+    - lax: first versins allowed, but no new versions allowed after
+    - off: no checks
+    - note: must be used with **CLI_TEST_SETUP_DOMAINS_FOR_APIS=true**
+
+  - refactor of importer to allow export/import of applications only without the need to have an event api in the middle
+
+  - config validations
+    - at least one output selected, either event api or application
+
+### Patch Changes
+
+- Updated dependencies [75f8b29b]
+- Updated dependencies [75f8b29b]
+  - @solace-labs/ep-asyncapi@0.55.1
+  - @solace-labs/ep-sdk@0.58.1
+
 ## 0.55.0
 
 ### Minor Changes

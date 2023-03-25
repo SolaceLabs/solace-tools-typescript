@@ -1,5 +1,23 @@
 # @solace-labs/ep-sdk
 
+## 0.58.1
+
+### Patch Changes
+
+- 75f8b29b: bug fixes & new features
+
+  **bug fixes**
+
+  - EpSdkEnumVersionsService.copyLastestVersionById_IfNotExists()
+  - EpSdkSchemaVersionsServiceClass.copyLastestVersionById_IfNotExists()
+  - EpSdkEpEventVersionsServiceClass.deepCopyLastestVersionById_IfNotExists()
+  - EpSdkEventApiVersionsServiceClass.deepCopyLastestVersionById_IfNotExists()
+    - fixed source application domain id attribute value to correct application domain id
+
+  **new features**
+
+  - new method: `EpSdkApplicationVersionsServiceClass.deepCopyLastestVersionById_IfNotExists()`
+
 ## 0.58.0
 
 ### Minor Changes
