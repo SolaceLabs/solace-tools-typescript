@@ -1,7 +1,8 @@
 import "mocha";
 import path from "path";
 import { expect } from "chai";
-import { OpenAPI } from "@solace-labs/ep-openapi-node";
+import { OpenAPI as EpOpenAPI} from "@solace-labs/ep-openapi-node";
+import { OpenAPI as EpRtOpenAPI} from "@solace-labs/ep-rt-openapi-node";
 import { TestContext } from "@internal/tools/src";
 import { TestConfig, TestLogger } from "./lib";
 import {
@@ -59,7 +60,8 @@ describe(`${scriptName}`, () => {
     it(`${scriptName}: should initialize EP client`, async () => {
       try {
         EpSdkClient.initialize({
-          globalOpenAPI: OpenAPI,
+          globalEpOpenAPI: EpOpenAPI,
+          globalEpRtOpenAPI: EpRtOpenAPI,
           token: TestConfig.getSolaceCloudToken(),
           baseUrl: TestConfig.getConfig().apiBaseUrl,
         });

@@ -1,7 +1,7 @@
 
 ---
 
-**Event Portal OpenAPI Version: 2.0.12**
+**Event Portal OpenAPI Version: 2.0.15**
 
 ---
 

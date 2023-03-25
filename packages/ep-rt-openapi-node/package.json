@@ -1,15 +1,15 @@
 {
-  "name": "@solace-labs/ep-openapi-node",
-  "version": "2.53.0",
+  "name": "@solace-labs/ep-rt-openapi-node",
+  "version": "1.0.0",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "type": "commonjs",
-  "description": "Solace Event Portal OpenAPI Client for NodeJS (Typescript), v2.0.15",
+  "description": "Solace Event Portal Runtime OpenAPI Client for NodeJS (Typescript), v2.0.15",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "github:SolaceLabs/solace-tools",
-    "directory": "packages/ep-openapi-node"
+    "directory": "packages/ep-rt-openapi-node"
   },
   "bugs": {
     "url": "github:SolaceLabs/issues"
@@ -37,7 +37,7 @@
   },
   "typedoc": {
     "entryPoint": "./generated-src/index.ts",
-    "displayName": "Event Portal OpenAPI Node",
+    "displayName": "Event Portal Runtime OpenAPI Node",
     "readmeFile": "./typedoc.README.md",
     "tsconfig": "tsconfig.json"
   },

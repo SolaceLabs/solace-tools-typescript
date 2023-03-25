@@ -4,7 +4,7 @@ import {
   EnvironmentsResponse,
   EnvironmentsService,
   Pagination,
-} from '@solace-labs/ep-openapi-node';
+} from '@solace-labs/ep-rt-openapi-node';
 import {
   EpSdkApiContentError,
 } from '../utils';

@@ -1,6 +1,6 @@
 
-Solace Event Portal OpenAPI
-===========================
+Solace Event Portal Runtime OpenAPI
+===================================
 
 .. toctree::
   :maxdepth: 2

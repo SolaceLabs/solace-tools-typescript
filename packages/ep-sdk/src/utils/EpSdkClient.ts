@@ -1,7 +1,10 @@
 import {
-  OpenAPI,
+  OpenAPI as EPOpenAPI,
   OpenAPIConfig
 } from '@solace-labs/ep-openapi-node';
+import {
+  OpenAPI as EPRtOpenAPI,
+} from '@solace-labs/ep-rt-openapi-node';
 
 /**
  * Convenience class to initialize the OpenAPI config for @solace-labs/ep-openapi-node.
@@ -27,47 +30,71 @@ export class EpSdkClient {
    * });
    * 
    */
-  public static initialize = ({ globalOpenAPI, token, baseUrl=EpSdkClient.DEFAULT_EP_API_BASE_URL }:{
+  public static initialize = ({ globalEpOpenAPI, globalEpRtOpenAPI, token, baseUrl=EpSdkClient.DEFAULT_EP_API_BASE_URL }:{
     /** The global OpenAPI const object from  @solace-labs/ep-openapi-node. */
-    globalOpenAPI: OpenAPIConfig;
+    globalEpOpenAPI: OpenAPIConfig;
+    /** The global OpenAPI const object from  @solace-labs/ep-rt-openapi-node. */
+    globalEpRtOpenAPI: OpenAPIConfig;
     /** The Solace Cloud token. */
     token: string;
     /** Base url for the ep api. @defaultValue  {@link EpSdkClient.DEFAULT_EP_API_BASE_URL} */
     baseUrl?: string;
-  }): OpenAPIConfig => {
+  }): {
+    EpOpenAPIConfig: OpenAPIConfig;
+    EpRtOpenAPIConfig: OpenAPIConfig;
+    } => {
     const base: URL = new URL(baseUrl);
     base;
-    globalOpenAPI.BASE = baseUrl;
-    globalOpenAPI.WITH_CREDENTIALS = true;
-    globalOpenAPI.CREDENTIALS = "include";
-    globalOpenAPI.TOKEN = token;
+    globalEpOpenAPI.BASE = baseUrl;
+    globalEpOpenAPI.WITH_CREDENTIALS = true;
+    globalEpOpenAPI.CREDENTIALS = "include";
+    globalEpOpenAPI.TOKEN = token;
+
+    globalEpRtOpenAPI.BASE = baseUrl;
+    globalEpRtOpenAPI.WITH_CREDENTIALS = true;
+    globalEpRtOpenAPI.CREDENTIALS = "include";
+    globalEpRtOpenAPI.TOKEN = token;
     // this allows to use ep-sdk as npm link during development as well
     // two instances of ep-openapi-node in this case
-    OpenAPI.BASE = baseUrl;
-    OpenAPI.WITH_CREDENTIALS = true;
-    OpenAPI.CREDENTIALS = "include";
-    OpenAPI.TOKEN = token;
+    EPOpenAPI.BASE = baseUrl;
+    EPOpenAPI.WITH_CREDENTIALS = true;
+    EPOpenAPI.CREDENTIALS = "include";
+    EPOpenAPI.TOKEN = token;
+
+    EPRtOpenAPI.BASE = baseUrl;
+    EPRtOpenAPI.WITH_CREDENTIALS = true;
+    EPRtOpenAPI.CREDENTIALS = "include";
+    EPRtOpenAPI.TOKEN = token;
     // save the token
     EpSdkClient.token = token;
     // // DEBUG:
     // console.log(`>>>>>>>>\n\n${logName}:\n\n>>>>> globalOpenAPI=${JSON.stringify(globalOpenAPI, null, 2)}\n\n<<<<<<<<<<<`);
 
-    return globalOpenAPI;
+    return {
+      EpOpenAPIConfig: globalEpOpenAPI,
+      EpRtOpenAPIConfig: globalEpRtOpenAPI
+    }
   }
 
-  public static setToken = ({ globalOpenAPI, token }:{
-    globalOpenAPI: OpenAPIConfig;
+  public static setToken = ({ globalEpOpenAPI, globalEpRtOpenAPI, token }:{
+    globalEpOpenAPI: OpenAPIConfig;
+    globalEpRtOpenAPI: OpenAPIConfig;
     token: string;
   }): void => {
-    globalOpenAPI.TOKEN = token;
-    OpenAPI.TOKEN = token;
+    globalEpOpenAPI.TOKEN = token;
+    EPOpenAPI.TOKEN = token;
+    globalEpRtOpenAPI.TOKEN = token;
+    EPRtOpenAPI.TOKEN = token;
   }
 
-  public static resetToken = ({ globalOpenAPI }:{
-    globalOpenAPI: OpenAPIConfig;
-  }): void => {
-    globalOpenAPI.TOKEN = EpSdkClient.token;
-    OpenAPI.TOKEN = EpSdkClient.token;
+  public static resetToken = ({ globalEpOpenAPI, globalEpRtOpenAPI }:{
+    globalEpOpenAPI: OpenAPIConfig;
+    globalEpRtOpenAPI: OpenAPIConfig;
+  }): void => {    
+    globalEpOpenAPI.TOKEN = EpSdkClient.token;
+    EPOpenAPI.TOKEN = EpSdkClient.token;
+    globalEpRtOpenAPI.TOKEN = EpSdkClient.token;
+    EPRtOpenAPI.TOKEN = EpSdkClient.token;
   }
 
 }

@@ -1,0 +1,12 @@
+require: 
+- ./test/compiler.ts
+file:
+  - test/setup.spec.ts
+timeout: 180000
+bail: true
+exit: true
+parallel: false
+extension:
+  - 'ts'
+full-trace: true
+diff: true
