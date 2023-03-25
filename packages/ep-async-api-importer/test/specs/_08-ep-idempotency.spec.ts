@@ -37,9 +37,17 @@ import {
   EpSdkError,
   EpSdkEnumVersionsService,
   EpSdkSchemaVersionsService,
-  EpSdkEpEventVersionsService
+  EpSdkEpEventVersionsService,
+  EpSdkApplicationVersionsService
 } from "@solace-labs/ep-sdk";
-import { TestContext, TestUtils } from "@internal/tools/src";
+import { 
+  EpAsyncApiDocument, 
+  EpAsyncApiDocumentService 
+} from "@solace-labs/ep-asyncapi";
+import { 
+  TestContext, 
+  TestUtils 
+} from "@internal/tools/src";
 import {
   TestConfig,
   TestLogger,
@@ -49,14 +57,12 @@ import {
   CliError,
   CliImporterManager,
   CliUtils,
+  ECliAssetsApplicationDomainEnforcementPolicies,
   ECliImporterManagerMode,
 } from "../../src/cli-components";
 import { 
-  EpAsyncApiDocument, 
-  EpAsyncApiDocumentService 
-} from "@solace-labs/ep-asyncapi";
-import { ECliAssetImport_TargetVersionStrategy } from "../../src/importers";
-import { EpSdkApplicationVersionsService } from "@solace-labs/ep-sdk";
+  ECliAssetImport_TargetVersionStrategy 
+} from "../../src/importers";
 
 const scriptName: string = path.basename(__filename);
 const TestSpecName = scriptName;
@@ -482,10 +488,13 @@ describe(`${scriptName}`, () => {
       // CliConfig.getCliImporterManagerOptions().applicationDomainName = 'release_mode';
       CliConfig.getCliImporterManagerOptions().createApiApplication = true;
       CliConfig.getCliImporterManagerOptions().createApiEventApi = false;
+      CliConfig.getCliImporterManagerOptions().cliTestSetupDomainsForApis = false;
+
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_BrokerType = undefined;
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_ChannelDelimiter = undefined;
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliValidateApiSpecBestPractices = true;
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_TargetVersionStrategy = ECliAssetImport_TargetVersionStrategy.BUMP_PATCH;
+      CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetsApplicationDomainEnforcementPolicy = ECliAssetsApplicationDomainEnforcementPolicies.STRICT;
 
       const cliImporter = new CliImporterManager(CliConfig.getCliImporterManagerOptions());
       const xvoid: void = await cliImporter.run();
@@ -574,6 +583,7 @@ describe(`${scriptName}`, () => {
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_ChannelDelimiter = undefined;
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliValidateApiSpecBestPractices = true;
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_TargetVersionStrategy = ECliAssetImport_TargetVersionStrategy.BUMP_PATCH;
+      CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetsApplicationDomainEnforcementPolicy = ECliAssetsApplicationDomainEnforcementPolicies.STRICT;
 
       const cliImporter = new CliImporterManager(CliConfig.getCliImporterManagerOptions());
       const xvoid: void = await cliImporter.run();

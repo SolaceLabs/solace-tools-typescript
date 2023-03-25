@@ -175,7 +175,6 @@ describe(`${scriptName}`, () => {
         // copy
         const copiedTopicAddressEnumVersion: TopicAddressEnumVersion = await EpSdkEnumVersionsService.copyLastestVersionById_IfNotExists({
           enumVersionId: latestSourceTopicAddressEnumVersion.id,
-          fromApplicationDomainId: SourceApplicationDomainId,
           toApplicationDomainId: TargetApplicationDomainId,
         });
         enumInfo.targetEnumId = copiedTopicAddressEnumVersion.enumId;
@@ -222,19 +221,14 @@ describe(`${scriptName}`, () => {
             },
             enumValues: enumInfo.enumValues,
           });
-          const epSdkEnumVersionTask_ExecuteReturn: IEpSdkEnumVersionTask_ExecuteReturn =
-            await epSdkEnumVersionTask.execute();
-          versionInfo.enumVersionId =
-            epSdkEnumVersionTask_ExecuteReturn.epObject.id;
+          const epSdkEnumVersionTask_ExecuteReturn: IEpSdkEnumVersionTask_ExecuteReturn = await epSdkEnumVersionTask.execute();
+          versionInfo.enumVersionId = epSdkEnumVersionTask_ExecuteReturn.epObject.id;
         }
       }
     } catch (e) {
-      if (e instanceof ApiError)
-        expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
-        .to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
-        .true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 
@@ -242,47 +236,34 @@ describe(`${scriptName}`, () => {
     try {
       for (const enumInfo of EnumInfoList) {
         // get latest source version
-        const latestSourceTopicAddressEnumVersion: TopicAddressEnumVersion =
-          await EpSdkEnumVersionsService.getLatestVersionForEnumId({
-            applicationDomainId: SourceApplicationDomainId,
-            enumId: enumInfo.sourceEnumId,
-          });
+        const latestSourceTopicAddressEnumVersion: TopicAddressEnumVersion = await EpSdkEnumVersionsService.getLatestVersionForEnumId({
+          applicationDomainId: SourceApplicationDomainId,
+          enumId: enumInfo.sourceEnumId,
+        });
         // get latest target version
-        const latestTargetTopicAddressEnumVersion: TopicAddressEnumVersion =
-          await EpSdkEnumVersionsService.getLatestVersionForEnumId({
-            applicationDomainId: TargetApplicationDomainId,
-            enumId: enumInfo.targetEnumId,
-          });
+        const latestTargetTopicAddressEnumVersion: TopicAddressEnumVersion = await EpSdkEnumVersionsService.getLatestVersionForEnumId({
+          applicationDomainId: TargetApplicationDomainId,
+          enumId: enumInfo.targetEnumId,
+        });
         // copy
-        const copiedTopicAddressEnumVersion: TopicAddressEnumVersion =
-          await EpSdkEnumVersionsService.copyLastestVersionById_IfNotExists({
-            enumVersionId: latestSourceTopicAddressEnumVersion.id,
-            fromApplicationDomainId: SourceApplicationDomainId,
-            toApplicationDomainId: TargetApplicationDomainId,
-          });
-        const message = TestLogger.createLogMessage(
-          "latest target & copied target",
-          {
-            latestTargetTopicAddressEnumVersion:
-              latestTargetTopicAddressEnumVersion,
-            copiedTopicAddressEnumVersion: copiedTopicAddressEnumVersion,
-          }
-        );
-        const latestTargetCompare: Partial<TopicAddressEnumVersion> =
-          createCompareObject(latestTargetTopicAddressEnumVersion);
-        const copiedCompare: Partial<TopicAddressEnumVersion> =
-          createCompareObject(copiedTopicAddressEnumVersion);
+        const copiedTopicAddressEnumVersion: TopicAddressEnumVersion = await EpSdkEnumVersionsService.copyLastestVersionById_IfNotExists({
+          enumVersionId: latestSourceTopicAddressEnumVersion.id,
+          toApplicationDomainId: TargetApplicationDomainId,
+        });
+        const message = TestLogger.createLogMessage("latest target & copied target", {
+          latestTargetTopicAddressEnumVersion: latestTargetTopicAddressEnumVersion,
+          copiedTopicAddressEnumVersion: copiedTopicAddressEnumVersion,
+        });
+        const latestTargetCompare: Partial<TopicAddressEnumVersion> = createCompareObject(latestTargetTopicAddressEnumVersion);
+        const copiedCompare: Partial<TopicAddressEnumVersion> = createCompareObject(copiedTopicAddressEnumVersion);
         expect(latestTargetCompare, message).to.be.deep.equal(copiedCompare);
         // // DEBUG
         // expect(false, message).to.be.true;
       }
     } catch (e) {
-      if (e instanceof ApiError)
-        expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
-        .to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
-        .true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 });

@@ -13,6 +13,7 @@ import {
   ECliAssetImport_TargetVersionStrategy 
 } from "../importers";
 import {
+  CliConfigInvalidConfigCombinationError,
   CliConfigInvalidEnvVarValueOptionError,
   CliConfigInvalidUrlEnvVarError,
   CliConfigMissingEnvVarError,
@@ -45,6 +46,11 @@ enum ECliConfigBooleanOptions {
 export enum ECliConfigRunIdGeneration {
   AUTO = "auto",
   CUSTOM = "custom-run-id",
+}
+export enum ECliAssetsApplicationDomainEnforcementPolicies {
+  STRICT = "strict",
+  LAX = "lax",
+  OFF = "off"
 }
 
 export type TCliConfigEnvVarConfig = {
@@ -82,7 +88,8 @@ enum ECliConfigEnvVarNames {
   CLI_IMPORT_BROKER_TYPE = "CLI_IMPORT_BROKER_TYPE",
   CLI_IMPORT_CHANNEL_DELIMITER = "CLI_IMPORT_CHANNEL_DELIMITER",
   CLI_TEST_SETUP_DOMAINS_FOR_APIS = "CLI_TEST_SETUP_DOMAINS_FOR_APIS",
-  CLI_VALIDATE_API_BEST_PRACTICES = "CLI_VALIDATE_API_BEST_PRACTICES"
+  CLI_VALIDATE_API_BEST_PRACTICES = "CLI_VALIDATE_API_BEST_PRACTICES",
+  CLI_ASSETS_APPLICATION_DOMAIN_ENFORCEMENT_POLICY = "CLI_ASSETS_APPLICATION_DOMAIN_ENFORCEMENT_POLICY"
 }
 
 const DEFAULT_CLI_MODE = ECliImporterManagerMode.RELEASE_MODE;
@@ -105,6 +112,7 @@ const DEFAULT_CLI_IMPORT_CREATE_API_APPLICATION = false;
 const DEFAULT_CLI_IMPORT_CREATE_API_EVENT_API = true;
 const DEFAULT_CLI_TEST_SETUP_DOMAINS_FOR_APIS = true;
 const DEFAULT_CLI_VALIDATE_API_BEST_PRACTICES = true;
+const DEFAULT_CLI_ASSET_APPLICATION_DOMAIN_ENFORCEMENT_POLICY = ECliAssetsApplicationDomainEnforcementPolicies.STRICT;
 
 const CliConfigEnvVarConfigList: Array<TCliConfigEnvVarConfig> = [
   {
@@ -258,6 +266,13 @@ const CliConfigEnvVarConfigList: Array<TCliConfigEnvVarConfig> = [
     required: false,
     default: String(DEFAULT_CLI_VALIDATE_API_BEST_PRACTICES),
     options: Object.values(ECliConfigBooleanOptions),
+  },
+  {
+    envVarName: ECliConfigEnvVarNames.CLI_ASSETS_APPLICATION_DOMAIN_ENFORCEMENT_POLICY,
+    description: "Assets application domain objects create/update policy. [strict]: neither create nor update allowed outside of assets application domain. [lax]: creating first versions allowed, updating versions disallowed. [off]: no policy enforcement",
+    required: false,
+    default: String(DEFAULT_CLI_ASSET_APPLICATION_DOMAIN_ENFORCEMENT_POLICY),
+    options: Object.values(ECliAssetsApplicationDomainEnforcementPolicies),
   },
 ];
 
@@ -414,14 +429,26 @@ class CliConfig {
     return this.registerEnvVarAndValue({ envVarName: envVarName, value: value.toLowerCase() === ECliConfigBooleanOptions.TRUE, defaultValue: defaultValue });
   };
 
-  public initialize = ({
-    cliVersion,
-    defaultAppName,
-    fileList,
-    applicationDomainName,
-    assetApplicationDomainName,
-    commandLineOptionValues,
-  }: {
+  public validateConfig() {
+    const funcName = "validateConfig";
+    const logName = `${CliConfig.name}.${funcName}()`;
+    if(!this.config.cliImporterConfig.createApiApplication && !this.config.cliImporterConfig.createApiEventApi) {
+      throw new CliConfigInvalidConfigCombinationError(logName, {
+        issue: `At least one output must be selected`,
+        createApiApplication: String(this.config.cliImporterConfig.createApiApplication),
+        createApiEventApi: String(this.config.cliImporterConfig.createApiEventApi)
+      });
+    }
+    if(this.config.cliImporterConfig.cliImporterOptions.cliAssetsApplicationDomainEnforcementPolicy !== ECliAssetsApplicationDomainEnforcementPolicies.OFF) {
+      if(this.config.cliImporterConfig.cliTestSetupDomainsForApis === false) {
+        throw new CliConfigInvalidConfigCombinationError(logName, {
+          issue: `When using env var ${ECliConfigEnvVarNames.CLI_ASSETS_APPLICATION_DOMAIN_ENFORCEMENT_POLICY}=${this.config.cliImporterConfig.cliImporterOptions.cliAssetsApplicationDomainEnforcementPolicy} you must also set env var ${ECliConfigEnvVarNames.CLI_TEST_SETUP_DOMAINS_FOR_APIS}=true`,
+        });
+      }
+    }
+  }
+
+  public initialize = ({ cliVersion, defaultAppName, fileList, applicationDomainName, assetApplicationDomainName, commandLineOptionValues }: {
     cliVersion: string;
     commandLineOptionValues: OptionValues;
     defaultAppName: string;
@@ -432,73 +459,35 @@ class CliConfig {
     this.cliVersion = cliVersion;
     this.commandLineOptionValues = commandLineOptionValues;
     this.solaceCloudToken = this.getMandatoryEnvVarValueAsString(ECliConfigEnvVarNames.CLI_SOLACE_CLOUD_TOKEN);
-    const appName: string = this.getOptionalEnvVarValueAsStringWithDefault(
-      ECliConfigEnvVarNames.CLI_APP_NAME,
-      defaultAppName
-    );
-    const runIdGeneration: ECliConfigRunIdGeneration | string =
-      this.getOptionalEnvVarValueAsStringWithDefault(
-        ECliConfigEnvVarNames.CLI_RUN_ID,
-        DEFAULT_CLI_RUN_ID
-      );
+    const appName: string = this.getOptionalEnvVarValueAsStringWithDefault(ECliConfigEnvVarNames.CLI_APP_NAME, defaultAppName );
+    const runIdGeneration: ECliConfigRunIdGeneration | string = this.getOptionalEnvVarValueAsStringWithDefault(ECliConfigEnvVarNames.CLI_RUN_ID, DEFAULT_CLI_RUN_ID);
     let runId: string;
-    if (runIdGeneration === ECliConfigRunIdGeneration.AUTO)
-      runId = this.generatedRunId();
+    if (runIdGeneration === ECliConfigRunIdGeneration.AUTO) runId = this.generatedRunId();
     else runId = runIdGeneration;
     // const logDirEnvVarValue = this.getOptionalEnvVarValueAsStringWithDefault(ECliConfigEnvVarNames.CLI_LOGGER_LOG_DIR, DEFAULT_CLI_LOGGER_LOG_DIR);
     // const logDir = CliUtils.ensureDirExists(logDirEnvVarValue);
     // const logFile = `${logDir}/${appName}.log`;
     // const summaryLogFile = `${logDir}/${appName}.summary.log`;
 
-    const logFileEnvVarValue = this.getOptionalEnvVarValueAsStringWithDefault(
-      ECliConfigEnvVarNames.CLI_LOGGER_LOG_FILE,
-      create_DEFAULT_CLI_LOGGER_LOG_FILE(appName)
-    );
+    const logFileEnvVarValue = this.getOptionalEnvVarValueAsStringWithDefault(ECliConfigEnvVarNames.CLI_LOGGER_LOG_FILE, create_DEFAULT_CLI_LOGGER_LOG_FILE(appName));
     const logFile = CliUtils.ensureDirOfFilePathExists(logFileEnvVarValue);
 
-    const importAssetOutputDirEnvVarValue =
-      this.getOptionalEnvVarValueAsStringWithDefault(
-        ECliConfigEnvVarNames.CLI_IMPORT_ASSETS_OUTPUT_DIR,
-        DEFAULT_CLI_IMPORT_ASSET_OUTPUT_DIR
-      );
+    const importAssetOutputDirEnvVarValue = this.getOptionalEnvVarValueAsStringWithDefault(ECliConfigEnvVarNames.CLI_IMPORT_ASSETS_OUTPUT_DIR, DEFAULT_CLI_IMPORT_ASSET_OUTPUT_DIR);
     // const importAssetOutputDir = this.initializeDir(importAssetOutputDirEnvVarValue, runId);
-    const importAssetOutputDir = CliUtils.ensureDirExists(
-      importAssetOutputDirEnvVarValue
-    );
+    const importAssetOutputDir = CliUtils.ensureDirExists(importAssetOutputDirEnvVarValue);
 
     this.config = {
       appName: appName,
       runId: runId,
-      epApiBaseUrl: this.getOptionalEnvVarValueAsUrlWithDefault(
-        ECliConfigEnvVarNames.CLI_EP_API_BASE_URL,
-        DEFAULT_CLI_EP_API_BASE_URL
-      ),
+      epApiBaseUrl: this.getOptionalEnvVarValueAsUrlWithDefault(ECliConfigEnvVarNames.CLI_EP_API_BASE_URL, DEFAULT_CLI_EP_API_BASE_URL),
       cliLoggerConfig: {
         appName: appName,
-        level: this.getOptionalEnvVarValueAsString_From_Options_WithDefault(
-          ECliConfigEnvVarNames.CLI_LOGGER_LOG_LEVEL,
-          Object.values(ECliLogger_LogLevel),
-          DEFAULT_CLI_LOGGER_LOG_LEVEL
-        ) as ECliLogger_LogLevel,
+        level: this.getOptionalEnvVarValueAsString_From_Options_WithDefault(ECliConfigEnvVarNames.CLI_LOGGER_LOG_LEVEL, Object.values(ECliLogger_LogLevel), DEFAULT_CLI_LOGGER_LOG_LEVEL) as ECliLogger_LogLevel,
         logFile: logFile,
-        log2Stdout: this.getOptionalEnvVarValueAsBoolean_WithDefault(
-          ECliConfigEnvVarNames.CLI_LOGGER_LOG_TO_STDOUT,
-          DEFAULT_CLI_LOGGER_LOG_TO_STDOUT
-        ),
-        cliLogger_EpSdkLogLevel:
-          this.getOptionalEnvVarValueAsString_From_Options_WithDefault(
-            ECliConfigEnvVarNames.CLI_LOGGER_EP_SDK_LOG_LEVEL,
-            ObjectValues_TCliLogger_EpSdkLogLevel,
-            DEFAULT_CLI_LOGGER_EP_SDK_LOG_LEVEL
-          ) as TCliLogger_EpSdkLogLevel,
-        prettyPrint: this.getOptionalEnvVarValueAsBoolean_WithDefault(
-          ECliConfigEnvVarNames.CLI_LOGGER_PRETTY_PRINT,
-          DEFAULT_CLI_LOGGER_PRETTY_PRINT
-        ),
-        logSummary2Console: this.getOptionalEnvVarValueAsBoolean_WithDefault(
-          ECliConfigEnvVarNames.CLI_LOGGER_LOG_SUMMARY_TO_CONSOLE,
-          DEFAULT_CLI_LOGGER_LOG_SUMMARY_TO_CONSOLE
-        ),
+        log2Stdout: this.getOptionalEnvVarValueAsBoolean_WithDefault(ECliConfigEnvVarNames.CLI_LOGGER_LOG_TO_STDOUT, DEFAULT_CLI_LOGGER_LOG_TO_STDOUT),
+        cliLogger_EpSdkLogLevel: this.getOptionalEnvVarValueAsString_From_Options_WithDefault(ECliConfigEnvVarNames.CLI_LOGGER_EP_SDK_LOG_LEVEL, ObjectValues_TCliLogger_EpSdkLogLevel, DEFAULT_CLI_LOGGER_EP_SDK_LOG_LEVEL) as TCliLogger_EpSdkLogLevel,
+        prettyPrint: this.getOptionalEnvVarValueAsBoolean_WithDefault(ECliConfigEnvVarNames.CLI_LOGGER_PRETTY_PRINT, DEFAULT_CLI_LOGGER_PRETTY_PRINT),
+        logSummary2Console: this.getOptionalEnvVarValueAsBoolean_WithDefault(ECliConfigEnvVarNames.CLI_LOGGER_LOG_SUMMARY_TO_CONSOLE, DEFAULT_CLI_LOGGER_LOG_SUMMARY_TO_CONSOLE),
       },
       cliImporterConfig: {
         appName: appName,
@@ -512,23 +501,17 @@ class CliConfig {
         cliTestSetupDomainsForApis: this.getOptionalEnvVarValueAsBoolean_WithDefault(ECliConfigEnvVarNames.CLI_TEST_SETUP_DOMAINS_FOR_APIS, DEFAULT_CLI_TEST_SETUP_DOMAINS_FOR_APIS),
         cliImporterOptions: {
           runId: runId,
-          cliAssetImport_TargetLifecycleState: this.getOptionalEnvVarValueAsString_From_Options_WithDefault(
-              ECliConfigEnvVarNames.CLI_IMPORT_ASSETS_TARGET_LIFECYLE_STATE,
-              Object.values(ECliAssetImport_TargetLifecycleState),
-              DEFAULT_CLI_IMPORT_ASSETS_TARGET_LIFECYLE_STATE
-            ) as ECliAssetImport_TargetLifecycleState,
-          cliAssetImport_TargetVersionStrategy: this.getOptionalEnvVarValueAsString_From_Options_WithDefault(
-            ECliConfigEnvVarNames.CLI_IMPORT_ASSETS_TARGET_VERSION_STRATEGY,
-            Object.values(ECliAssetImport_TargetVersionStrategy) as Array<string>,
-            DEFAULT_CLI_IMPORT_ASSETS_TARGET_VERSION_STRATEGY as unknown as string
-          ) as unknown as ECliAssetImport_TargetVersionStrategy,
+          cliAssetImport_TargetLifecycleState: this.getOptionalEnvVarValueAsString_From_Options_WithDefault(ECliConfigEnvVarNames.CLI_IMPORT_ASSETS_TARGET_LIFECYLE_STATE, Object.values(ECliAssetImport_TargetLifecycleState), DEFAULT_CLI_IMPORT_ASSETS_TARGET_LIFECYLE_STATE) as ECliAssetImport_TargetLifecycleState,
+          cliAssetImport_TargetVersionStrategy: this.getOptionalEnvVarValueAsString_From_Options_WithDefault(ECliConfigEnvVarNames.CLI_IMPORT_ASSETS_TARGET_VERSION_STRATEGY, Object.values(ECliAssetImport_TargetVersionStrategy) as Array<string>, DEFAULT_CLI_IMPORT_ASSETS_TARGET_VERSION_STRATEGY as unknown as string) as unknown as ECliAssetImport_TargetVersionStrategy,
           cliAssetImport_BrokerType: this.getOptionalEnvVarValueAsString_From_Options(ECliConfigEnvVarNames.CLI_IMPORT_BROKER_TYPE, Object.values(EBrokerTypes) as Array<string>) as EBrokerTypes,
           cliAssetImport_ChannelDelimiter: this.getOptionalEnvVarValueAsString_From_Options(ECliConfigEnvVarNames.CLI_IMPORT_CHANNEL_DELIMITER, Object.values(EChannelDelimiters) as Array<string>) as EChannelDelimiters,
           assetOutputDir: importAssetOutputDir,
           cliValidateApiSpecBestPractices: this.getOptionalEnvVarValueAsBoolean_WithDefault(ECliConfigEnvVarNames.CLI_VALIDATE_API_BEST_PRACTICES, DEFAULT_CLI_VALIDATE_API_BEST_PRACTICES),
+          cliAssetsApplicationDomainEnforcementPolicy: this.getOptionalEnvVarValueAsString_From_Options_WithDefault(ECliConfigEnvVarNames.CLI_ASSETS_APPLICATION_DOMAIN_ENFORCEMENT_POLICY, Object.values(ECliAssetsApplicationDomainEnforcementPolicies) as Array<string>, ECliAssetsApplicationDomainEnforcementPolicies.STRICT) as ECliAssetsApplicationDomainEnforcementPolicies,
         },
       },
     };
+    this.validateConfig();
   };
 
   public logConfig = (): void => {

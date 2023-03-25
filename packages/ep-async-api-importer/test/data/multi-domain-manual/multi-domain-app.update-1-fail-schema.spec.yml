@@ -29,6 +29,8 @@ components:
       x-ep-schema-name: Consumed_Schema_2_Name
       type: object
       properties:
+        newProperty: 
+          type: string
         sentAt:
           format: date-time
           description: Date and time when the message was sent.
@@ -78,10 +80,6 @@ components:
         one:
           type: string
         two:
-          type: string
-        three:
-          type: string
-        newProperty:
           type: string
 
   messages:
@@ -177,6 +175,6 @@ info:
   x-ep-state-name: RELEASED
   title: Multi-Domain Application
   x-ep-application-domain-id: 53ai6w6z4rz
-  version: 2.2.0
+  version: 2.0.0
   x-ep-state-id: '2'
   x-ep-application-domain-name: TEST_EP_ASYNC_API_IMPORTER/ep-multi-domain-manual.spec.ts/Main

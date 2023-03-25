@@ -1,5 +1,6 @@
 import { 
   ApplicationDomain, 
+  CustomAttribute, 
   EventVersion 
 } from "@solace-labs/ep-openapi-node";
 import {
@@ -8,6 +9,7 @@ import {
   EEpSdk_VersionTaskStrategy,
   EpSdkApplicationDomainsService,
   EpSdkApplicationDomainTask,
+  EpSdkCustomAttributeNameSourceApplicationDomainId,
   EpSdkEpEventVersionsService,
   EpSdkTask,
   IEpSdkApplicationDomainTask_ExecuteReturn,
@@ -26,6 +28,7 @@ import {
   CliInternalCodeInconsistencyError,
   CliRunExecuteReturnLog,
   CliUtils,
+  ECliAssetsApplicationDomainEnforcementPolicies,
   ECliRunContext_RunMode,
 } from "../cli-components";
 import {
@@ -47,6 +50,7 @@ export interface ICliImporterOptions {
   cliAssetImport_BrokerType?: EBrokerTypes;
   cliAssetImport_ChannelDelimiter?: EChannelDelimiters;
   cliValidateApiSpecBestPractices: boolean;
+  cliAssetsApplicationDomainEnforcementPolicy: ECliAssetsApplicationDomainEnforcementPolicies;
 }
 export interface ICliImporterGenerateAssetsOptions {}
 export interface ICliImporterGenerateAssetsReturn {
@@ -75,6 +79,8 @@ export abstract class CliImporter {
   protected cliImporterOptions: ICliImporterOptions;
   protected importerTransactionId: string;
   protected runMode: ECliRunContext_RunMode;
+  private applicationDomainCache: Map<string, string> = new Map<string, string>();
+
 
   constructor(cliImporterOptions: ICliImporterOptions, runMode: ECliRunContext_RunMode) {
     this.cliImporterOptions = cliImporterOptions;
@@ -82,27 +88,34 @@ export abstract class CliImporter {
     this.runMode = runMode;
   }
 
-  // private isAllowedToChange({ targetApplicationDomainId, epObjectCustomAttributes }:{
-  //   targetApplicationDomainId: string;
-  //   epObjectCustomAttributes?: Array<CustomAttribute>;
-  // }): boolean {
-  //   if(epObjectCustomAttributes === undefined) return true;
-  //   const sourceApplicationDomainIdAttribute = epObjectCustomAttributes.find( (x) => { return x.customAttributeDefinitionName === EpSdkCustomAttributeNameSourceApplicationDomainId; });
-  //   if(sourceApplicationDomainIdAttribute === undefined) return true;
-  //   const sourceApplicationDomainId = sourceApplicationDomainIdAttribute.value;
-  //   if(sourceApplicationDomainId === undefined) return true;
-  //   return sourceApplicationDomainId === targetApplicationDomainId;
-  // }
+  /* istanbul ignore next */
+  protected async getApplicationDomainName(applicationDomainId: string): Promise<string> {
+    const applicationDomainName: string | undefined = this.applicationDomainCache.get(applicationDomainId);
+    if(applicationDomainName) return applicationDomainName;
+    const applicationDomain = await EpSdkApplicationDomainsService.getById({ applicationDomainId });
+    this.applicationDomainCache.set(applicationDomainId, applicationDomain.name);
+    return applicationDomain.name;
+  }
 
-  // protected getSourceApplicationDomainId({ epObjectCustomAttributes }:{
-  //   epObjectCustomAttributes?: Array<CustomAttribute>;
-  // }): string | undefined {
-  //   if(epObjectCustomAttributes === undefined) return undefined;
-  //   const sourceApplicationDomainIdAttribute = epObjectCustomAttributes.find( (x) => { return x.customAttributeDefinitionName === EpSdkCustomAttributeNameSourceApplicationDomainId; });
-  //   if(sourceApplicationDomainIdAttribute === undefined) return undefined;
-  //   const sourceApplicationDomainId = sourceApplicationDomainIdAttribute.value;
-  //   return sourceApplicationDomainId;
-  // }
+  /* istanbul ignore next */
+  protected getSourceApplicationDomainId({ epObjectCustomAttributes }:{
+    epObjectCustomAttributes?: Array<CustomAttribute>;
+  }): string | undefined {
+    if(epObjectCustomAttributes === undefined) return undefined;
+    const sourceApplicationDomainIdAttribute = epObjectCustomAttributes.find( (x) => { return x.customAttributeDefinitionName === EpSdkCustomAttributeNameSourceApplicationDomainId; });
+    if(sourceApplicationDomainIdAttribute === undefined) return undefined;
+    const sourceApplicationDomainId = sourceApplicationDomainIdAttribute.value;
+    return sourceApplicationDomainId;
+  }
+
+  /* istanbul ignore next */
+  protected async getSourceApplicationDomainName({ epObjectCustomAttributes }:{
+    epObjectCustomAttributes?: Array<CustomAttribute>;
+  }): Promise<string | undefined> {
+    const applicationDomainId = this.getSourceApplicationDomainId({ epObjectCustomAttributes });
+    if(applicationDomainId === undefined) return undefined;
+    return await this.getApplicationDomainName(applicationDomainId);
+  }
 
   protected get_pub_sub_event_version_ids = async ({applicationDomainId, epAsyncApiDocument }: {
     applicationDomainId: string;

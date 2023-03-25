@@ -1,5 +1,5 @@
 import { EpAsyncApiDocument } from "@solace-labs/ep-asyncapi";
-import { EEpSdkTask_TargetState, EpSdkApplicationDomainTask, IEpSdkApplicationDomainTask_ExecuteReturn } from "@solace-labs/ep-sdk";
+import { EEpSdkTask_TargetState, EpSdkApplicationDomainsService, EpSdkApplicationDomainTask, IEpSdkApplicationDomainTask_ExecuteReturn } from "@solace-labs/ep-sdk";
 import { CliUtils } from "../../src/cli-components";
 import {
   CliApplicationDomainsService,
@@ -77,6 +77,12 @@ export class TestService {
             return testApiSpecRecord.epAsyncApiDocument.getAssetsApplicationDomainName();
           })),
       });
+  };
+
+  public static absent_ApplicationDomain = async (applicationDomainId: string): Promise<void> => {
+    try { 
+      const x = await EpSdkApplicationDomainsService.deleteById({ applicationDomainId });
+    } catch(e) {}
   };
 
   public static getTestApiSpecRecordList(): Array<TTestApiSpecRecord> {

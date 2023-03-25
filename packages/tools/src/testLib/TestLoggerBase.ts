@@ -81,6 +81,9 @@ export class TestLoggerBase {
     public static createTestFailMessageForError = (message: string, err: Error): string => {
       return `[${TestContext.getItId()}]: ${message}\nerror=${err}`;
     }
+    public static logTestFailMessageForError = (err: Error) => {
+      console.log(`[${TestContext.getItId()}]: error=${JSON.stringify(err, null, 2)}`);
+    }
     public static createTestFailMessage = (message: string): string => {
       return `[${TestContext.getItId()}]: ${message}`;
     }

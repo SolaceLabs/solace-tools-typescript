@@ -111,14 +111,12 @@ export class EpSdkSchemasServiceClass extends EpSdkServiceClass {
     return epSchemaObject;
   };
 
-  public getById = async ({ xContextId, schemaId, applicationDomainId }: {
+  public getById = async ({ xContextId, schemaId }: {
     xContextId?: string;
     schemaId: string;
-    applicationDomainId?: string;
   }): Promise<SchemaObject> => {
     const funcName = "getById";
     const logName = `${EpSdkSchemasServiceClass.name}.${funcName}()`;
-    applicationDomainId;
     const schemaResponse: SchemaResponse = await SchemasService.getSchema({
       xContextId,
       id: schemaId,
@@ -136,33 +134,18 @@ export class EpSdkSchemasServiceClass extends EpSdkServiceClass {
     return epSchemaObject;
   };
 
-  public deleteById = async ({
-    xContextId,
-    schemaId,
-    applicationDomainId,
-  }: {
+  public deleteById = async ({ xContextId, schemaId }: {
     xContextId?: string;
     schemaId: string;
     applicationDomainId: string;
   }): Promise<SchemaObject> => {
-    const epSchemaObject: SchemaObject = await this.getById({
-      xContextId,
-      applicationDomainId: applicationDomainId,
-      schemaId: schemaId,
-    });
-    const xvoid: void = await SchemasService.deleteSchema({
-      xContextId,
-      id: schemaId,
-    });
+    const epSchemaObject: SchemaObject = await this.getById({ xContextId, schemaId });
+    const xvoid: void = await SchemasService.deleteSchema({ xContextId, id: schemaId });
     xvoid;
     return epSchemaObject;
   };
 
-  public deleteByName = async ({
-    xContextId, 
-    applicationDomainId,
-    schemaName,
-  }: {
+  public deleteByName = async ({ xContextId, applicationDomainId, schemaName }: {
     xContextId?: string;
     schemaName: string;
     applicationDomainId: string;
@@ -175,26 +158,14 @@ export class EpSdkSchemasServiceClass extends EpSdkServiceClass {
       applicationDomainId: applicationDomainId,
       schemaName: schemaName,
     });
-    if (epSchemaObject === undefined)
-      throw new EpSdkServiceError(
-        logName,
-        this.constructor.name,
-        "epSchemaObject === undefined",
-        {
-          applicationDomainId: applicationDomainId,
-          schemaName: schemaName,
-        }
-      );
+    if (epSchemaObject === undefined) throw new EpSdkServiceError(logName, this.constructor.name, "epSchemaObject === undefined", {
+      applicationDomainId: applicationDomainId,
+      schemaName: schemaName,
+    });
     /* istanbul ignore next */
-    if (epSchemaObject.id === undefined)
-      throw new EpSdkApiContentError(
-        logName,
-        this.constructor.name,
-        "epSchemaObject.id === undefined",
-        {
-          epSchemaObject: epSchemaObject,
-        }
-      );
+    if (epSchemaObject.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "epSchemaObject.id === undefined", {
+      epSchemaObject: epSchemaObject,
+    });
     const epSchemaObjectDeleted: SchemaObject = await this.deleteById({
       xContextId,
       applicationDomainId: applicationDomainId,

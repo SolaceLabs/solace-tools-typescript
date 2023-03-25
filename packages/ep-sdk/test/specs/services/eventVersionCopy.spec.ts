@@ -345,7 +345,6 @@ describe(`${scriptName}`, () => {
         // copy
         const copiedEventVersion: EventVersion = await EpSdkEpEventVersionsService.deepCopyLastestVersionById_IfNotExists({
           eventVersionId: latestSourceEventVersion.id,
-          fromApplicationDomainId: SourceApplicationDomainId,
           toApplicationDomainId: TargetApplicationDomainId,
         });
         eventInfo.targetEventId = copiedEventVersion.eventId;
@@ -382,11 +381,10 @@ describe(`${scriptName}`, () => {
       for (const eventInfo of EventInfoList) {
         for (const versionInfo of eventInfo.versionInfoList) {
           // get the target schema versions
-          const latestSchemaVersion: SchemaVersion =
-            await EpSdkSchemaVersionsService.getLatestVersionForSchemaName({
-              applicationDomainId: TargetApplicationDomainId,
-              schemaName: SchemaInfoList[idx].schemaName,
-            });
+          const latestSchemaVersion: SchemaVersion = await EpSdkSchemaVersionsService.getLatestVersionForSchemaName({
+            applicationDomainId: TargetApplicationDomainId,
+            schemaName: SchemaInfoList[idx].schemaName,
+          });
           const epSdkEventVersionTask = new EpSdkEpEventVersionTask({
             epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
             applicationDomainId: TargetApplicationDomainId,
@@ -401,20 +399,15 @@ describe(`${scriptName}`, () => {
               schemaVersionId: latestSchemaVersion.id,
             },
           });
-          const epSdkEpEventVersionTask_ExecuteReturn: IEpSdkEpEventVersionTask_ExecuteReturn =
-            await epSdkEventVersionTask.execute();
-          versionInfo.versionId =
-            epSdkEpEventVersionTask_ExecuteReturn.epObject.id;
+          const epSdkEpEventVersionTask_ExecuteReturn: IEpSdkEpEventVersionTask_ExecuteReturn = await epSdkEventVersionTask.execute();
+          versionInfo.versionId = epSdkEpEventVersionTask_ExecuteReturn.epObject.id;
         }
         idx++;
       }
     } catch (e) {
-      if (e instanceof ApiError)
-        expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
-        .to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
-        .true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 
@@ -434,37 +427,24 @@ describe(`${scriptName}`, () => {
             eventId: eventInfo.targetEventId,
           });
         // copy
-        const copiedEventVersion: EventVersion =
-          await EpSdkEpEventVersionsService.deepCopyLastestVersionById_IfNotExists(
-            {
-              fromApplicationDomainId: SourceApplicationDomainId,
-              toApplicationDomainId: TargetApplicationDomainId,
-              eventVersionId: latestSourceEventVersion.id,
-            }
-          );
-        const message = TestLogger.createLogMessage(
-          "latest target & copied target",
-          {
-            latestTargetEventVersion: latestTargetEventVersion,
-            copiedEventVersion: copiedEventVersion,
-          }
-        );
-        const latestTargetCompare: Partial<EventVersion> = createCompareObject(
-          latestTargetEventVersion
-        );
-        const copiedCompare: Partial<EventVersion> =
-          createCompareObject(copiedEventVersion);
+        const copiedEventVersion: EventVersion = await EpSdkEpEventVersionsService.deepCopyLastestVersionById_IfNotExists({
+          toApplicationDomainId: TargetApplicationDomainId,
+          eventVersionId: latestSourceEventVersion.id,
+        });
+        const message = TestLogger.createLogMessage("latest target & copied target", {
+          latestTargetEventVersion: latestTargetEventVersion,
+          copiedEventVersion: copiedEventVersion,
+        });
+        const latestTargetCompare: Partial<EventVersion> = createCompareObject(latestTargetEventVersion);
+        const copiedCompare: Partial<EventVersion> = createCompareObject(copiedEventVersion);
         expect(latestTargetCompare, message).to.be.deep.equal(copiedCompare);
         // // DEBUG
         // expect(false, message).to.be.true;
       }
     } catch (e) {
-      if (e instanceof ApiError)
-        expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
-        .to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
-        .true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 });

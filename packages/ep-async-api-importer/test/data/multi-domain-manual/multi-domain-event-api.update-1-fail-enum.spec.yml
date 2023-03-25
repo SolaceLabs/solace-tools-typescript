@@ -6,6 +6,8 @@ components:
         enum:
           - value1
           - value2
+          - value3
+          - value4
       x-ep-enum-version-displayname: Enum_1_Id
       x-ep-enum-version: 1.0.0
       x-ep-enum-name: Consumed_Enum_1_Name
@@ -14,7 +16,6 @@ components:
       x-ep-enum-id: 45l5cb5f4hh
       x-ep-parameter-name: Consumed_Enum_1_Name
       x-ep-application-domain-name: TEST_EP_ASYNC_API_IMPORTER/ep-multi-domain-manual.spec.ts/Assets-1
-
 
   schemas:
     Consumed_Schema_2_Name:
@@ -44,9 +45,9 @@ components:
         - transactionId
         - storeId
       x-ep-schema-version-displayname: Schema_2_Id
-      
     Consumed_Schema_1_Name:
       x-ep-application-domain-name: TEST_EP_ASYNC_API_IMPORTER/ep-multi-domain-manual.spec.ts/Assets-1
+
       x-ep-schema-version: 1.0.0
       x-ep-schema-state-id: '2'
       x-ep-schema-version-id: b08qfodjhh8
@@ -79,10 +80,6 @@ components:
           type: string
         two:
           type: string
-        three:
-          type: string
-        newProperty:
-          type: string
 
   messages:
     Consumed_Event_1_Name:
@@ -100,6 +97,12 @@ components:
       x-ep-event-state-name: RELEASED
       x-ep-application-domain-name: TEST_EP_ASYNC_API_IMPORTER/ep-multi-domain-manual.spec.ts/Assets-1
 
+    Produced_Event_1_Name:
+      payload:
+        $ref: '#/components/schemas/Produced_Schema_1_Name'
+      schemaFormat: application/vnd.aai.asyncapi+json;version=2.0.0
+      contentType: application/json
+
     Consumed_Event_2_Name:
       x-ep-event-id: 1kgqo0wn94d
       x-ep-event-version-displayname: Event_2_Id
@@ -114,12 +117,6 @@ components:
       x-ep-event-state-id: '2'
       x-ep-event-state-name: RELEASED
       x-ep-application-domain-name: TEST_EP_ASYNC_API_IMPORTER/ep-multi-domain-manual.spec.ts/Assets-2
-
-    Produced_Event_1_Name:
-      payload:
-        $ref: '#/components/schemas/Produced_Schema_1_Name'
-      schemaFormat: application/vnd.aai.asyncapi+json;version=2.0.0
-      contentType: application/json
 
 channels:
   consumed/topic/{Consumed_Enum_2_Name}/_2_/{unbounded}:
@@ -167,16 +164,17 @@ channels:
       Consumed_Enum_1_Name:
         $ref: '#/components/parameters/Consumed_Enum_1_Name'
 
+
 asyncapi: 2.5.0
 info:
-  x-ep-application-version: 1.0.0
-  x-ep-application-version-id: hy54h1qaf7t
-  x-ep-application-id: l0e797s3gmt
-  description: Multi-Domain Application
-  x-ep-displayname: App_Id
+  x-ep-event-api-version: 1.0.0
+  x-ep-event-api-id: 1mdx2y1q7fv
+  description: Multi-Domain EventApi Description
+  x-ep-displayname: Multi-Domain EventApi
   x-ep-state-name: RELEASED
-  title: Multi-Domain Application
+  title: Multi-Domain EventApi
   x-ep-application-domain-id: 53ai6w6z4rz
-  version: 2.2.0
+  version: 2.0.0
   x-ep-state-id: '2'
+  x-ep-event-api-version-id: diff8d8tnjp
   x-ep-application-domain-name: TEST_EP_ASYNC_API_IMPORTER/ep-multi-domain-manual.spec.ts/Main

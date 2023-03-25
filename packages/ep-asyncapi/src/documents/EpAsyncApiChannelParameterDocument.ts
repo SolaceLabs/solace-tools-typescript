@@ -9,7 +9,7 @@ import {
 import { EpAsyncApiDocument } from './EpAsyncApiDocument';
 
 export class EpAsyncApiChannelParameterDocument {
-  private epAsyncApiDocument: EpAsyncApiDocument;
+  public epAsyncApiDocument: EpAsyncApiDocument;
   private channelParameterName: string;
   private asyncApiChannelParameter: ChannelParameter;
 
@@ -50,12 +50,12 @@ export class EpAsyncApiChannelParameterDocument {
   //   }
   // }
 
-  public getEpApplicationDomainName(): string | undefined {
+  public getEpApplicationDomainName(): string {
     if(this.asyncApiChannelParameter.hasExtension(EpGeneralExtensions.xEpApplicationDomainName)) {
       const applicationDomainName = this.asyncApiChannelParameter.extension(EpGeneralExtensions.xEpApplicationDomainName);
       if(applicationDomainName && applicationDomainName.length > 0) return applicationDomainName;
     }
-    return this.epAsyncApiDocument.getAssetsApplicationDomainName();
+    return this.epAsyncApiDocument.getUnprefixedAssetsApplicationDomainName();
   }
 
   public getParameterEnumValueList(): Array<string> {

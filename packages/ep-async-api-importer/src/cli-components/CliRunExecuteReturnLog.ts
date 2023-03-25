@@ -8,6 +8,7 @@ import {
 } from "@solace-labs/ep-openapi-node";
 import {
   EEpSdkObjectTypes,
+  IEpSdkApplicationVersionTask_ExecuteReturn,
   IEpSdkEnumVersionTask_ExecuteReturn,
   IEpSdkEpEventVersionTask_ExecuteReturn,
   IEpSdkEventApiVersionTask_ExecuteReturn,
@@ -227,15 +228,11 @@ class CliRunExecuteReturnLog {
     };
   }
 
-  public async getDeepRequestedUpdates(
-    epSdkEventApiVersionTask_ExecuteReturn: IEpSdkEventApiVersionTask_ExecuteReturn
-  ): Promise<any> {
+  public async getDeepRequestedUpdates(epSdkVersionTask_ExecuteReturn: IEpSdkEventApiVersionTask_ExecuteReturn | IEpSdkApplicationVersionTask_ExecuteReturn): Promise<any> {
     // const funcName = 'getDeepRequestedUpdates';
     // const logName = `${CliRunExecuteReturnLog.name}.${funcName}()`;
 
-    const difference: Record<string, TEpSdkDeepDiffFromTo> | undefined =
-      epSdkEventApiVersionTask_ExecuteReturn.epSdkTask_TransactionLogData
-        .epSdkTask_IsUpdateRequiredFuncReturn?.difference;
+    const difference: Record<string, TEpSdkDeepDiffFromTo> | undefined = epSdkVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_IsUpdateRequiredFuncReturn?.difference;
     let deepDifference: any = {};
     const eventVersions: any = {};
     if (difference) {
@@ -247,44 +244,28 @@ class CliRunExecuteReturnLog {
         if (key.includes("EventVersionIds")) {
           const fromTo: TEpSdkDeepDiffFromTo = difference[key];
           // find the from event version id in log
-          const cliRunExecuteReturnLogEntry:
-            | ICliRunExecuteReturnLogEntry
-            | undefined = this.cliRunExecuteReturnLog.find(
-            (x: ICliRunExecuteReturnLogEntry) => {
-              if (
-                x.epSdkTask_ExecuteReturn.epObjectKeys.epObjectType ===
-                EEpSdkObjectTypes.EVENT_VERSION
-              ) {
-                const epVersionObjectKeys: IEpSdkVersionTask_EpObjectKeys = x
-                  .epSdkTask_ExecuteReturn.epSdkTask_TransactionLogData
-                  .epObjectKeys as IEpSdkVersionTask_EpObjectKeys;
-                return epVersionObjectKeys.epVersionObjectId === fromTo.to;
-              }
-              return false;
+          const cliRunExecuteReturnLogEntry: ICliRunExecuteReturnLogEntry | undefined = this.cliRunExecuteReturnLog.find((x: ICliRunExecuteReturnLogEntry) => {
+            if(x.epSdkTask_ExecuteReturn.epObjectKeys.epObjectType === EEpSdkObjectTypes.EVENT_VERSION) {
+              const epVersionObjectKeys: IEpSdkVersionTask_EpObjectKeys = x.epSdkTask_ExecuteReturn.epSdkTask_TransactionLogData.epObjectKeys as IEpSdkVersionTask_EpObjectKeys;
+              return epVersionObjectKeys.epVersionObjectId === fromTo.to;
             }
-          );
+            return false;
+          });
           // there may not be a 'to' when event removed
           if (cliRunExecuteReturnLogEntry === undefined) {
             // const eventVersions: any = {};
-            eventVersions[key] = {
-              requestedUpdates:
-                await this.getEventVersionRemovedRequestedUpdates(fromTo.from),
-            };
+            eventVersions[key] = { requestedUpdates: await this.getEventVersionRemovedRequestedUpdates(fromTo.from) };
             deepDifference = {
               ...deepDifference,
               eventVersions: eventVersions,
             };
           } else {
-            const epSdkEpEventVersionTask_ExecuteReturn: IEpSdkEpEventVersionTask_ExecuteReturn =
-              cliRunExecuteReturnLogEntry.epSdkTask_ExecuteReturn;
+            const epSdkEpEventVersionTask_ExecuteReturn: IEpSdkEpEventVersionTask_ExecuteReturn = cliRunExecuteReturnLogEntry.epSdkTask_ExecuteReturn;
             // const eventVersions: any = {};
             eventVersions[key] = {
-              displayName:
-                epSdkEpEventVersionTask_ExecuteReturn.epObject.displayName,
+              displayName: epSdkEpEventVersionTask_ExecuteReturn.epObject.displayName,
               version: epSdkEpEventVersionTask_ExecuteReturn.epObject.version,
-              requestedUpdates: await this.getEventVersionRequestedUpdates(
-                epSdkEpEventVersionTask_ExecuteReturn
-              ),
+              requestedUpdates: await this.getEventVersionRequestedUpdates(epSdkEpEventVersionTask_ExecuteReturn)
             };
             deepDifference = {
               ...deepDifference,

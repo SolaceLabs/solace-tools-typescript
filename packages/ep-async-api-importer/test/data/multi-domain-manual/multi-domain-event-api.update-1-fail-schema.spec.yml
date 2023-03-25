@@ -1,21 +1,4 @@
 components:
-  parameters:
-    Consumed_Enum_1_Name:
-      schema:
-        type: string
-        enum:
-          - value1
-          - value2
-      x-ep-enum-version-displayname: Enum_1_Id
-      x-ep-enum-version: 1.0.0
-      x-ep-enum-name: Consumed_Enum_1_Name
-      x-ep-enum-state-id: '2'
-      x-ep-enum-version-id: djdr3j6basz
-      x-ep-enum-id: 45l5cb5f4hh
-      x-ep-parameter-name: Consumed_Enum_1_Name
-      x-ep-application-domain-name: TEST_EP_ASYNC_API_IMPORTER/ep-multi-domain-manual.spec.ts/Assets-1
-
-
   schemas:
     Consumed_Schema_2_Name:
       x-ep-application-domain-name: TEST_EP_ASYNC_API_IMPORTER/ep-multi-domain-manual.spec.ts/Assets-2
@@ -44,9 +27,9 @@ components:
         - transactionId
         - storeId
       x-ep-schema-version-displayname: Schema_2_Id
-      
     Consumed_Schema_1_Name:
       x-ep-application-domain-name: TEST_EP_ASYNC_API_IMPORTER/ep-multi-domain-manual.spec.ts/Assets-1
+
       x-ep-schema-version: 1.0.0
       x-ep-schema-state-id: '2'
       x-ep-schema-version-id: b08qfodjhh8
@@ -56,6 +39,8 @@ components:
       x-ep-schema-name: Consumed_Schema_1_Name
       type: object
       properties:
+        newProperty:
+          type: string
         sentAt:
           format: date-time
           description: Date and time when the message was sent.
@@ -71,19 +56,6 @@ components:
         - transactionId
         - storeId
       x-ep-schema-version-displayname: Schema_1_Id
-
-    Produced_Schema_1_Name:
-      type: object
-      properties:
-        one:
-          type: string
-        two:
-          type: string
-        three:
-          type: string
-        newProperty:
-          type: string
-
   messages:
     Consumed_Event_1_Name:
       x-ep-event-id: es3ybeey1wi
@@ -114,12 +86,6 @@ components:
       x-ep-event-state-id: '2'
       x-ep-event-state-name: RELEASED
       x-ep-application-domain-name: TEST_EP_ASYNC_API_IMPORTER/ep-multi-domain-manual.spec.ts/Assets-2
-
-    Produced_Event_1_Name:
-      payload:
-        $ref: '#/components/schemas/Produced_Schema_1_Name'
-      schemaFormat: application/vnd.aai.asyncapi+json;version=2.0.0
-      contentType: application/json
 
 channels:
   consumed/topic/{Consumed_Enum_2_Name}/_2_/{unbounded}:
@@ -154,29 +120,30 @@ channels:
         schema:
           type: string
       Consumed_Enum_1_Name:
-        $ref: '#/components/parameters/Consumed_Enum_1_Name'
-
-  produced/topic/{Consumed_Enum_1_Name}/_1_/{unbounded}:
-    publish:
-      message:
-        $ref: '#/components/messages/Produced_Event_1_Name'
-    parameters:
-      unbounded:
         schema:
           type: string
-      Consumed_Enum_1_Name:
-        $ref: '#/components/parameters/Consumed_Enum_1_Name'
+          enum:
+            - value1
+            - value2
+        x-ep-enum-version-displayname: Enum_1_Id
+        x-ep-enum-version: 1.0.0
+        x-ep-enum-name: Consumed_Enum_1_Name
+        x-ep-enum-state-id: '2'
+        x-ep-enum-version-id: djdr3j6basz
+        x-ep-enum-id: 45l5cb5f4hh
+        x-ep-parameter-name: Consumed_Enum_1_Name
+        x-ep-application-domain-name: TEST_EP_ASYNC_API_IMPORTER/ep-multi-domain-manual.spec.ts/Assets-1
 
 asyncapi: 2.5.0
 info:
-  x-ep-application-version: 1.0.0
-  x-ep-application-version-id: hy54h1qaf7t
-  x-ep-application-id: l0e797s3gmt
-  description: Multi-Domain Application
-  x-ep-displayname: App_Id
+  x-ep-event-api-version: 1.0.0
+  x-ep-event-api-id: 1mdx2y1q7fv
+  description: Multi-Domain EventApi Description
+  x-ep-displayname: Multi-Domain EventApi
   x-ep-state-name: RELEASED
-  title: Multi-Domain Application
+  title: Multi-Domain EventApi
   x-ep-application-domain-id: 53ai6w6z4rz
-  version: 2.2.0
+  version: 1.0.0
   x-ep-state-id: '2'
+  x-ep-event-api-version-id: diff8d8tnjp
   x-ep-application-domain-name: TEST_EP_ASYNC_API_IMPORTER/ep-multi-domain-manual.spec.ts/Main

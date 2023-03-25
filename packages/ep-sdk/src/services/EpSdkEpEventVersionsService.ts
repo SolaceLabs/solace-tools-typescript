@@ -352,10 +352,9 @@ export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
     return topicString;
   }
 
-  public deepCopyAddress = async({ xContextId, address, fromApplicationDomainId, toApplicationDomainId }: {
+  public deepCopyAddress = async({ xContextId, address, toApplicationDomainId }: {
     xContextId?: string;
     address: Address;
-    fromApplicationDomainId: string;
     toApplicationDomainId: string;
   }): Promise<Address> => {
     const funcName = 'deepCopyAddress';
@@ -371,7 +370,6 @@ export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
         const targetEnumVersion: TopicAddressEnumVersion = await EpSdkEnumVersionsService.copyLastestVersionById_IfNotExists({
           xContextId,
           enumVersionId: fromAddressLevel.enumVersionId,
-          fromApplicationDomainId: fromApplicationDomainId,
           toApplicationDomainId: toApplicationDomainId,
         });
         const targetAddressLevel: AddressLevel = {
@@ -399,15 +397,13 @@ export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
    * 
    * @returns existing or created event version
    */
-  public deepCopyLastestVersionById_IfNotExists = async({ xContextId, eventVersionId, fromApplicationDomainId, toApplicationDomainId }: {
+  public deepCopyLastestVersionById_IfNotExists = async({ xContextId, eventVersionId, toApplicationDomainId }: {
     xContextId?: string;
     eventVersionId: string;
-    fromApplicationDomainId: string;
     toApplicationDomainId: string;
   }): Promise<EventVersion> => {
     const funcName = 'deepCopyLastestVersionById_IfNotExists';
     const logName = `${EpSdkEpEventVersionsServiceClass.name}.${funcName}()`;
-
     // get the source event version
     const fromEventVersionResponse: EventVersionResponse = await EventsService.getEventVersion({ 
       xContextId,
@@ -436,7 +432,6 @@ export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
     const targetSchemaVersion: SchemaVersion = await EpSdkSchemaVersionsService.copyLastestVersionById_IfNotExists({
       xContextId,
       schemaVersionId: fromEventVersion.schemaVersionId,
-      fromApplicationDomainId: fromApplicationDomainId,
       toApplicationDomainId: toApplicationDomainId,
     });
     /* istanbul ignore next */
@@ -457,10 +452,8 @@ export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
     const targetEventVersionDeliveryDescriptorAddress: Address = await this.deepCopyAddress({
       xContextId,
       address: fromEventVersionDeliveryDescriptorAddress,
-      fromApplicationDomainId: fromApplicationDomainId,
       toApplicationDomainId: toApplicationDomainId,
     });
-
     // ensure target event exists
     const epSdkEpEventTask = new EpSdkEpEventTask({
       epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
@@ -487,7 +480,7 @@ export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
       eventId: epSdkEpEventTask_ExecuteReturn.epObjectKeys.epObjectId,
       scope: CustomAttributeDefinition.scope.APPLICATION_DOMAIN,
       epSdkCustomAttributeList: [ 
-        { name: EpSdkCustomAttributeNameSourceApplicationDomainId, value: fromApplicationDomainId }
+        { name: EpSdkCustomAttributeNameSourceApplicationDomainId, value: fromEvent.applicationDomainId }
       ]
     });        
     // create target event version

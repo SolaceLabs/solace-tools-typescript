@@ -9,8 +9,9 @@ import {
   EpAsyncApiError,
   EpAsyncApiParserError,
 } from "@solace-labs/ep-asyncapi";
-import CliConfig from "./CliConfig";
+import CliConfig, { ECliAssetsApplicationDomainEnforcementPolicies } from "./CliConfig";
 import { CliLogger, ECliStatusCodes } from "./CliLogger";
+import { ECliRunContext_RunMode } from "./CliRunContext";
 
 export class CliErrorFactory {
   public static createCliError = ({logName, error}: {
@@ -42,17 +43,12 @@ export class CliErrorFactory {
     return cliError;
   };
 
-  public static createCliUsageErrorFromCliConfigError = ({
-    logName,
-    cliConfigError,
-  }: {
+  public static createCliUsageErrorFromCliConfigError = ({logName,cliConfigError }: {
     logName: string;
     cliConfigError: CliConfigError;
   }): CliUsageError => {
     if (cliConfigError instanceof CliConfigMissingEnvVarError) {
-      return new CliUsageError(logName, cliConfigError.message, {
-        "Environment Variable": cliConfigError.envVarName,
-      });
+      return new CliUsageError(logName, cliConfigError.message, { "Environment Variable": cliConfigError.envVarName });
     }
     if (cliConfigError instanceof CliConfigInvalidDirEnvVarError) {
       return new CliUsageError(logName, cliConfigError.message, {
@@ -61,7 +57,7 @@ export class CliErrorFactory {
         Details: cliConfigError.cause,
       });
     }
-    if (cliConfigError instanceof CliConfigInvalidUrlEnvVarError) {
+    if(cliConfigError instanceof CliConfigInvalidUrlEnvVarError) {
       return new CliUsageError(logName, cliConfigError.message, {
         "Environment Variable": cliConfigError.envVar,
         Url: cliConfigError.url,
@@ -224,6 +220,17 @@ export class CliConfigInvalidUrlEnvVarError extends CliConfigError {
   }
 }
 
+export class CliConfigInvalidConfigCombinationError extends CliConfigError {
+  private static Name = "CliConfigInvalidConfigCombinationError";
+  private static DefaultDescription = "Invalid CLI Config Combination";
+  public details: any;
+  constructor(internalLogName: string, details: any) {
+    super(internalLogName, CliConfigInvalidConfigCombinationError.DefaultDescription);
+    this.details = details;
+    this.name = CliConfigInvalidConfigCombinationError.Name;
+  }
+}
+
 export class CliConfigInvalidEnvVarValueOptionError extends CliConfigError {
   private static DefaultDescription = "Invalid Environment Variable Option";
   public envVarName: string;
@@ -341,18 +348,24 @@ export class CliImporterTestRunAssetsInconsistencyError extends CliError {
   }
 }
 
-export type CliImporterTestRunNotAllowedToChangeErrorDetails = {
-  epObject: any;
-  sourceApplicationDomainName: string;
+export type CliImporterTestRunAssetsApplicationDomainPolicyViolationErrorDetails = {
+  cliAssetsApplicationDomainEnforcementPolicy: ECliAssetsApplicationDomainEnforcementPolicies;
+  runMode: ECliRunContext_RunMode;
+  apiFile: string;
+  epObjectName: string;
+  // sourceApplicationDomainName: string; // same as target
   targetApplicationDomainName: string;
+  allowedApplicationDomainName: string;
   epSdkTask_TransactionLogData: IEpSdkTask_TransactionLogData;
 }
-export class CliImporterTestRunNotAllowedToChangeError extends CliError {
-  protected static DefaultDescription = "Not Authorized to Modify Object in Application Domain Error";
-  public details: CliImporterTestRunNotAllowedToChangeErrorDetails;
-  constructor(internalLogName: string, details: CliImporterTestRunNotAllowedToChangeErrorDetails) {
-    super(internalLogName, CliImporterTestRunNotAllowedToChangeError.DefaultDescription);
+export class CliImporterTestRunAssetsApplicationDomainPolicyViolationError extends CliError {
+  private static Name = "CliImporterTestRunAssetsApplicationDomainPolicyViolationError";
+  protected static DefaultDescription = "Not Authorized to Modify Object in Assets Application Domain - Policy Violation";
+  public details: CliImporterTestRunAssetsApplicationDomainPolicyViolationErrorDetails;
+  constructor(internalLogName: string, details: CliImporterTestRunAssetsApplicationDomainPolicyViolationErrorDetails) {
+    super(internalLogName, CliImporterTestRunAssetsApplicationDomainPolicyViolationError.DefaultDescription);
     this.details = details;
+    this.name = CliImporterTestRunAssetsApplicationDomainPolicyViolationError.Name;
   }
 }
 

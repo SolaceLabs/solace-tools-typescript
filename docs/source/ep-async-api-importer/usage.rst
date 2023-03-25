@@ -7,4 +7,4 @@ Usage
   :maxdepth: 1
 
   usage-content/overview
-..  usage-content/settings
+  usage-content/cli

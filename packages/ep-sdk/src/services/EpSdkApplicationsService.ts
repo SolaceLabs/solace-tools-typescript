@@ -4,6 +4,7 @@ import {
   ApplicationsResponse,
   ApplicationsService,
   CustomAttribute,
+  CustomAttributeDefinition,
   Pagination,
 } from '@solace-labs/ep-openapi-node';
 import { 
@@ -97,20 +98,24 @@ export class EpSdkApplicationsServiceClass extends EpSdkServiceClass {
    * @param param0 
    * @returns 
    */
-  public async setCustomAttributes({ xContextId, applicationId, epSdkCustomAttributeList}:{
+  public async setCustomAttributes({ xContextId, applicationId, epSdkCustomAttributeList, scope, applicationDomainId }:{
     xContextId?: string;
     applicationId: string;
     epSdkCustomAttributeList: TEpSdkCustomAttributeList;
+    scope?: CustomAttributeDefinition.scope;
+    applicationDomainId?: string;
   }): Promise<Application> {
     const application: Application = await this.getById({
       xContextId: xContextId,
       applicationId: applicationId
     });
+    scope;
     const customAttributes: Array<CustomAttribute> = await EpSdkCustomAttributesService.createCustomAttributesWithNew({
       xContextId: xContextId,
       existingCustomAttributes: application.customAttributes,
       epSdkCustomAttributeList: epSdkCustomAttributeList,
-      epSdkCustomAttributeEntityType: EEpSdkCustomAttributeEntityTypes.APPLICATION
+      epSdkCustomAttributeEntityType: EEpSdkCustomAttributeEntityTypes.APPLICATION,
+      applicationDomainId: applicationDomainId
     });
     return await this.updateApplication({
       xContextId: xContextId,
@@ -251,7 +256,7 @@ export class EpSdkApplicationsServiceClass extends EpSdkServiceClass {
   public deleteById = async ({ xContextId, applicationId, applicationDomainId }: {
     xContextId?: string;
     applicationId: string;
-    applicationDomainId: string;
+    applicationDomainId?: string;
   }): Promise<Application> => {
     const epApplication: Application = await this.getById({
       xContextId: xContextId,

@@ -102,11 +102,7 @@ export class EpSdkSchemaVersionsServiceClass extends EpSdkVersionServiceClass {
     return schemaVersionList;
   };
 
-  public getVersionsForSchemaName = async ({
-    xContextId,
-    schemaName,
-    applicationDomainId,
-  }: {
+  public getVersionsForSchemaName = async ({ xContextId, schemaName, applicationDomainId }: {
     xContextId?: string;
     applicationDomainId: string;
     schemaName: string;
@@ -114,25 +110,17 @@ export class EpSdkSchemaVersionsServiceClass extends EpSdkVersionServiceClass {
     const funcName = "getVersionsForSchemaName";
     const logName = `${EpSdkSchemaVersionsServiceClass.name}.${funcName}()`;
 
-    const schemaObject: SchemaObject | undefined =
-      await EpSdkSchemasService.getByName({
-        xContextId,
-        applicationDomainId: applicationDomainId,
-        schemaName: schemaName,
-      });
+    const schemaObject: SchemaObject | undefined = await EpSdkSchemasService.getByName({
+      xContextId,
+      applicationDomainId: applicationDomainId,
+      schemaName: schemaName,
+    });
     if (schemaObject === undefined) return [];
     /* istanbul ignore next */
-    if (schemaObject.id === undefined)
-      throw new EpSdkApiContentError(
-        logName,
-        this.constructor.name,
-        "schemaObject.id === undefined",
-        {
-          schemaObject: schemaObject,
-        }
-      );
-    const schemaVersionList: Array<SchemaVersion> =
-      await this.getVersionsForSchemaId({ xContextId, schemaId: schemaObject.id });
+    if (schemaObject.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "schemaObject.id === undefined", {
+      schemaObject: schemaObject,
+    });
+    const schemaVersionList: Array<SchemaVersion> = await this.getVersionsForSchemaId({ xContextId, schemaId: schemaObject.id });
     return schemaVersionList;
   };
 
@@ -307,10 +295,9 @@ export class EpSdkSchemaVersionsServiceClass extends EpSdkVersionServiceClass {
     return createdSchemaVersion;
   };
 
-  public copyLastestVersionById_IfNotExists = async ({xContextId, schemaVersionId, fromApplicationDomainId, toApplicationDomainId }: {
+  public copyLastestVersionById_IfNotExists = async ({xContextId, schemaVersionId, toApplicationDomainId }: {
     xContextId?: string;
     schemaVersionId: string;
-    fromApplicationDomainId: string;
     toApplicationDomainId: string;
   }): Promise<SchemaVersion> => {
     const funcName = "copyLastestVersionById_IfNotExists";
@@ -333,7 +320,6 @@ export class EpSdkSchemaVersionsServiceClass extends EpSdkVersionServiceClass {
     // get the source schema object
     const fromSchemaObject: SchemaObject = await EpSdkSchemasService.getById({
       xContextId,
-      applicationDomainId: fromApplicationDomainId,
       schemaId: fromSchemaVersion.schemaId,
     });
     // ensure target version object exists
@@ -364,7 +350,7 @@ export class EpSdkSchemaVersionsServiceClass extends EpSdkVersionServiceClass {
       schemaId: epSdkSchemaTask_ExecuteReturn.epObjectKeys.epObjectId,
       scope: CustomAttributeDefinition.scope.APPLICATION_DOMAIN,
       epSdkCustomAttributeList: [ 
-        { name: EpSdkCustomAttributeNameSourceApplicationDomainId, value: fromApplicationDomainId }
+        { name: EpSdkCustomAttributeNameSourceApplicationDomainId, value: fromSchemaObject.applicationDomainId }
       ]
     });    
     // create target schema version
