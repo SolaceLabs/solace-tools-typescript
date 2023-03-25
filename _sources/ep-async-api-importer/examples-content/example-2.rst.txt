@@ -63,18 +63,16 @@ You can download the example spec :download:`here <files/NewApplication.yaml>`.
   ep-async-api-importer -fp 'NewApplication.yaml'
 
 
-.. warning::
+.. note::
 
-  The importer does not currently check if any of the previously existing object (events, schemas, enums), e.g. ExistingEvent_1 or ExistingEvent_2, have been modified
-  and will create new versions of the objects in their respective application domains.
+  By default, the importer checks if assets (events, schemas, enums), e.g. ExistingEvent_1 or ExistingEvent_2, in other application domains than the assets application domain 
+  have been modified and will raise an error if so.
 
-  You should avoid modifying existing objects - most likely other Applications or Event Apis make use of them and will not be updated to the new version.
-
-
-.. warning::
-
-  Validation of apis and their objects (events, schemas, enums) assumes globally unique names, even if they use different application domains.
-  Ensure all your objects have unique names. 
+  You can control this policy using the environment variable `CLI_ASSETS_APPLICATION_DOMAIN_ENFORCEMENT_POLICY` (run `ep-async-api-importer -h for more details`). 
+  
+  For example, to switch this policy off:
+    
+    `export CLI_ASSETS_APPLICATION_DOMAIN_ENFORCEMENT_POLICY=off`
 
 .. note::
 
@@ -82,3 +80,9 @@ You can download the example spec :download:`here <files/NewApplication.yaml>`.
 
   - to the assets application domain name, if specified, otherwise
   - to api application domain name
+
+.. warning::
+
+  Validation of apis and their objects (events, schemas, enums) assumes globally unique names, even if they use different application domains.
+  Ensure all your objects have unique names. 
+

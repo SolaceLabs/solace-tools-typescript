@@ -3,10 +3,15 @@
 Known Limitations
 =================
 
-Async API Spec Files
---------------------
+Multiple Messages per Channel
+-----------------------------
 
-No support for multiple messages on a channel.
+The importer currently does **not** support multiple messages for a channel operation.
+
+Asset Names
+-----------
+
+All asset names (events, schemas, enums) must be unique within a single Api File, even if they are assigned to different application domains.
 
 
 Orphaned Assets

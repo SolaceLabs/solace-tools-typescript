@@ -60,7 +60,8 @@
 <li class="toctree-l3"><a class="reference internal" href="runs.html">Importer Modes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="best-practices.html">Best Practices</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Known Limitations</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#async-api-spec-files">Async API Spec Files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#multiple-messages-per-channel">Multiple Messages per Channel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#asset-names">Asset Names</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#orphaned-assets">Orphaned Assets</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#removing-channel-parameters-enums">Removing Channel Parameters Enums</a></li>
 </ul>
@@ -106,9 +107,13 @@
              
   <div class="section" id="known-limitations">
 <span id="importer-content-notes"></span><h1>Known Limitations<a class="headerlink" href="#known-limitations" title="Permalink to this heading"></a></h1>
-<div class="section" id="async-api-spec-files">
-<h2>Async API Spec Files<a class="headerlink" href="#async-api-spec-files" title="Permalink to this heading"></a></h2>
-<p>No support for multiple messages on a channel.</p>
+<div class="section" id="multiple-messages-per-channel">
+<h2>Multiple Messages per Channel<a class="headerlink" href="#multiple-messages-per-channel" title="Permalink to this heading"></a></h2>
+<p>The importer currently does <strong>not</strong> support multiple messages for a channel operation.</p>
+</div>
+<div class="section" id="asset-names">
+<h2>Asset Names<a class="headerlink" href="#asset-names" title="Permalink to this heading"></a></h2>
+<p>All asset names (events, schemas, enums) must be unique within a single Api File, even if they are assigned to different application domains.</p>
 </div>
 <div class="section" id="orphaned-assets">
 <h2>Orphaned Assets<a class="headerlink" href="#orphaned-assets" title="Permalink to this heading"></a></h2>
@@ -136,7 +141,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, Solace Corporation, Ricardo Gomez-Ulmke, &lt;ricardo.gomez-ulmke@solace.com&gt;.
-      <span class="lastupdated">Last updated on 22 Mar 2023 at 10:57.
+      <span class="lastupdated">Last updated on 25 Mar 2023 at 06:34.
       </span></p>
   </div>
 

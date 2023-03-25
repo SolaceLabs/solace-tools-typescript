@@ -158,16 +158,15 @@
 ep-async-api-importer<span class="w"> </span>-fp<span class="w"> </span><span class="s1">&#39;NewApplication.yaml&#39;</span>
 </pre></div>
 </div>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>The importer does not currently check if any of the previously existing object (events, schemas, enums), e.g. ExistingEvent_1 or ExistingEvent_2, have been modified
-and will create new versions of the objects in their respective application domains.</p>
-<p>You should avoid modifying existing objects - most likely other Applications or Event Apis make use of them and will not be updated to the new version.</p>
-</div>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Validation of apis and their objects (events, schemas, enums) assumes globally unique names, even if they use different application domains.
-Ensure all your objects have unique names.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>By default, the importer checks if assets (events, schemas, enums), e.g. ExistingEvent_1 or ExistingEvent_2, in other application domains than the assets application domain
+have been modified and will raise an error if so.</p>
+<p>You can control this policy using the environment variable <cite>CLI_ASSETS_APPLICATION_DOMAIN_ENFORCEMENT_POLICY</cite> (run <cite>ep-async-api-importer -h for more details</cite>).</p>
+<p>For example, to switch this policy off:</p>
+<blockquote>
+<div><p><cite>export CLI_ASSETS_APPLICATION_DOMAIN_ENFORCEMENT_POLICY=off</cite></p>
+</div></blockquote>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -176,6 +175,11 @@ Ensure all your objects have unique names.</p>
 <li><p>to the assets application domain name, if specified, otherwise</p></li>
 <li><p>to api application domain name</p></li>
 </ul>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Validation of apis and their objects (events, schemas, enums) assumes globally unique names, even if they use different application domains.
+Ensure all your objects have unique names.</p>
 </div>
 </div>
 </div>
@@ -192,7 +196,7 @@ Ensure all your objects have unique names.</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, Solace Corporation, Ricardo Gomez-Ulmke, &lt;ricardo.gomez-ulmke@solace.com&gt;.
-      <span class="lastupdated">Last updated on 22 Mar 2023 at 10:57.
+      <span class="lastupdated">Last updated on 25 Mar 2023 at 06:34.
       </span></p>
   </div>
 
