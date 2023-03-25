@@ -1,5 +1,13 @@
 # @solace-labs/ep-asyncapi
 
+## 0.55.1
+
+### Patch Changes
+
+- 75f8b29b: minor patches
+
+  - methods `getxxxxEpApplicationDomainName()` now always return a string, never undefined
+
 ## 0.55.0
 
 ### Minor Changes
