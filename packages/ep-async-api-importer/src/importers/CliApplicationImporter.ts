@@ -604,8 +604,8 @@ export class CliApplicationImporter extends CliAssetsImporter {
   public async run({cliImporterRunOptions}: {
     cliImporterRunOptions: ICliApplicationImporterRunOptions;
   }): Promise<ICliApplicationImporterRunReturn> {
-    const funcName = "run";
-    const logName = `${CliApplicationImporter.name}.${funcName}()`;
+    // const funcName = "run";
+    // const logName = `${CliApplicationImporter.name}.${funcName}()`;
 
     cliImporterRunOptions.cliAssetsImporterRunPresentReturn?.assetApplicationDomainId
 
