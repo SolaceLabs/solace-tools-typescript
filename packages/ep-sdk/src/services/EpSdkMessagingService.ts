@@ -4,7 +4,7 @@ import {
   MessagingServicesResponse, 
   MessagingServicesService,
   Pagination, 
-} from '@solace-labs/ep-openapi-node';
+} from '@solace-labs/ep-rt-openapi-node';
 import { 
   EpSdkApiContentError,
   EpSdkLogger,
@@ -31,17 +31,11 @@ export class EpSdkMessagingServiceClass extends EpSdkServiceClass {
       id: messagingServiceId,
     });
     /* istanbul ignore next */
-    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, {
-      code: EEpSdkLoggerCodes.SERVICE_GET, module: this.constructor.name, details: {
-        messagingServiceResponse: messagingServiceResponse
-      }
-    }));
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.SERVICE_GET, module: this.constructor.name, details: { messagingServiceResponse: messagingServiceResponse }}));
 
     /* istanbul ignore next */
-    if (messagingServiceResponse.data === undefined) {
-      throw new EpSdkApiContentError(logName, this.constructor.name, "messagingServiceResponse.data === undefined", {
-        messagingServiceId: messagingServiceId
-      });
+    if (messagingServiceResponse.data === undefined) { 
+      throw new EpSdkApiContentError(logName, this.constructor.name, "messagingServiceResponse.data === undefined", { messagingServiceId: messagingServiceId });
     }
     return messagingServiceResponse.data;
   }

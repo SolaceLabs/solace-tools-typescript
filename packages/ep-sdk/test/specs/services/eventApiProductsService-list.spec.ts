@@ -105,33 +105,28 @@ describe(`${scriptName}`, () => {
       const eventApiProductNameList = getEventApiProductNameList();
       let i = 0;
       for (const eventApiProductName of eventApiProductNameList) {
-        const eventApiProductResponse: EventApiProductResponse =
-          await EventApiProductsService.createEventApiProduct({
-            requestBody: {
-              applicationDomainId: ApplicationDomainId,
-              name: eventApiProductName,
-              shared: true,
-              brokerType: EventApiProduct.brokerType.SOLACE,
-            },
-          });
+        const eventApiProductResponse: EventApiProductResponse = await EventApiProductsService.createEventApiProduct({
+          requestBody: {
+            applicationDomainId: ApplicationDomainId,
+            name: eventApiProductName,
+            shared: true,
+            brokerType: EventApiProduct.brokerType.SOLACE,
+          },
+        });
         EventApiProductIdList.push(eventApiProductResponse.data.id);
         // set the attribute on all third event api products
         if (i % 3 === 0) {
-          const eventApiProduct: EventApiProduct =
-            await EpSdkEventApiProductsService.setCustomAttributes({
-              eventApiProductId: eventApiProductResponse.data.id,
-              epSdkCustomAttributeList: [
-                PublishDestinationsAttribute,
-                AnotherAttribute,
-              ],
-            });
+          const eventApiProduct: EventApiProduct = await EpSdkEventApiProductsService.setCustomAttributes({
+            eventApiProductId: eventApiProductResponse.data.id,
+            epSdkCustomAttributeList: [
+              PublishDestinationsAttribute,
+              AnotherAttribute,
+            ],
+          });
           // test it is set
           expect(eventApiProduct.customAttributes).to.not.be.undefined;
           const found: CustomAttribute | undefined = eventApiProduct.customAttributes.find((customAttribute: CustomAttribute) => {
-            return (
-              customAttribute.customAttributeDefinitionName ===
-              PublishDestinationsAttribute.name
-            );
+            return (customAttribute.customAttributeDefinitionName === PublishDestinationsAttribute.name);
           });
           expect(found, `eventApiProduct=${JSON.stringify(eventApiProduct, null, 2)}`).to.not.be.undefined;
         } else if (i % 3 === 1) {

@@ -25,14 +25,15 @@ import {
 */
 export class EpSdkValidateEventsClass extends EpSdkValidationClass {
 
-  public validateReadPermissions = async({ xContextId, globalOpenAPI, token }:{
+  public validateReadPermissions = async({ xContextId, globalEpOpenAPI, globalEpRtOpenAPI, token }:{
     xContextId?: string;
-    globalOpenAPI: OpenAPIConfig;
+    globalEpOpenAPI: OpenAPIConfig;
+    globalEpRtOpenAPI: OpenAPIConfig;
     token: string;
   }): Promise<void> => {
     let error: any = undefined;
     try {
-      EpSdkClient.setToken({ globalOpenAPI: globalOpenAPI, token: token });
+      EpSdkClient.setToken({ globalEpOpenAPI, globalEpRtOpenAPI, token });
       try { 
         await EventsService.getEvents({ xContextId, pageSize: 1 });
         EpSdkValidationLog.addValidationToLog({ resource: TEpSdkPermissionResources.Events, permissionResult: { permission: EEpSdkPermissions.READ, access: true }});
@@ -44,7 +45,7 @@ export class EpSdkValidateEventsClass extends EpSdkValidationClass {
       /* istanbul ignore next */
       error = e;
     } finally {
-      EpSdkClient.resetToken({globalOpenAPI: globalOpenAPI});
+      EpSdkClient.resetToken({ globalEpOpenAPI, globalEpRtOpenAPI });
     }
     /* istanbul ignore next */
     if(error) throw error;

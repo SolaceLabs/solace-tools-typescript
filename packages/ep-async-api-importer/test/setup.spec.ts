@@ -1,7 +1,8 @@
 import "mocha";
 import { expect } from "chai";
 import path from "path";
-import { OpenAPI } from "@solace-labs/ep-openapi-node";
+import { OpenAPI as EpOpenAPI } from "@solace-labs/ep-openapi-node";
+import { OpenAPI as EpRtOpenAPI } from "@solace-labs/ep-rt-openapi-node";
 import {
   EpSdkClient,
   EpSdkConfig,
@@ -89,7 +90,8 @@ describe(`${scriptName}`, () => {
         });
         CliConfig.logConfig();
         EpSdkClient.initialize({
-          globalOpenAPI: OpenAPI,
+          globalEpOpenAPI: EpOpenAPI,
+          globalEpRtOpenAPI: EpRtOpenAPI,
           token: CliConfig.getSolaceCloudToken(),
           baseUrl: CliConfig.getEpApiBaseUrl(),
         });

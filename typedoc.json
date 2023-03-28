@@ -8,6 +8,7 @@
   "entryPoints": [
     "packages/ep-asyncapi",
     "packages/ep-openapi-node",
+    "packages/ep-rt-openapi-node",
     "packages/ep-apim-openapi-node",
     "packages/ep-sdk",
     "packages/sempv2-config-openapi-node",

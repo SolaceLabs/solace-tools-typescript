@@ -32,14 +32,15 @@ export class EpSdkValidateApplicationDomainsClass extends EpSdkValidationClass {
     return `${this.entityBaseName}/${super.createEntityName()}`;
   }
 
-  public validateReadPermissions = async({ xContextId, globalOpenAPI, token }:{
+  public validateReadPermissions = async({ xContextId, globalEpOpenAPI, globalEpRtOpenAPI, token }:{
     xContextId?: string;    
-    globalOpenAPI: OpenAPIConfig;
+    globalEpOpenAPI: OpenAPIConfig;
+    globalEpRtOpenAPI: OpenAPIConfig;
     token: string;
   }): Promise<void> => {
     let error: any = undefined;
     try {
-      EpSdkClient.setToken({ globalOpenAPI: globalOpenAPI, token: token });
+      EpSdkClient.setToken({ globalEpOpenAPI, globalEpRtOpenAPI ,token });
       try { 
         await ApplicationDomainsService.getApplicationDomains({ xContextId: xContextId, pageSize: 1 });
         EpSdkValidationLog.addValidationToLog({ resource: TEpSdkPermissionResources.ApplicationDomains, permissionResult: { permission: EEpSdkPermissions.READ, access: true }});
@@ -52,7 +53,7 @@ export class EpSdkValidateApplicationDomainsClass extends EpSdkValidationClass {
       /* istanbul ignore next */
       error = e;
     } finally {
-      EpSdkClient.resetToken({globalOpenAPI: globalOpenAPI});
+      EpSdkClient.resetToken({globalEpOpenAPI, globalEpRtOpenAPI});
     }
     /* istanbul ignore next */
     if(error) throw error;
@@ -66,9 +67,10 @@ export class EpSdkValidateApplicationDomainsClass extends EpSdkValidationClass {
    * 
    * @returns true if write & delete access, false otherwise. 
    */
-  public validateWriteDeletePermissions = async({ xContextId, globalOpenAPI, token }:{
+  public validateWriteDeletePermissions = async({ xContextId, globalEpOpenAPI, globalEpRtOpenAPI, token }:{
     xContextId?: string;
-    globalOpenAPI: OpenAPIConfig;
+    globalEpOpenAPI: OpenAPIConfig;
+    globalEpRtOpenAPI: OpenAPIConfig;
     token: string;
   }): Promise<boolean> => {
     const funcName = "validateWriteDeletePermissions";
@@ -78,7 +80,7 @@ export class EpSdkValidateApplicationDomainsClass extends EpSdkValidationClass {
     try {
       try { 
         // create
-        EpSdkClient.setToken({ globalOpenAPI: globalOpenAPI, token: token });
+        EpSdkClient.setToken({ globalEpOpenAPI, globalEpRtOpenAPI, token });
         const applicationDomainResponse: ApplicationDomainResponse = await ApplicationDomainsService.createApplicationDomain({ xContextId: xContextId, requestBody: { name: this.createEntityName() }});
         EpSdkValidationLog.addValidationToLog({ resource: TEpSdkPermissionResources.ApplicationDomains, permissionResult: { permission: EEpSdkPermissions.WRITE, access: true }});
         /* istanbul ignore next */
@@ -92,7 +94,7 @@ export class EpSdkValidateApplicationDomainsClass extends EpSdkValidationClass {
       }
       try { 
         // delete
-        EpSdkClient.setToken({ globalOpenAPI: globalOpenAPI, token: token });
+        EpSdkClient.setToken({ globalEpOpenAPI, globalEpRtOpenAPI, token });
         await ApplicationDomainsService.deleteApplicationDomain({ xContextId: xContextId, id: applicationDomainId });
         EpSdkValidationLog.addValidationToLog({ resource: TEpSdkPermissionResources.ApplicationDomains, permissionResult: { permission: EEpSdkPermissions.DELETE, access: true }});
       } catch(e) {
@@ -104,7 +106,7 @@ export class EpSdkValidateApplicationDomainsClass extends EpSdkValidationClass {
       /* istanbul ignore next */
       error = e;
     } finally {
-      EpSdkClient.resetToken({globalOpenAPI: globalOpenAPI});
+      EpSdkClient.resetToken({ globalEpOpenAPI, globalEpRtOpenAPI});
     }
     /* istanbul ignore next */
     if(error) throw error;

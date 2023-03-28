@@ -6,7 +6,8 @@ import figlet from "figlet";
 import path from "path";
 import dotenv from "dotenv";
 import { Command, Option, OptionValues } from "commander";
-import { OpenAPI } from "@solace-labs/ep-openapi-node";
+import { OpenAPI as EpOpenApi} from "@solace-labs/ep-openapi-node";
+import { OpenAPI as EpRtOpenApi} from "@solace-labs/ep-rt-openapi-node";
 import { EpSdkClient } from "@solace-labs/ep-sdk";
 import { DefaultAppName, packageJson } from "./constants";
 import {
@@ -85,7 +86,8 @@ function initialize(commandLineOptionValues: OptionValues) {
   CliLogger.initialize({ cliLoggerOptions: CliConfig.getCliLoggerOptions() });
   CliConfig.logConfig();
   EpSdkClient.initialize({
-    globalOpenAPI: OpenAPI,
+    globalEpOpenAPI: EpOpenApi,
+    globalEpRtOpenAPI: EpRtOpenApi,
     token: CliConfig.getSolaceCloudToken(),
     baseUrl: CliConfig.getEpApiBaseUrl(),
   });

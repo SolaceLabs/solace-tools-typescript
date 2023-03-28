@@ -1,5 +1,4 @@
 import {
-  ApplicationDomainsService,
   CustomAttributeDefinition,
   EnumsService,
   Pagination,

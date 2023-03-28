@@ -16,7 +16,11 @@ import {
   EpApiMaxPageSize 
 } from '../constants';
 import { EpSdkServiceClass } from './EpSdkService';
-import { EEpSdkCustomAttributeEntityTypes, IEpSdkAttributesQuery, TEpSdkCustomAttributeList } from '../types';
+import { 
+  EEpSdkCustomAttributeEntityTypes, 
+  IEpSdkAttributesQuery, 
+  TEpSdkCustomAttributeList 
+} from '../types';
 import EpSdkCustomAttributesQueryService from './EpSdkCustomAttributesQueryService';
 import EpSdkCustomAttributesService from './EpSdkCustomAttributesService';
 import EpSdkCustomAttributeDefinitionsService from './EpSdkCustomAttributeDefinitionsService';
