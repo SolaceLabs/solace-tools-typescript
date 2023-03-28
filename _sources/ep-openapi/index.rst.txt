@@ -11,8 +11,8 @@ Solace Event Portal OpenAPI
 Resources
 ---------
 
-- `Solace Event Portal`_
+- `Solace API References`_
 
 
-.. _Solace Event Portal:
-  https://solace.com/products/portal/
+.. _Solace API References:
+  https://openapi-v2.solace.cloud/cloud/reference
