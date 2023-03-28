@@ -12,12 +12,13 @@ import {
   EventApiProduct,
   Plan,
   SolaceClassOfServicePolicy,
-  MessagingServicesService,
-  MessagingServicesResponse,
-  MessagingService,
   EventApiProductVersionResponse,
-  MessagingServiceResponse,
 } from "@solace-labs/ep-openapi-node";
+import {
+  MessagingServicesService,
+  MessagingService,
+  MessagingServiceResponse,
+} from "@solace-labs/ep-rt-openapi-node";
 import {
   EpSdkError,
   EpSdkEventApiProductsService,
@@ -239,35 +240,23 @@ describe(`${scriptName}`, () => {
     initializeGlobals();
     try {
       TestContext.newItId();
-      const messagingServiceResponse: MessagingServiceResponse =
-        await MessagingServicesService.getMessagingService({
-          id: TestMessagingServiceId,
-        });
-      expect(
-        messagingServiceResponse.data,
-        TestLogger.createTestFailMessage(
-          "messagingServiceResponse.data === undefined"
-        )
-      ).to.not.be.undefined;
+      const messagingServiceResponse: MessagingServiceResponse = await MessagingServicesService.getMessagingService({
+        id: TestMessagingServiceId,
+      });
+      expect(messagingServiceResponse.data, TestLogger.createTestFailMessage("messagingServiceResponse.data === undefined")).to.not.be.undefined;
       TestMessagingService = messagingServiceResponse.data;
     } catch (e) {
-      if (e instanceof ApiError)
-        expect(false, TestLogger.createApiTestFailMessage("failed", e)).to.be
-          .true;
-      expect(false, TestLogger.createTestFailMessageForError("failed", e)).to.be
-        .true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed", e)).to.be.true;
+      expect(false, TestLogger.createTestFailMessageForError("failed", e)).to.be.true;
     }
     TestContext.newItId();
-    const xvoid: void = await TestHelpers.applicationDomainAbsent({
-      applicationDomainName: ApplicationDomainName,
-    });
+    const xvoid: void = await TestHelpers.applicationDomainAbsent({applicationDomainName: ApplicationDomainName });
     TestContext.newItId();
-    const applicationDomainResponse: ApplicationDomainResponse =
-      await ApplicationDomainsService.createApplicationDomain({
-        requestBody: {
-          name: ApplicationDomainName,
-        },
-      });
+    const applicationDomainResponse: ApplicationDomainResponse = await ApplicationDomainsService.createApplicationDomain({
+      requestBody: {
+        name: ApplicationDomainName,
+      },
+    });
     ApplicationDomainId = applicationDomainResponse.data.id;
   });
 
@@ -278,9 +267,7 @@ describe(`${scriptName}`, () => {
   after(async () => {
     // delete application domain
     TestContext.newItId();
-    await EpSdkApplicationDomainsService.deleteById({
-      applicationDomainId: ApplicationDomainId,
-    });
+    await EpSdkApplicationDomainsService.deleteById({ applicationDomainId: ApplicationDomainId });
     // remove all attribute definitions
     const allAttributes = AdditionalCustomAttributeList.concat(
       [CorrectPublishDestinationAttribute, UnknownPublishDestinationAttribute],

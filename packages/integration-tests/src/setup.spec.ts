@@ -2,14 +2,15 @@ import "mocha";
 import path from "path";
 import { expect } from "chai";
 import { OpenAPI as EpCoreOpenAPI } from "@solace-labs/ep-openapi-node";
-import { TestContext } from "@internal/tools/src";
-import { TestConfig, TestLogger } from "./lib";
+import { OpenAPI as EpRtOpenAPI } from "@solace-labs/ep-rt-openapi-node";
 import {
   EpSdkClient,
   EpSdkConsoleLogger,
   EpSdkLogger,
   EpSdkConfig,
 } from "@solace-labs/ep-sdk";
+import { TestContext } from "@internal/tools/src";
+import { TestConfig, TestLogger } from "./lib";
 
 // load test stub
 const x = require("./lib/TestStubEpCoreOpenApi");
@@ -59,7 +60,8 @@ describe(`${scriptName}`, () => {
     it(`${scriptName}: should initialize EP client`, async () => {
       try {
         EpSdkClient.initialize({
-          globalOpenAPI: EpCoreOpenAPI,
+          globalEpOpenAPI: EpCoreOpenAPI,
+          globalEpRtOpenAPI: EpRtOpenAPI,
           token: TestConfig.getSolaceCloudToken(),
           baseUrl: TestConfig.getConfig().apiBaseUrl,
         });

@@ -3,13 +3,12 @@ import { expect } from "chai";
 import path from "path";
 import {
   ApiError,
-  ApplicationDomain,
-  ApplicationDomainResponse,
-  ApplicationDomainsResponse,
-  ApplicationDomainsService,
   EventsService,
-  OpenAPI
+  OpenAPI as EpOpenAPI
 } from "@solace-labs/ep-openapi-node";
+import {
+  OpenAPI as EpRtOpenAPI
+} from "@solace-labs/ep-rt-openapi-node";
 import { TestContext, TestUtils } from "@internal/tools/src";
 import { TestLogger, TestConfig, TestHelpers } from "../../lib";
 import {
@@ -79,7 +78,8 @@ describe(`${scriptName}`, () => {
     try {
       // no access
       await EpSdkValidateApplicationDomains.validateReadPermissions({
-        globalOpenAPI: OpenAPI,
+        globalEpOpenAPI: EpOpenAPI,
+        globalEpRtOpenAPI: EpRtOpenAPI,
         token: TestConfig.getConfig().tokens.noPermissions,
       });
       const logEntry: TEpSdkPermissionValidationLogEntry | undefined = EpSdkValidationLog.getValidationLogEntry(TEpSdkPermissionResources.ApplicationDomains);
@@ -97,7 +97,8 @@ describe(`${scriptName}`, () => {
     try {
       //  yes access
       await EpSdkValidateApplicationDomains.validateReadPermissions({
-        globalOpenAPI: OpenAPI,
+        globalEpOpenAPI: EpOpenAPI,
+        globalEpRtOpenAPI: EpRtOpenAPI,
         token: TestConfig.getConfig().tokens.allPermissions,
       });
       const logEntry: TEpSdkPermissionValidationLogEntry | undefined = EpSdkValidationLog.getValidationLogEntry(TEpSdkPermissionResources.ApplicationDomains);
@@ -118,7 +119,8 @@ describe(`${scriptName}`, () => {
     try {
       // no access
       await EpSdkValidateApplicationDomains.validateWriteDeletePermissions({
-        globalOpenAPI: OpenAPI,
+        globalEpOpenAPI: EpOpenAPI,
+        globalEpRtOpenAPI: EpRtOpenAPI,
         token: TestConfig.getConfig().tokens.noApplicationDomains,
       });
       const logEntry: TEpSdkPermissionValidationLogEntry | undefined = EpSdkValidationLog.getValidationLogEntry(TEpSdkPermissionResources.ApplicationDomains);
@@ -141,7 +143,8 @@ describe(`${scriptName}`, () => {
     try {
       // yes access
       await EpSdkValidateApplicationDomains.validateWriteDeletePermissions({
-        globalOpenAPI: OpenAPI,
+        globalEpOpenAPI: EpOpenAPI,
+        globalEpRtOpenAPI: EpRtOpenAPI,
         token: TestConfig.getConfig().tokens.allPermissions,
       });
       const logEntry: TEpSdkPermissionValidationLogEntry | undefined = EpSdkValidationLog.getValidationLogEntry(TEpSdkPermissionResources.ApplicationDomains);
@@ -168,7 +171,8 @@ describe(`${scriptName}`, () => {
     try {
       // no access
       await EpSdkValidateEvents.validateReadPermissions({
-        globalOpenAPI: OpenAPI,
+        globalEpOpenAPI: EpOpenAPI,
+        globalEpRtOpenAPI: EpRtOpenAPI,
         token: TestConfig.getConfig().tokens.noPermissions,
       });
       const logEntry: TEpSdkPermissionValidationLogEntry | undefined = EpSdkValidationLog.getValidationLogEntry(resource);
@@ -200,7 +204,8 @@ describe(`${scriptName}`, () => {
     try {
       //  yes access
       await EpSdkValidateEvents.validateReadPermissions({
-        globalOpenAPI: OpenAPI,
+        globalEpOpenAPI: EpOpenAPI,
+        globalEpRtOpenAPI: EpRtOpenAPI,
         token: TestConfig.getConfig().tokens.allPermissions,
       });
       const logEntry: TEpSdkPermissionValidationLogEntry | undefined = EpSdkValidationLog.getValidationLogEntry(resource);

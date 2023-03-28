@@ -8817,6 +8817,86 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
+    post:
+      tags:
+        - Event API Products
+      summary: Creates an event API product
+      description: Use this API to create an event API product.
+      operationId: createEventApiProduct
+      requestBody:
+        description: The event API product
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventApiProduct'
+        required: true
+      responses:
+        '201':
+          description: Created an event API product. The newly saved event API product is returned in the response body.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventApiProductResponse'
+        '400':
+          description: Bad Request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            '*/*':
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ErrorResponse'
+                  - $ref: '#/components/schemas/InvalidStateReference'
+        '401':
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not Found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '501':
+          description: Not Implemented
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service Unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '504':
+          description: Gateway Timeout.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
   /api/v2/architecture/eventApiProducts/{id}:
     get:
       tags:
