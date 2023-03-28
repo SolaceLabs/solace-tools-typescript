@@ -1,5 +1,19 @@
 # @solace-labs/ep-sdk
 
+## 0.59.0
+
+### Minor Changes
+
+- b864a509: upgrade ep apis
+
+  - new api: ep runtime api v2.0.15
+  - ep api: 2.0.15
+
+### Patch Changes
+
+- Updated dependencies [b864a509]
+  - @solace-labs/ep-rt-openapi-node@1.0.1
+
 ## 0.58.1
 
 ### Patch Changes
