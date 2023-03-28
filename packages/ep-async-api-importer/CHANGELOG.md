@@ -1,5 +1,12 @@
 # @solace-labs/ep-async-api-importer
 
+## 0.56.1
+
+### Patch Changes
+
+- Updated dependencies [b864a509]
+  - @solace-labs/ep-sdk@0.59.0
+
 ## 0.56.0
 
 ### Minor Changes
