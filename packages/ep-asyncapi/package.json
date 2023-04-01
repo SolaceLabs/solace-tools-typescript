@@ -33,6 +33,7 @@
     "clean": "rm -rf dist && rm -rf test/logs && rm -rf .turbo && rm -rf examples/dist",
     "build:test": "yarn build",
     "test": "yarn build:test && . ./test/source.env.sh && nyc mocha --config test/.mocharc.yml test/**/**.spec.ts && unset_source_env",
+    "test:x": "yarn build:test && . ./test/source.env.sh && mocha --config test/.mocharc.yml test/**/**.x-spec.ts && unset_source_env",
     "dev:watch": "tsup src/index.ts --format esm,cjs, --dts --watch",
     "lint": "eslint .",
     "lint:deprecated": "yarn lint | grep deprecated"

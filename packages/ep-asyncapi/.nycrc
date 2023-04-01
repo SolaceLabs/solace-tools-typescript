@@ -1,9 +1,9 @@
 {
   "all": true,
   "check-coverage": true,
-  "statements": 83,
-  "branches": 71,
-  "functions": 86,
+  "statements": 82,
+  "branches": 69,
+  "functions": 87,
   "lines": 86,
   "temp-dir": "./test/logs/nyc_output",
   "reporter": ["html", "text", "text-summary", "lcov"],

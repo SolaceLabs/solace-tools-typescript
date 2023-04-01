@@ -1,23 +1,27 @@
-import { 
-  Message, 
-  Schema 
+import {
+  Message,
+  Schema
 } from '@asyncapi/parser';
-import { 
+import {
+  EpAsyncApiStateId2StateNameMap_get,
+  EpAsyncApiStateIds,
+  EpAsyncApiStateName2StateIdMap_get,
+  EpAsyncApiStateNames,
   EpGeneralExtensions,
-  EpMessageExtensions, 
-  EpSchemaExtensions 
+  EpMessageExtensions,
+  EpSchemaExtensions
 } from '../constants';
-import { 
-  EpAsyncApiUtils, 
-  EpAsyncApiMessageError, 
-  EpAsyncApiBestPracticesError 
+import {
+  EpAsyncApiUtils,
+  EpAsyncApiMessageError,
+  EpAsyncApiBestPracticesError
 } from '../utils';
-import { 
-  EpAsyncApiChannelDocument 
+import {
+  EpAsyncApiChannelDocument
 } from './EpAsyncApiChannelDocument';
-import { 
-  EpAsyncApiDocument, 
-  E_EpAsyncApiContentTypes 
+import {
+  EpAsyncApiDocument,
+  E_EpAsyncApiContentTypes
 } from './EpAsyncApiDocument';
 
 export enum E_EpAsyncApiSchemaFormatType {
@@ -33,21 +37,21 @@ export class EpAsyncApiMessageDocument {
   private contentType: E_EpAsyncApiContentTypes;
   private schemaFormatType: E_EpAsyncApiSchemaFormatType;
   public static readonly ContentTypeIssue = 'contentType === undefined, neither message has a contentType nor api has a defaultContentType';
-  public static readonly MissingMessagePayloadSchemaIssue ="Missing message payload schema.";
+  public static readonly MissingMessagePayloadSchemaIssue = "Missing message payload schema.";
 
-  
+
   private determineContentType(): E_EpAsyncApiContentTypes {
     const funcName = 'determineContentType';
     const logName = `${EpAsyncApiMessageDocument.name}.${funcName}()`;
-    
+
     // note: 
     // contentType: application/vnd.apache.avro+json
     // contentType: application/json
     // contentType: application/vnd.aai.asyncapi;version=2.0.0
 
     let contentTypeString: string | undefined = this.asyncApiMessage.contentType();
-    if(!contentTypeString) contentTypeString = this.epAsyncApiDocument.getDefaultContentType();
-    if(contentTypeString === undefined) throw new EpAsyncApiMessageError(logName, this.constructor.name, {
+    if (!contentTypeString) contentTypeString = this.epAsyncApiDocument.getDefaultContentType();
+    if (contentTypeString === undefined) throw new EpAsyncApiMessageError(logName, this.constructor.name, {
       issue: EpAsyncApiMessageDocument.ContentTypeIssue,
       apiTitle: this.epAsyncApiDocument.getTitle(),
       apiChannel: this.epAsyncApiChannelDocument?.getAsyncApiChannelKey(),
@@ -56,7 +60,7 @@ export class EpAsyncApiMessageDocument {
     });
     // hardcode to application/json
     // nonsense, cater for EP not setting content type correctly
-    if(contentTypeString.includes('avro')) return E_EpAsyncApiContentTypes.APPLICATION_JSON;
+    if (contentTypeString.includes('avro')) return E_EpAsyncApiContentTypes.APPLICATION_JSON;
     return E_EpAsyncApiContentTypes.APPLICATION_JSON;
   }
 
@@ -74,7 +78,7 @@ export class EpAsyncApiMessageDocument {
     // schemaFormatString = application/schema+json;version=draft-07
     // schemaFormatString = application/vnd.apache.avro+yaml;version=1.9.0
 
-    if(schemaFormatString.includes('avro')) return E_EpAsyncApiSchemaFormatType.APPLICATION_AVRO;
+    if (schemaFormatString.includes('avro')) return E_EpAsyncApiSchemaFormatType.APPLICATION_AVRO;
     return E_EpAsyncApiSchemaFormatType.APPLICATION_JSON;
   }
 
@@ -82,14 +86,14 @@ export class EpAsyncApiMessageDocument {
     const funcName = 'extractMessageKey';
     const logName = `${EpAsyncApiMessageDocument.name}.${funcName}()`;
     // try ep extension first
-    if(asyncApiMessage.hasExtension(EpMessageExtensions.xEpEventName)) {
+    if (asyncApiMessage.hasExtension(EpMessageExtensions.xEpEventName)) {
       const eventName = asyncApiMessage.extension(EpMessageExtensions.xEpEventName);
-      if(eventName && eventName.length > 0) return eventName;
+      if (eventName && eventName.length > 0) return eventName;
     }
     // 2.4.0
-    if(asyncApiMessage.name()) return asyncApiMessage.name();
+    if (asyncApiMessage.name()) return asyncApiMessage.name();
     // 2.0.0
-    if(asyncApiMessage.hasExt('x-parser-message-name')) return asyncApiMessage.ext('x-parser-message-name');
+    if (asyncApiMessage.hasExt('x-parser-message-name')) return asyncApiMessage.ext('x-parser-message-name');
     throw new EpAsyncApiMessageError(logName, this.constructor.name, {
       issue: 'unable to find message key',
       apiTitle: this.epAsyncApiDocument.getTitle(),
@@ -115,7 +119,7 @@ export class EpAsyncApiMessageDocument {
   public validate_BestPractices(): void {
     const funcName = "validate_BestPractices";
     const logName = `${EpAsyncApiMessageDocument.name}.${funcName}()`;
-    if(this.asyncApiMessage.originalPayload() === undefined || this.asyncApiMessage.originalPayload() === null) {
+    if (this.asyncApiMessage.originalPayload() === undefined || this.asyncApiMessage.originalPayload() === null) {
       throw new EpAsyncApiBestPracticesError(logName, this.constructor.name, undefined, {
         asyncApiSpecTitle: this.epAsyncApiDocument.getTitle(),
         issues: EpAsyncApiMessageDocument.MissingMessagePayloadSchemaIssue,
@@ -127,33 +131,59 @@ export class EpAsyncApiMessageDocument {
     }
   }
 
+  private getMessage_X_EpSharedFlag(): boolean | undefined {
+    if (this.asyncApiMessage.hasExtension(EpMessageExtensions.xEpSharedFlag)) {
+      const value = this.asyncApiMessage.extension(EpMessageExtensions.xEpSharedFlag);
+      if (value && typeof value === 'string' && value.length > 0) try { return JSON.parse(value); } catch (e) { }
+    }
+    return undefined;
+  }
+
+  public getMessageEpIsShared(defaultValue: boolean): boolean {
+    const flag = this.getMessage_X_EpSharedFlag();
+    if(flag !== undefined) return flag;
+    return defaultValue;
+  }
+
+  private get_X_EpStateId(): EpAsyncApiStateIds | undefined {
+    const value = this.asyncApiMessage.extension(EpMessageExtensions.xEpStateId);
+    if(value === undefined) return undefined;
+    EpAsyncApiStateId2StateNameMap_get(value);
+    return value;
+  }
+
+  private get_X_EpStateName(): EpAsyncApiStateNames | undefined {
+    const value = this.asyncApiMessage.extension(EpMessageExtensions.xEpStateName);
+    if(value === undefined) return undefined;
+    const lowerCaseValue = (value as string).toLowerCase() as EpAsyncApiStateNames;
+    EpAsyncApiStateName2StateIdMap_get(lowerCaseValue);
+    return lowerCaseValue;
+  }
+
+  public getEpStateId(defaultValue: EpAsyncApiStateIds): EpAsyncApiStateIds {
+    const stateName = this.get_X_EpStateName();
+    if(stateName !== undefined) return EpAsyncApiStateName2StateIdMap_get(stateName);
+    const stateId = this.get_X_EpStateId();
+    if(stateId !== undefined) return stateId;  
+    return defaultValue;
+  }
+
   public getContentType(): E_EpAsyncApiContentTypes { return this.contentType; }
-
-  public getSchemaFormatType(): E_EpAsyncApiSchemaFormatType { return this.schemaFormatType; }
-
-  public getOriginalPayloadSchema(): any {
-    return this.asyncApiMessage.originalPayload();
-  }
-
-  public getPayloadSchemaAsString(): string {
-    const schema: Schema = this.getPayloadSchema();
-    return JSON.stringify(schema.json());
-  }
 
   public getMessageName(): string { return this.asyncApiMessageKey; }
 
   public getMessageDisplayName(): string {
-    if(this.asyncApiMessage.hasExtension(EpMessageExtensions.xEpEventVersionDisplayName)) {
+    if (this.asyncApiMessage.hasExtension(EpMessageExtensions.xEpEventVersionDisplayName)) {
       const displayName = this.asyncApiMessage.extension(EpMessageExtensions.xEpEventVersionDisplayName);
-      if(displayName && displayName.length > 0) return displayName;
+      if (displayName && displayName.length > 0) return displayName;
     }
     return '';
   }
 
   public getMessageEpApplicationDomainName(): string {
-    if(this.asyncApiMessage.hasExtension(EpGeneralExtensions.xEpApplicationDomainName)) {
+    if (this.asyncApiMessage.hasExtension(EpGeneralExtensions.xEpApplicationDomainName)) {
       const name = this.asyncApiMessage.extension(EpGeneralExtensions.xEpApplicationDomainName);
-      if(name && name.length > 0) return name;
+      if (name && name.length > 0) return name;
     }
     return this.epAsyncApiDocument.getUnprefixedAssetsApplicationDomainName();
   }
@@ -168,8 +198,8 @@ export class EpAsyncApiMessageDocument {
   public getMessageDescription(): string {
     const description: string | null = this.asyncApiMessage.description();
     const summary: string | null = this.asyncApiMessage.summary();
-    if(description && description.length > 0) return description;
-    if(summary && summary.length > 0) return summary;
+    if (description && description.length > 0) return description;
+    if (summary && summary.length > 0) return summary;
     return '';
   }
 
@@ -177,15 +207,61 @@ export class EpAsyncApiMessageDocument {
     return this.asyncApiMessage.name();
   }
 
+  // 
+  // schema
+  // 
+
+  private getPayloadSchema_X_EpSharedFlag(): boolean | undefined {
+    const schema: Schema = this.asyncApiMessage.payload();
+    if(schema.hasExtension(EpSchemaExtensions.xEpSharedFlag)) {
+      const value = schema.extension(EpSchemaExtensions.xEpSharedFlag);
+      if (value && typeof value === 'string' && value.length > 0) try { return JSON.parse(value); } catch (e) { }
+    }
+    return undefined;
+  }
+
+  public getPayloadSchemaEpIsShared(defaultValue: boolean): boolean {
+    const flag = this.getPayloadSchema_X_EpSharedFlag();
+    if(flag !== undefined) return flag;
+    return defaultValue;
+  }
+
+  private getPayloadSchema_X_EpStateId(): EpAsyncApiStateIds | undefined {
+    const schema: Schema = this.asyncApiMessage.payload();
+    const value = schema.extension(EpSchemaExtensions.xEpStateId);
+    if(value === undefined) return undefined;
+    EpAsyncApiStateId2StateNameMap_get(value);
+    return value;
+  }
+
+  private getPayloadSchema_X_EpStateName(): EpAsyncApiStateNames | undefined {
+    const schema: Schema = this.asyncApiMessage.payload();
+    const value = schema.extension(EpSchemaExtensions.xEpStateName);
+    if(value === undefined) return undefined;
+    const lowerCaseValue = (value as string).toLowerCase() as EpAsyncApiStateNames;
+    EpAsyncApiStateName2StateIdMap_get(lowerCaseValue);
+    return lowerCaseValue;
+  }
+
+  public getPayloadSchemaEpStateId(defaultValue: EpAsyncApiStateIds): EpAsyncApiStateIds {
+    const stateName = this.getPayloadSchema_X_EpStateName();
+    if(stateName !== undefined) return EpAsyncApiStateName2StateIdMap_get(stateName);
+    const stateId = this.getPayloadSchema_X_EpStateId();
+    if(stateId !== undefined) return stateId;  
+    return defaultValue;
+  }
+
+  public getSchemaFormatType(): E_EpAsyncApiSchemaFormatType { return this.schemaFormatType; }
+
   public getPayloadSchemaName(): string {
     const schema: Schema = this.asyncApiMessage.payload();
-    if(!schema) return this.getMessageName();
-    try { 
+    if (!schema) return this.getMessageName();
+    try {
       const title = schema.title();
-      if(title && title !== '') return title;
+      if (title && title !== '') return title;
       throw new Error('no title found');
-    } catch(e) { 
-      if(schema.hasExtension(EpSchemaExtensions.xEpSchemaName)) {
+    } catch (e) {
+      if (schema.hasExtension(EpSchemaExtensions.xEpSchemaName)) {
         return schema.extension(EpSchemaExtensions.xEpSchemaName);
       }
       return this.getMessageName();
@@ -194,8 +270,8 @@ export class EpAsyncApiMessageDocument {
 
   public getPayloadSchemaDisplayName(): string {
     const schema: Schema = this.asyncApiMessage.payload();
-    if(!schema) return '';
-    if(schema.hasExtension(EpSchemaExtensions.xEpSchemaVersionDisplayName)) {
+    if (!schema) return '';
+    if (schema.hasExtension(EpSchemaExtensions.xEpSchemaVersionDisplayName)) {
       return schema.extension(EpSchemaExtensions.xEpSchemaVersionDisplayName);
     }
     return '';
@@ -203,10 +279,10 @@ export class EpAsyncApiMessageDocument {
 
   public getPayloadSchemaEpApplicationDomainName(): string {
     const schema: Schema = this.asyncApiMessage.payload();
-    if(!schema) return this.epAsyncApiDocument.getUnprefixedAssetsApplicationDomainName();
-    if(schema.hasExtension(EpGeneralExtensions.xEpApplicationDomainName)) {
+    if (!schema) return this.epAsyncApiDocument.getUnprefixedAssetsApplicationDomainName();
+    if (schema.hasExtension(EpGeneralExtensions.xEpApplicationDomainName)) {
       const name = schema.extension(EpGeneralExtensions.xEpApplicationDomainName);
-      if(name && name.length > 0) return name;
+      if (name && name.length > 0) return name;
     }
     return this.epAsyncApiDocument.getUnprefixedAssetsApplicationDomainName();
   }
@@ -222,27 +298,27 @@ export class EpAsyncApiMessageDocument {
 
   public getPayloadSchemaDescription(): string {
     const schema: Schema = this.asyncApiMessage.payload();
-    try { 
+    try {
       const descr = schema.description();
-      if(descr && descr.length > 0) return descr;
-    } catch(e) { 
+      if (descr && descr.length > 0) return descr;
+    } catch (e) {
       // no op
     }
     return '';
   }
 
   public getSchemaFileName(): string {
-    if(this.getContentType() === E_EpAsyncApiContentTypes.APPLICATION_JSON) return `${this.getPayloadSchemaName()}.${"json"}`;
+    if (this.getContentType() === E_EpAsyncApiContentTypes.APPLICATION_JSON) return `${this.getPayloadSchemaName()}.${"json"}`;
     return `${this.getMessageNameAsFilePath()}.${"xxx"}`
   }
 
   public getPayloadSchema(): any {
     const funcName = 'getPayloadSchema';
     const logName = `${EpAsyncApiMessageDocument.name}.${funcName}()`;
-    if(this.asyncApiMessage.originalPayload() === undefined || this.asyncApiMessage.originalPayload() === null) {
+    if (this.asyncApiMessage.originalPayload() === undefined || this.asyncApiMessage.originalPayload() === null) {
       return {};
     }
-    switch(this.schemaFormatType) {
+    switch (this.schemaFormatType) {
       case E_EpAsyncApiSchemaFormatType.APPLICATION_JSON:
         return this.asyncApiMessage.payload().json();
       case E_EpAsyncApiSchemaFormatType.APPLICATION_AVRO:
@@ -256,12 +332,19 @@ export class EpAsyncApiMessageDocument {
 
   public getSchemaAsSanitizedJson(): any {
     const anySchema: any = this.getPayloadSchema();
-    const sanitized = JSON.parse(JSON.stringify(anySchema, (k,v) => {
-      if(k.startsWith("x-parser")) return undefined;
-      if(k.startsWith("x-ep")) return undefined;
+    const sanitized = JSON.parse(JSON.stringify(anySchema, (k, v) => {
+      if (k.startsWith("x-parser")) return undefined;
+      if (k.startsWith("x-ep")) return undefined;
       return v;
     }));
     return sanitized;
+  }
+
+  public getOriginalPayloadSchema(): any { return this.asyncApiMessage.originalPayload(); }
+
+  public getPayloadSchemaAsString(): string {
+    const schema: Schema = this.getPayloadSchema();
+    return JSON.stringify(schema.json());
   }
 
 }
