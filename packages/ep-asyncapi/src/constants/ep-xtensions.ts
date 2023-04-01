@@ -30,6 +30,8 @@ export enum EpSchemaExtensions {
   xEpStateName = "x-ep-schema-state-name",
   xEpStateId = "x-ep-schema-state-id",
   xEpSharedFlag = "x-ep-shared",
+  xEpSchemaId = "x-ep-schema-id",
+  xEpSchemaVersionId = "x-ep-schema-version-id"
 }
 /** extensions used by EP when exporting spec */
 export enum EpApiInfoExtensions {

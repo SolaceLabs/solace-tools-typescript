@@ -12,7 +12,6 @@ import {
   EpAsyncApiDocumentService,
   EpAsyncApiDocument,
   EpAsyncApiError,
-  EpAsyncApiStateName2StateIdMap,
   EpAsyncApiStateName2StateIdMap_get,
   EpAsyncApiStateIds,
 } from '../../../src';
@@ -29,6 +28,8 @@ type SchemaTestRecord = {
   epSchemaName: string;
   xEpSharedFlag: boolean;
   epStateId: EpAsyncApiStateIds;
+  epSchemaId: string;
+  epSchemaVersionId: string;
 }
 type ParameterTestRecord = {
   epEnumName: string;
@@ -67,12 +68,16 @@ const AsyncApiSpecFile_StateAndShared_App: AsyncApiSpecTestRecord = {
       {
         epSchemaName: "Consumed_Schema_1_Name",
         xEpSharedFlag: true,
-        epStateId: '2'
+        epStateId: '2',
+        epSchemaId: "Consumed_Schema_1_Name_Schema_Id",
+        epSchemaVersionId: "Consumed_Schema_1_Name_Version_Id"
       },
       {
         epSchemaName: "Consumed_Schema_2_Name",
         xEpSharedFlag: false,
-        epStateId: '1'
+        epStateId: '1',
+        epSchemaId: "Consumed_Schema_2_Name_Schema_Id",
+        epSchemaVersionId: "Consumed_Schema_2_Name_Schema_Version_Id"
       }
     ],
     epAsyncApiParameter_xEpSharedFlags: [
@@ -136,7 +141,16 @@ describe(`${scriptName}`, () => {
           const epAsyncApiSchema_xEpSharedFlag = epAsyncApiMessageDocument.getPayloadSchemaEpIsShared(true);
           const expectedSchemaTestRecord = AsyncApiSpecFile_StateAndShared_App.expected.epAsyncApiSchema_xEpSharedFlags.find( (x) => { return x.epSchemaName === schemaName; });
           expect(expectedSchemaTestRecord, TestLogger.createLogMessage('expectedSchemaTestRecord', {schemaName})).to.not.be.undefined;
+          if(expectedSchemaTestRecord === undefined) throw new Error('expectedSchemaTestRecord === undefined');
           expect(epAsyncApiSchema_xEpSharedFlag, TestLogger.createLogMessage('epAsyncApiSchema_xEpSharedFlag', { schemaName, epAsyncApiSchema_xEpSharedFlag, expected: expectedSchemaTestRecord?.xEpSharedFlag })).to.equal(expectedSchemaTestRecord?.xEpSharedFlag);
+          // schemaId
+          const epAsyncApiSchema_SchemaId = epAsyncApiMessageDocument.getPayloadSchemaId();
+          const expectedSchemaId = expectedSchemaTestRecord.epSchemaId;
+          expect(epAsyncApiSchema_SchemaId, TestLogger.createLogMessage('epAsyncApiSchema_SchemaId', { schemaName, epAsyncApiSchema_SchemaId, expectedSchemaId })).to.equal(expectedSchemaId);
+          // schemaVersionId
+          const epAsyncApiSchema_SchemaVersionId = epAsyncApiMessageDocument.getPayloadSchemaVersionId();
+          const expectedSchemaVersionId = expectedSchemaTestRecord.epSchemaVersionId;
+          expect(epAsyncApiSchema_SchemaVersionId, TestLogger.createLogMessage('epAsyncApiSchema_SchemaVersionId', { schemaName, epAsyncApiSchema_SchemaVersionId, expectedSchemaVersionId })).to.equal(expectedSchemaVersionId);
         }
         // enums
         const epAsyncApiChannelDocumentMap = epAsyncApiDocument.getEpAsyncApiChannelDocumentMap();
@@ -213,6 +227,31 @@ describe(`${scriptName}`, () => {
         expect(false, TestLogger.createEpAsyncApiTestFailMessage('failed', e)).to.be.true;
       }
     });
+
+    // it(`${scriptName}: should set message content types & schema format types AsyncApiSpecFile_StateAndShared_App`, async () => {
+    //   try {
+    //     const epAsyncApiDocument: EpAsyncApiDocument = await EpAsyncApiDocumentService.createFromFile({
+    //       filePath: AsyncApiSpecFile_StateAndShared_App.asyncApiSpecFile
+    //     });
+    //     const messageDocumentMap = epAsyncApiDocument.getEpAsyncApiMessageDocumentMap();
+    //     for(const [key, epAsyncApiMessageDocument] of messageDocumentMap) {
+    //       epAsyncApiMessageDocument.setMessageEpContentType_Protobuf();
+    //       const protobufSchemaFormat = epAsyncApiMessageDocument.getSchemaFormatType();
+    //       const protobufContentType = epAsyncApiMessageDocument.getContentType();
+    //       const expectedProtobufContentType = "application/protobuf";
+    //       const messageName = epAsyncApiMessageDocument.getMessageName();
+
+    //       const x = epAsyncApiMessageDocument.asyncApiMessage.contentType();
+    //       expect(false, TestLogger.createLogMessage('x', { messageName, x })).to.be.true;
+
+    //       expect(protobufContentType, TestLogger.createLogMessage('protobufContentType', { messageName, protobufContentType, expectedProtobufContentType })).to.equal(expectedProtobufContentType);
+
+    //     }
+    //   } catch(e) {
+    //     expect(e instanceof EpAsyncApiError, TestLogger.createNotEpAsyncApiErrorMessage(e)).to.be.true;
+    //     expect(false, TestLogger.createEpAsyncApiTestFailMessage('failed', e)).to.be.true;
+    //   }
+    // });
 
 });
 

@@ -2,6 +2,7 @@ import {
   Message,
   Schema
 } from '@asyncapi/parser';
+// import _ from "lodash";
 import {
   EpAsyncApiStateId2StateNameMap_get,
   EpAsyncApiStateIds,
@@ -32,7 +33,7 @@ export enum E_EpAsyncApiSchemaFormatType {
 export class EpAsyncApiMessageDocument {
   public epAsyncApiDocument: EpAsyncApiDocument;
   private epAsyncApiChannelDocument: EpAsyncApiChannelDocument;
-  private asyncApiMessage: Message;
+  public asyncApiMessage: Message;
   private asyncApiMessageKey: string;
   private contentType: E_EpAsyncApiContentTypes;
   private schemaFormatType: E_EpAsyncApiSchemaFormatType;
@@ -211,7 +212,63 @@ export class EpAsyncApiMessageDocument {
 
   // 
   // schema
-  // 
+  //
+
+  // on the message
+  // schemaFormat: application/vnd.aai.asyncapi+json;version=2.0.0
+  // contentType: application/protobuf
+  // schemaFormat: application/vnd.aai.asyncapi+json;version=2.0.0
+  // contentType: application/xml
+
+  // public setMessageEpContentType_Protobuf() {
+  //   const originalSpec = this.epAsyncApiDocument.getOriginalSpecAsJson();
+  //   console.log(`setMessageEpContentType_Protobuf(): originalSpec = \n${JSON.stringify(originalSpec, null, 2)}`);
+  //   // find the message
+  //   const messageName = this.getMessageName();
+  //   let x = _.find(originalSpec, (el) => { 
+  //     console.log(` el = ${JSON.stringify(el)}`)
+  //     if(el === messageName) return true; 
+    
+  //   });
+  //   console.log(`setMessageEpContentType_Protobuf(): x = \n${JSON.stringify(x, null, 2)}`);
+
+
+
+
+  //   let schemaFormat = this.asyncApiMessage.schemaFormat();
+  //   let contentType = this.asyncApiMessage.contentType();
+  //   schemaFormat = "application/vnd.aai.asyncapi+json;version=2.0.0";
+  //   contentType = "application/protobuf";
+  //   this.contentType = this.determineContentType();
+  //   this.schemaFormatType = this.determineSchemaFormatType();
+  // }
+
+  // public setMessageEpContentType_Xml() {
+  //   let schemaFormat = this.asyncApiMessage.schemaFormat();
+  //   let contentType = this.asyncApiMessage.contentType();
+  //   schemaFormat = "application/vnd.aai.asyncapi+json;version=2.0.0";
+  //   contentType = "application/xml";
+  //   this.contentType = this.determineContentType();
+  //   this.schemaFormatType = this.determineSchemaFormatType();
+  // }
+
+  private getPayloadSchema_X_EpSchemaId(): string | undefined {
+    const schema: Schema = this.asyncApiMessage.payload();
+    return schema.extension(EpSchemaExtensions.xEpSchemaId);
+  }
+
+  public getPayloadSchemaId(): string | undefined {
+    return this.getPayloadSchema_X_EpSchemaId();
+  }
+
+  private getPayloadSchema_X_EpSchemaVersionId(): string | undefined {
+    const schema: Schema = this.asyncApiMessage.payload();
+    return schema.extension(EpSchemaExtensions.xEpSchemaVersionId);
+  }
+
+  public getPayloadSchemaVersionId(): string | undefined {
+    return this.getPayloadSchema_X_EpSchemaVersionId();
+  }
 
   private getPayloadSchema_X_EpSharedFlag(): boolean | undefined {
     const schema: Schema = this.asyncApiMessage.payload();

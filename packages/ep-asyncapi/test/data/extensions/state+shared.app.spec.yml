@@ -2,7 +2,7 @@ components:
   schemas:
     Consumed_Schema_2_Name:
       x-ep-schema-version: 1.0.0
-      x-ep-schema-version-id: dexh4dt1hxq
+      x-ep-schema-version-id: Consumed_Schema_2_Name_Schema_Version_Id
       description: Generic message header.
       # x-ep-schema-state-name: RELEASED
       x-ep-schema-name: Consumed_Schema_2_Name
@@ -16,7 +16,7 @@ components:
       x-ep-shared: 'false'
       x-ep-application-domain-name: TEST_EP_ASYNC_API_IMPORTER/ep-multi-domain-import-app.spec.ts/Assets-2
       x-ep-schema-state-id: '1'
-      x-ep-schema-id: 8xcoa8v11g0
+      x-ep-schema-id: Consumed_Schema_2_Name_Schema_Id
       properties:
         sentAt:
           format: date-time
@@ -30,7 +30,7 @@ components:
           type: string
     Consumed_Schema_1_Name:
       x-ep-schema-version: 1.0.0
-      x-ep-schema-version-id: t3d0dwhciuj
+      x-ep-schema-version-id: Consumed_Schema_1_Name_Version_Id
       description: Generic message header.
       x-ep-schema-state-name: RELEASED
       x-ep-schema-name: Consumed_Schema_1_Name
@@ -44,7 +44,7 @@ components:
       x-ep-shared: 'true'
       x-ep-application-domain-name: TEST_EP_ASYNC_API_IMPORTER/ep-multi-domain-import-app.spec.ts/Assets-1
       x-ep-schema-state-id: '2'
-      x-ep-schema-id: m026bcdf7gm
+      x-ep-schema-id: Consumed_Schema_1_Name_Schema_Id
       properties:
         sentAt:
           format: date-time
