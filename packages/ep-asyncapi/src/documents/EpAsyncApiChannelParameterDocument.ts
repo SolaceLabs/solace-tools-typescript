@@ -72,7 +72,9 @@ export class EpAsyncApiChannelParameterDocument {
   private get_X_EpSharedFlag(): boolean | undefined {
     if(this.asyncApiChannelParameter.hasExtension(EpParameterExtensions.xEpSharedFlag)) {
       const value = this.asyncApiChannelParameter.extension(EpParameterExtensions.xEpSharedFlag);
-      if (value && typeof value === 'string' && value.length > 0) try { return JSON.parse(value); } catch (e) { }
+      if (value && typeof value === 'string' && value.length > 0) try { return JSON.parse(value); } catch (e) { 
+        // lint not empty
+      }
     }
     return undefined;
   }
