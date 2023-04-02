@@ -14,6 +14,8 @@ components:
       x-ep-enum-id: 45l5cb5f4hh
       x-ep-parameter-name: Consumed_Enum_1_Name
       x-ep-application-domain-name: TEST_EP_ASYNC_API_IMPORTER/ep-multi-domain-manual.spec.ts/Assets-1
+      x-ep-shared: true
+
 
   schemas:
     Consumed_Schema_2_Name:
@@ -43,6 +45,8 @@ components:
         - transactionId
         - storeId
       x-ep-schema-version-displayname: Schema_2_Id
+      x-ep-shared: true
+
     Consumed_Schema_1_Name:
       x-ep-application-domain-name: TEST_EP_ASYNC_API_IMPORTER/ep-multi-domain-manual.spec.ts/Assets-1
 
@@ -70,8 +74,11 @@ components:
         - transactionId
         - storeId
       x-ep-schema-version-displayname: Schema_1_Id
+      x-ep-shared: true
+
 
     Produced_Schema_1_Name:
+      title: Produced_Schema_1_Name
       type: object
       properties:
         one:
@@ -94,6 +101,8 @@ components:
       x-ep-event-state-id: '2'
       x-ep-event-state-name: RELEASED
       x-ep-application-domain-name: TEST_EP_ASYNC_API_IMPORTER/ep-multi-domain-manual.spec.ts/Assets-1
+      x-ep-shared: true
+
 
     Produced_Event_1_Name:
       payload:
@@ -115,6 +124,8 @@ components:
       x-ep-event-state-id: '2'
       x-ep-event-state-name: RELEASED
       x-ep-application-domain-name: TEST_EP_ASYNC_API_IMPORTER/ep-multi-domain-manual.spec.ts/Assets-2
+      x-ep-shared: true
+
 
 channels:
   consumed/topic/{Consumed_Enum_2_Name}/_2_/{unbounded}:
@@ -139,6 +150,8 @@ channels:
         x-ep-enum-id: 5f18ksd0dcv
         x-ep-parameter-name: Consumed_Enum_2_Name
         x-ep-application-domain-name: TEST_EP_ASYNC_API_IMPORTER/ep-multi-domain-manual.spec.ts/Assets-2
+        x-ep-shared: true
+
 
   consumed/topic/{Consumed_Enum_1_Name}/_1_/{unbounded}:
     publish:
