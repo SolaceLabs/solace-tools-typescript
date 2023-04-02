@@ -32,3 +32,14 @@ The importer cannot detect removed enums for a channel parameter.
 It can only detect changes to enum values.
 
 Removing enums completely may lead to orphaned Enums and Enum Versions in Event Portal.
+
+
+Changing Shared Flag of Exsting Objects
+---------------------------------------
+
+Event Portal does not allow changing the `shared` flag of objects which are referenced by versions in a different application domain.
+
+The importer currently does not detect setting `shared=false` during the test phase for such situations.
+Instead, it will fail during the release phase, reasulting in an aborted import and therefor inconsistencies in Event Portal.
+
+Workaround: do not change the `shared` flag for objects that already exist. Leave the extension `x-ep-shared` as downloaded from Event Portal.
