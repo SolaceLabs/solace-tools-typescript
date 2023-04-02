@@ -154,6 +154,7 @@ describe(`${scriptName}`, () => {
       // CliConfig.getCliImporterManagerOptions().cliImporterManagerMode = ECliImporterManagerMode.TEST_MODE_KEEP;
       CliConfig.getCliImporterManagerOptions().createApiApplication = false;
       CliConfig.getCliImporterManagerOptions().createApiEventApi = true;
+      CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliImport_DefaultSharedFlag = true;
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_BrokerType = undefined;
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_ChannelDelimiter = undefined;
       CliConfig.validateConfig();
