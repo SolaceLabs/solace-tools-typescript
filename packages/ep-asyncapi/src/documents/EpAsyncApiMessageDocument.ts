@@ -133,13 +133,8 @@ export class EpAsyncApiMessageDocument {
   }
 
   private getMessage_X_EpSharedFlag(): boolean | undefined {
-    if (this.asyncApiMessage.hasExtension(EpMessageExtensions.xEpSharedFlag)) {
-      const value = this.asyncApiMessage.extension(EpMessageExtensions.xEpSharedFlag);
-      if (value && typeof value === 'string' && value.length > 0) try { return JSON.parse(value); } catch (e) { 
-        // lint not empty
-      }
-    }
-    return undefined;
+    const value = this.asyncApiMessage.extension(EpMessageExtensions.xEpSharedFlag);
+    try { return JSON.parse(value); } catch(e) { return undefined; }
   }
 
   public getMessageEpIsShared(defaultValue: boolean): boolean {
@@ -272,13 +267,8 @@ export class EpAsyncApiMessageDocument {
 
   private getPayloadSchema_X_EpSharedFlag(): boolean | undefined {
     const schema: Schema = this.asyncApiMessage.payload();
-    if(schema.hasExtension(EpSchemaExtensions.xEpSharedFlag)) {
-      const value = schema.extension(EpSchemaExtensions.xEpSharedFlag);
-      if (value && typeof value === 'string' && value.length > 0) try { return JSON.parse(value); } catch (e) { 
-        // lint not empty
-      }
-    }
-    return undefined;
+    const value = schema.extension(EpSchemaExtensions.xEpSharedFlag);
+    try { return JSON.parse(value); } catch(e) { return undefined; }
   }
 
   public getPayloadSchemaEpIsShared(defaultValue: boolean): boolean {

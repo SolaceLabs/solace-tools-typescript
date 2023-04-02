@@ -140,8 +140,7 @@ export class EpAsyncApiDocument {
   }
   private get_X_EpSharedFlag(): boolean | undefined {
     const value = this.asyncApiDocument.info().extension(EpApiInfoExtensions.xEpApiInfoSharedFlag);
-    if(value && typeof value === 'string' && value.length > 0) { try { return JSON.parse(value); } catch(e) { return undefined; } }
-    return undefined;
+    try { return JSON.parse(value); } catch(e) { return undefined; }
   }
 
   private get_X_EpStateIdInfoLevel(): EpAsyncApiStateIds | undefined {
