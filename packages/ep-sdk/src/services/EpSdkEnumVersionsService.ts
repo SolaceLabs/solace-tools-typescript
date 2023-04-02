@@ -239,13 +239,18 @@ export class EpSdkEnumVersionsServiceClass extends EpSdkVersionServiceClass {
       xContextId,
       enumId: fromTopicAddressEnumVersion.enumId
     });
+    /* istanbul ignore next */
+    if(fromTopicAddressEnum.shared === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'fromTopicAddressEnumVersion.shared === undefined', {
+      fromTopicAddressEnum: fromTopicAddressEnum
+    });
+
     // ensure target enum exists
     const epSdkEnumTask = new EpSdkEnumTask({
       epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
       applicationDomainId: toApplicationDomainId,
       enumName: fromTopicAddressEnum.name,
       enumObjectSettings: {
-        shared: fromTopicAddressEnum.shared ? fromTopicAddressEnum.shared : true,
+        shared: fromTopicAddressEnum.shared
       },
     });
     const epSdkEnumTask_ExecuteReturn: IEpSdkEnumTask_ExecuteReturn = await epSdkEnumTask.execute(xContextId);
