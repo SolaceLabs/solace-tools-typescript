@@ -7,9 +7,7 @@ export enum ECliAssetImport_TargetLifecycleState {
 }
 
 class CliEPStatesService {
-  public getTargetLifecycleState({
-    cliAssetImport_TargetLifecycleState,
-  }: {
+  public getTargetLifecycleState({cliAssetImport_TargetLifecycleState }: {
     cliAssetImport_TargetLifecycleState: ECliAssetImport_TargetLifecycleState;
   }): string {
     const funcName = "getTargetLifecycleState";

@@ -11,7 +11,7 @@ import {
 } from "@solace-labs/ep-asyncapi";
 import CliConfig, { ECliAssetsApplicationDomainEnforcementPolicies } from "./CliConfig";
 import { CliLogger, ECliStatusCodes } from "./CliLogger";
-import { ECliRunContext_RunMode } from "./CliRunContext";
+import CliRunContext, { ECliRunContext_RunMode, ICliRunContext } from "./CliRunContext";
 
 export class CliErrorFactory {
   public static createCliError = ({logName, error}: {
@@ -80,6 +80,7 @@ export class CliError extends Error {
   public internalLogName: string;
   public internalMessage: string;
   protected appName: string;
+  protected cliRunContext: ICliRunContext;
   private readonly baseName: string = CliError.name;
 
   protected createArrayFromStack = (stack: any): Array<string> => {
@@ -93,6 +94,7 @@ export class CliError extends Error {
     this.internalMessage = internalMessage;
     this.internalStack = this.createArrayFromStack(this.stack);
     this.appName = CliConfig.getAppName();
+    this.cliRunContext = CliRunContext.get();
   }
 
   public toString = (): string => {
@@ -105,18 +107,10 @@ export class CliError extends Error {
     try {
       return JSON.parse(JSON.stringify(this));
     } catch (e: any) {
-      CliLogger.error(
-        CliLogger.createLogEntry(logName, {
-          code: ECliStatusCodes.INTERNAL_ERROR,
-          message: `JSON.parse error`,
-          details: { name: e.name, message: e.message },
-        })
-      );
+      CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.INTERNAL_ERROR, message: `JSON.parse error`, details: { name: e.name, message: e.message }}));
       return {
         internalLogName: this.internalLogName,
-        internalMessage: this.internalMessage
-          ? this.internalMessage
-          : `JSON.parse error: ${e.name}: ${e.message}`,
+        internalMessage: this.internalMessage ? this.internalMessage : `JSON.parse error: ${e.name}: ${e.message}`,
         internalStack: this.internalStack,
       };
     }

@@ -13,6 +13,9 @@ import {
   IEpSdkEventApiVersionTask_ExecuteReturn,
   IEpSdkSchemaVersionTask_ExecuteReturn,
   IEpSdkTask_ExecuteReturn,
+  IEpSdkSchemaTask_ExecuteReturn,
+  IEpSdkEpEventTask_ExecuteReturn,
+  IEpSdkEventApiTask_ExecuteReturn,
 } from "@solace-labs/ep-sdk";
 import CliConfig from "./CliConfig";
 import { CliError, CliUsageError } from "./CliError";
@@ -47,6 +50,9 @@ export enum ECliRunSummary_Type {
   ApplicationDomain = "ApplicationDomain",
   AssetApplicationDomain = "AssetApplicationDomain",
   Enum = "Enum",
+  Schema = "Schema",
+  Event = "Event",
+  EventApi = "EventApi",
   VersionObject = "VersionObject",
   VersionObjectCheck = "VersionObjectCheck",
   VersionObjectWarning = "VersionObjectWarning",
@@ -127,9 +133,22 @@ export interface ICliRunSummary_Task_AssetApplicationDomain
   extends ICliRunSummary_Task {
   type: ECliRunSummary_Type.AssetApplicationDomain;
 }
-export interface ICliRunSummary_Task_Enum extends ICliRunSummary_Task {
-  type: ECliRunSummary_Type.Enum;
+export interface ICliRunSummary_Task_Object extends ICliRunSummary_Task {
+  type: ECliRunSummary_Type;
   name: string;
+  shared: boolean | string;
+}
+export interface ICliRunSummary_Task_Enum extends ICliRunSummary_Task_Object {
+  type: ECliRunSummary_Type.Enum;
+}
+export interface ICliRunSummary_Task_Schema extends ICliRunSummary_Task_Object {
+  type: ECliRunSummary_Type.Schema;
+}
+export interface ICliRunSummary_Task_Event extends ICliRunSummary_Task_Object {
+  type: ECliRunSummary_Type.Event;
+}
+export interface ICliRunSummary_Task_EventApi extends ICliRunSummary_Task_Object {
+  type: ECliRunSummary_Type.EventApi;
 }
 export interface ICliRunSummary_Task_VersionObject extends ICliRunSummary_Task {
   type: ECliRunSummary_Type.VersionObject;
@@ -457,30 +476,72 @@ Start Run: ${cliRunSummary_StartRun.runMode} ------------------------
     );
   };
 
-  public processedEnum = ({
-    epSdkEnumTask_ExecuteReturn,
-  }: {
+  public processedEnum = ({ epSdkEnumTask_ExecuteReturn }: {
     epSdkEnumTask_ExecuteReturn: IEpSdkEnumTask_ExecuteReturn;
   }): void => {
     const consoleOutput = `
         ${epSdkEnumTask_ExecuteReturn.epObject.type}:
-          ${epSdkEnumTask_ExecuteReturn.epObject.name} (${epSdkEnumTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action})
+          ${epSdkEnumTask_ExecuteReturn.epObject.name}, shared=${epSdkEnumTask_ExecuteReturn.epObject.shared} (${epSdkEnumTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action})
     `;
-    const cliRunSummary_Task_Enum: ICliRunSummary_Task_Enum = {
-      type: ECliRunSummary_Type.Enum,
-      name: epSdkEnumTask_ExecuteReturn.epObject.name
-        ? epSdkEnumTask_ExecuteReturn.epObject.name
-        : "undefined",
-      action:
-        epSdkEnumTask_ExecuteReturn.epSdkTask_TransactionLogData
-          .epSdkTask_Action,
+    const cliRunSummary_Task_Enum: ICliRunSummary_Task_Enum = { 
+      type: ECliRunSummary_Type.Enum, 
+      name: epSdkEnumTask_ExecuteReturn.epObject.name ? epSdkEnumTask_ExecuteReturn.epObject.name : "undefined",
+      shared: epSdkEnumTask_ExecuteReturn.epObject.shared || "undefined",
+      action: epSdkEnumTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action,
       applicationDomainName: this.assetApplicationDomainName,
     };
-    this.log(
-      ECliSummaryStatusCodes.PROCESSED_ENUM,
-      this.addTaskElements(cliRunSummary_Task_Enum),
-      consoleOutput
-    );
+    this.log(ECliSummaryStatusCodes.PROCESSED_ENUM, this.addTaskElements(cliRunSummary_Task_Enum), consoleOutput );
+  };
+
+  public processedSchema = ({ epSdkSchemaTask_ExecuteReturn }: {
+    epSdkSchemaTask_ExecuteReturn: IEpSdkSchemaTask_ExecuteReturn;
+  }): void => {
+    const consoleOutput = `
+        ${epSdkSchemaTask_ExecuteReturn.epObject.type}:
+          ${epSdkSchemaTask_ExecuteReturn.epObject.name}, shared=${epSdkSchemaTask_ExecuteReturn.epObject.shared} (${epSdkSchemaTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action})
+    `;
+    const cliRunSummary_Task_Schema: ICliRunSummary_Task_Schema = { 
+      type: ECliRunSummary_Type.Schema, 
+      name: epSdkSchemaTask_ExecuteReturn.epObject.name ? epSdkSchemaTask_ExecuteReturn.epObject.name : "undefined",
+      shared: epSdkSchemaTask_ExecuteReturn.epObject.shared || "undefined",
+      action: epSdkSchemaTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action,
+      applicationDomainName: this.assetApplicationDomainName,
+    };
+    this.log(ECliSummaryStatusCodes.PROCESSED_SCHEMA, this.addTaskElements(cliRunSummary_Task_Schema), consoleOutput );
+  };
+
+  public processedEvent = ({ epSdkEpEventTask_ExecuteReturn }: {
+    epSdkEpEventTask_ExecuteReturn: IEpSdkEpEventTask_ExecuteReturn;
+  }): void => {
+    const consoleOutput = `
+        ${epSdkEpEventTask_ExecuteReturn.epObject.type}:
+          ${epSdkEpEventTask_ExecuteReturn.epObject.name}, shared=${epSdkEpEventTask_ExecuteReturn.epObject.shared} (${epSdkEpEventTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action})
+    `;
+    const cliRunSummary_Task_Event: ICliRunSummary_Task_Event = { 
+      type: ECliRunSummary_Type.Event, 
+      name: epSdkEpEventTask_ExecuteReturn.epObject.name ? epSdkEpEventTask_ExecuteReturn.epObject.name : "undefined",
+      shared: epSdkEpEventTask_ExecuteReturn.epObject.shared || "undefined",
+      action: epSdkEpEventTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action,
+      applicationDomainName: this.assetApplicationDomainName,
+    };
+    this.log(ECliSummaryStatusCodes.PROCESSED_EVENT, this.addTaskElements(cliRunSummary_Task_Event), consoleOutput );
+  };
+
+  public processedEventApi = ({ epSdkEventApiTask_ExecuteReturn }: {
+    epSdkEventApiTask_ExecuteReturn: IEpSdkEventApiTask_ExecuteReturn;
+  }): void => {
+    const consoleOutput = `
+        ${epSdkEventApiTask_ExecuteReturn.epObject.type}:
+          ${epSdkEventApiTask_ExecuteReturn.epObject.name}, shared=${epSdkEventApiTask_ExecuteReturn.epObject.shared} (${epSdkEventApiTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action})
+    `;
+    const cliRunSummary_Task_EventApi: ICliRunSummary_Task_EventApi = { 
+      type: ECliRunSummary_Type.EventApi, 
+      name: epSdkEventApiTask_ExecuteReturn.epObject.name ? epSdkEventApiTask_ExecuteReturn.epObject.name : "undefined",
+      shared: epSdkEventApiTask_ExecuteReturn.epObject.shared || "undefined",
+      action: epSdkEventApiTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action,
+      applicationDomainName: this.assetApplicationDomainName,
+    };
+    this.log(ECliSummaryStatusCodes.PROCESSED_EVENT_API, this.addTaskElements(cliRunSummary_Task_EventApi), consoleOutput );
   };
 
   private processedVersionObject = (code: ECliSummaryStatusCodes, epSdkTask_ExecuteReturn: IEpSdkTask_ExecuteReturn, brokerType?: string): void => {
@@ -495,9 +556,10 @@ Start Run: ${cliRunSummary_StartRun.runMode} ------------------------
       applicationDomainName: this.assetApplicationDomainName,
     };
     const brokerTypeOutput = brokerType ? `, brokerType=${brokerType}` : '';
+    const displayNameOutput = cliRunSummary_Task_VersionObject.displayName || "''"; 
     const consoleOutput = `
         ${cliRunSummary_Task_VersionObject.epObjectType}:
-          ${cliRunSummary_Task_VersionObject.displayName}@${cliRunSummary_Task_VersionObject.version}, state=${cliRunSummary_Task_VersionObject.state}${brokerTypeOutput} (${cliRunSummary_Task_VersionObject.action})
+          ${displayNameOutput}@${cliRunSummary_Task_VersionObject.version}, state=${cliRunSummary_Task_VersionObject.state}${brokerTypeOutput} (${cliRunSummary_Task_VersionObject.action})
     `;
     this.log(code, this.addTaskElements(cliRunSummary_Task_VersionObject), consoleOutput);
   };

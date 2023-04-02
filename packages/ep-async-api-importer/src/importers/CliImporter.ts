@@ -45,6 +45,7 @@ export enum ECliAssetImport_TargetVersionStrategy {
 export interface ICliImporterOptions {
   runId: string;
   assetOutputDir: string;
+  cliImport_DefaultSharedFlag: boolean;
   cliAssetImport_TargetLifecycleState: ECliAssetImport_TargetLifecycleState;
   cliAssetImport_TargetVersionStrategy: ECliAssetImport_TargetVersionStrategy;
   cliAssetImport_BrokerType?: EBrokerTypes;

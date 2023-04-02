@@ -294,7 +294,7 @@ export class CliEventApiImporter extends CliAssetsImporter {
       applicationDomainId: applicationDomainId,
       eventApiName: epAsyncApiDocument.getEpApiName(),
       eventApiObjectSettings: {
-        shared: true,
+        shared: epAsyncApiDocument.getEpIsShared(this.cliImporterOptions.cliImport_DefaultSharedFlag),
         brokerType: epAsyncApiDocument.getBrokerType() as unknown as EventApi.brokerType,
       },
       epSdkTask_TransactionConfig: this.get_IEpSdkTask_TransactionConfig(),
@@ -302,6 +302,7 @@ export class CliEventApiImporter extends CliAssetsImporter {
     });
     const epSdkEventApiTask_ExecuteReturn: IEpSdkEventApiTask_ExecuteReturn = await this.executeTask({ epSdkTask: epSdkEventApiTask, expectNoAction: checkmode });
     CliLogger.trace(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.IMPORTING_EP_EVENT_API, details: { epSdkEventApiTask_ExecuteReturn: epSdkEventApiTask_ExecuteReturn }}));
+    CliRunSummary.processedEventApi({ epSdkEventApiTask_ExecuteReturn });
     /* istanbul ignore next */
     if (epSdkEventApiTask_ExecuteReturn.epObject.id === undefined) throw new CliEPApiContentError(logName, "epSdkEventApiTask_ExecuteReturn.epObject.id === undefined", {
       epSdkEventApiTask_ExecuteReturn: epSdkEventApiTask_ExecuteReturn,
@@ -554,11 +555,7 @@ export class CliEventApiImporter extends CliAssetsImporter {
   }): Promise<ICliEventApiImporterRunImportReturn> {
     const funcName = "run_import";
     const logName = `${CliEventApiImporter.name}.${funcName}()`;
-
-    CliLogger.debug(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.IMPORTING_START_API, details: {
-      cliImporterRunOptions: cliImporterRunOptions,
-    }}));
-
+    CliLogger.debug(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.IMPORTING_START_API, details: { cliImporterRunOptions: cliImporterRunOptions }}));
     const cliEventApiImporterRunImportReturn: ICliEventApiImporterRunImportReturn = {
       apiTitle: "undefined",
       applicationDomainId: "undefined",
@@ -596,10 +593,9 @@ export class CliEventApiImporter extends CliAssetsImporter {
       cliEventApiImporterRunImportReturn.cliAssetsImporterRunPresentReturn = {
         assetApplicationDomainId: cliEventApiImporterRunPresentReturn.assetApplicationDomainId
       }
-
       CliLogger.debug(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.IMPORTING_DONE_API, details: { cliEventApiImporterRunPresentReturn: cliEventApiImporterRunPresentReturn }}));
     } catch (e: any) {
-      cliEventApiImporterRunImportReturn.error = CliErrorFactory.createCliError({logName: logName, error: e,});
+      cliEventApiImporterRunImportReturn.error = CliErrorFactory.createCliError({logName: logName, error: e });
     } finally {
       if (cliEventApiImporterRunImportReturn.error !== undefined) {
         CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.IMPORTING_ERROR_API, details: { error: cliEventApiImporterRunImportReturn.error }}));
