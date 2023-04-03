@@ -156,6 +156,11 @@
 <p>Defaults to empty string if omitted.</p>
 </td>
 </tr>
+<tr class="row-odd"><td><p>$.info.x-ep-shared</p></td>
+<td><p>The shared flag for the Event API. It has no effect on Application if present.</p>
+<p>Defaults to environment variable <cite>CLI_IMPORT_DEFAULT_SHARED_FLAG</cite> if omitted.</p>
+</td>
+</tr>
 </tbody>
 </table>
 <table class="colwidths-given docutils align-default" id="id3">
@@ -185,6 +190,11 @@
 <p>Defaults to <cite>$.info.x-ep-assets-application-domain-name</cite> if omitted.</p>
 </td>
 </tr>
+<tr class="row-odd"><td><p>x-ep-shared</p></td>
+<td><p>The shared flag for the Event.</p>
+<p>Defaults to environment variable <cite>CLI_IMPORT_DEFAULT_SHARED_FLAG</cite> if omitted.</p>
+</td>
+</tr>
 </tbody>
 </table>
 <table class="colwidths-given docutils align-default" id="id4">
@@ -200,18 +210,23 @@
 </thead>
 <tbody>
 <tr class="row-even"><td><p>x-ep-schema-name</p></td>
-<td><p>The Schema name for the schema.</p>
+<td><p>The name for the Schema.</p>
 <p>Defaults to <cite>x-ep-event-name</cite> if omitted.</p>
 </td>
 </tr>
 <tr class="row-odd"><td><p>x-ep-schema-version-displayname</p></td>
-<td><p>The Schema version name for the schema.</p>
+<td><p>The version name for the Schema version.</p>
 <p>Defaults to empty string if omitted.</p>
 </td>
 </tr>
 <tr class="row-even"><td><p>x-ep-application-domain-name</p></td>
 <td><p>The application domain name for the Schema.</p>
 <p>Defaults to <cite>$.info.x-ep-assets-application-domain-name</cite> if omitted.</p>
+</td>
+</tr>
+<tr class="row-odd"><td><p>x-ep-shared</p></td>
+<td><p>The shared flag for the Schema.</p>
+<p>Defaults to environment variable <cite>CLI_IMPORT_DEFAULT_SHARED_FLAG</cite> if omitted.</p>
 </td>
 </tr>
 </tbody>
@@ -243,6 +258,11 @@
 <p>Defaults to <cite>$.info.x-ep-assets-application-domain-name</cite> if omitted.</p>
 </td>
 </tr>
+<tr class="row-odd"><td><p>x-ep-shared</p></td>
+<td><p>The shared flag for the Enum.</p>
+<p>Defaults to environment variable <cite>CLI_IMPORT_DEFAULT_SHARED_FLAG</cite> if omitted.</p>
+</td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -259,7 +279,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, Solace Corporation, Ricardo Gomez-Ulmke, &lt;ricardo.gomez-ulmke@solace.com&gt;.
-      <span class="lastupdated">Last updated on 29 Mar 2023 at 09:43.
+      <span class="lastupdated">Last updated on 03 Apr 2023 at 05:33.
       </span></p>
   </div>
 

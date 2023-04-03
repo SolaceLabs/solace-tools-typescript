@@ -65,6 +65,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#asset-names">Asset Names</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#orphaned-assets">Orphaned Assets</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#removing-channel-parameters-enums">Removing Channel Parameters Enums</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#changing-shared-flag-of-exsting-objects">Changing Shared Flag of Exsting Objects</a></li>
 </ul>
 </li>
 </ul>
@@ -128,6 +129,13 @@
 <p>It can only detect changes to enum values.</p>
 <p>Removing enums completely may lead to orphaned Enums and Enum Versions in Event Portal.</p>
 </div>
+<div class="section" id="changing-shared-flag-of-exsting-objects">
+<h2>Changing Shared Flag of Exsting Objects<a class="headerlink" href="#changing-shared-flag-of-exsting-objects" title="Permalink to this heading"></a></h2>
+<p>Event Portal does not allow changing the <cite>shared</cite> flag of objects which are referenced by versions in a different application domain.</p>
+<p>The importer currently does not detect setting <cite>shared=false</cite> during the test phase for such situations.
+Instead, it will fail during the release phase, reasulting in an aborted import and therefor inconsistencies in Event Portal.</p>
+<p>Workaround: do not change the <cite>shared</cite> flag for objects that already exist. Leave the extension <cite>x-ep-shared</cite> as downloaded from Event Portal.</p>
+</div>
 </div>
 
 
@@ -142,7 +150,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, Solace Corporation, Ricardo Gomez-Ulmke, &lt;ricardo.gomez-ulmke@solace.com&gt;.
-      <span class="lastupdated">Last updated on 29 Mar 2023 at 09:43.
+      <span class="lastupdated">Last updated on 03 Apr 2023 at 05:33.
       </span></p>
   </div>
 
