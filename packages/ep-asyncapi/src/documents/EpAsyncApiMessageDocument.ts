@@ -249,6 +249,7 @@ export class EpAsyncApiMessageDocument {
 
   private getPayloadSchema_X_EpSchemaId(): string | undefined {
     const schema: Schema = this.asyncApiMessage.payload();
+    if(!schema) return undefined;
     return schema.extension(EpSchemaExtensions.xEpSchemaId);
   }
 
@@ -258,6 +259,7 @@ export class EpAsyncApiMessageDocument {
 
   private getPayloadSchema_X_EpSchemaVersionId(): string | undefined {
     const schema: Schema = this.asyncApiMessage.payload();
+    if(!schema) return undefined;
     return schema.extension(EpSchemaExtensions.xEpSchemaVersionId);
   }
 
@@ -267,6 +269,7 @@ export class EpAsyncApiMessageDocument {
 
   private getPayloadSchema_X_EpSharedFlag(): boolean | undefined {
     const schema: Schema = this.asyncApiMessage.payload();
+    if(!schema) return undefined;
     const value = schema.extension(EpSchemaExtensions.xEpSharedFlag);
     try { return JSON.parse(value); } catch(e) { return undefined; }
   }
@@ -279,6 +282,7 @@ export class EpAsyncApiMessageDocument {
 
   private getPayloadSchema_X_EpStateId(): EpAsyncApiStateIds | undefined {
     const schema: Schema = this.asyncApiMessage.payload();
+    if(!schema) return undefined;
     const value = schema.extension(EpSchemaExtensions.xEpStateId);
     if(value === undefined) return undefined;
     EpAsyncApiStateId2StateNameMap_get(value);
@@ -287,6 +291,7 @@ export class EpAsyncApiMessageDocument {
 
   private getPayloadSchema_X_EpStateName(): EpAsyncApiStateNames | undefined {
     const schema: Schema = this.asyncApiMessage.payload();
+    if(!schema) return undefined;
     const value = schema.extension(EpSchemaExtensions.xEpStateName);
     if(value === undefined) return undefined;
     const lowerCaseValue = (value as string).toLowerCase() as EpAsyncApiStateNames;
