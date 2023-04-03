@@ -37,13 +37,13 @@
   dependencies:
     avsc "^5.7.3"
 
-"@asyncapi/parser@^1.17.2":
-  version "1.17.2"
-  resolved "https://registry.yarnpkg.com/@asyncapi/parser/-/parser-1.17.2.tgz#be8e70c9bbf917fc8ec353ecd99b7164a4b7f799"
-  integrity sha512-xI9GShIuQVfBz5IZ2c9h6cxcPTnfzI1fch6kYL+nF68Q3U669Un0K0TSeyEa57EfhTap53UIRTj7gFIM9QZTNQ==
+"@asyncapi/parser@^1.18.1":
+  version "1.18.1"
+  resolved "https://registry.yarnpkg.com/@asyncapi/parser/-/parser-1.18.1.tgz#5185754eb0fdf2a481a260e96766a443fcd4b391"
+  integrity sha512-7sU9DajLV+vA2vShTYmD5lbtbTY6TOcGxB4Z4IcpRp8x5pejOsN32iU05eIYCnuamsi5SMscFxoi6fIO2vPK3Q==
   dependencies:
     "@apidevtools/json-schema-ref-parser" "^9.0.6"
-    "@asyncapi/specs" "^4.0.1"
+    "@asyncapi/specs" "^4.1.1"
     "@fmvilas/pseudo-yaml-ast" "^0.3.1"
     ajv "^6.10.1"
     js-yaml "^3.13.1"
@@ -52,10 +52,10 @@
     node-fetch "^2.6.0"
     tiny-merge-patch "^0.1.2"
 
-"@asyncapi/specs@^4.0.1":
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/@asyncapi/specs/-/specs-4.0.1.tgz#bbf2e704845422262ab66f196e6c77aa71b67aa6"
-  integrity sha512-3sKw49Y/TeKT/FO2YX/DlyOekytko5KFwNJ3zMPmai+pyhz3gux2p5zV5kGJRCwApI1gX0GJw6p15a6CZgg01w==
+"@asyncapi/specs@^4.1.1":
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/@asyncapi/specs/-/specs-4.2.0.tgz#33003051aa50785e3480c18ac7d9afbc8e68434d"
+  integrity sha512-V9bFzUGNXrpsyennEXNZaPvdoFYYoeUYYAGiQVYsGsUsF/IL/G40NpE9u6nPeXGj8sZgjKlUG6iP39T0DYtSlQ==
   dependencies:
     "@types/json-schema" "^7.0.11"
 
