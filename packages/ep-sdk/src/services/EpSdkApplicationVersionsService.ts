@@ -383,40 +383,28 @@ export class EpSdkApplicationVersionsServiceClass extends EpSdkVersionServiceCla
         toAssetsApplicationDomainId = toApplicationDomainId;
       }
       // get the source application by name
-      const fromApplication: Application | undefined = await EpSdkApplicationsService.getByName({ 
-        xContextId,
-        applicationName,
+      const fromApplication: Application | undefined = await EpSdkApplicationsService.getByName({ xContextId, applicationName,
         applicationDomainId: fromApplicationDomainId
       });
       if(fromApplication === undefined) return undefined;
       /* istanbul ignore next */
-      if(fromApplication.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'fromApplication.id === undefined', {
-        fromApplication: fromApplication
-      });
+      if(fromApplication.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'fromApplication.id === undefined', { fromApplication });
       // get the latest source application version
-      const fromApplicationVersion = await this.getLatestVersionForApplicationId({
-        xContextId,
+      const fromApplicationVersion = await this.getLatestVersionForApplicationId({ xContextId,
         applicationId: fromApplication.id,
         applicationDomainId: fromApplicationDomainId,
       });
       if(fromApplicationVersion === undefined) return undefined;
       /* istanbul ignore next */
-      if(fromApplicationVersion.stateId === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "fromApplicationVersion.stateId === undefined", {
-        fromApplicationVersion: fromApplicationVersion
-      });
+      if(fromApplicationVersion.stateId === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "fromApplicationVersion.stateId === undefined", { fromApplicationVersion });
       // check if a version already exists, if it does, return undefined
-      const targetApplicationCheck: Application | undefined = await EpSdkApplicationsService.getByName({
-        xContextId,
-        applicationName,
+      const targetApplicationCheck: Application | undefined = await EpSdkApplicationsService.getByName({ xContextId, applicationName,
         applicationDomainId: toApplicationDomainId,
       });
       if(targetApplicationCheck !== undefined) {
         /* istanbul ignore next */
-        if(targetApplicationCheck.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "targetApplicationCheck.id === undefined", {
-          targetApplicationCheck: targetApplicationCheck
-        });
-        const existingTargetVersion: ApplicationVersion | undefined = await this.getLatestVersionForApplicationId({
-          xContextId,
+        if(targetApplicationCheck.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "targetApplicationCheck.id === undefined", { targetApplicationCheck });
+        const existingTargetVersion: ApplicationVersion | undefined = await this.getLatestVersionForApplicationId({ xContextId,
           applicationDomainId: toApplicationDomainId,
           applicationId: targetApplicationCheck.id,
         });
@@ -428,9 +416,7 @@ export class EpSdkApplicationVersionsServiceClass extends EpSdkVersionServiceCla
 
       if(fromApplicationVersion.declaredConsumedEventVersionIds) {
         for(const eventVersionId of fromApplicationVersion.declaredConsumedEventVersionIds) {
-          const eventVersion: EventVersion | undefined = await EpSdkEpEventVersionsService.deepCopyLastestVersionById_IfNotExists({ 
-            xContextId,
-            eventVersionId: eventVersionId,
+          const eventVersion: EventVersion | undefined = await EpSdkEpEventVersionsService.deepCopyLastestVersionById_IfNotExists({ xContextId, eventVersionId,
             toApplicationDomainId: toAssetsApplicationDomainId,
           });
           targetConsumedEventVersions.push(eventVersion);
@@ -438,9 +424,7 @@ export class EpSdkApplicationVersionsServiceClass extends EpSdkVersionServiceCla
       }
       if(fromApplicationVersion.declaredProducedEventVersionIds) {
         for(const eventVersionId of fromApplicationVersion.declaredProducedEventVersionIds) {
-          const eventVersion: EventVersion | undefined = await EpSdkEpEventVersionsService.deepCopyLastestVersionById_IfNotExists({ 
-            xContextId,
-            eventVersionId: eventVersionId,
+          const eventVersion: EventVersion | undefined = await EpSdkEpEventVersionsService.deepCopyLastestVersionById_IfNotExists({ xContextId, eventVersionId,
             toApplicationDomainId: toAssetsApplicationDomainId,
           });
           targetProducedEventVersions.push(eventVersion);

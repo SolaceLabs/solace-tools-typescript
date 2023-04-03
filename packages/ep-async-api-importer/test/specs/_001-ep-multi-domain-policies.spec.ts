@@ -154,13 +154,14 @@ describe(`${scriptName}`, () => {
       // CliConfig.getCliImporterManagerOptions().cliImporterManagerMode = ECliImporterManagerMode.TEST_MODE_KEEP;
       CliConfig.getCliImporterManagerOptions().createApiApplication = false;
       CliConfig.getCliImporterManagerOptions().createApiEventApi = true;
+      CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliImport_DefaultSharedFlag = true;
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_BrokerType = undefined;
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_ChannelDelimiter = undefined;
       CliConfig.validateConfig();
       const cliImporter = new CliImporterManager(CliConfig.getCliImporterManagerOptions());
       const xvoid: void = await cliImporter.run();
     } catch (e) {
-      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
+      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message, e)).to.be.true;
       expect(false, TestLogger.createTestFailMessageWithCliError("failed", e)).to.be.true;
     }
   });
@@ -171,7 +172,7 @@ describe(`${scriptName}`, () => {
       const xvoid: void = await cliImporter.run();
     } catch (e) {
       TestLogger.logMessageWithId(TestLogger.createTestFailMessageForError('error', e));
-      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
+      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message, e)).to.be.true;
       expect(false, TestLogger.createTestFailMessageWithCliError("failed", e)).to.be.true;
     }
   });
@@ -205,7 +206,7 @@ describe(`${scriptName}`, () => {
       const xvoid: void = await cliImporter.run();
     } catch (e) {
       TestLogger.logMessageWithId(TestLogger.createTestFailMessageForError('error', e));
-      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
+      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message, e)).to.be.true;
       expect(false, TestLogger.createTestFailMessageWithCliError("failed", e)).to.be.true;
     }
   });
@@ -216,7 +217,7 @@ describe(`${scriptName}`, () => {
       const xvoid: void = await cliImporter.run();
     } catch (e) {
       TestLogger.logMessageWithId(TestLogger.createTestFailMessageForError('error', e));
-      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
+      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message, e)).to.be.true;
       expect(false, TestLogger.createTestFailMessageWithCliError("failed", e)).to.be.true;
     }
   });
@@ -249,7 +250,7 @@ describe(`${scriptName}`, () => {
       const xvoid: void = await cliImporter.run();
     } catch (e) {
       TestLogger.logMessageWithId(TestLogger.createTestFailMessageForError('error', e));
-      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
+      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message, e)).to.be.true;
       expect(false, TestLogger.createTestFailMessageWithCliError("failed", e)).to.be.true;
     }
   });
@@ -260,7 +261,7 @@ describe(`${scriptName}`, () => {
       const xvoid: void = await cliImporter.run();
     } catch (e) {
       TestLogger.logMessageWithId(TestLogger.createTestFailMessageForError('error', e));
-      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
+      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message, e)).to.be.true;
       expect(false, TestLogger.createTestFailMessageWithCliError("failed", e)).to.be.true;
     }
   });
@@ -294,7 +295,7 @@ describe(`${scriptName}`, () => {
       const xvoid: void = await cliImporter.run();
       expect(false, 'should never get here').to.be.true;
     } catch (e) {
-      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
+      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message, e)).to.be.true;
       expect(e instanceof CliImporterTestRunAssetsApplicationDomainPolicyViolationError, `error not instance of CliImporterTestRunAssetsApplicationDomainPolicyViolationError, e=${JSON.stringify(e, null, 2)}`).to.be.true;
       // no further checks at the moment
       // const cliImporterTestRunNotAllowedToChangeError: CliImporterTestRunNotAllowedToChangeError = e;
@@ -328,7 +329,7 @@ describe(`${scriptName}`, () => {
       const xvoid: void = await cliImporter.run();
       expect(false, 'should never get here').to.be.true;
     } catch (e) {
-      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
+      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message, e)).to.be.true;
       expect(e instanceof CliImporterTestRunAssetsApplicationDomainPolicyViolationError, `error not instance of CliImporterTestRunAssetsApplicationDomainPolicyViolationError, e=${JSON.stringify(e, null, 2)}`).to.be.true;
       // no further checks at the moment
       // const cliImporterTestRunNotAllowedToChangeError: CliImporterTestRunNotAllowedToChangeError = e;
@@ -362,7 +363,7 @@ describe(`${scriptName}`, () => {
       const xvoid: void = await cliImporter.run();
       expect(false, 'should never get here').to.be.true;
     } catch (e) {
-      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
+      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message, e)).to.be.true;
       expect(e instanceof CliImporterTestRunAssetsApplicationDomainPolicyViolationError, `error not instance of CliImporterTestRunAssetsApplicationDomainPolicyViolationError, e=${JSON.stringify(e, null, 2)}`).to.be.true;
       // no further checks at the moment
       // const cliImporterTestRunNotAllowedToChangeError: CliImporterTestRunNotAllowedToChangeError = e;
@@ -441,7 +442,7 @@ describe(`${scriptName}`, () => {
       const cliImporter = new CliImporterManager(CliConfig.getCliImporterManagerOptions());
       const xvoid: void = await cliImporter.run();
     } catch (e) {
-      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
+      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message, e)).to.be.true;
       expect(false, TestLogger.createTestFailMessageWithCliError("failed", e)).to.be.true;
     }
   });
@@ -463,7 +464,7 @@ describe(`${scriptName}`, () => {
       const xvoid: void = await cliImporter.run();
     } catch (e) {
       TestLogger.logMessageWithId(TestLogger.createTestFailMessageForError('error', e));
-      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
+      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message, e)).to.be.true;
       expect(false, TestLogger.createTestFailMessageWithCliError("failed", e)).to.be.true;
     }
   });
@@ -505,7 +506,7 @@ describe(`${scriptName}`, () => {
       const xvoid: void = await cliImporter.run();
     } catch (e) {
       TestLogger.logMessageWithId(TestLogger.createTestFailMessageForError('error', e));
-      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
+      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message, e)).to.be.true;
       expect(false, TestLogger.createTestFailMessageWithCliError("failed", e)).to.be.true;
     }
   });
@@ -540,7 +541,7 @@ describe(`${scriptName}`, () => {
       const xvoid: void = await cliImporter.run();
     } catch (e) {
       TestLogger.logMessageWithId(TestLogger.createTestFailMessageForError('error', e));
-      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
+      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message, e)).to.be.true;
       expect(false, TestLogger.createTestFailMessageWithCliError("failed", e)).to.be.true;
     }
   });
@@ -552,7 +553,7 @@ describe(`${scriptName}`, () => {
       const xvoid: void = await cliImporter.run();
     } catch (e) {
       TestLogger.logMessageWithId(TestLogger.createTestFailMessageForError('error', e));    
-      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
+      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message, e)).to.be.true;
       expect(false, TestLogger.createTestFailMessageWithCliError("failed", e)).to.be.true;
     }
   });
@@ -587,7 +588,7 @@ describe(`${scriptName}`, () => {
       const xvoid: void = await cliImporter.run();
     } catch (e) {
       TestLogger.logMessageWithId(TestLogger.createTestFailMessageForError('error', e));
-      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
+      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message, e)).to.be.true;
       expect(false, TestLogger.createTestFailMessageWithCliError("failed", e)).to.be.true;
     }
   });
@@ -599,7 +600,7 @@ describe(`${scriptName}`, () => {
       const xvoid: void = await cliImporter.run();
     } catch (e) {
       TestLogger.logMessageWithId(TestLogger.createTestFailMessageForError('error', e));
-      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
+      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message, e)).to.be.true;
       expect(false, TestLogger.createTestFailMessageWithCliError("failed", e)).to.be.true;
     }
   });
@@ -653,7 +654,7 @@ describe(`${scriptName}`, () => {
       const xvoid: void = await cliImporter.run();
       expect(false, 'should never get here').to.be.true;
     } catch (e) {
-      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
+      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message, e)).to.be.true;
       expect(e instanceof CliImporterTestRunAssetsApplicationDomainPolicyViolationError, `error not instance of CliImporterTestRunAssetsApplicationDomainPolicyViolationError, e=${JSON.stringify(e, null, 2)}`).to.be.true;
       // no further checks at the moment
       // const cliImporterTestRunNotAllowedToChangeError: CliImporterTestRunNotAllowedToChangeError = e;

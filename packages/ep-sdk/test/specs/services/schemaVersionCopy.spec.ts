@@ -3,7 +3,7 @@ import { expect } from "chai";
 import path from "path";
 import { TestContext, TestUtils } from "@internal/tools/src";
 import { TestLogger, TestConfig } from "../../lib";
-import { ApiError, SchemaVersion } from "@solace-labs/ep-openapi-node";
+import { ApiError, SchemaObject, SchemaVersion } from "@solace-labs/ep-openapi-node";
 import {
   EpSdkError,
   EpSdkApplicationDomainsService,
@@ -19,6 +19,7 @@ import {
   EpSdkSchemaVersionTask,
   IEpSdkSchemaVersionTask_ExecuteReturn,
   EpSdkSchemaVersionsService,
+  EpSdkSchemasService,
 } from "../../../src";
 
 const scriptName: string = path.basename(__filename);
@@ -46,6 +47,7 @@ type TSchemaVersionInfo = {
 };
 type TSchemaInfo = {
   schemaName: string;
+  isShared: boolean;
   schemaContent: string;
   versionInfoList: Array<TSchemaVersionInfo>;
   sourceSchemaId?: string;
@@ -54,25 +56,27 @@ type TSchemaInfo = {
 const SchemaInfoList: Array<TSchemaInfo> = [
   {
     schemaName: "_schema_name_0_",
+    isShared: true,
     versionInfoList: [{ versionString: "1.0.0" }, { versionString: "1.1.0" }],
     schemaContent: SchemaContent,
   },
   {
     schemaName: "_schema_name_1_",
+    isShared: false,
     versionInfoList: [{ versionString: "1.0.0" }, { versionString: "1.1.0" }],
     schemaContent: SchemaContent,
   },
   {
     schemaName: "_schema_name_2_",
+    isShared: true,
     versionInfoList: [{ versionString: "1.0.0" }, { versionString: "1.1.0" }],
     schemaContent: SchemaContent,
   },
 ];
 
-const createCompareObject = (
-  schemaVersion: SchemaVersion
-): Partial<SchemaVersion> => {
+const createCompareObject = (schemaObject: SchemaObject, schemaVersion: SchemaVersion): Partial<SchemaVersion & SchemaObject> => {
   return {
+    shared: schemaObject.shared,
     version: schemaVersion.version,
     description: schemaVersion.description,
     displayName: schemaVersion.displayName,
@@ -133,7 +137,7 @@ describe(`${scriptName}`, () => {
           applicationDomainId: SourceApplicationDomainId,
           schemaName: schemaInfo.schemaName,
           schemaObjectSettings: {
-            shared: true,
+            shared: schemaInfo.isShared,
           },
         });
         const epSdkSchemaTask_ExecuteReturn: IEpSdkSchemaTask_ExecuteReturn = await epSdkSchemaTask.execute();
@@ -165,6 +169,8 @@ describe(`${scriptName}`, () => {
   it(`${scriptName}: should copy schema versions from source domain to target domain`, async () => {
     try {
       for (const schemaInfo of SchemaInfoList) {
+        // get the source schema
+        const sourceSchema = await EpSdkSchemasService.getById({ schemaId: schemaInfo.sourceSchemaId });
         // get latest source version
         const latestSourceSchemaVersion: SchemaVersion = await EpSdkSchemaVersionsService.getLatestVersionForSchemaId({
           applicationDomainId: SourceApplicationDomainId,
@@ -176,17 +182,21 @@ describe(`${scriptName}`, () => {
           toApplicationDomainId: TargetApplicationDomainId,
         });
         schemaInfo.targetSchemaId = copiedSchemaVersion.schemaId;
+        // get the target schema
+        const targetSchema = await EpSdkSchemasService.getById({ schemaId: schemaInfo.targetSchemaId });
         // get latest target version
         const latestTargetSchemaVersion: SchemaVersion = await EpSdkSchemaVersionsService.getLatestVersionForSchemaId({
           applicationDomainId: TargetApplicationDomainId,
           schemaId: copiedSchemaVersion.schemaId,
         });
         let message = TestLogger.createLogMessage("source & target", {
-          latestSourceSchemaVersion: latestSourceSchemaVersion,
-          latestTargetSchemaVersion: latestTargetSchemaVersion,
+          sourceSchema,
+          latestSourceSchemaVersion,
+          targetSchema,
+          latestTargetSchemaVersion,
         });
-        const sourceCompare: Partial<SchemaVersion> = createCompareObject(latestSourceSchemaVersion );
-        const targetCompare: Partial<SchemaVersion> = createCompareObject(latestTargetSchemaVersion );
+        const sourceCompare = createCompareObject(sourceSchema, latestSourceSchemaVersion );
+        const targetCompare = createCompareObject(targetSchema, latestTargetSchemaVersion );
         expect(sourceCompare, message).to.be.deep.equal(targetCompare);
         message = TestLogger.createLogMessage("copied & latest", {
           copiedSchemaVersion: copiedSchemaVersion,
@@ -235,17 +245,15 @@ describe(`${scriptName}`, () => {
     try {
       for (const schemaInfo of SchemaInfoList) {
         // get latest source version
-        const latestSourceSchemaVersion: SchemaVersion =
-          await EpSdkSchemaVersionsService.getLatestVersionForSchemaId({
-            applicationDomainId: SourceApplicationDomainId,
-            schemaId: schemaInfo.sourceSchemaId,
-          });
+        const latestSourceSchemaVersion: SchemaVersion = await EpSdkSchemaVersionsService.getLatestVersionForSchemaId({
+          applicationDomainId: SourceApplicationDomainId,
+          schemaId: schemaInfo.sourceSchemaId,
+        });
         // get latest target version
-        const latestTargetSchemaVersion: SchemaVersion =
-          await EpSdkSchemaVersionsService.getLatestVersionForSchemaId({
-            applicationDomainId: TargetApplicationDomainId,
-            schemaId: schemaInfo.targetSchemaId,
-          });
+        const latestTargetSchemaVersion: SchemaVersion = await EpSdkSchemaVersionsService.getLatestVersionForSchemaId({
+          applicationDomainId: TargetApplicationDomainId,
+          schemaId: schemaInfo.targetSchemaId,
+        });
         // copy
         const copiedSchemaVersion: SchemaVersion = await EpSdkSchemaVersionsService.copyLastestVersionById_IfNotExists({
           schemaVersionId: latestSourceSchemaVersion.id,
@@ -255,8 +263,11 @@ describe(`${scriptName}`, () => {
           latestTargetSchemaVersion: latestTargetSchemaVersion,
           copiedSchemaVersion: copiedSchemaVersion,
         });
-        const latestTargetCompare: Partial<SchemaVersion> = createCompareObject(latestTargetSchemaVersion);
-        const copiedCompare: Partial<SchemaVersion> = createCompareObject(copiedSchemaVersion);
+        // get the target schema
+        const targetSchema = await EpSdkSchemasService.getById({ schemaId: latestTargetSchemaVersion.schemaId });
+        const latestTargetCompare = createCompareObject(targetSchema, latestTargetSchemaVersion);
+        const copiedSchema = await EpSdkSchemasService.getById({ schemaId: copiedSchemaVersion.schemaId });
+        const copiedCompare = createCompareObject(copiedSchema, copiedSchemaVersion);
         expect(latestTargetCompare, message).to.be.deep.equal(copiedCompare);
         // // DEBUG
         // expect(false, message).to.be.true;
@@ -289,8 +300,7 @@ describe(`${scriptName}`, () => {
           schemaType: EEpSdkSchemaType.AVRO,
         },
       });
-      const epSdkSchemaTask_ExecuteReturn: IEpSdkSchemaTask_ExecuteReturn =
-        await epSdkSchemaTask.execute();
+      const epSdkSchemaTask_ExecuteReturn: IEpSdkSchemaTask_ExecuteReturn = await epSdkSchemaTask.execute();
       AvroSourceSchemaId = epSdkSchemaTask_ExecuteReturn.epObject.id;
 
       const epSdkSchemaVersionTask = new EpSdkSchemaVersionTask({
@@ -336,16 +346,16 @@ describe(`${scriptName}`, () => {
         latestSourceSchemaVersion: latestSourceSchemaVersion,
         latestTargetSchemaVersion: latestTargetSchemaVersion,
       });
-      const sourceCompare: Partial<SchemaVersion> = createCompareObject(latestSourceSchemaVersion);
-      const targetCompare: Partial<SchemaVersion> = createCompareObject(latestTargetSchemaVersion);
+      const sourceSchema = await EpSdkSchemasService.getById({ schemaId: latestSourceSchemaVersion.schemaId });
+      const sourceCompare = createCompareObject(sourceSchema, latestSourceSchemaVersion);
+      const targetSchema = await EpSdkSchemasService.getById({ schemaId: latestTargetSchemaVersion.schemaId });
+      const targetCompare = createCompareObject(targetSchema, latestTargetSchemaVersion);
       expect(sourceCompare, message).to.be.deep.equal(targetCompare);
       message = TestLogger.createLogMessage("copied & latest", {
         copiedSchemaVersion: copiedSchemaVersion,
         latestTargetSchemaVersion: latestTargetSchemaVersion,
       });
-      expect(copiedSchemaVersion, message).to.be.deep.equal(
-        latestTargetSchemaVersion
-      );
+      expect(copiedSchemaVersion, message).to.be.deep.equal(latestTargetSchemaVersion);
     } catch (e) {
       if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
       expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;

@@ -46,6 +46,12 @@ In addition, it uses the following Event Portal extensions:
 
        Defaults to empty string if omitted.
 
+   * - $.info.x-ep-shared
+     - The shared flag for the Event API. It has no effect on Application if present.
+
+       Defaults to environment variable `CLI_IMPORT_DEFAULT_SHARED_FLAG` if omitted.
+       
+
 
 .. list-table:: Event Portal Message Extensions
    :widths: 30 100
@@ -66,6 +72,11 @@ In addition, it uses the following Event Portal extensions:
 
        Defaults to `$.info.x-ep-assets-application-domain-name` if omitted.
 
+   * - x-ep-shared
+     - The shared flag for the Event.
+
+       Defaults to environment variable `CLI_IMPORT_DEFAULT_SHARED_FLAG` if omitted.
+
        
 .. list-table:: Event Portal Schema Extensions
    :widths: 30 100
@@ -74,17 +85,22 @@ In addition, it uses the following Event Portal extensions:
    * - Async Api Extension
      - Description
    * - x-ep-schema-name
-     - The Schema name for the schema.
+     - The name for the Schema.
 
        Defaults to `x-ep-event-name` if omitted.
    * - x-ep-schema-version-displayname
-     - The Schema version name for the schema.
+     - The version name for the Schema version.
 
        Defaults to empty string if omitted.
    * - x-ep-application-domain-name
      - The application domain name for the Schema.
 
        Defaults to `$.info.x-ep-assets-application-domain-name` if omitted.
+
+   * - x-ep-shared
+     - The shared flag for the Schema.
+
+       Defaults to environment variable `CLI_IMPORT_DEFAULT_SHARED_FLAG` if omitted.
 
 
 .. list-table:: Event Portal Channel Parameter Extensions
@@ -106,4 +122,8 @@ In addition, it uses the following Event Portal extensions:
 
        Defaults to `$.info.x-ep-assets-application-domain-name` if omitted.
 
+   * - x-ep-shared
+     - The shared flag for the Enum.
+
+       Defaults to environment variable `CLI_IMPORT_DEFAULT_SHARED_FLAG` if omitted.
 

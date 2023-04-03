@@ -91,7 +91,7 @@ describe(`${scriptName}`, () => {
       err = e;
     } finally {
       // ensure all app domains are absent
-      // const xvoid: void = await TestService.absent_ApplicationDomains(CliConfig.getCliImporterManagerOptions().cliImporterManagerMode === ECliImporterManagerMode.TEST_MODE_KEEP);
+      const xvoid: void = await TestService.absent_ApplicationDomains(CliConfig.getCliImporterManagerOptions().cliImporterManagerMode === ECliImporterManagerMode.TEST_MODE_KEEP);
     }
     expect(err, TestLogger.createNotCliErrorMesssage(JSON.stringify(err))).to.be.undefined;
   });

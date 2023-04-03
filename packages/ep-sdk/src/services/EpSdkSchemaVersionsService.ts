@@ -311,24 +311,21 @@ export class EpSdkSchemaVersionsServiceClass extends EpSdkVersionServiceClass {
       fromSchemaVersionResponse: fromSchemaVersionResponse,
     });
     const fromSchemaVersion: SchemaVersion = fromSchemaVersionResponse.data;
-    if (fromSchemaVersion.stateId === undefined) throw new EpSdkServiceError(logName, this.constructor.name, "fromSchemaVersion.stateId === undefined", {
-      fromSchemaVersion: fromSchemaVersion,
-    });
-    if (fromSchemaVersion.content === undefined) throw new EpSdkServiceError(logName, this.constructor.name, "fromSchemaVersion.content === undefined", {
-      fromSchemaVersion: fromSchemaVersion,
-    });
+    /* istanbul ignore next */
+    if (fromSchemaVersion.stateId === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "fromSchemaVersion.stateId === undefined", { fromSchemaVersion: fromSchemaVersion,});
+    /* istanbul ignore next */
+    if (fromSchemaVersion.content === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "fromSchemaVersion.content === undefined", { fromSchemaVersion: fromSchemaVersion,});
     // get the source schema object
-    const fromSchemaObject: SchemaObject = await EpSdkSchemasService.getById({
-      xContextId,
-      schemaId: fromSchemaVersion.schemaId,
-    });
+    const fromSchemaObject: SchemaObject = await EpSdkSchemasService.getById({ xContextId, schemaId: fromSchemaVersion.schemaId });
+    /* istanbul ignore next */
+    if (fromSchemaObject.shared === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "fromSchemaObject.shared === undefined", { fromSchemaVersion: fromSchemaVersion,});
     // ensure target version object exists
     const epSdkSchemaTask = new EpSdkSchemaTask({
       epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
       applicationDomainId: toApplicationDomainId,
       schemaName: fromSchemaObject.name,
       schemaObjectSettings: {
-        shared: fromSchemaObject.shared ? fromSchemaObject.shared : true,
+        shared: fromSchemaObject.shared,
         contentType: fromSchemaObject.contentType,
         schemaType: fromSchemaObject.schemaType,
       },

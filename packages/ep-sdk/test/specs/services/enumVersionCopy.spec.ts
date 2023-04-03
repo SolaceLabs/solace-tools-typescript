@@ -3,6 +3,7 @@ import { expect } from "chai";
 import path from "path";
 import {
   ApiError,
+  TopicAddressEnum,
   TopicAddressEnumVersion,
 } from "@solace-labs/ep-openapi-node";
 import { TestContext } from "@internal/tools/src";
@@ -20,6 +21,7 @@ import {
   IEpSdkEnumVersionTask_ExecuteReturn,
   EpSdkEnumVersionsService,
   EEpSdk_VersionTaskStrategy,
+  EpSdkEnumsService,
 } from "../../../src";
 
 const scriptName: string = path.basename(__filename);
@@ -36,6 +38,7 @@ type TEnumVersionInfo = {
 };
 type TEnumInfo = {
   enumName: string;
+  enumShared: boolean;
   enumValues: Array<string>;
   versionInfoList: Array<TEnumVersionInfo>;
   sourceEnumId?: string;
@@ -44,25 +47,27 @@ type TEnumInfo = {
 const EnumInfoList: Array<TEnumInfo> = [
   {
     enumName: "_enum_name_0_",
+    enumShared: false,
     versionInfoList: [{ versionString: "1.0.0" }, { versionString: "1.1.0" }],
     enumValues: ["_enum_name_0_one", "_enum_name_0_two", "_enum_name_0_three"],
   },
   {
     enumName: "_enum_name_1_",
+    enumShared: true,
     versionInfoList: [{ versionString: "1.0.0" }, { versionString: "1.1.0" }],
     enumValues: ["_enum_name_1_one", "_enum_name_1_two", "_enum_name_1_three"],
   },
   {
     enumName: "_enum_name_2_",
+    enumShared: false,
     versionInfoList: [{ versionString: "1.0.0" }, { versionString: "1.1.0" }],
     enumValues: ["_enum_name_2_one", "_enum_name_2_two", "_enum_name_2_three"],
   },
 ];
 
-const createCompareObject = (
-  enumVersion: TopicAddressEnumVersion
-): Partial<TopicAddressEnumVersion> => {
+const createCompareObject = (enumObject: TopicAddressEnum, enumVersion: TopicAddressEnumVersion): Partial<TopicAddressEnumVersion & TopicAddressEnum > => {
   return {
+    shared: enumObject.shared,
     version: enumVersion.version,
     description: enumVersion.description,
     displayName: enumVersion.displayName,
@@ -85,34 +90,28 @@ describe(`${scriptName}`, () => {
   before(async () => {
     initializeGlobals();
     TestContext.newItId();
-    const sourceEpSdkApplicationDomainTask_absent =
-      new EpSdkApplicationDomainTask({
-        epSdkTask_TargetState: EEpSdkTask_TargetState.ABSENT,
-        applicationDomainName: SourceApplicationDomainName,
-      });
+    const sourceEpSdkApplicationDomainTask_absent = new EpSdkApplicationDomainTask({
+      epSdkTask_TargetState: EEpSdkTask_TargetState.ABSENT,
+      applicationDomainName: SourceApplicationDomainName,
+    });
     await sourceEpSdkApplicationDomainTask_absent.execute();
     const sourceEpSdkApplicationDomainTask = new EpSdkApplicationDomainTask({
       epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
       applicationDomainName: SourceApplicationDomainName,
     });
-    const sourceEpSdkApplicationDomainTask_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn =
-      await sourceEpSdkApplicationDomainTask.execute();
-    SourceApplicationDomainId =
-      sourceEpSdkApplicationDomainTask_ExecuteReturn.epObject.id;
-    const targetEpSdkApplicationDomainTask_absent =
-      new EpSdkApplicationDomainTask({
-        epSdkTask_TargetState: EEpSdkTask_TargetState.ABSENT,
-        applicationDomainName: TargetApplicationDomainName,
-      });
+    const sourceEpSdkApplicationDomainTask_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn = await sourceEpSdkApplicationDomainTask.execute();
+    SourceApplicationDomainId = sourceEpSdkApplicationDomainTask_ExecuteReturn.epObject.id;
+    const targetEpSdkApplicationDomainTask_absent = new EpSdkApplicationDomainTask({
+      epSdkTask_TargetState: EEpSdkTask_TargetState.ABSENT,
+      applicationDomainName: TargetApplicationDomainName,
+    });
     await targetEpSdkApplicationDomainTask_absent.execute();
     const targetEpSdkApplicationDomainTask = new EpSdkApplicationDomainTask({
       epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
       applicationDomainName: TargetApplicationDomainName,
     });
-    const targetEpSdkApplicationDomainTask_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn =
-      await targetEpSdkApplicationDomainTask.execute();
-    TargetApplicationDomainId =
-      targetEpSdkApplicationDomainTask_ExecuteReturn.epObject.id;
+    const targetEpSdkApplicationDomainTask_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn = await targetEpSdkApplicationDomainTask.execute();
+    TargetApplicationDomainId = targetEpSdkApplicationDomainTask_ExecuteReturn.epObject.id;
   });
 
   beforeEach(() => {
@@ -134,7 +133,7 @@ describe(`${scriptName}`, () => {
           applicationDomainId: SourceApplicationDomainId,
           enumName: enumInfo.enumName,
           enumObjectSettings: {
-            shared: true,
+            shared: enumInfo.enumShared,
           },
         });
         const epSdkEnumTask_ExecuteReturn: IEpSdkEnumTask_ExecuteReturn = await epSdkEnumTask.execute();
@@ -167,6 +166,8 @@ describe(`${scriptName}`, () => {
   it(`${scriptName}: should copy enum versions from source domain to target domain`, async () => {
     try {
       for (const enumInfo of EnumInfoList) {
+        // get the source enum
+        const sourceEnum = await EpSdkEnumsService.getById({ enumId: enumInfo.sourceEnumId });
         // get latest source version
         const latestSourceTopicAddressEnumVersion: TopicAddressEnumVersion = await EpSdkEnumVersionsService.getLatestVersionForEnumId({
           applicationDomainId: SourceApplicationDomainId,
@@ -178,17 +179,21 @@ describe(`${scriptName}`, () => {
           toApplicationDomainId: TargetApplicationDomainId,
         });
         enumInfo.targetEnumId = copiedTopicAddressEnumVersion.enumId;
+        // get the target enum
+        const targetEnum = await EpSdkEnumsService.getById({ enumId: enumInfo.targetEnumId });
         // get latest target version
         const latestTargetTopicAddressEnumVersion: TopicAddressEnumVersion = await EpSdkEnumVersionsService.getLatestVersionForEnumId({
           applicationDomainId: TargetApplicationDomainId,
           enumId: copiedTopicAddressEnumVersion.enumId,
         });
         let message = TestLogger.createLogMessage("source & target", {
-          latestSourceTopicAddressEnumVersion: latestSourceTopicAddressEnumVersion,
-          latestTargetTopicAddressEnumVersion: latestTargetTopicAddressEnumVersion,
+          sourceEnum,
+          latestSourceTopicAddressEnumVersion,
+          targetEnum,
+          latestTargetTopicAddressEnumVersion,
         });
-        const sourceCompare: Partial<TopicAddressEnumVersion> = createCompareObject(latestSourceTopicAddressEnumVersion);
-        const targetCompare: Partial<TopicAddressEnumVersion> = createCompareObject(latestTargetTopicAddressEnumVersion);
+        const sourceCompare: Partial<TopicAddressEnumVersion> = createCompareObject(sourceEnum, latestSourceTopicAddressEnumVersion);
+        const targetCompare: Partial<TopicAddressEnumVersion> = createCompareObject(targetEnum, latestTargetTopicAddressEnumVersion);
         expect(sourceCompare, message).to.be.deep.equal(targetCompare);
         message = TestLogger.createLogMessage("copied & latest", {
           copiedTopicAddressEnumVersion: copiedTopicAddressEnumVersion,
@@ -240,6 +245,8 @@ describe(`${scriptName}`, () => {
           applicationDomainId: SourceApplicationDomainId,
           enumId: enumInfo.sourceEnumId,
         });
+        // get the target enum
+        const targetEnum = await EpSdkEnumsService.getById({ enumId: enumInfo.targetEnumId });
         // get latest target version
         const latestTargetTopicAddressEnumVersion: TopicAddressEnumVersion = await EpSdkEnumVersionsService.getLatestVersionForEnumId({
           applicationDomainId: TargetApplicationDomainId,
@@ -250,12 +257,16 @@ describe(`${scriptName}`, () => {
           enumVersionId: latestSourceTopicAddressEnumVersion.id,
           toApplicationDomainId: TargetApplicationDomainId,
         });
+        // get the copied enum
+        const copiedEnum = await EpSdkEnumsService.getById({ enumId: copiedTopicAddressEnumVersion.enumId });
         const message = TestLogger.createLogMessage("latest target & copied target", {
-          latestTargetTopicAddressEnumVersion: latestTargetTopicAddressEnumVersion,
-          copiedTopicAddressEnumVersion: copiedTopicAddressEnumVersion,
+          targetEnum,
+          latestTargetTopicAddressEnumVersion,
+          copiedEnum,
+          copiedTopicAddressEnumVersion,
         });
-        const latestTargetCompare: Partial<TopicAddressEnumVersion> = createCompareObject(latestTargetTopicAddressEnumVersion);
-        const copiedCompare: Partial<TopicAddressEnumVersion> = createCompareObject(copiedTopicAddressEnumVersion);
+        const latestTargetCompare = createCompareObject(targetEnum, latestTargetTopicAddressEnumVersion);
+        const copiedCompare = createCompareObject(copiedEnum, copiedTopicAddressEnumVersion);
         expect(latestTargetCompare, message).to.be.deep.equal(copiedCompare);
         // // DEBUG
         // expect(false, message).to.be.true;

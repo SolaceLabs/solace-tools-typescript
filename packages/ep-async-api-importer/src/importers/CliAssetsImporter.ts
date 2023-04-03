@@ -223,9 +223,7 @@ export abstract class CliAssetsImporter extends CliImporter {
       epEventName: epEventName,
       channelTopic: channelTopic,
     }}));
-    CliLogger.trace(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.IMPORTING_API_CHANNEL_MESSAGE, details: {
-      epAsyncApiMessageDocument: epAsyncApiMessageDocument,
-    }}));
+    CliLogger.trace(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.IMPORTING_API_CHANNEL_MESSAGE, details: { epAsyncApiMessageDocument: epAsyncApiMessageDocument }}));
 
     const eventApplicationDomainId = await this.getAssetApplicationDomainId({
       assetApplicationDomainId: assetApplicationDomainId,
@@ -238,7 +236,7 @@ export abstract class CliAssetsImporter extends CliImporter {
       applicationDomainId: eventApplicationDomainId,
       eventName: epEventName,
       eventObjectSettings: {
-        shared: true,
+        shared: epAsyncApiMessageDocument.getMessageEpIsShared(this.cliImporterOptions.cliImport_DefaultSharedFlag),
       },
       epSdkTask_TransactionConfig: this.get_IEpSdkTask_TransactionConfig(),
       checkmode: checkmode,
@@ -247,11 +245,11 @@ export abstract class CliAssetsImporter extends CliImporter {
       epSdkTask: epSdkEpEventTask,
       expectNoAction: checkmode,
     });
-
     CliLogger.trace(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.IMPORTING_EP_EVENT, details: {
       epSdkEpEventTask_ExecuteReturn: epSdkEpEventTask_ExecuteReturn,
     }}));
-
+    // summary
+    CliRunSummary.processedEvent({ epSdkEpEventTask_ExecuteReturn });
     // present the event version
     const xvoid: void = await this.run_present_event_version({
       applicationDomainId: eventApplicationDomainId,
@@ -357,7 +355,7 @@ export abstract class CliAssetsImporter extends CliImporter {
       schemaObjectSettings: {
         contentType: CliAsyncApiDocumentService.map_MessageDocumentContentType_To_EpSchemaContentType(epAsyncApiMessageDocument.getContentType()),
         schemaType: CliAsyncApiDocumentService.map_MessageDocumentSchemaFormatType_To_EpSchemaFormatType(epAsyncApiMessageDocument.getSchemaFormatType()),
-        shared: true,
+        shared: epAsyncApiMessageDocument.getPayloadSchemaEpIsShared(this.cliImporterOptions.cliImport_DefaultSharedFlag),
       },
       epSdkTask_TransactionConfig: this.get_IEpSdkTask_TransactionConfig(),
       checkmode: checkmode,
@@ -369,6 +367,8 @@ export abstract class CliAssetsImporter extends CliImporter {
     CliLogger.trace(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.IMPORTING_EP_SCHEMA, details: {
       epSdkSchemaTask_ExecuteReturn: epSdkSchemaTask_ExecuteReturn,
     }}));
+    // summary
+    CliRunSummary.processedSchema({ epSdkSchemaTask_ExecuteReturn });
     // present the schema version
     const epSdkSchemaVersionTask_ExecuteReturn: IEpSdkSchemaVersionTask_ExecuteReturn = await this.run_present_schema_version({
       schemaObject: epSdkSchemaTask_ExecuteReturn.epObject,
@@ -490,18 +490,14 @@ export abstract class CliAssetsImporter extends CliImporter {
           applicationDomainId: enumApplicationDomainId,
           enumName: parameterName,
           enumObjectSettings: {
-            shared: true,
+            shared: epAsyncApiChannelParameterDocument.getEpIsShared(this.cliImporterOptions.cliImport_DefaultSharedFlag),
           },
           epSdkTask_TransactionConfig: this.get_IEpSdkTask_TransactionConfig(),
-          // TODO: checkmode?
         });
         const epSdkEnumTask_ExecuteReturn: IEpSdkEnumTask_ExecuteReturn = await this.executeTask({epSdkTask: epSdkEnumTask, expectNoAction: checkmode });
         const enumObject: TopicAddressEnum = epSdkEnumTask_ExecuteReturn.epObject;
         /* istanbul ignore next */
-        if (enumObject.id === undefined) throw new CliEPApiContentError(logName,"enumObject.id === undefined", {
-          enumObject: enumObject,
-        });
-
+        if (enumObject.id === undefined) throw new CliEPApiContentError(logName,"enumObject.id === undefined", { enumObject: enumObject });
         CliLogger.trace(CliLogger.createLogEntry(logName, {code: ECliStatusCodes.IMPORTING_EP_ENUM,details: {
           epSdkEnumTask_ExecuteReturn: epSdkEnumTask_ExecuteReturn,
         }}));

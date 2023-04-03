@@ -40,28 +40,23 @@ export interface IEpSdkEnumTask_Keys extends IEpSdkTask_Keys {
   applicationDomainId: string;
 }
 /** @category Tasks */
-export interface IEpSdkEnumTask_GetFuncReturn
-  extends Omit<IEpSdkTask_GetFuncReturn, "epObject"> {
+export interface IEpSdkEnumTask_GetFuncReturn extends Omit<IEpSdkTask_GetFuncReturn, "epObject"> {
   epObject: TopicAddressEnum | undefined;
 }
 /** @category Tasks */
-export interface IEpSdkEnumTask_CreateFuncReturn
-  extends Omit<IEpSdkTask_CreateFuncReturn, "epObject"> {
+export interface IEpSdkEnumTask_CreateFuncReturn extends Omit<IEpSdkTask_CreateFuncReturn, "epObject"> {
   epObject: TopicAddressEnum;
 }
 /** @category Tasks */
-export interface IEpSdkEnumTask_UpdateFuncReturn
-  extends Omit<IEpSdkTask_UpdateFuncReturn, "epObject"> {
+export interface IEpSdkEnumTask_UpdateFuncReturn extends Omit<IEpSdkTask_UpdateFuncReturn, "epObject"> {
   epObject: TopicAddressEnum;
 }
 /** @category Tasks */
-export interface IEpSdkEnumTask_DeleteFuncReturn
-  extends Omit<IEpSdkTask_DeleteFuncReturn, "epObject"> {
+export interface IEpSdkEnumTask_DeleteFuncReturn extends Omit<IEpSdkTask_DeleteFuncReturn, "epObject"> {
   epObject: TopicAddressEnum;
 }
 /** @category Tasks */
-export interface IEpSdkEnumTask_ExecuteReturn
-  extends Omit<IEpSdkTask_ExecuteReturn, "epObject"> {
+export interface IEpSdkEnumTask_ExecuteReturn extends Omit<IEpSdkTask_ExecuteReturn, "epObject"> {
   epObject: TopicAddressEnum;
 }
 
@@ -97,23 +92,13 @@ export class EpSdkEnumTask extends EpSdkTask {
     };
   }
 
-  protected getEpObjectKeys(
-    epObject: TopicAddressEnum | undefined
-  ): IEpSdkTask_EpObjectKeys {
+  protected getEpObjectKeys(epObject: TopicAddressEnum | undefined): IEpSdkTask_EpObjectKeys {
     const funcName = "getEpObjectKeys";
     const logName = `${EpSdkEnumTask.name}.${funcName}()`;
 
     if (epObject === undefined) return this.getDefaultEpObjectKeys();
     /* istanbul ignore next */
-    if (epObject.id === undefined)
-      throw new EpSdkApiContentError(
-        logName,
-        this.constructor.name,
-        "epObject.id === undefined",
-        {
-          epObject: epObject,
-        }
-      );
+    if (epObject.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "epObject.id === undefined", { epObject: epObject });
     return {
       ...this.getDefaultEpObjectKeys(),
       epObjectId: epObject.id,
@@ -127,43 +112,23 @@ export class EpSdkEnumTask extends EpSdkTask {
     };
   }
 
-  protected async getFunc(
-    epSdkEnumTask_Keys: IEpSdkEnumTask_Keys
-  ): Promise<IEpSdkEnumTask_GetFuncReturn> {
+  protected async getFunc(epSdkEnumTask_Keys: IEpSdkEnumTask_Keys): Promise<IEpSdkEnumTask_GetFuncReturn> {
     const funcName = "getFunc";
     const logName = `${EpSdkEnumTask.name}.${funcName}()`;
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_START_GET, module: this.constructor.name, details: {
+      epSdkEnumTask_Keys: epSdkEnumTask_Keys,
+    }}));
+    const enumObject: TopicAddressEnum | undefined = await EpSdkEnumsService.getByName({
+      xContextId: this.xContextId,
+      enumName: epSdkEnumTask_Keys.enumName,
+      applicationDomainId: epSdkEnumTask_Keys.applicationDomainId,
+    });
 
-    EpSdkLogger.trace(
-      EpSdkLogger.createLogEntry(logName, {
-        code: EEpSdkLoggerCodes.TASK_EXECUTE_START_GET,
-        module: this.constructor.name,
-        details: {
-          epSdkEnumTask_Keys: epSdkEnumTask_Keys,
-        },
-      })
-    );
-
-    const enumObject: TopicAddressEnum | undefined =
-      await EpSdkEnumsService.getByName({
-        xContextId: this.xContextId,
-        enumName: epSdkEnumTask_Keys.enumName,
-        applicationDomainId: epSdkEnumTask_Keys.applicationDomainId,
-      });
-
-    EpSdkLogger.trace(
-      EpSdkLogger.createLogEntry(logName, {
-        code: EEpSdkLoggerCodes.TASK_EXECUTE_API_GET,
-        module: this.constructor.name,
-        details: {
-          epSdkEnumTask_Keys: epSdkEnumTask_Keys,
-          enumObject: enumObject ? enumObject : "undefined",
-        },
-      })
-    );
-
-    if (enumObject === undefined)
-      return this.Empty_IEpSdkEnumTask_GetFuncReturn;
-
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_API_GET, module: this.constructor.name, details: {
+      epSdkEnumTask_Keys: epSdkEnumTask_Keys,
+      enumObject: enumObject ? enumObject : "undefined",
+    }}));
+    if (enumObject === undefined) return this.Empty_IEpSdkEnumTask_GetFuncReturn;
     const epSdkEnumTask_GetFuncReturn: IEpSdkEnumTask_GetFuncReturn = {
       epObjectKeys: this.getEpObjectKeys(enumObject),
       epObject: enumObject,
@@ -172,42 +137,23 @@ export class EpSdkEnumTask extends EpSdkTask {
     return epSdkEnumTask_GetFuncReturn;
   }
 
-  protected async isUpdateRequiredFunc(
-    epSdkEnumTask_GetFuncReturn: IEpSdkEnumTask_GetFuncReturn
-  ): Promise<IEpSdkTask_IsUpdateRequiredFuncReturn> {
+  protected async isUpdateRequiredFunc(epSdkEnumTask_GetFuncReturn: IEpSdkEnumTask_GetFuncReturn): Promise<IEpSdkTask_IsUpdateRequiredFuncReturn> {
     const funcName = "isUpdateRequiredFunc";
     const logName = `${EpSdkEnumTask.name}.${funcName}()`;
 
-    EpSdkLogger.trace(
-      EpSdkLogger.createLogEntry(logName, {
-        code: EEpSdkLoggerCodes.TASK_EXECUTE_START_IS_UPDATE_REQUIRED,
-        module: this.constructor.name,
-        details: {
-          epSdkEnumTask_GetFuncReturn: epSdkEnumTask_GetFuncReturn,
-        },
-      })
-    );
-
-    if (epSdkEnumTask_GetFuncReturn.epObject === undefined)
-      throw new EpSdkInternalTaskError(
-        logName,
-        this.constructor.name,
-        "epSdkEnumTask_GetFuncReturn.epObject === undefined"
-      );
-
-    const existingObject: TopicAddressEnum =
-      epSdkEnumTask_GetFuncReturn.epObject;
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_START_IS_UPDATE_REQUIRED, module: this.constructor.name, details: {
+      epSdkEnumTask_GetFuncReturn: epSdkEnumTask_GetFuncReturn,
+    }}));
+    if (epSdkEnumTask_GetFuncReturn.epObject === undefined) throw new EpSdkInternalTaskError(logName, this.constructor.name, "epSdkEnumTask_GetFuncReturn.epObject === undefined");
+    const existingObject: TopicAddressEnum = epSdkEnumTask_GetFuncReturn.epObject;
     const existingCompareObject: TEpSdkEnumTask_CompareObject = {
       shared: existingObject.shared,
     };
-    const requestedCompareObject: TEpSdkEnumTask_CompareObject =
-      this.createObjectSettings();
-
-    const epSdkTask_IsUpdateRequiredFuncReturn: IEpSdkTask_IsUpdateRequiredFuncReturn =
-      this.create_IEpSdkTask_IsUpdateRequiredFuncReturn({
-        existingObject: existingCompareObject,
-        requestedObject: requestedCompareObject,
-      });
+    const requestedCompareObject: TEpSdkEnumTask_CompareObject = this.createObjectSettings();
+    const epSdkTask_IsUpdateRequiredFuncReturn: IEpSdkTask_IsUpdateRequiredFuncReturn = this.create_IEpSdkTask_IsUpdateRequiredFuncReturn({
+      existingObject: existingCompareObject,
+      requestedObject: requestedCompareObject,
+    });
     // // DEBUG:
     // if(epSdkTask_IsUpdateRequiredFuncReturn.isUpdateRequired) {
     //   EpSdkLogger.debug(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_DONE_IS_UPDATE_REQUIRED, module: this.constructor.name, details: {
@@ -223,12 +169,7 @@ export class EpSdkEnumTask extends EpSdkTask {
     const funcName = "createFunc";
     const logName = `${EpSdkEnumTask.name}.${funcName}()`;
 
-    EpSdkLogger.trace(
-      EpSdkLogger.createLogEntry(logName, {
-        code: EEpSdkLoggerCodes.TASK_EXECUTE_START_CREATE,
-        module: this.constructor.name,
-      })
-    );
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, {code: EEpSdkLoggerCodes.TASK_EXECUTE_START_CREATE, module: this.constructor.name }));
 
     const create: TopicAddressEnum = {
       ...this.createObjectSettings(),
@@ -236,16 +177,10 @@ export class EpSdkEnumTask extends EpSdkTask {
       name: this.getTaskConfig().enumName,
     };
 
-    EpSdkLogger.trace(
-      EpSdkLogger.createLogEntry(logName, {
-        code: EEpSdkLoggerCodes.TASK_EXECUTE_CREATE,
-        module: this.constructor.name,
-        details: {
-          epSdkEnumTask_Config: this.getTaskConfig(),
-          create: create,
-        },
-      })
-    );
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_CREATE, module: this.constructor.name, details: {
+      epSdkEnumTask_Config: this.getTaskConfig(),
+      create: create,
+    }}));
 
     if (this.isCheckmode()) {
       return {
@@ -257,7 +192,6 @@ export class EpSdkEnumTask extends EpSdkTask {
         }),
       };
     }
-
     const topicAddressEnumResponse: TopicAddressEnumResponse = await EnumsService.createEnum({
       xContextId: this.xContextId,
       requestBody: create,
@@ -270,17 +204,11 @@ export class EpSdkEnumTask extends EpSdkTask {
     }}));
 
     /* istanbul ignore next */
-    if (topicAddressEnumResponse.data === undefined)
-      throw new EpSdkApiContentError(
-        logName,
-        this.constructor.name,
-        "topicAddressEnumResponse.data === undefined",
-        {
-          epSdkApplicationDomainTask_Config: this.getTaskConfig(),
-          create: create,
-          topicAddressEnumResponse: topicAddressEnumResponse,
-        }
-      );
+    if (topicAddressEnumResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "topicAddressEnumResponse.data === undefined", {
+      epSdkApplicationDomainTask_Config: this.getTaskConfig(),
+      create: create,
+      topicAddressEnumResponse: topicAddressEnumResponse,
+    });
     return {
       epSdkTask_Action: this.getCreateFuncAction(),
       epObject: topicAddressEnumResponse.data,
@@ -288,35 +216,17 @@ export class EpSdkEnumTask extends EpSdkTask {
     };
   }
 
-  protected async updateFunc(
-    epSdkEnumTask_GetFuncReturn: IEpSdkEnumTask_GetFuncReturn
-  ): Promise<IEpSdkEnumTask_UpdateFuncReturn> {
+  protected async updateFunc(epSdkEnumTask_GetFuncReturn: IEpSdkEnumTask_GetFuncReturn): Promise<IEpSdkEnumTask_UpdateFuncReturn> {
     const funcName = "updateFunc";
     const logName = `${EpSdkEnumTask.name}.${funcName}()`;
 
-    EpSdkLogger.trace(
-      EpSdkLogger.createLogEntry(logName, {
-        code: EEpSdkLoggerCodes.TASK_EXECUTE_START_UPDATE,
-        module: this.constructor.name,
-      })
-    );
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_START_UPDATE, module: this.constructor.name }));
 
-    if (epSdkEnumTask_GetFuncReturn.epObject === undefined)
-      throw new EpSdkInternalTaskError(
-        logName,
-        this.constructor.name,
-        "epSdkEnumTask_GetFuncReturn.epObject === undefined"
-      );
+    if (epSdkEnumTask_GetFuncReturn.epObject === undefined) throw new EpSdkInternalTaskError(logName, this.constructor.name, "epSdkEnumTask_GetFuncReturn.epObject === undefined");
     /* istanbul ignore next */
-    if (epSdkEnumTask_GetFuncReturn.epObject.id === undefined)
-      throw new EpSdkApiContentError(
-        logName,
-        this.constructor.name,
-        "epSdkEnumTask_GetFuncReturn.epObject.id === undefined",
-        {
-          epObject: epSdkEnumTask_GetFuncReturn.epObject,
-        }
-      );
+    if (epSdkEnumTask_GetFuncReturn.epObject.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "epSdkEnumTask_GetFuncReturn.epObject.id === undefined", {
+      epObject: epSdkEnumTask_GetFuncReturn.epObject,
+    });
 
     const update: TopicAddressEnum = {
       ...this.createObjectSettings(),
@@ -324,16 +234,10 @@ export class EpSdkEnumTask extends EpSdkTask {
       name: this.getTaskConfig().enumName,
     };
 
-    EpSdkLogger.trace(
-      EpSdkLogger.createLogEntry(logName, {
-        code: EEpSdkLoggerCodes.TASK_EXECUTE_UPDATE,
-        module: this.constructor.name,
-        details: {
-          epSdkEnumTask_Config: this.getTaskConfig(),
-          update: update,
-        },
-      })
-    );
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_UPDATE, module: this.constructor.name, details: {
+      epSdkEnumTask_Config: this.getTaskConfig(),
+      update: update,
+    }}));
 
     if (this.isCheckmode()) {
       const wouldBe_EpObject: TopicAddressEnum = {
@@ -346,35 +250,18 @@ export class EpSdkEnumTask extends EpSdkTask {
         epObjectKeys: this.getEpObjectKeys(wouldBe_EpObject),
       };
     }
-
     const topicAddressEnumResponse: TopicAddressEnumResponse = await EnumsService.updateEnum({
       xContextId: this.xContextId,
       id: epSdkEnumTask_GetFuncReturn.epObject.id,
       requestBody: update,
     });
-
-    EpSdkLogger.trace(
-      EpSdkLogger.createLogEntry(logName, {
-        code: EEpSdkLoggerCodes.TASK_EXECUTE_UPDATE,
-        module: this.constructor.name,
-        details: {
-          epSdkApplicationDomainTask_Config: this.getTaskConfig(),
-          update: update,
-          topicAddressEnumResponse: topicAddressEnumResponse,
-        },
-      })
-    );
-
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_UPDATE, module: this.constructor.name, details: {
+      epSdkApplicationDomainTask_Config: this.getTaskConfig(),
+      update: update,
+      topicAddressEnumResponse: topicAddressEnumResponse,
+    }}));
     /* istanbul ignore next */
-    if (topicAddressEnumResponse.data === undefined)
-      throw new EpSdkApiContentError(
-        logName,
-        this.constructor.name,
-        "topicAddressEnumResponse.data === undefined",
-        {
-          topicAddressEnumResponse: topicAddressEnumResponse,
-        }
-      );
+    if(topicAddressEnumResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "topicAddressEnumResponse.data === undefined", { topicAddressEnumResponse: topicAddressEnumResponse });
     const epSdkEnumTask_UpdateFuncReturn: IEpSdkEnumTask_UpdateFuncReturn = {
       epSdkTask_Action: this.getUpdateFuncAction(),
       epObject: topicAddressEnumResponse.data,
@@ -383,43 +270,23 @@ export class EpSdkEnumTask extends EpSdkTask {
     return epSdkEnumTask_UpdateFuncReturn;
   }
 
-  protected async deleteFunc(
-    epSdkEnumTask_GetFuncReturn: IEpSdkEnumTask_GetFuncReturn
-  ): Promise<IEpSdkEnumTask_DeleteFuncReturn> {
+  protected async deleteFunc(epSdkEnumTask_GetFuncReturn: IEpSdkEnumTask_GetFuncReturn): Promise<IEpSdkEnumTask_DeleteFuncReturn> {
     const funcName = "deleteFunc";
     const logName = `${EpSdkEnumTask.name}.${funcName}()`;
 
-    EpSdkLogger.trace(
-      EpSdkLogger.createLogEntry(logName, {
-        code: EEpSdkLoggerCodes.TASK_EXECUTE_START_DELETE,
-        module: this.constructor.name,
-      })
-    );
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_START_DELETE, module: this.constructor.name }));
 
-    if (epSdkEnumTask_GetFuncReturn.epObject === undefined)
-      throw new EpSdkInternalTaskError(
-        logName,
-        this.constructor.name,
-        "epSdkEnumTask_GetFuncReturn.epObject === undefined"
-      );
+    if (epSdkEnumTask_GetFuncReturn.epObject === undefined) throw new EpSdkInternalTaskError(logName, this.constructor.name, "epSdkEnumTask_GetFuncReturn.epObject === undefined");
     /* istanbul ignore next */
-    if (epSdkEnumTask_GetFuncReturn.epObject.id === undefined)
-      throw new EpSdkApiContentError(
-        logName,
-        this.constructor.name,
-        "epSdkEnumTask_GetFuncReturn.epObject.id === undefined",
-        {
-          epObject: epSdkEnumTask_GetFuncReturn.epObject,
-        }
-      );
+    if (epSdkEnumTask_GetFuncReturn.epObject.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "epSdkEnumTask_GetFuncReturn.epObject.id === undefined", {
+      epObject: epSdkEnumTask_GetFuncReturn.epObject,
+    });
 
     if (this.isCheckmode()) {
       return {
         epSdkTask_Action: this.getDeleteFuncAction(),
         epObject: epSdkEnumTask_GetFuncReturn.epObject,
-        epObjectKeys: this.getEpObjectKeys(
-          epSdkEnumTask_GetFuncReturn.epObject
-        ),
+        epObjectKeys: this.getEpObjectKeys(epSdkEnumTask_GetFuncReturn.epObject ),
       };
     }
 
@@ -438,8 +305,7 @@ export class EpSdkEnumTask extends EpSdkTask {
   }
 
   public async execute(xContextId?: string): Promise<IEpSdkEnumTask_ExecuteReturn> {
-    const epSdkTask_ExecuteReturn: IEpSdkEnumTask_ExecuteReturn =
-      await super.execute(xContextId);
+    const epSdkTask_ExecuteReturn: IEpSdkEnumTask_ExecuteReturn = await super.execute(xContextId);
     return epSdkTask_ExecuteReturn;
   }
 }

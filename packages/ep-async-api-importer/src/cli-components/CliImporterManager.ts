@@ -31,13 +31,12 @@ export enum ECliImporterManagerMode {
   TEST_MODE = "test_mode",
   TEST_MODE_KEEP = "test_mode_keep",
 }
-export const getCliImporterManagerModeObjectValues4Config =
-  (): Array<string> => {
-    return [
-      ECliImporterManagerMode.RELEASE_MODE,
-      ECliImporterManagerMode.TEST_MODE,
-    ];
-  };
+export const getCliImporterManagerModeObjectValues4Config = (): Array<string> => {
+  return [
+    ECliImporterManagerMode.RELEASE_MODE,
+    ECliImporterManagerMode.TEST_MODE,
+  ];
+};
 
 export interface ICliImporterManagerOptions {
   appName: string;

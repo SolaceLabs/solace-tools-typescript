@@ -405,52 +405,32 @@ export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
     const funcName = 'deepCopyLastestVersionById_IfNotExists';
     const logName = `${EpSdkEpEventVersionsServiceClass.name}.${funcName}()`;
     // get the source event version
-    const fromEventVersionResponse: EventVersionResponse = await EventsService.getEventVersion({ 
-      xContextId,
-      id: eventVersionId
-    });
+    const fromEventVersionResponse: EventVersionResponse = await EventsService.getEventVersion({ xContextId, id: eventVersionId });
     /* istanbul ignore next */
-    if(fromEventVersionResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "fromEventVersionResponse.data === undefined", {
-      fromEventVersionResponse: fromEventVersionResponse
-    });
+    if(fromEventVersionResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "fromEventVersionResponse.data === undefined", { fromEventVersionResponse });
     const fromEventVersion: EventVersion = fromEventVersionResponse.data;
     /* istanbul ignore next */
-    if(fromEventVersion.stateId === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "fromEventVersion.stateId === undefined", {
-      fromEventVersion: fromEventVersion
-    });
+    if(fromEventVersion.stateId === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "fromEventVersion.stateId === undefined", { fromEventVersion });
     /* istanbul ignore next */
-    if(fromEventVersion.schemaVersionId === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "fromEventVersion.schemaVersionId === undefined", {
-      fromEventVersion: fromEventVersion
-    });
+    if(fromEventVersion.schemaVersionId === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "fromEventVersion.schemaVersionId === undefined", { fromEventVersion });
     // get the source event object
-    const fromEvent: EpEvent = await EpSdkEpEventsService.getById({
-      xContextId,
-      eventId: fromEventVersion.eventId,
-    });
-
+    const fromEvent: EpEvent = await EpSdkEpEventsService.getById({ xContextId, eventId: fromEventVersion.eventId });
+    /* istanbul ignore next */
+    if (fromEvent.shared === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "fromEvent.shared === undefined", { fromEvent });
     // copy the schema version
-    const targetSchemaVersion: SchemaVersion = await EpSdkSchemaVersionsService.copyLastestVersionById_IfNotExists({
-      xContextId,
+    const targetSchemaVersion: SchemaVersion = await EpSdkSchemaVersionsService.copyLastestVersionById_IfNotExists({ xContextId,
       schemaVersionId: fromEventVersion.schemaVersionId,
       toApplicationDomainId: toApplicationDomainId,
     });
     /* istanbul ignore next */
-    if(targetSchemaVersion.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "targetSchemaVersion.id === undefined", {
-      targetSchemaVersion: targetSchemaVersion
-    });
-
+    if(targetSchemaVersion.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "targetSchemaVersion.id === undefined", { targetSchemaVersion });
     // copy all enums in address
     /* istanbul ignore next */
-    if(fromEventVersion.deliveryDescriptor === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "fromEventVersion.deliveryDescriptor === undefined", {
-      fromEventVersion: fromEventVersion
-    });
+    if(fromEventVersion.deliveryDescriptor === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "fromEventVersion.deliveryDescriptor === undefined", { fromEventVersion });
     /* istanbul ignore next */
-    if(fromEventVersion.deliveryDescriptor.address === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "fromEventVersion.deliveryDescriptor.address === undefined", {
-      fromEventVersion: fromEventVersion
-    });
+    if(fromEventVersion.deliveryDescriptor.address === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "fromEventVersion.deliveryDescriptor.address === undefined", { fromEventVersion });
     const fromEventVersionDeliveryDescriptorAddress: Address = fromEventVersion.deliveryDescriptor.address;
-    const targetEventVersionDeliveryDescriptorAddress: Address = await this.deepCopyAddress({
-      xContextId,
+    const targetEventVersionDeliveryDescriptorAddress: Address = await this.deepCopyAddress({ xContextId,
       address: fromEventVersionDeliveryDescriptorAddress,
       toApplicationDomainId: toApplicationDomainId,
     });
@@ -460,14 +440,13 @@ export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
       applicationDomainId: toApplicationDomainId,
       eventName: fromEvent.name,
       eventObjectSettings: {
-        shared: fromEvent.shared ? fromEvent.shared : true,
+        shared: fromEvent.shared,
       },
     });
     const epSdkEpEventTask_ExecuteReturn: IEpSdkEpEventTask_ExecuteReturn = await epSdkEpEventTask.execute(xContextId);
     if(epSdkEpEventTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action === EEpSdkTask_Action.NO_ACTION) {
       // return the latest version
-      const targetEventVersion: EventVersion | undefined = await this.getLatestVersionForEventId({
-        xContextId,
+      const targetEventVersion: EventVersion | undefined = await this.getLatestVersionForEventId({ xContextId,
         applicationDomainId: toApplicationDomainId,
         eventId: epSdkEpEventTask_ExecuteReturn.epObjectKeys.epObjectId,
       });
