@@ -1,7 +1,7 @@
 name: Release
 on:
-  # # for testing
-  # workflow_dispatch:
+  # for testing
+  workflow_dispatch:
   push:
     branches: ["main"]
 
