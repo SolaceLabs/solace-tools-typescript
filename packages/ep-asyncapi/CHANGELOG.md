@@ -1,5 +1,16 @@
 # @solace-labs/ep-asyncapi
 
+## 0.56.0
+
+### Minor Changes
+
+- f1bd032e: added support for additional extensions at all levels
+
+  - shared
+  - state name & state id
+
+  upgrade asyncapi/parser to version 1.18.1
+
 ## 0.55.1
 
 ### Patch Changes

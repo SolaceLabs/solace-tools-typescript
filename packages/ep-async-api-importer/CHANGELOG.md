@@ -1,5 +1,21 @@
 # @solace-labs/ep-async-api-importer
 
+## 0.57.0
+
+### Minor Changes
+
+- 2c356b01: new features
+
+  - new env var: `CLI_IMPORT_DEFAULT_SHARED_FLAG`
+    - options: [true, false], default=true
+
+### Patch Changes
+
+- Updated dependencies [f1bd032e]
+- Updated dependencies [2c356b01]
+  - @solace-labs/ep-asyncapi@0.56.0
+  - @solace-labs/ep-sdk@0.59.1
+
 ## 0.56.1
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @solace-labs/ep-sdk
 
+## 0.59.1
+
+### Patch Changes
+
+- 2c356b01: bug fixes
+
+  - copy versions: fixed copy of shared flag
+
 ## 0.59.0
 
 ### Minor Changes
