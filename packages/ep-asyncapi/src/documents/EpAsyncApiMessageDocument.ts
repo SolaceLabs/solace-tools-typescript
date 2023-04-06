@@ -205,48 +205,6 @@ export class EpAsyncApiMessageDocument {
     return this.asyncApiMessage.name();
   }
 
-  // 
-  // schema
-  //
-
-  // on the message
-  // schemaFormat: application/vnd.aai.asyncapi+json;version=2.0.0
-  // contentType: application/protobuf
-  // schemaFormat: application/vnd.aai.asyncapi+json;version=2.0.0
-  // contentType: application/xml
-
-  // public setMessageEpContentType_Protobuf() {
-  //   const originalSpec = this.epAsyncApiDocument.getOriginalSpecAsJson();
-  //   console.log(`setMessageEpContentType_Protobuf(): originalSpec = \n${JSON.stringify(originalSpec, null, 2)}`);
-  //   // find the message
-  //   const messageName = this.getMessageName();
-  //   let x = _.find(originalSpec, (el) => { 
-  //     console.log(` el = ${JSON.stringify(el)}`)
-  //     if(el === messageName) return true; 
-    
-  //   });
-  //   console.log(`setMessageEpContentType_Protobuf(): x = \n${JSON.stringify(x, null, 2)}`);
-
-
-
-
-  //   let schemaFormat = this.asyncApiMessage.schemaFormat();
-  //   let contentType = this.asyncApiMessage.contentType();
-  //   schemaFormat = "application/vnd.aai.asyncapi+json;version=2.0.0";
-  //   contentType = "application/protobuf";
-  //   this.contentType = this.determineContentType();
-  //   this.schemaFormatType = this.determineSchemaFormatType();
-  // }
-
-  // public setMessageEpContentType_Xml() {
-  //   let schemaFormat = this.asyncApiMessage.schemaFormat();
-  //   let contentType = this.asyncApiMessage.contentType();
-  //   schemaFormat = "application/vnd.aai.asyncapi+json;version=2.0.0";
-  //   contentType = "application/xml";
-  //   this.contentType = this.determineContentType();
-  //   this.schemaFormatType = this.determineSchemaFormatType();
-  // }
-
   private getPayloadSchema_X_EpSchemaId(): string | undefined {
     const schema: Schema = this.asyncApiMessage.payload();
     if(!schema) return undefined;
