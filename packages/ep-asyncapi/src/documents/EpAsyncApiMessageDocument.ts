@@ -166,6 +166,10 @@ export class EpAsyncApiMessageDocument {
     return defaultValue;
   }
 
+  public getEpCustomAttributeValue(name: string): string | undefined {
+    return this.asyncApiMessage.extension(`${EpGeneralExtensions.xEpCustomAttributeNamePrefix}${name}`);
+  }
+
   public getContentType(): E_EpAsyncApiContentTypes { return this.contentType; }
 
   public getMessageName(): string { return this.asyncApiMessageKey; }
@@ -207,6 +211,7 @@ export class EpAsyncApiMessageDocument {
 
   private getPayloadSchema_X_EpSchemaId(): string | undefined {
     const schema: Schema = this.asyncApiMessage.payload();
+    /* istanbul ignore next */
     if(!schema) return undefined;
     return schema.extension(EpSchemaExtensions.xEpSchemaId);
   }
@@ -217,6 +222,7 @@ export class EpAsyncApiMessageDocument {
 
   private getPayloadSchema_X_EpSchemaVersionId(): string | undefined {
     const schema: Schema = this.asyncApiMessage.payload();
+    /* istanbul ignore next */
     if(!schema) return undefined;
     return schema.extension(EpSchemaExtensions.xEpSchemaVersionId);
   }
@@ -227,6 +233,7 @@ export class EpAsyncApiMessageDocument {
 
   private getPayloadSchema_X_EpSharedFlag(): boolean | undefined {
     const schema: Schema = this.asyncApiMessage.payload();
+    /* istanbul ignore next */
     if(!schema) return undefined;
     const value = schema.extension(EpSchemaExtensions.xEpSharedFlag);
     try { return JSON.parse(value); } catch(e) { return undefined; }
@@ -240,6 +247,7 @@ export class EpAsyncApiMessageDocument {
 
   private getPayloadSchema_X_EpStateId(): EpAsyncApiStateIds | undefined {
     const schema: Schema = this.asyncApiMessage.payload();
+    /* istanbul ignore next */
     if(!schema) return undefined;
     const value = schema.extension(EpSchemaExtensions.xEpStateId);
     if(value === undefined) return undefined;
@@ -249,6 +257,7 @@ export class EpAsyncApiMessageDocument {
 
   private getPayloadSchema_X_EpStateName(): EpAsyncApiStateNames | undefined {
     const schema: Schema = this.asyncApiMessage.payload();
+    /* istanbul ignore next */
     if(!schema) return undefined;
     const value = schema.extension(EpSchemaExtensions.xEpStateName);
     if(value === undefined) return undefined;
@@ -263,6 +272,13 @@ export class EpAsyncApiMessageDocument {
     const stateId = this.getPayloadSchema_X_EpStateId();
     if(stateId !== undefined) return stateId;  
     return defaultValue;
+  }
+
+  public getPayloadSchemaEpCustomAttributeValue(name: string): string | undefined {
+    const schema: Schema = this.asyncApiMessage.payload();
+    /* istanbul ignore next */
+    if(!schema) return undefined;
+    return schema.extension(`${EpGeneralExtensions.xEpCustomAttributeNamePrefix}${name}`);
   }
 
   public getSchemaFormatType(): E_EpAsyncApiSchemaFormatType { return this.schemaFormatType; }

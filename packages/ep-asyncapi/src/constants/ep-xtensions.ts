@@ -5,6 +5,7 @@ import { EpAsyncApiInternalError } from "../utils";
 export enum EpGeneralExtensions {
   xEpApplicationDomainName = "x-ep-application-domain-name",
   // xEpApplicationDomainId = "x-ep-application-domain-id"
+  xEpCustomAttributeNamePrefix = "x-ep-custom-attr-"
 }
 
 export enum EpParameterExtensions {
@@ -77,3 +78,4 @@ export const EpAsyncApiStateId2StateNameMap_get = (stateId: EpAsyncApiStateIds):
   });
   return stateName;
 }
+

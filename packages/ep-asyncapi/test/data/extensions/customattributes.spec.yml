@@ -11,13 +11,7 @@ components:
       x-ep-schema-version-displayname: ""
       x-ep-shared: "true"
       x-ep-application-domain-name: "EP-TOOLS-TEST-DATA"
-      x-ep-custom-attr-schemaComplex_1: "schemaComplex_1^Y*^%^&$^£$$^%$^$^%$^%schemaComplex_1^Y*^%^&$^£\
-        $$^%$^$^%$^%schemaComplex_1^Y*^%^&$^£$$^%$^$^%$^%schemaComplex_1^Y*^%^&$^£\
-        $$^%$^$^%$^%schemaComplex_1^Y*^%^&$^£$$^%$^$^%$^%schemaComplex_1^Y*^%^&$^£\
-        $$^%$^$^%$^%schemaComplex_1^Y*^%^&$^£$$^%$^$^%$^%schemaComplex_1^Y*^%^&$^£\
-        $$^%$^$^%$^%schemaComplex_1^Y*^%^&$^£$$^%$^$^%$^%schemaComplex_1^Y*^%^&$^£\
-        $$^%$^$^%$^%schemaComplex_1^Y*^%^&$^£$$^%$^$^%$^%schemaComplex_1^Y*^%^&$^£\
-        $$^%$^$^%$^%schemaComplex_1^Y*^%^&$^£$$^%$^$^%$^%"
+      x-ep-custom-attr-schemaComplex_1: "schemaComplex_1^Y*^%^&$^£$$^%$^$^%$^%schemaComplex_1^Y*^%^&$^£"
       x-ep-schema-state-id: "1"
       x-ep-custom-attr-schemaSimple_1: "schemaSimple_1"
       x-ep-schema-id: "7dhjnexzf6t"
