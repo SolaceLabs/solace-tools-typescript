@@ -1,5 +1,11 @@
 # @solace-labs/ep-asyncapi
 
+## 0.57.0
+
+### Minor Changes
+
+- cb1bdb7f: added custom attributes to all elements
+
 ## 0.56.0
 
 ### Minor Changes
