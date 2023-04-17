@@ -192,10 +192,10 @@ info:
   x-ep-application-id: p9ae9bpg8tc
   description: Multi-Domain Application
   x-ep-displayname: Multi-Domain Application display name
-  x-ep-state-name: RELEASED
   title: Multi-Domain Application
   x-ep-application-domain-id: y962q1pa6ue
   version: 1.0.0
   # test by name first, should never read the id
+  x-ep-state-name: draft
   x-ep-state-id: '4'
   x-ep-application-domain-name: TEST_EP_ASYNC_API_IMPORTER/state+shared.spec.ts/Main

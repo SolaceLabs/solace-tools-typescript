@@ -32,6 +32,7 @@ import {
   ECliAssetsApplicationDomainEnforcementPolicies,
   ECliImporterManagerMode,
 } from "../../src/cli-components";
+import { ECliImport_TargetLifecycleState } from "../../src/services";
 
 const scriptName: string = path.basename(__filename);
 const TestSpecName = scriptName;
@@ -130,6 +131,7 @@ describe(`${scriptName}`, () => {
       CliConfig.getCliImporterManagerOptions().createApiEventApi = false;
       CliConfig.getCliImporterManagerOptions().cliTestSetupDomainsForApis = true;
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliImport_DefaultSharedFlag = false;
+      CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliImport_DefaultStateName = ECliImport_TargetLifecycleState.DRAFT;
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_BrokerType = undefined;
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_ChannelDelimiter = undefined;
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetsApplicationDomainEnforcementPolicy = ECliAssetsApplicationDomainEnforcementPolicies.LAX;
@@ -151,6 +153,7 @@ describe(`${scriptName}`, () => {
       CliConfig.getCliImporterManagerOptions().createApiApplication = true;
       CliConfig.getCliImporterManagerOptions().createApiEventApi = false;
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliImport_DefaultSharedFlag = false;
+      CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliImport_DefaultStateName = ECliImport_TargetLifecycleState.DRAFT;
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_BrokerType = undefined;
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_ChannelDelimiter = undefined;
       CliConfig.getCliImporterManagerOptions().cliTestSetupDomainsForApis = true;
@@ -230,6 +233,7 @@ describe(`${scriptName}`, () => {
       CliConfig.getCliImporterManagerOptions().createApiEventApi = true;
       CliConfig.getCliImporterManagerOptions().cliTestSetupDomainsForApis = true;
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliImport_DefaultSharedFlag = false;
+      CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliImport_DefaultStateName = ECliImport_TargetLifecycleState.DRAFT;
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_BrokerType = undefined;
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_ChannelDelimiter = undefined;
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetsApplicationDomainEnforcementPolicy = ECliAssetsApplicationDomainEnforcementPolicies.LAX;
@@ -251,6 +255,7 @@ describe(`${scriptName}`, () => {
       CliConfig.getCliImporterManagerOptions().createApiApplication = false;
       CliConfig.getCliImporterManagerOptions().createApiEventApi = true;
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliImport_DefaultSharedFlag = false;
+      CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliImport_DefaultStateName = ECliImport_TargetLifecycleState.DRAFT;
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_BrokerType = undefined;
       CliConfig.getCliImporterManagerOptions().cliImporterOptions.cliAssetImport_ChannelDelimiter = undefined;
       CliConfig.getCliImporterManagerOptions().cliTestSetupDomainsForApis = true;

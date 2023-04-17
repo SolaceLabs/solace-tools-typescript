@@ -108,4 +108,8 @@ export class EpAsyncApiChannelParameterDocument {
     return defaultValue;
   }
 
+  public getEpCustomAttributeValue(name: string): string | undefined {
+    return this.asyncApiChannelParameter.extension(`${EpGeneralExtensions.xEpCustomAttributeNamePrefix}${name}`);
+  }
+
 }

@@ -43,6 +43,7 @@ import {
 } from "../cli-components";
 import {
   CliAsyncApiDocumentService,
+  CliEPStatesService,
   ICliPubSubEventVersionIds,
 } from "../services";
 import {
@@ -293,7 +294,7 @@ export class CliApplicationImporter extends CliAssetsImporter {
       applicationVersionSettings: {
         description: epAsyncApiDocument.getDescription(),
         displayName: epAsyncApiDocument.getEpApiVersionName(),
-        stateId: this.get_EpSdkTask_StateId(),
+        stateId: epAsyncApiDocument.getEpStateId(CliEPStatesService.getEpAsyncApiStateId(this.cliImporterOptions.cliImport_DefaultStateName)),
         declaredConsumedEventVersionIds: cliPubSubEventVersionIds.publishEventVersionIdList,
         declaredProducedEventVersionIds: cliPubSubEventVersionIds.subscribeEventVersionIdList,
       },
@@ -334,7 +335,7 @@ export class CliApplicationImporter extends CliAssetsImporter {
           applicationVersionSettings: {
             description: epAsyncApiDocument.getDescription(),
             displayName: epAsyncApiDocument.getEpApiVersionName(),
-            stateId: this.get_EpSdkTask_StateId(),
+            stateId: epAsyncApiDocument.getEpStateId(CliEPStatesService.getEpAsyncApiStateId(this.cliImporterOptions.cliImport_DefaultStateName)),
             declaredConsumedEventVersionIds: cliPubSubEventVersionIds.publishEventVersionIdList,
             declaredProducedEventVersionIds: cliPubSubEventVersionIds.subscribeEventVersionIdList,
           },
@@ -362,7 +363,7 @@ export class CliApplicationImporter extends CliAssetsImporter {
         // summary
         CliRunSummary.processedApplicationVersionWithWarning({
           targetApplicationVersion: epAsyncApiDocument.getVersion(),
-          targetApplicationState: this.get_EpSdkTask_StateId(),
+          targetApplicationState: epAsyncApiDocument.getEpStateId(CliEPStatesService.getEpAsyncApiStateId(this.cliImporterOptions.cliImport_DefaultStateName)),
           latestExistingApplicationVersionObjectBefore: latestExistingApplicationVersionObjectBefore,
           epSdkApplicationVersionTask_ExecuteReturn: epSdkApplicationVersionTask_ExecuteReturn,
           requestedUpdates: epSdkApplicationVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_IsUpdateRequiredFuncReturn?.difference,
@@ -372,7 +373,7 @@ export class CliApplicationImporter extends CliAssetsImporter {
         const requestedUpdates: any = await CliRunExecuteReturnLog.getDeepRequestedUpdates(epSdkApplicationVersionTask_ExecuteReturn_Check);
         CliRunSummary.processedApplicationVersionWithError({
           targetApplicationVersion: epAsyncApiDocument.getVersion(),
-          targetApplicationState: this.get_EpSdkTask_StateId(),
+          targetApplicationState: epAsyncApiDocument.getEpStateId(CliEPStatesService.getEpAsyncApiStateId(this.cliImporterOptions.cliImport_DefaultStateName)),
           latestExistingApplicationVersionObjectBefore: latestExistingApplicationVersionObjectBefore,
           epSdkApplicationVersionTask_ExecuteReturn: epSdkApplicationVersionTask_ExecuteReturn_Check,
           requestedUpdates: requestedUpdates,
@@ -396,7 +397,7 @@ export class CliApplicationImporter extends CliAssetsImporter {
         applicationVersionSettings: {
           description: epAsyncApiDocument.getDescription(),
           displayName: epAsyncApiDocument.getEpApiVersionName(),
-          stateId: this.get_EpSdkTask_StateId(),
+          stateId: epAsyncApiDocument.getEpStateId(CliEPStatesService.getEpAsyncApiStateId(this.cliImporterOptions.cliImport_DefaultStateName)),
           declaredConsumedEventVersionIds: cliPubSubEventVersionIds.publishEventVersionIdList,
           declaredProducedEventVersionIds: cliPubSubEventVersionIds.subscribeEventVersionIdList,
         },

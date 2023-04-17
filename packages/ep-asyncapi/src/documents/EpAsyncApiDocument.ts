@@ -31,7 +31,8 @@ import {
   EpAsyncApiStateId2StateNameMap_get, 
   EpAsyncApiStateIds, 
   EpAsyncApiStateName2StateIdMap_get, 
-  EpAsyncApiStateNames 
+  EpAsyncApiStateNames, 
+  EpGeneralExtensions
 } from "../constants";
 
 export enum E_EpAsyncApiExtensions {
@@ -448,6 +449,10 @@ export class EpAsyncApiDocument {
     const stateId = this.get_X_EpStateIdInfoLevel();
     if(stateId !== undefined) return stateId;  
     return defaultValue;
+  }
+
+  public getEpCustomAttributeValue(name: string): string | undefined {
+    return this.asyncApiDocument.info().extension(`${EpGeneralExtensions.xEpCustomAttributeNamePrefix}${name}`);
   }
 
   public getAsJson(): any { return this.asyncApiDocumentJson; }
