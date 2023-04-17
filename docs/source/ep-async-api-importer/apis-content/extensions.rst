@@ -51,6 +51,10 @@ In addition, it uses the following Event Portal extensions:
 
        Defaults to environment variable `CLI_IMPORT_DEFAULT_SHARED_FLAG` if omitted.
        
+   * - $.info.x-ep-state-name
+     - The state name for the Event API and/or Application. Options: ['draft', 'released', 'deprecated', 'retired'].
+
+       Defaults to environment variable `CLI_IMPORT_DEFAULT_STATE_NAME` if omitted.
 
 
 .. list-table:: Event Portal Message Extensions
@@ -77,6 +81,12 @@ In addition, it uses the following Event Portal extensions:
 
        Defaults to environment variable `CLI_IMPORT_DEFAULT_SHARED_FLAG` if omitted.
 
+   * - x-ep-state-name
+     - The state name for the Event. Options: ['draft', 'released', 'deprecated', 'retired'].
+
+       Defaults to environment variable `CLI_IMPORT_DEFAULT_STATE_NAME` if omitted.
+
+
        
 .. list-table:: Event Portal Schema Extensions
    :widths: 30 100
@@ -102,6 +112,10 @@ In addition, it uses the following Event Portal extensions:
 
        Defaults to environment variable `CLI_IMPORT_DEFAULT_SHARED_FLAG` if omitted.
 
+   * - x-ep-state-name
+     - The state name for the Schema. Options: ['draft', 'released', 'deprecated', 'retired'].
+
+       Defaults to environment variable `CLI_IMPORT_DEFAULT_STATE_NAME` if omitted.
 
 .. list-table:: Event Portal Channel Parameter Extensions
    :widths: 30 100
@@ -126,4 +140,10 @@ In addition, it uses the following Event Portal extensions:
      - The shared flag for the Enum.
 
        Defaults to environment variable `CLI_IMPORT_DEFAULT_SHARED_FLAG` if omitted.
+
+   * - x-ep-state-name
+     - The state name for the Enum. Options: ['draft', 'released', 'deprecated', 'retired'].
+
+       Defaults to environment variable `CLI_IMPORT_DEFAULT_STATE_NAME` if omitted.
+
 
