@@ -33,7 +33,7 @@ import {
 } from "../cli-components";
 import {
   CliEPStatesService,
-  ECliAssetImport_TargetLifecycleState,
+  ECliImport_TargetLifecycleState,
   ICliPubSubEventVersionIds,
 } from "../services";
 
@@ -46,7 +46,7 @@ export interface ICliImporterOptions {
   runId: string;
   assetOutputDir: string;
   cliImport_DefaultSharedFlag: boolean;
-  cliAssetImport_TargetLifecycleState: ECliAssetImport_TargetLifecycleState;
+  cliImport_DefaultStateName: ECliImport_TargetLifecycleState;
   cliAssetImport_TargetVersionStrategy: ECliAssetImport_TargetVersionStrategy;
   cliAssetImport_BrokerType?: EBrokerTypes;
   cliAssetImport_ChannelDelimiter?: EChannelDelimiters;
@@ -248,12 +248,6 @@ export abstract class CliImporter {
     return applicationDomain.id;
   };
 
-  protected get_EpSdkTask_StateId = (): string => {
-    return CliEPStatesService.getTargetLifecycleState({
-      cliAssetImport_TargetLifecycleState:
-        this.cliImporterOptions.cliAssetImport_TargetLifecycleState,
-    });
-  };
   protected get_EEpSdk_VersionTaskStrategy = (): EEpSdk_VersionTaskStrategy => {
     const funcName = "get_EEpSdk_VersionTaskStrategy";
     const logName = `${CliImporter.name}.${funcName}()`;

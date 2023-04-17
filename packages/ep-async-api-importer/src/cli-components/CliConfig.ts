@@ -7,7 +7,7 @@ import {
 import { EpSdkClient } from "@solace-labs/ep-sdk";
 import { DefaultAppName } from "../constants";
 import {
-  ECliAssetImport_TargetLifecycleState,
+  ECliImport_TargetLifecycleState,
 } from "../services";
 import { 
   ECliAssetImport_TargetVersionStrategy 
@@ -80,12 +80,7 @@ enum ECliConfigEnvVarNames {
   CLI_LOGGER_PRETTY_PRINT = "CLI_LOGGER_PRETTY_PRINT",
   CLI_LOGGER_LOG_SUMMARY_TO_CONSOLE = "CLI_LOGGER_LOG_SUMMARY_TO_CONSOLE",
   CLI_IMPORT_DEFAULT_SHARED_FLAG = "CLI_IMPORT_DEFAULT_SHARED_FLAG",
-
-  // breaking change:
-  // from 
-  CLI_IMPORT_ASSETS_TARGET_LIFECYLE_STATE = "CLI_IMPORT_ASSETS_TARGET_LIFECYLE_STATE",
-  // to: CLI_IMPORT_DEFAULT_STATE_NAME = "CLI_IMPORT_DEFAULT_STATE_NAME",
-
+  CLI_IMPORT_DEFAULT_STATE_NAME = "CLI_IMPORT_DEFAULT_STATE_NAME",
   CLI_IMPORT_ASSETS_TARGET_VERSION_STRATEGY = "CLI_IMPORT_ASSETS_TARGET_VERSION_STRATEGY",
   CLI_IMPORT_ASSETS_OUTPUT_DIR = "CLI_IMPORT_ASSETS_OUTPUT_DIR",
   CLI_IMPORT_CREATE_API_APPLICATION = "CLI_IMPORT_CREATE_API_APPLICATION",
@@ -111,7 +106,7 @@ const DEFAULT_CLI_LOGGER_PRETTY_PRINT = false;
 const DEFAULT_CLI_LOGGER_LOG_SUMMARY_TO_CONSOLE = true;
 
 const DEFAULT_CLI_IMPORT_DEFAULT_SHARED_FLAG = true;
-const DEFAULT_CLI_IMPORT_ASSETS_TARGET_LIFECYLE_STATE = ECliAssetImport_TargetLifecycleState.RELEASED;
+const DEFAULT_CLI_IMPORT_DEFAULT_STATE_NAME = ECliImport_TargetLifecycleState.RELEASED;
 const DEFAULT_CLI_IMPORT_ASSETS_TARGET_VERSION_STRATEGY = ECliAssetImport_TargetVersionStrategy.BUMP_PATCH;
 const DEFAULT_CLI_IMPORT_ASSET_OUTPUT_DIR = "./tmp/output";
 const DEFAULT_CLI_IMPORT_CREATE_API_APPLICATION = false;
@@ -215,11 +210,11 @@ const CliConfigEnvVarConfigList: Array<TCliConfigEnvVarConfig> = [
     options: Object.values(ECliConfigBooleanOptions),
   },
   {
-    envVarName: ECliConfigEnvVarNames.CLI_IMPORT_ASSETS_TARGET_LIFECYLE_STATE,
-    description: "The target lifecycle state of the imported assets.",
+    envVarName: ECliConfigEnvVarNames.CLI_IMPORT_DEFAULT_STATE_NAME,
+    description: "The default target state name for the imported objects if not specified in the spec.",
     required: false,
-    default: DEFAULT_CLI_IMPORT_ASSETS_TARGET_LIFECYLE_STATE,
-    options: Object.values(ECliAssetImport_TargetLifecycleState),
+    default: DEFAULT_CLI_IMPORT_DEFAULT_STATE_NAME,
+    options: Object.values(ECliImport_TargetLifecycleState),
   },
   {
     envVarName: ECliConfigEnvVarNames.CLI_IMPORT_ASSETS_TARGET_VERSION_STRATEGY,
@@ -515,7 +510,7 @@ class CliConfig {
         cliImporterOptions: {
           runId: runId,
           cliImport_DefaultSharedFlag: this.getOptionalEnvVarValueAsBoolean_WithDefault(ECliConfigEnvVarNames.CLI_IMPORT_DEFAULT_SHARED_FLAG, DEFAULT_CLI_IMPORT_DEFAULT_SHARED_FLAG),
-          cliAssetImport_TargetLifecycleState: this.getOptionalEnvVarValueAsString_From_Options_WithDefault(ECliConfigEnvVarNames.CLI_IMPORT_ASSETS_TARGET_LIFECYLE_STATE, Object.values(ECliAssetImport_TargetLifecycleState), DEFAULT_CLI_IMPORT_ASSETS_TARGET_LIFECYLE_STATE) as ECliAssetImport_TargetLifecycleState,
+          cliImport_DefaultStateName: this.getOptionalEnvVarValueAsString_From_Options_WithDefault(ECliConfigEnvVarNames.CLI_IMPORT_DEFAULT_STATE_NAME, Object.values(ECliImport_TargetLifecycleState), DEFAULT_CLI_IMPORT_DEFAULT_STATE_NAME) as ECliImport_TargetLifecycleState,
           cliAssetImport_TargetVersionStrategy: this.getOptionalEnvVarValueAsString_From_Options_WithDefault(ECliConfigEnvVarNames.CLI_IMPORT_ASSETS_TARGET_VERSION_STRATEGY, Object.values(ECliAssetImport_TargetVersionStrategy) as Array<string>, DEFAULT_CLI_IMPORT_ASSETS_TARGET_VERSION_STRATEGY as unknown as string) as unknown as ECliAssetImport_TargetVersionStrategy,
           cliAssetImport_BrokerType: this.getOptionalEnvVarValueAsString_From_Options(ECliConfigEnvVarNames.CLI_IMPORT_BROKER_TYPE, Object.values(EBrokerTypes) as Array<string>) as EBrokerTypes,
           cliAssetImport_ChannelDelimiter: this.getOptionalEnvVarValueAsString_From_Options(ECliConfigEnvVarNames.CLI_IMPORT_CHANNEL_DELIMITER, Object.values(EChannelDelimiters) as Array<string>) as EChannelDelimiters,

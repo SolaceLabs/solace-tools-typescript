@@ -161,6 +161,7 @@ export interface ICliRunSummary_Task_VersionObject extends ICliRunSummary_Task {
 export interface ICliRunSummary_Task_VersionObject_Check extends ICliRunSummary_Task, Omit<ICliRunSummary_Task_VersionObject, "type"> {
   type: ECliRunSummary_Type.VersionObjectCheck;
   exactTargetVersion: string;
+  targetVersionStateId?: string;
 }
 interface ICliRunSummary_Task_VersionObject_WarningError_Base extends ICliRunSummary_Task, Omit<ICliRunSummary_Task_VersionObject, "type"> {
   existingVersion: string;
@@ -729,14 +730,10 @@ Start Run: ${cliRunSummary_StartRun.runMode} ------------------------
       {
         type: ECliRunSummary_Type.VersionObjectCheck,
         exactTargetVersion: exactTargetVersion,
-        action:
-          epSdkEventApiVersionTask_ExecuteReturn_Check
-            .epSdkTask_TransactionLogData.epSdkTask_Action,
-        epObjectType:
-          epSdkEventApiVersionTask_ExecuteReturn_Check
-            .epSdkTask_TransactionLogData.epObjectKeys.epObjectType,
-        displayName:
-          epSdkEventApiVersionTask_ExecuteReturn_Check.epObject.displayName,
+        targetVersionStateId: epSdkEventApiVersionTask_ExecuteReturn_Check.epObject.stateId,
+        action: epSdkEventApiVersionTask_ExecuteReturn_Check.epSdkTask_TransactionLogData.epSdkTask_Action,
+        epObjectType: epSdkEventApiVersionTask_ExecuteReturn_Check.epSdkTask_TransactionLogData.epObjectKeys.epObjectType,
+        displayName: epSdkEventApiVersionTask_ExecuteReturn_Check.epObject.displayName,
         version: latestExistingEventApiVersionObjectBefore?.version,
         state: latestExistingEventApiVersionObjectBefore?.stateId,
         applicationDomainName: this.applicationDomainName,
@@ -749,11 +746,8 @@ Start Run: ${cliRunSummary_StartRun.runMode} ------------------------
         Name:     ${cliRunSummary_Task_VersionObject_Check.displayName}
         Action:   ${cliRunSummary_Task_VersionObject_Check.action}
         Exsiting Version: ${existingVersionOutput}
-        Target Version:   ${cliRunSummary_Task_VersionObject_Check.exactTargetVersion}`;
-    if (
-      cliRunSummary_Task_VersionObject_Check.action !==
-      EEpSdkTask_Action.NO_ACTION
-    ) {
+        Target Version:   ${cliRunSummary_Task_VersionObject_Check.exactTargetVersion} (state: ${cliRunSummary_Task_VersionObject_Check.targetVersionStateId})`;
+    if (cliRunSummary_Task_VersionObject_Check.action !== EEpSdkTask_Action.NO_ACTION) {
       consoleOutput += `
         Updates Required: See epSdkTask_IsUpdateRequiredFuncReturn in details.
       `;
@@ -776,6 +770,7 @@ Start Run: ${cliRunSummary_StartRun.runMode} ------------------------
     const cliRunSummary_Task_VersionObject_Check: ICliRunSummary_Task_VersionObject_Check = {
       type: ECliRunSummary_Type.VersionObjectCheck,
       exactTargetVersion: exactTargetVersion,
+      targetVersionStateId: epSdkApplicationVersionTask_ExecuteReturn_Check.epObject.stateId,
       action: epSdkApplicationVersionTask_ExecuteReturn_Check .epSdkTask_TransactionLogData.epSdkTask_Action,
       epObjectType: epSdkApplicationVersionTask_ExecuteReturn_Check.epSdkTask_TransactionLogData.epObjectKeys.epObjectType,
       displayName: epSdkApplicationVersionTask_ExecuteReturn_Check.epObject.displayName,
@@ -789,7 +784,7 @@ Start Run: ${cliRunSummary_StartRun.runMode} ------------------------
         Name:     ${cliRunSummary_Task_VersionObject_Check.displayName}
         Action:   ${cliRunSummary_Task_VersionObject_Check.action}
         Exsiting Version: ${existingVersionOutput}
-        Target Version:   ${cliRunSummary_Task_VersionObject_Check.exactTargetVersion}`;
+        Target Version:   ${cliRunSummary_Task_VersionObject_Check.exactTargetVersion} (state: ${cliRunSummary_Task_VersionObject_Check.targetVersionStateId})`;
     if(cliRunSummary_Task_VersionObject_Check.action !== EEpSdkTask_Action.NO_ACTION) {
       consoleOutput += `
         Updates Required: See epSdkTask_IsUpdateRequiredFuncReturn in details.

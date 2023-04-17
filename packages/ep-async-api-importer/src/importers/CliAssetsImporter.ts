@@ -53,7 +53,7 @@ import {
   ECliAssetsApplicationDomainEnforcementPolicies,
   ICliApiFileRunContext,
 } from "../cli-components";
-import { CliAsyncApiDocumentService } from "../services";
+import { CliAsyncApiDocumentService, CliEPStatesService } from "../services";
 import {
   CliImporter,
   ICliImporterGenerateAssetsOptions,
@@ -169,7 +169,7 @@ export abstract class CliAssetsImporter extends CliImporter {
         description: epAsyncApiChannelDocument.getEpEventDescription(),
         displayName: epAsyncApiChannelDocument.getEpEventVersionName(),
         schemaVersionId: schemaVersionId,
-        stateId: this.get_EpSdkTask_StateId(),
+        stateId: epAsyncApiMessageDocument.getEpStateId(CliEPStatesService.getEpAsyncApiStateId(this.cliImporterOptions.cliImport_DefaultStateName)),
         brokerType: epAsyncApiChannelDocument.getBrokerType()
       },
       epSdkTask_TransactionConfig: this.get_IEpSdkTask_TransactionConfig(),
@@ -299,7 +299,7 @@ export abstract class CliAssetsImporter extends CliImporter {
         // description: epAsyncApiMessageDocument.getPayloadSchemaDescription(),
         description: '',
         displayName: epAsyncApiMessageDocument.getPayloadSchemaDisplayName(),
-        stateId: this.get_EpSdkTask_StateId(),
+        stateId: epAsyncApiMessageDocument.getPayloadSchemaEpStateId(CliEPStatesService.getEpAsyncApiStateId(this.cliImporterOptions.cliImport_DefaultStateName)),
       },
       epSdkTask_TransactionConfig: this.get_IEpSdkTask_TransactionConfig(),
       checkmode: checkmode,
@@ -412,7 +412,7 @@ export abstract class CliAssetsImporter extends CliImporter {
       enumVersionSettings: {
         description: epAsyncApiChannelParameterDocument.getDescription(),
         displayName: epAsyncApiChannelParameterDocument.getDisplayName(),
-        stateId: this.get_EpSdkTask_StateId(),
+        stateId: epAsyncApiChannelParameterDocument.getEpStateId(CliEPStatesService.getEpAsyncApiStateId(this.cliImporterOptions.cliImport_DefaultStateName)),
       },
       epSdkTask_TransactionConfig: this.get_IEpSdkTask_TransactionConfig(),
       checkmode: checkmode,
