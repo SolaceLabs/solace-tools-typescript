@@ -1,5 +1,11 @@
 # @solace-labs/ep-apim-openapi-node
 
+## 0.9.0
+
+### Minor Changes
+
+- 9ddcd984: upgrade to ea.19
+
 ## 0.8.0
 
 ### Minor Changes
