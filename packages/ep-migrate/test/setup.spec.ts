@@ -1,9 +1,11 @@
 import "mocha";
 import { expect } from "chai";
 import path from "path";
-import { OpenAPI as EpOpenAPI } from "@solace-labs/ep-openapi-node";
-import { OpenAPI as EpRtOpenAPI } from "@solace-labs/ep-rt-openapi-node";
+import { OpenAPI as EpV2OpenApi} from "@solace-labs/ep-openapi-node";
+import { OpenAPI as EpV2RtOpenApi} from "@solace-labs/ep-rt-openapi-node";
+import { OpenAPI as EpV1OpenApi } from "@solace-labs/ep-v1-openapi-node";
 import {
+  EEpSdkLogLevel,
   EpSdkClient,
   EpSdkConfig,
   EpSdkConsoleLogger,
@@ -13,6 +15,8 @@ import { TestContext } from "@internal/tools/src";
 import { TestConfig, TestLogger } from "./lib";
 import { CliConfig, CliLogger, CliError } from "../src/cli-components";
 import { packageJson } from "../src/constants";
+import { CliEpV1Client } from "../src/cli-components/CliEpV1Client";
+
 
 
 // ensure any unhandled exception cause exit = 1
@@ -56,7 +60,7 @@ describe(`${scriptName}`, () => {
         TestConfig.init({ scriptDir: scriptDir });
         const epSdkConsoleLogger: EpSdkConsoleLogger = new EpSdkConsoleLogger(
           TestConfig.getAppId(),
-          TestConfig.getConfig().epSdkLogLevel
+          EEpSdkLogLevel.Silent
         );
         EpSdkLogger.initialize({ epSdkLoggerInstance: epSdkConsoleLogger });
         EpSdkConfig.initialize(TestConfig.getAppId());
@@ -70,30 +74,33 @@ describe(`${scriptName}`, () => {
 
     it(`${scriptName}: should initialize cli & ep client`, async () => {
       try {
-        CliConfig.validate_CliConfigEnvVarConfigList();
-        CliLogger.initialize({
-          cliLoggerOptions: CliConfig.getDefaultLoggerOptions(),
-        });
-        // const commandLineOptionValues: OptionValues = {
-
-        // };
+        CliLogger.initialize({cliLoggerOptions: CliConfig.getDefaultLoggerOptions()});
         CliConfig.initialize({
-          defaultAppName: TestConfig.getAppId(),
-          fileList: [],
+          cliVersion: packageJson.version,
           commandLineOptionValues: {},
-          cliVersion: packageJson.version
+          configFile: TestConfig.getConfig().configFile,
         });
-        if (TestConfig.isCi()) CliConfig.getCliLoggerOptions().logSummary2Console = false;
-        CliLogger.initialize({
-          cliLoggerOptions: CliConfig.getCliLoggerOptions(),
-        });
+        if(TestConfig.isCi()) {
+          CliConfig.getCliLoggerOptions().logSummary2Console = false;
+          CliConfig.getCliLoggerOptions().log2Stdout = false;
+        }
+        // CliConfig.getCliLoggerOptions().logFile = TestConfig.getConfig().logFile;
+        CliLogger.initialize({ cliLoggerOptions: CliConfig.getCliLoggerOptions()});
         CliConfig.logConfig();
-        EpSdkClient.initialize({
-          globalEpOpenAPI: EpOpenAPI,
-          globalEpRtOpenAPI: EpRtOpenAPI,
-          token: CliConfig.getSolaceCloudToken(),
-          baseUrl: CliConfig.getEpApiBaseUrl(),
+
+        CliEpV1Client.initialize({
+          token: CliConfig.getEpV1SolaceCloudToken(),
+          globalEpOpenAPI: EpV1OpenApi,
+          baseUrl: CliConfig.getEpV1ApiBaseUrl(),
         });
+        EpSdkClient.initialize({
+          globalEpOpenAPI: EpV2OpenApi,
+          globalEpRtOpenAPI: EpV2RtOpenApi,
+          token: CliConfig.getEpV2SolaceCloudToken(),
+          baseUrl: CliConfig.getEpV2ApiBaseUrl(),
+        });
+      
+
         // DEBUG
         // expect(false, TestLogger.createLogMessage('OpenApi', OpenAPI )).to.be.true;
       } catch (e) {

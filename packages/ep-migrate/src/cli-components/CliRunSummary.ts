@@ -505,7 +505,7 @@ Start Run: ${cliRunSummary_StartRun.runMode} ------------------------
   //   this.processedVersionObject(ECliSummaryStatusCodes.PROCESSED_APPLICATION_VERSION, epSdkApplicationVersionTask_ExecuteReturn );
   // };
 
-  private createMigrateSummary = (cliMigrateManagerMode: ECliMigrateManagerMode): ICliMigrateSummary => {
+  public createMigrateSummary = (cliMigrateManagerMode: ECliMigrateManagerMode): ICliMigrateSummary => {
     const funcName = "createMigrateSummary";
     const logName = `${CliRunSummary.name}.${funcName}()`;
 

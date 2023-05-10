@@ -9,3 +9,5 @@ export * from './CliRunExecuteReturnLog';
 export { default as CliRunExecuteReturnLog } from './CliRunExecuteReturnLog';
 export * from './CliRunSummary';
 export { default as CliRunSummary } from './CliRunSummary';
+export * from './CliMigrateManager';
+export * from './CliEpV1Client';

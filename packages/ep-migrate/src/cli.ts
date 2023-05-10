@@ -9,21 +9,20 @@ import { Command, Option, OptionValues } from "commander";
 import { OpenAPI as EpV2OpenApi} from "@solace-labs/ep-openapi-node";
 import { OpenAPI as EpV2RtOpenApi} from "@solace-labs/ep-rt-openapi-node";
 import { OpenAPI as EpV1OpenApi } from "@solace-labs/ep-v1-openapi-node";
+import { EpSdkClient } from "@solace-labs/ep-sdk";
 import { packageJson } from "./constants";
 import {
   CliError,
   CliErrorFactory,
   CliConfig,
-  // TCliConfigEnvVarConfig,
   CliLogger,
   ECliStatusCodes,
   CliConfigError,
   CliRunSummary,
   ECliRunSummary_Type,
+  CliMigrateManager,
+  CliEpV1Client
 } from "./cli-components";
-import { EpSdkClient } from "@solace-labs/ep-sdk";
-import { CliEpV1Client } from "./cli-components/CliEpV1Client";
-import { CliMigrateManager } from "./cli-components/CliMigrateManager";
 
 const ComponentName: string = path.basename(__filename);
 dotenv.config();
@@ -96,15 +95,6 @@ function initialize(commandLineOptionValues: OptionValues) {
   });
 }
 
-// function getCliConfigEnvVarHelp(): string {
-//   const cliConfigEnvVarConfigList: Array<TCliConfigEnvVarConfig> = CliConfig.get_CliConfigEnvVarConfigList4HelpDisplay();
-//   return `
-// Environment Variables:
-//   Set env vars, use .env file, or a combination of both.
-// ${JSON.stringify(cliConfigEnvVarConfigList, null, 2)}    
-// `;
-// }
-
 function getCommandLineOptionValues(): OptionValues {
   const Program = new Command();
 
@@ -126,7 +116,6 @@ function getCommandLineOptionValues(): OptionValues {
   return ovs;
 }
 
-// CliConfig.validate_CliConfigEnvVarConfigList();
 clear();
 console.log(
   chalk.red(
