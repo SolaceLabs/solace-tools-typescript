@@ -1,0 +1,947 @@
+components:
+  schemas:
+    RideRequestv2:
+      $schema: http://json-schema.org/draft-07/schema#
+      type: object
+      title: The Root Schema
+      definitions: {}
+      required:
+        - fare_id
+        - product_id
+        - start_latitude
+        - start_longitude
+        - end_latitude
+        - end_longitude
+      properties:
+        start_longitude:
+          default: 0
+          examples:
+            - -122.423941
+          type: number
+          title: The Start_longitude Schema
+          $id: '#/properties/start_longitude'
+        start_latitude:
+          default: 0
+          examples:
+            - 37.761492
+          type: number
+          title: The Start_latitude Schema
+          $id: '#/properties/start_latitude'
+        end_longitude:
+          default: 0
+          examples:
+            - -122.417546
+          type: number
+          title: The End_longitude Schema
+          $id: '#/properties/end_longitude'
+        product_id:
+          default: ''
+          examples:
+            - a1111c8c-c720-46c3-8534-2fcdd730040d
+          pattern: ^(.*)$
+          type: string
+          title: The Product_id Schema
+          $id: '#/properties/product_id'
+        fare_id:
+          default: ''
+          examples:
+            - d30e732b8bba22c9cdc10513ee86380087cb4a6f89e37ad21ba2a39f3a1ba960
+          pattern: ^(.*)$
+          type: string
+          title: The Fare_id Schema
+          $id: '#/properties/fare_id'
+        customer_id:
+          default: ''
+          examples:
+            - d30e732b8bba22c9cdc10513ee86380087cb4a6f89e37ad21ba2a39f3a1ba960
+          pattern: ^(.*)$
+          type: string
+          title: The customer_id Schema
+          $id: '#/properties/customer_id'
+        end_latitude:
+          default: 0
+          examples:
+            - 37.775393
+          type: number
+          title: The End_latitude Schema
+          $id: '#/properties/end_latitude'
+        request_id:
+          default: ''
+          examples:
+            - d30e732b8bba22c9cdc10513ee86380087cb4a6f89e37ad21ba2a39f3a1ba960
+          pattern: ^(.*)$
+          type: string
+          title: The request_id Schema
+          $id: '#/properties/request_id'
+      $id: http://example.com/root.json
+    Test:
+      $schema: http://json-schema.org/draft-07/schema#
+      type: object
+      title: The Root Schema
+      definitions: {}
+      required:
+        - request_id
+        - subtotal
+        - total_charged
+        - total_owed
+        - total_fare
+        - currency_code
+        - charge_adjustments
+        - duration
+        - distance
+        - distance_label
+      properties:
+        total_owed:
+          default: ''
+          examples:
+            - $12.78
+          type: string
+          title: The Total_owed Schema
+          $id: '#/properties/total_owed'
+        duration:
+          default: ''
+          examples:
+            - '00:11:35'
+          pattern: ^(.*)$
+          type: string
+          title: The Duration Schema
+          $id: '#/properties/duration'
+        total_charged:
+          default: ''
+          examples:
+            - $5.92
+          pattern: ^(.*)$
+          type: string
+          title: The Total_charged Schema
+          $id: '#/properties/total_charged'
+        distance:
+          default: ''
+          examples:
+            - '1.49'
+          pattern: ^(.*)$
+          type: string
+          title: The Distance Schema
+          $id: '#/properties/distance'
+        distance_label:
+          default: ''
+          examples:
+            - miles
+          pattern: ^(.*)$
+          type: string
+          title: The Distance_label Schema
+          $id: '#/properties/distance_label'
+        subtotal:
+          default: ''
+          examples:
+            - $12.78
+          xml:
+            name: xml-book
+          pattern: ^(.*)$
+          type: string
+          title: The Subtotal Schema
+          $id: '#/properties/subtotal'
+        total_fare:
+          default: ''
+          examples:
+            - $5.92
+          pattern: ^(.*)$
+          type: string
+          title: The Total_fare Schema
+          $id: '#/properties/total_fare'
+        request_id:
+          default: ''
+          examples:
+            - b5512127-a134-4bf4-b1ba-fe9f48f56d9d
+          pattern: ^(.*)$
+          type: string
+          title: The Request_id Schema
+          $id: '#/properties/request_id'
+        charge_adjustments:
+          default: []
+          examples:
+            - - amount: '-2.43'
+                name: Promotion
+                type: promotion
+              - amount: '1.00'
+                name: Booking Fee
+                type: booking_fee
+              - amount: '0.78'
+                name: Rounding Down
+                type: rounding_down
+          additionalItems: true
+          description: An explanation about the purpose of this instance.
+          type: array
+          title: The Charge_adjustments Schema
+          items:
+            default: {}
+            examples:
+              - amount: '-2.43'
+                name: Promotion
+                type: promotion
+              - amount: '1.00'
+                name: Booking Fee
+                type: booking_fee
+              - amount: '0.78'
+                name: Rounding Down
+                type: rounding_down
+            description: An explanation about the purpose of this instance.
+            type: object
+            title: The Items Schema
+            required:
+              - name
+              - amount
+              - type
+            properties:
+              amount:
+                default: ''
+                examples:
+                  - '-2.43'
+                description: An explanation about the purpose of this instance.
+                type: string
+                title: The Amount Schema
+                $id: '#/properties/charge_adjustments/items/properties/amount'
+              name:
+                default: ''
+                examples:
+                  - Promotion
+                description: An explanation about the purpose of this instance.
+                type: string
+                title: The Name Schema
+                $id: '#/properties/charge_adjustments/items/properties/name'
+              type:
+                default: ''
+                examples:
+                  - promotion
+                description: An explanation about the purpose of this instance.
+                type: string
+                title: The Type Schema
+                $id: '#/properties/charge_adjustments/items/properties/type'
+            $id: '#/properties/charge_adjustments/items'
+          $id: '#/properties/charge_adjustments'
+        currency_code:
+          default: ''
+          examples:
+            - USD
+          pattern: ^(.*)$
+          type: string
+          title: The Currency_code Schema
+          $id: '#/properties/currency_code'
+      $id: http://example.com/root.json
+    DriverRideAcceptv2:
+      $schema: http://json-schema.org/draft-07/schema#
+      type: object
+      title: The Root Schema
+      definitions: {}
+      required:
+        - request_id
+        - product_id
+        - status
+        - vehicle
+        - driver
+        - location
+        - eta
+        - surge_multiplier
+      properties:
+        eta:
+          default: 0
+          examples:
+            - 5
+          type: integer
+          title: The Eta Schema
+          $id: '#/properties/eta'
+        driver:
+          default: null
+          examples:
+            - null
+          type: 'null'
+          title: The Driver Schema
+          $id: '#/properties/driver'
+        product_id:
+          default: ''
+          examples:
+            - a1111c8c-c720-46c3-8534-2fcdd730040d
+          pattern: ^(.*)$
+          type: string
+          title: The Product_id Schema
+          $id: '#/properties/product_id'
+        surge_multiplier:
+          default: null
+          examples:
+            - null
+          type: 'null'
+          title: The Surge_multiplier Schema
+          $id: '#/properties/surge_multiplier'
+        location:
+          default: null
+          examples:
+            - null
+          type: 'null'
+          title: The Location Schema
+          $id: '#/properties/location'
+        request_id:
+          default: ''
+          examples:
+            - 852b8fdd-4369-4659-9628-e122662ad257
+          pattern: ^(.*)$
+          type: string
+          title: The Request_id Schema
+          $id: '#/properties/request_id'
+        status:
+          default: ''
+          examples:
+            - processing
+          pattern: ^(.*)$
+          type: string
+          title: The Status Schema
+          $id: '#/properties/status'
+        vehicle:
+          default: null
+          examples:
+            - null
+          type: 'null'
+          title: The Vehicle Schema
+          $id: '#/properties/vehicle'
+      $id: http://example.com/root.json
+    DriverStatusv2:
+      $schema: http://json-schema.org/draft-07/schema#
+      type: object
+      title: The Root Schema
+      definitions: {}
+      required:
+        - driver_id
+        - first_name
+        - last_name
+        - email
+        - phone_number
+        - picture
+        - promo_code
+        - rating
+        - activation_status
+      properties:
+        activation_status:
+          default: ''
+          examples:
+            - active
+          pattern: ^(.*)$
+          type: string
+          title: The Activation_status Schema
+          $id: '#/properties/activation_status'
+        driver_id:
+          default: ''
+          examples:
+            - >-
+              8LvWuRAq2511gmr8EMkovekFNa2848lyMaQevIto-aXmnK9oKNRtfTxYLgPq9OSt8EzAu5pDB7XiaQIrcp-zXgOA5EyK4h00U6D1o7aZpXIQah--U77Eh7LEBiksj2rahB==
+          pattern: ^(.*)$
+          type: string
+          title: The Driver_id Schema
+          $id: '#/properties/driver_id'
+        rating:
+          default: 0
+          examples:
+            - 5
+          type: integer
+          title: The Rating Schema
+          $id: '#/properties/rating'
+        last_name:
+          default: ''
+          examples:
+            - Tester
+          pattern: ^(.*)$
+          type: string
+          title: The Last_name Schema
+          $id: '#/properties/last_name'
+        phone_number:
+          default: ''
+          examples:
+            - '+14155550000'
+          pattern: ^(.*)$
+          type: string
+          title: The Phone_number Schema
+          $id: '#/properties/phone_number'
+        promo_code:
+          default: ''
+          examples:
+            - ubert4544ue
+          pattern: ^(.*)$
+          type: string
+          title: The Promo_code Schema
+          $id: '#/properties/promo_code'
+        first_name:
+          default: ''
+          examples:
+            - Uber
+          pattern: ^(.*)$
+          type: string
+          title: The First_name Schema
+          $id: '#/properties/first_name'
+        email:
+          default: ''
+          examples:
+            - uber.developer+tester@example.com
+          pattern: ^(.*)$
+          type: string
+          title: The Email Schema
+          $id: '#/properties/email'
+        picture:
+          default: ''
+          examples:
+            - https://d1w2poirtb3as9.cloudfront.net/16ce502f4767f17b120e.png
+          pattern: ^(.*)$
+          type: string
+          title: The Picture Schema
+          $id: '#/properties/picture'
+      $id: http://example.com/root.json
+    TripStatus:
+      $schema: http://json-schema.org/draft-07/schema#
+      type: object
+      title: The Root Schema
+      definitions: {}
+      required:
+        - fare
+        - dropoff
+        - vehicle_id
+        - distance
+        - start_city
+        - status_changes
+        - surge_multiplier
+        - pickup
+        - driver_id
+        - status
+        - duration
+        - trip_id
+        - currency_code
+      properties:
+        fare:
+          default: 0
+          examples:
+            - 6.2
+          type: number
+          title: The Fare Schema
+          $id: '#/properties/fare'
+        driver_id:
+          default: ''
+          examples:
+            - >-
+              8LvWuRAq2511gmr8EMkovekFNa2848lyMaQevIto-aXmnK9oKNRtfTxYLgPq9OSt8EzAu5pDB7XiaQIrcp-zXgOA5EyK4h00U6D1o7aZpXIQah--U77Eh7LEBiksj2rahB==
+          pattern: ^(.*)$
+          type: string
+          title: The Driver_id Schema
+          $id: '#/properties/driver_id'
+        trip_id:
+          default: ''
+          examples:
+            - b5613b6a-fe74-4704-a637-50f8d51a8bb1
+          pattern: ^(.*)$
+          type: string
+          title: The Trip_id Schema
+          $id: '#/properties/trip_id'
+        distance:
+          default: 0
+          examples:
+            - 0.37
+          type: number
+          title: The Distance Schema
+          $id: '#/properties/distance'
+        dropoff:
+          type: object
+          title: The Dropoff Schema
+          required:
+            - timestamp
+          properties:
+            timestamp:
+              default: 0
+              examples:
+                - 1502844378
+              type: integer
+              title: The Timestamp Schema
+              $id: '#/properties/dropoff/properties/timestamp'
+          $id: '#/properties/dropoff'
+        pickup:
+          type: object
+          title: The Pickup Schema
+          required:
+            - timestamp
+          properties:
+            timestamp:
+              default: 0
+              examples:
+                - 1502843903
+              type: integer
+              title: The Timestamp Schema
+              $id: '#/properties/pickup/properties/timestamp'
+          $id: '#/properties/pickup'
+        status_changes:
+          type: array
+          title: The Status_changes Schema
+          items:
+            type: object
+            title: The Items Schema
+            required:
+              - status
+              - timestamp
+            properties:
+              status:
+                default: ''
+                examples:
+                  - accepted
+                pattern: ^(.*)$
+                type: string
+                title: The Status Schema
+                $id: '#/properties/status_changes/items/properties/status'
+              timestamp:
+                default: 0
+                examples:
+                  - 1502843899
+                type: integer
+                title: The Timestamp Schema
+                $id: '#/properties/status_changes/items/properties/timestamp'
+            $id: '#/properties/status_changes/items'
+          $id: '#/properties/status_changes'
+        currency_code:
+          default: ''
+          examples:
+            - USD
+          pattern: ^(.*)$
+          type: string
+          title: The Currency_code Schema
+          $id: '#/properties/currency_code'
+        duration:
+          default: 0
+          examples:
+            - 475
+          type: integer
+          title: The Duration Schema
+          $id: '#/properties/duration'
+        surge_multiplier:
+          default: 0
+          examples:
+            - 1
+          type: integer
+          title: The Surge_multiplier Schema
+          $id: '#/properties/surge_multiplier'
+        start_city:
+          type: object
+          title: The Start_city Schema
+          required:
+            - latitude
+            - display_name
+            - longitude
+          properties:
+            latitude:
+              default: 0
+              examples:
+                - 38.3498
+              type: number
+              title: The Latitude Schema
+              $id: '#/properties/start_city/properties/latitude'
+            display_name:
+              default: ''
+              examples:
+                - Charleston, WV
+              pattern: ^(.*)$
+              type: string
+              title: The Display_name Schema
+              $id: '#/properties/start_city/properties/display_name'
+            longitude:
+              default: 0
+              examples:
+                - -81.6326
+              type: number
+              title: The Longitude Schema
+              $id: '#/properties/start_city/properties/longitude'
+          $id: '#/properties/start_city'
+        vehicle_id:
+          default: ''
+          examples:
+            - 0082b54a-6a5e-4f6b-b999-b0649f286381
+          pattern: ^(.*)$
+          type: string
+          title: The Vehicle_id Schema
+          $id: '#/properties/vehicle_id'
+        status:
+          default: ''
+          examples:
+            - completed
+          pattern: ^(.*)$
+          type: string
+          title: The Status Schema
+          $id: '#/properties/status'
+      $id: http://example.com/root.json
+  messages:
+    DriverStatusUpdated:
+      payload:
+        $ref: '#/components/schemas/DriverStatusv2'
+      description: >-
+        This event is fired by the driver device when the driver changes its
+        status. For instance is available for rides or has a ride in progress.
+      schemaFormat: application/vnd.aai.asyncapi+json;version=2.0.0
+      contentType: application/json
+    RideRequested:
+      payload:
+        $ref: '#/components/schemas/RideRequestv2'
+      description: >-
+        This Event Represents the business moment where a person seeking a ride
+        has actually requested one from point a to point b.
+      schemaFormat: application/vnd.aai.asyncapi+json;version=2.0.0
+      contentType: application/json
+    DriverRideRequested:
+      payload:
+        $ref: '#/components/schemas/RideRequestv2'
+      description: >-
+        This event is sent out to all drivers to inform them that a rider is
+        looking for a ride.
+      schemaFormat: application/vnd.aai.asyncapi+json;version=2.0.0
+      contentType: application/json
+    DriverRideAccepted:
+      payload:
+        $ref: '#/components/schemas/DriverRideAcceptv2'
+      description: >-
+        Events are fired off in guaranteed order where the driver which responds
+        first may win depending on geospatial proximity to the rider.
+      schemaFormat: application/vnd.aai.asyncapi+json;version=2.0.0
+      contentType: application/json
+    RideAccepted:
+      payload:
+        $ref: '#/components/schemas/DriverRideAcceptv2'
+      description: >-
+        Finally, the Driver Management system chooses a driver who wants the
+        ride and fires off the event so that the rider knows the ride is on its
+        way.
+      schemaFormat: application/vnd.aai.asyncapi+json;version=2.0.0
+      contentType: application/json
+    Test:
+      payload:
+        $ref: '#/components/schemas/Test'
+      description: ''
+      schemaFormat: application/vnd.aai.asyncapi+json;version=2.0.0
+      contentType: application/json
+    TripUpdated:
+      payload:
+        $ref: '#/components/schemas/TripStatus'
+      description: >-
+        This is the event that represents the overall trip for a given rider...
+        in route, picked up, dropped off, etc.
+      schemaFormat: application/vnd.aai.asyncapi+json;version=2.0.0
+      contentType: application/json
+channels:
+  acme/rideshare/test:
+    publish:
+      bindings:
+        solace:
+          bindingVersion: 0.1.0
+          destinations:
+            - destinationType: queue
+              queue:
+                name: Test Queue
+                topicSubscriptions:
+                  - acme/rideshare/test
+      message:
+        $ref: '#/components/messages/Test'
+  acme/rideshare/trip/updated/0.0.1/{region}/{device_id}/{ride_id}:
+    publish:
+      bindings:
+        solace:
+          bindingVersion: 0.1.0
+          destinations:
+            - destinationType: topic
+      message:
+        $ref: '#/components/messages/TripUpdated'
+    parameters:
+      ride_id:
+        schema:
+          type: string
+      device_id:
+        schema:
+          type: string
+      region:
+        schema:
+          type: string
+          enum:
+            - US
+            - UK
+            - CA
+            - MX
+  acme/rideshare/ride/accepted/0.0.1/{region}/{device_id}/{ride_id}:
+    subscribe:
+      message:
+        $ref: '#/components/messages/RideAccepted'
+    parameters:
+      ride_id:
+        schema:
+          type: string
+      device_id:
+        schema:
+          type: string
+      region:
+        schema:
+          type: string
+          enum:
+            - US
+            - UK
+            - CA
+            - MX
+  acme/rideshare/driver/requested/0.0.1/{region}/DriverMgmt/{ride_id}:
+    subscribe:
+      message:
+        $ref: '#/components/messages/DriverRideRequested'
+    parameters:
+      ride_id:
+        schema:
+          type: string
+      region:
+        schema:
+          type: string
+          enum:
+            - US
+            - UK
+            - CA
+            - MX
+  acme/rideshare/driver/accepted/0.0.1/{region}/{device_id}/{ride_id}:
+    publish:
+      bindings:
+        solace:
+          bindingVersion: 0.1.0
+          destinations:
+            - destinationType: topic
+      message:
+        $ref: '#/components/messages/DriverRideAccepted'
+    parameters:
+      ride_id:
+        schema:
+          type: string
+      device_id:
+        schema:
+          type: string
+      region:
+        schema:
+          type: string
+          enum:
+            - US
+            - UK
+            - CA
+            - MX
+  acme/rideshare/ride/requested/0.0.1/{region}/{device_id}/{ride_id}:
+    publish:
+      bindings:
+        solace:
+          bindingVersion: 0.1.0
+          destinations:
+            - destinationType: topic
+      message:
+        $ref: '#/components/messages/RideRequested'
+    parameters:
+      ride_id:
+        schema:
+          type: string
+      device_id:
+        schema:
+          type: string
+      region:
+        schema:
+          type: string
+          enum:
+            - US
+            - UK
+            - CA
+            - MX
+  acme/rideshare/driver/status/updated/0.0.1/{region}/{device_id}/{driver_id}:
+    publish:
+      bindings:
+        solace:
+          bindingVersion: 0.1.0
+          destinations:
+            - destinationType: topic
+      message:
+        $ref: '#/components/messages/DriverStatusUpdated'
+    parameters:
+      driver_id:
+        schema:
+          type: string
+      device_id:
+        schema:
+          type: string
+      region:
+        schema:
+          type: string
+          enum:
+            - US
+            - UK
+            - CA
+            - MX
+asyncapi: 2.0.0
+x-sep-application-domain-name: acme-rideshare/driver-management-system
+info:
+  description: >-
+    **Introduction to the API**
+
+
+    Access to the Driver API is currently limited access. If you are interested
+    in using this API, you can apply for access on the [**Drivers Product
+    Page**](https://developer.uber.com/products/drivers
+    "https://developer.uber.com/products/drivers").
+
+
+    Our Drivers API lets you build services and solutions that make the driver
+    experience more productive and rewarding. With the driver’s permission, you
+    can use trip data, earnings, ratings, and more to shape the future of the
+    on-demand economy. Through the Drivers API you can:
+
+
+    *   [**Get a drivers
+    profile**](https://developer.uber.com/docs/drivers/references/api/v1/partners-me-get
+    "https://developer.uber.com/docs/drivers/references/api/v1/partners-me-get")
+
+    *   [**Get a drivers
+    trips**](https://developer.uber.com/docs/drivers/references/api/v1/partners-trips-get
+    "https://developer.uber.com/docs/drivers/references/api/v1/partners-trips-get")
+
+    *   [**Get a drivers
+    payments**](https://developer.uber.com/docs/drivers/references/api/v1.2/partners-payments-get
+    "https://developer.uber.com/docs/drivers/references/api/v1.2/partners-payments-get")
+
+
+    [¶](https://developer.uber.com/docs/drivers/tutorials/api/introduction#registering-your-app
+    "https://developer.uber.com/docs/drivers/tutorials/api/introduction#registering-your-app")
+
+     Registering Your App
+
+    Before you dive into the code, you first need to register an application on
+    our [**Developer Dashboard**](https://developer.uber.com/dashboard/
+    "https://developer.uber.com/dashboard/"). This is where you will find all of
+    your tokens and information about your app.
+
+
+    **Note:** Organization accounts are not currently supported. Please check
+    out the
+    [**FAQs**](https://developer.uber.com/docs/riders/faq#im-a-developer-signing-up-an-account-for-my-companyorganization-what-account-details-should-i-use
+    "https://developer.uber.com/docs/riders/faq#im-a-developer-signing-up-an-account-for-my-companyorganization-what-account-details-should-i-use")
+    for more details.
+
+
+    [¶](https://developer.uber.com/docs/drivers/tutorials/api/introduction#creating-an-app
+    "https://developer.uber.com/docs/drivers/tutorials/api/introduction#creating-an-app")
+
+     Creating an App
+
+    The first step is to create an app. Open the [**developer
+    dashboard**](https://developer.uber.com/dashboard/
+    "https://developer.uber.com/dashboard/") and you should see an option to
+    create a new app. If you already have some apps, the option will be in the
+    top right corner.
+
+
+    Clicking this will bring you to the app registration page, where you need to
+    fill in some information about your app. Give it a name and a brief
+    description of what your app will do.
+
+
+    Your app is now registered and ready to setup!
+
+
+    [¶](https://developer.uber.com/docs/drivers/tutorials/api/introduction#familiarizing-yourself-with-the-dashboard
+    "https://developer.uber.com/docs/drivers/tutorials/api/introduction#familiarizing-yourself-with-the-dashboard")
+
+     Familiarizing Yourself with the Dashboard
+
+    The Developer Dashboard contains a wealth of important information about
+    your app. Throughout the setup, we will be referencing information from the
+    dashboard, so take some time to familiarize yourself with it now.
+
+
+    The dashboard consists of several tabs, but for this tutorial you will only
+    need to use the Auth tab.
+
+
+    [¶](https://developer.uber.com/docs/drivers/tutorials/api/introduction#auth-tab
+    "https://developer.uber.com/docs/drivers/tutorials/api/introduction#auth-tab")
+
+     Auth tab
+
+    The Auth tab is where you can find your app’s Client ID, Client Secret and
+    Server Token, configure the URLs your app will use for authentication, and
+    specify your app signature (more on that later). This is also where you
+    specify what scopes your app will request from the user. Note that there are
+    two types of scopes, General and Privileged. We will discuss the difference
+    in the next section.
+
+
+    [¶](https://developer.uber.com/docs/drivers/tutorials/api/introduction#choosing-the-right-scopes
+    "https://developer.uber.com/docs/drivers/tutorials/api/introduction#choosing-the-right-scopes")
+
+     Choosing the Right Scopes
+
+    Scopes grant permission to various API endpoints for your app, and will be
+    shown to the user during OAuth. It’s best to limit the scopes you need to
+    the bare minimum so that users can feel confident with your app and the
+    amount of data it can access.
+
+
+    Additionally, there are two types of scopes: General & Privileged.
+
+
+    [¶](https://developer.uber.com/docs/drivers/tutorials/api/introduction#general
+    "https://developer.uber.com/docs/drivers/tutorials/api/introduction#general")
+
+     General
+
+    General scopes allow you access information about the user, but do not allow
+    more advanced actions, such as requesting an Uber on their behalf.
+
+
+    [¶](https://developer.uber.com/docs/drivers/tutorials/api/introduction#privileged
+    "https://developer.uber.com/docs/drivers/tutorials/api/introduction#privileged")
+
+     Privileged
+
+    Privileged scopes allow advanced actions, such as requesting a ride, but
+    require your app to be approved by our team before it can be used by a wider
+    audience. During development, however, your account (and any developer
+    accounts you list on the dashboard) will be able to authorize these scopes
+    without whitelisting.
+
+
+    More in depth information on our scopes can be found in the [**scopes
+    guide**](https://developer.uber.com/docs/riders/guides/scopes
+    "https://developer.uber.com/docs/riders/guides/scopes").
+
+
+    [¶](https://developer.uber.com/docs/drivers/tutorials/api/introduction#application-ids-tokens
+    "https://developer.uber.com/docs/drivers/tutorials/api/introduction#application-ids-tokens")
+
+     Application IDs & Tokens
+
+    App ParameterDescriptionclient\_idThe _client\_id_ identifies your
+    application. Treat it like a username.client\_secretThe _client\_secret_ is
+    your application’s password. Protect it like a password and use the
+    application dashboard to get a new one should you ever suspect it has been
+    leaked.server\_tokenThe _server\_token_ can be used to make calls from your
+    server that do not require a user context.
+
+
+    **Congratulations! You have setup an app in the developer dashboard and now
+    have the credentials required to build an application for Drivers.**
+
+
+    [¶](https://developer.uber.com/docs/drivers/tutorials/api/introduction#where-to-go-from-here
+    "https://developer.uber.com/docs/drivers/tutorials/api/introduction#where-to-go-from-here")
+
+     Where to go from here
+
+    Get started implementing the driver endpoints with your preferred tools:
+
+
+    *   [**Curl**](https://developer.uber.com/docs/drivers/tutorials/api/curl
+    "https://developer.uber.com/docs/drivers/tutorials/api/curl")
+
+    *
+    [**Python**](https://developer.uber.com/docs/drivers/tutorials/api/python
+    "https://developer.uber.com/docs/drivers/tutorials/api/python")
+
+
+    Don’t see your language? There are [**official and community client
+    libraries**](https://developer.uber.com/docs/drivers/guides/client-libraries
+    "https://developer.uber.com/docs/drivers/guides/client-libraries") for
+    popular languages to help you get started building moving experiences for
+    Uber drivers.
+  title: Driver Management System
+  version: 0.0.2

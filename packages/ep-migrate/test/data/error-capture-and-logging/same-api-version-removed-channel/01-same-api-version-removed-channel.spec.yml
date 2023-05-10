@@ -1,0 +1,46 @@
+asyncapi: '2.4.0'
+x-ep-application-domain-name: ep-asyncapi-importer/test/single-tests/same-api-version-removed-channel
+info:
+  title: fail same api version removed channels
+  version: '1.0.0'
+
+defaultContentType: application/json
+
+channels:
+
+  test/channel-1:
+    x-ep-event-name: event-1
+    publish:
+      message:
+        $ref: '#/components/messages/message'
+
+  test/channel-2:
+    x-ep-event-name: event-2
+    publish:
+      message:
+        $ref: '#/components/messages/message'
+
+components:
+  messages:
+
+    message:
+      name: message
+      payload:
+        $ref: '#/components/schemas/eventSchema'
+
+  parameters:
+    the-enum:
+      schema:
+        type: string
+        enum:
+          - value-1
+          - value-2
+
+  schemas:
+    eventSchema:
+      type: object
+      properties:
+        hello:
+          type: string
+          minLength: 4
+          maxLength: 255

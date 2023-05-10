@@ -1,0 +1,27 @@
+asyncapi: '2.4.0'
+x-ep-application-domain-name: TEST_EP_ASYNC_API_IMPORTER/warning-event-api-version.spec/Main
+info:
+  title: warning-event-api-version.spec
+  version: '1.1.1'
+
+defaultContentType: application/json
+
+channels:
+
+  ep-asyncapi-importer/test/misc/warning-event-api-version.spec:
+    x-ep-event-name: test
+    description: Test channel.
+    publish:
+      message:
+        $ref: '#/components/messages/test'
+
+components:
+  messages:
+
+    test:
+      name: test
+      payload:
+        type: object
+        properties:
+          greeting:
+            type: string
