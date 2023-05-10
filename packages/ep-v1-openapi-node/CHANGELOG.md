@@ -1,5 +1,11 @@
 # @solace-labs/ep-v1-openapi-node
 
+## 0.1.4
+
+### Patch Changes
+
+- 298ce8d5: added to solace tools repo
+
 ## 0.1.3
 
 ### Patch Changes
