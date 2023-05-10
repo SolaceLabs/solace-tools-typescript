@@ -1,7 +1,5 @@
 import {
-  EEpSdkTask_Action,
   EEpSdkTask_TargetState,
-  EEpSdk_VersionTaskStrategy,
   EpSdkApplicationDomainTask,
   IEpSdkApplicationDomainTask_ExecuteReturn,
   EpSdkEnumTask,
@@ -13,21 +11,13 @@ import {
   TopicAddressEnum,
 } from "@solace-labs/ep-openapi-node";
 import {
-  CliAsyncApiSpecFeatureNotSupportedError,
   CliEPApiContentError,
   CliErrorFactory,
-  CliImporterTestRunAssetsInconsistencyError,
-  CliInternalCodeInconsistencyError,
   CliLogger,
   ECliStatusCodes,
   CliRunContext,
   ECliRunContext_RunMode,
-  ICliApiRunContext,
-  ICliGenerateApiOutputRunContext,
   CliRunSummary,
-  ECliRunSummary_Type,
-  CliUtils,
-  CliRunExecuteReturnLog,
   ICliEnumsRunContext,
   ICliEnumRunContext,
 } from "../cli-components";
@@ -43,52 +33,6 @@ import {
   EpV1EnumsService 
 } from "../epV1";
 import { ICliConfigEp2Versions } from "./types";
-
-// export interface ICliEventApiImporterOptions extends ICliAssetsImporterOptions {}
-// export interface ICliEventApiImporterGenerateAssetsOptions extends ICliImporterGenerateAssetsOptions {
-//   cliEventApiImporterRunOptions: ICliEventApiImporterRunOptions;
-//   applicationDomainId: string;
-//   eventApiId: string;
-//   eventApiVersionId: string;
-//   applicationDomainName?: string;
-//   apiTitle?: string;
-// }
-// export interface ICliEventApiImporterGenerateAssetsReturn extends ICliImporterGenerateAssetsReturn {
-//   assetOutputRootDir: string | undefined;
-//   asyncApiSpecFileNameJson: string | undefined;
-//   asyncApiSpecFileNameYaml: string | undefined;
-//   schemasOutputDir: string | undefined;
-// }
-// export interface ICliEventApiImporterRunPresentOptions extends ICliImporterRunPresentOptions {
-//   epAsyncApiDocument: EpAsyncApiDocument;
-// }
-// export interface ICliEventApiImporterRunPresentReturn extends ICliAssetsImporterRunPresentReturn {
-//   applicationDomainId: string;
-//   eventApiId: string;
-//   eventApiVersionId: string;
-//   cliAssetsImporterRunPresentReturn: ICliAssetsImporterRunPresentReturn;
-// }
-// export interface ICliEventApiImporterRunPresentEventApiReturn {
-//   eventApiId: string;
-//   eventApiVersionId: string;
-// }
-// export interface ICliEventApiImporterRunPresentEventApiVersionReturn {
-//   eventApiVersionId: string;
-// }
-// export interface ICliEventApiImporterRunImportReturn extends ICliAssetsImporterRunReturn {
-//   apiTitle: string;
-//   applicationDomainId: string;
-//   eventApiId: string;
-//   eventApiVersionId: string;
-//   cliAssetsImporterRunPresentReturn: ICliAssetsImporterRunPresentReturn;
-// }
-// export interface ICliEventApiImporterRunOptions extends ICliAssetsImporterRunOptions {
-//   generateAssetsOutput: boolean;
-// }
-// export interface ICliEventApiImporterRunReturn extends ICliAssetsImporterRunReturn {
-//   cliEventApiImporterGenerateAssetsReturn: ICliEventApiImporterGenerateAssetsReturn;
-//   cliAssetsImporterRunPresentReturn: ICliAssetsImporterRunPresentReturn;
-// }
 
 
 export interface ICliEnumsMigrateConfig {
@@ -115,85 +59,6 @@ export class CliEnumMigrator extends CliMigrator {
     super(options, runMode);
   }
 
-  // protected async run_present({ cliImporterRunPresentOptions, }: {
-  //   cliImporterRunPresentOptions: ICliEventApiImporterRunPresentOptions;
-  // }): Promise<ICliEventApiImporterRunPresentReturn> {
-  //   const funcName = "run_present";
-  //   const logName = `${CliEventApiImporter.name}.${funcName}()`;
-
-  //   const apiTitle: string = cliImporterRunPresentOptions.epAsyncApiDocument.getEpApiName();
-  //   const apiVersion: string = cliImporterRunPresentOptions.epAsyncApiDocument.getVersion();
-  //   const apiBrokerType: string = cliImporterRunPresentOptions.epAsyncApiDocument.getBrokerType();
-  //   const epApplicationDomainName: string = cliImporterRunPresentOptions.epAsyncApiDocument.getApplicationDomainName();
-  //   const epAssetApplicationDomainName: string = cliImporterRunPresentOptions.epAsyncApiDocument.getAssetsApplicationDomainName();
-
-  //   const rctxt: ICliApiRunContext = {
-  //     apiTitle: apiTitle,
-  //     apiVersion: apiVersion,
-  //     apiBrokerType: apiBrokerType,
-  //     applicationDomainName: epApplicationDomainName,
-  //     assetApplicationDomainName: epAssetApplicationDomainName,
-  //   };
-  //   CliRunContext.push(rctxt);
-  //   CliRunSummary.processingApi({cliRunSummary_Api: {
-  //     type: ECliRunSummary_Type.Api,
-  //     apiName: apiTitle,
-  //     apiVersion: apiVersion,
-  //     apiBrokerType: apiBrokerType,
-  //     applicationDomainName: epApplicationDomainName,
-  //     assetApplicationDomain: epAssetApplicationDomainName,
-  //   }});
-
-  //   // import the assets
-  //   const cliAssetsImporterRunPresentReturn: ICliAssetsImporterRunPresentReturn = await this.run_present_assets({ cliAssetsImporterRunPresentOptions: {
-  //     epAsyncApiDocument: cliImporterRunPresentOptions.epAsyncApiDocument,
-  //     checkmode: cliImporterRunPresentOptions.checkmode,
-  //   }});
-
-  //   // api application domain present
-  //   const applicationDomainsTask = new EpSdkApplicationDomainTask({
-  //     epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
-  //     applicationDomainName: cliImporterRunPresentOptions.epAsyncApiDocument.getApplicationDomainName(),
-  //     applicationDomainSettings: {
-  //       // description: "a new description x"
-  //     },
-  //     epSdkTask_TransactionConfig: this.get_IEpSdkTask_TransactionConfig(),
-  //     checkmode: cliImporterRunPresentOptions.checkmode,
-  //   });
-  //   const epSdkApplicationDomainTask_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn = await this.executeTask({
-  //     epSdkTask: applicationDomainsTask,
-  //     expectNoAction: cliImporterRunPresentOptions.checkmode,
-  //   });
-  //   CliLogger.trace(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.IMPORTING_EP_APPLICATION_DOMAIN, message: "application domain", details: {
-  //     epSdkApplicationDomainTask_ExecuteReturn: epSdkApplicationDomainTask_ExecuteReturn,
-  //   }}));
-  //   // create summary log
-  //   CliRunSummary.processedApplicationDomain({ epSdkApplicationDomainTask_ExecuteReturn: epSdkApplicationDomainTask_ExecuteReturn });
-
-  //   /* istanbul ignore next */
-  //   if (epSdkApplicationDomainTask_ExecuteReturn.epObject.id === undefined) throw new CliEPApiContentError(logName, "epSdkApplicationDomainTask_ExecuteReturn.epObject.id === undefined", {
-  //     applicationDomainObject: epSdkApplicationDomainTask_ExecuteReturn.epObject,
-  //   });
-
-  //   // present event api
-  //   const cliEventApiImporterRunPresentEventApiReturn: ICliEventApiImporterRunPresentEventApiReturn = await this.run_present_event_api({
-  //     applicationDomainId: epSdkApplicationDomainTask_ExecuteReturn.epObject.id,
-  //     assetApplicationDomainId: cliAssetsImporterRunPresentReturn.assetApplicationDomainId,
-  //     epAsyncApiDocument: cliImporterRunPresentOptions.epAsyncApiDocument,
-  //     checkmode: cliImporterRunPresentOptions.checkmode,
-  //   });
-
-  //   const cliEventApiImporterRunPresentReturn: ICliEventApiImporterRunPresentReturn = {
-  //     assetApplicationDomainId: cliAssetsImporterRunPresentReturn.assetApplicationDomainId,
-  //     applicationDomainId: epSdkApplicationDomainTask_ExecuteReturn.epObject.id,
-  //     eventApiId: cliEventApiImporterRunPresentEventApiReturn.eventApiId,
-  //     eventApiVersionId: cliEventApiImporterRunPresentEventApiReturn.eventApiVersionId,
-  //     cliAssetsImporterRunPresentReturn: cliAssetsImporterRunPresentReturn
-  //   };
-  //   CliRunContext.pop();
-  //   return cliEventApiImporterRunPresentReturn;
-  // }
-
   private async migrateEnum({ epV1Enum, epV2ApplicationDomainName, epV2ApplicationDomainId }:{
     epV1Enum: EpV1Enum;
     epV2ApplicationDomainName: string;
@@ -217,7 +82,7 @@ export class CliEnumMigrator extends CliMigrator {
       },
       epSdkTask_TransactionConfig: this.get_IEpSdkTask_TransactionConfig(),
     });
-    const epSdkEnumTask_ExecuteReturn: IEpSdkEnumTask_ExecuteReturn = await this.executeTask({epSdkTask: epSdkEnumTask, expectNoAction: false });
+    const epSdkEnumTask_ExecuteReturn: IEpSdkEnumTask_ExecuteReturn = await this.executeTask({epSdkTask: epSdkEnumTask });
     const enumObject: TopicAddressEnum = epSdkEnumTask_ExecuteReturn.epObject;
     /* istanbul ignore next */
     if (enumObject.id === undefined) throw new CliEPApiContentError(logName,"enumObject.id === undefined", { enumObject: enumObject });
@@ -245,7 +110,7 @@ export class CliEnumMigrator extends CliMigrator {
       epSdkTask_TransactionConfig: this.get_IEpSdkTask_TransactionConfig(),
       checkmode: false,
     });
-    const epSdkEnumVersionTask_ExecuteReturn: IEpSdkEnumVersionTask_ExecuteReturn = await this.executeTask({ epSdkTask: epSdkEnumVersionTask, expectNoAction: false });
+    const epSdkEnumVersionTask_ExecuteReturn: IEpSdkEnumVersionTask_ExecuteReturn = await this.executeTask({ epSdkTask: epSdkEnumVersionTask });
     CliLogger.trace(CliLogger.createLogEntry(logName, {code: ECliStatusCodes.PRESENT_EP_V2_ENUM_VERSION, details: { epSdkEnumVersionTask_ExecuteReturn }}));
     CliRunSummary.presentEpV2EnumVersion({ applicationDomainName: epV2ApplicationDomainName, epSdkEnumVersionTask_ExecuteReturn });
     CliRunContext.pop();
@@ -272,7 +137,7 @@ export class CliEnumMigrator extends CliMigrator {
       epSdkTask_TransactionConfig: this.get_IEpSdkTask_TransactionConfig(),
       checkmode: false,
     });
-    const epSdkApplicationDomainTask_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn = await this.executeTask({ epSdkTask: applicationDomainsTask, expectNoAction: false });
+    const epSdkApplicationDomainTask_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn = await this.executeTask({ epSdkTask: applicationDomainsTask });
     CliLogger.trace(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.MIGRATE_ENUMS_APPLICATION_DOMAIN, message: "application domain", details: {
       epSdkApplicationDomainTask_ExecuteReturn: epSdkApplicationDomainTask_ExecuteReturn,
     }}));
@@ -325,8 +190,6 @@ export class CliEnumMigrator extends CliMigrator {
       if (cliEnumMigratorRunReturn.error !== undefined) {
         CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.MIGRATE_ENUMS_ERROR, details: { error: cliEnumMigratorRunReturn.error }}));
       }
-      // //eslint-disable-next-line
-      // return cliEventApiImporterRunImportReturn;
     }
     return cliEnumMigratorRunReturn;
   }

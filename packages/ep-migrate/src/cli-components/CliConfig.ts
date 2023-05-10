@@ -3,15 +3,10 @@ import { ValidationError, Validator, ValidatorResult } from 'jsonschema';
 import CliConfigSchema from './CliConfigSchema.json';
 import { DefaultAppName, DefaultConfigFile } from "../constants";
 import {
-  CliConfigError,
   CliConfigFileMissingEnvVarError,
   CliConfigFileParseError,
-  CliConfigInvalidConfigCombinationError,
   CliConfigInvalidConfigFileError,
-  CliConfigInvalidEnvVarValueOptionError,
-  CliConfigInvalidUrlEnvVarError,
   CliConfigNotInitializedError,
-  CliInternalCodeInconsistencyError,
 } from "./CliError";
 import {
   CliLogger,
@@ -19,7 +14,6 @@ import {
   ECliLogger_EpSdkLogLevel,
   ECliStatusCodes,
   ICliLoggerOptions,
-  ObjectValues_TCliLogger_EpSdkLogLevel,
   TCliLogger_EpSdkLogLevel,
 } from "./CliLogger";
 import { 
@@ -30,17 +24,11 @@ import {
   ICliMigrateManagerOptions 
 } from './CliMigrateManager';
 import { 
-  ECliMigrate_TargetStates, 
-  ECliMigrate_TargetVersionStrategies, 
   ICliConfigEp2Versions,
   ICliEnumsMigrateConfig
 } from '../migrators';
 
 
-enum ECliConfigBooleanOptions {
-  TRUE = "true",
-  FALSE = "false",
-}
 export enum ECliConfigRunIdGeneration {
   AUTO = "auto",
   CUSTOM = "custom-run-id",
@@ -138,7 +126,7 @@ export interface ICliConfig {
   epV1Config: ICliEpConfig;
   epV2Config: ICliEpConfig;
   cliMigrateConfig: ICliMigrateConfig;
-};
+}
 
 class CliConfig {
   private cliVersion: string;
@@ -163,106 +151,6 @@ class CliConfig {
     )}-${pad(d.getUTCMilliseconds(), 3)}`;
   };
 
-  // public get_CliConfigEnvVarConfigList4HelpDisplay = (): Array<TCliConfigEnvVarConfig> => {
-  //   this.validate_CliConfigEnvVarConfigList();
-  //   return CliConfigEnvVarConfigList.filter((cliConfigEnvVarConfig: TCliConfigEnvVarConfig) => {
-  //     return !cliConfigEnvVarConfig.hidden;
-  //   });
-  // };
-
-  // private getOptionalEnvVarValueAsUrlWithDefault = (
-  //   envVarName: string,
-  //   defaultValue: string
-  // ): string => {
-  //   const funcName = "getOptionalEnvVarValueAsUrlWithDefault";
-  //   const logName = `${CliConfig.name}.${funcName}()`;
-  //   const value: string | undefined = process.env[envVarName];
-  //   if (!value) return this.registerEnvVarAndValue({ envVarName: envVarName, value: value, defaultValue: defaultValue });
-  //   // check if value is a valid Url
-  //   try {
-  //     const valueUrl: URL = new URL(value);
-  //     /* istanbul ignore next */
-  //     valueUrl;
-  //     return this.registerEnvVarAndValue({ envVarName: envVarName, value: value, defaultValue: defaultValue });
-  //   } catch (e: any) {
-  //     throw new CliConfigInvalidUrlEnvVarError(logName, envVarName, value, e);
-  //   }
-  // };
-
-  // private getMandatoryEnvVarValueAsString = (envVarName: string): string => {
-  //   const funcName = "getMandatoryEnvVarValueAsString";
-  //   const logName = `${CliConfig.name}.${funcName}()`;
-  //   const value: string | undefined = process.env[envVarName];
-  //   if (!value) throw new CliConfigMissingEnvVarError(logName, envVarName);
-  //   return this.registerEnvVarAndValue({ envVarName: envVarName, value: value, defaultValue: undefined });
-  // };
-
-  // private getOptionalEnvVarValueAsStringWithDefault = (
-  //   envVarName: string,
-  //   defaultValue: string
-  // ): string => {
-  //   const value: string | undefined = process.env[envVarName];
-  //   return this.registerEnvVarAndValue({ envVarName: envVarName, value: value, defaultValue: defaultValue });
-  // };
-
-  // private getOptionalEnvVarValueAsString_From_Options_WithDefault = (
-  //   envVarName: string,
-  //   options: Array<string>,
-  //   defaultValue: string
-  // ): string => {
-  //   const funcName = "getOptionalEnvVarValueAsString_From_Options_WithDefault";
-  //   const logName = `${CliConfig.name}.${funcName}()`;
-  //   const value: string | undefined = process.env[envVarName];
-  //   if (value === undefined) return this.registerEnvVarAndValue({ envVarName: envVarName, value: value, defaultValue: defaultValue });
-  //   if (!options.includes(value.toLowerCase())) throw new CliConfigInvalidEnvVarValueOptionError( logName, envVarName, value, options );
-  //   return this.registerEnvVarAndValue({ envVarName: envVarName, value: value.toLowerCase(), defaultValue: defaultValue });
-  // };
-
-  // private getOptionalEnvVarValueAsString_From_Options = ( 
-  //   envVarName: string, 
-  //   options: Array<string>
-  // ): string | undefined => {
-  //   const funcName = "getOptionalEnvVarValueAsString_From_Options";
-  //   const logName = `${CliConfig.name}.${funcName}()`;
-  //   const value: string | undefined = process.env[envVarName];
-  //   if (value === undefined) return this.registerEnvVarAndValue({ envVarName: envVarName, value: value, defaultValue: undefined });
-  //   if (!options.includes(value.toLowerCase())) throw new CliConfigInvalidEnvVarValueOptionError(logName, envVarName, value, options );
-  //   return this.registerEnvVarAndValue({ envVarName: envVarName, value: value.toLowerCase(), defaultValue: undefined });
-  // };
-
-  // private getOptionalEnvVarValueAsBoolean_WithDefault = (
-  //   envVarName: string,
-  //   defaultValue: boolean
-  // ): boolean => {
-  //   const funcName = "getOptionalEnvVarValueAsBoolean_WithDefault";
-  //   const logName = `${CliConfig.name}.${funcName}()`;
-  //   const value: string | undefined = process.env[envVarName];
-  //   if (value === undefined) return this.registerEnvVarAndValue({ envVarName: envVarName, value: value, defaultValue: defaultValue });
-  //   const options: Array<string> = Object.values(ECliConfigBooleanOptions);
-  //   if(!options.includes(value.toLowerCase())) throw new CliConfigInvalidEnvVarValueOptionError(logName, envVarName, value, options);
-  //   return this.registerEnvVarAndValue({ envVarName: envVarName, value: value.toLowerCase() === ECliConfigBooleanOptions.TRUE, defaultValue: defaultValue });
-  // };
-
-  // public validateConfig() {
-  //   const funcName = "validateConfig";
-  //   const logName = `${CliConfig.name}.${funcName}()`;
-  //   if(!this.config.cliImporterConfig.createApiApplication && !this.config.cliImporterConfig.createApiEventApi) {
-  //     throw new CliConfigInvalidConfigCombinationError(logName, {
-  //       issue: `At least one output must be selected`,
-  //       createApiApplication: String(this.config.cliImporterConfig.createApiApplication),
-  //       createApiEventApi: String(this.config.cliImporterConfig.createApiEventApi)
-  //     });
-  //   }
-  //   if(this.config.cliImporterConfig.cliImporterOptions.cliAssetsApplicationDomainEnforcementPolicy !== ECliAssetsApplicationDomainEnforcementPolicies.OFF) {
-  //     if(this.config.cliImporterConfig.cliTestSetupDomainsForApis === false) {
-  //       throw new CliConfigInvalidConfigCombinationError(logName, {
-  //         issue: `When using env var ${ECliConfigEnvVarNames.CLI_ASSETS_APPLICATION_DOMAIN_ENFORCEMENT_POLICY}=${this.config.cliImporterConfig.cliImporterOptions.cliAssetsApplicationDomainEnforcementPolicy} you must also set env var ${ECliConfigEnvVarNames.CLI_TEST_SETUP_DOMAINS_FOR_APIS}=true`,
-  //       });
-  //     }
-  //   }
-  // }
-
-
   private expandEnvVar(configFile: string, key: string, value: string): string {
     const funcName = "expandEnvVar";
     const logName = `${CliConfig.name}.${funcName}()`;
@@ -274,14 +162,16 @@ class CliConfig {
     // console.log(`${logName}: parts = ${JSON.stringify(parts, null, 2)}`);
     let theValue: string = value;
     for(let i=1; i < parts.length; i +=2 ) {
-      const part = parts[i]!;
-      // console.log(`${logName}: part = ${JSON.stringify(part, null, 2)}`);
-      const envVarName = part.slice(2, -1).trim();
-      // console.log(`${logName}: envVarName = ${JSON.stringify(envVarName, null, 2)}`);
-      const envVarValue = process.env[envVarName];
-      // console.log(`${logName}: envVarValue = ${JSON.stringify(envVarValue, null, 2)}`);
-      if(envVarValue === undefined) throw new CliConfigFileMissingEnvVarError(logName, configFile, key, envVarName);
-      theValue = envVarValue;
+      const part = parts[i];
+      if(part) {
+        // console.log(`${logName}: part = ${JSON.stringify(part, null, 2)}`);
+        const envVarName = part.slice(2, -1).trim();
+        // console.log(`${logName}: envVarName = ${JSON.stringify(envVarName, null, 2)}`);
+        const envVarValue = process.env[envVarName];
+        // console.log(`${logName}: envVarValue = ${JSON.stringify(envVarValue, null, 2)}`);
+        if(envVarValue === undefined) throw new CliConfigFileMissingEnvVarError(logName, configFile, key, envVarName);
+        theValue = envVarValue;
+      }
     }
     return theValue;
   }
@@ -307,52 +197,47 @@ class CliConfig {
       };
     }));
     // populate the config
-    try {
-      const appName = DefaultAppName;
-      const runId = this.generatedRunId();
-      this.config = {
+    const appName = DefaultAppName;
+    const runId = this.generatedRunId();
+    this.config = {
+      appName,
+      runId,
+      cliLoggerConfig: {
         appName,
+        level: configFileContents.logger.logLevel as ECliLogger_LogLevel,
+        prettyPrint: configFileContents.logger.prettyPrint,
+        log2Stdout: configFileContents.logger.log2Stdout,
+        logSummary2Console: true,
+        logFile: CliUtils.ensureDirOfFilePathExists(configFileContents.logger.logFile),
+        cliLogger_EpSdkLogLevel: configFileContents.logger.epSdkLogLevel
+      },
+      epV1Config: {
+        baseUrl: configFileContents.epV1.apiUrl,
+        token: configFileContents.epV1.token,
+      },
+      epV2Config: {
+        baseUrl: configFileContents.epV2.apiUrl,
+        token: configFileContents.epV2.token
+      },
+      cliMigrateConfig: {
+        appName, 
         runId,
-        cliLoggerConfig: {
-          appName,
-          level: configFileContents.logger.logLevel as ECliLogger_LogLevel,
-          prettyPrint: configFileContents.logger.prettyPrint,
-          log2Stdout: configFileContents.logger.log2Stdout,
-          logSummary2Console: true,
-          logFile: CliUtils.ensureDirOfFilePathExists(configFileContents.logger.logFile),
-          cliLogger_EpSdkLogLevel: configFileContents.logger.epSdkLogLevel
+        cliMigrateManagerMode: ECliMigrateManagerMode.RELEASE_MODE,
+        epV2: {
+          applicationDomainPrefix: configFileContents.migrate.epV2 ? configFileContents.migrate.epV2.applicationDomainPrefix : undefined
         },
-        epV1Config: {
-          baseUrl: configFileContents.epV1.apiUrl,
-          token: configFileContents.epV1.token,
-        },
-        epV2Config: {
-          baseUrl: configFileContents.epV2.apiUrl,
-          token: configFileContents.epV2.token
-        },
-        cliMigrateConfig: {
-          appName, 
-          runId,
-          cliMigrateManagerMode: ECliMigrateManagerMode.RELEASE_MODE,
+        enums: {
+          ...configFileContents.migrate.enums,
           epV2: {
-            applicationDomainPrefix: configFileContents.migrate.epV2 ? configFileContents.migrate.epV2.applicationDomainPrefix : undefined
-          },
-          enums: {
-            ...configFileContents.migrate.enums,
-            epV2: {
-              ...configFileContents.migrate.enums.epV2,
-              versions: {
-                ...configFileContents.migrate.epV2.versions,
-                ...configFileContents.migrate.enums.epV2.versions,
-              }
+            ...configFileContents.migrate.enums.epV2,
+            versions: {
+              ...configFileContents.migrate.epV2.versions,
+              ...configFileContents.migrate.enums.epV2.versions,
             }
           }
         }
-      };  
-    } catch(e: any) {
-      // if(!(e instanceof CliConfigError)) throw new Error(`${logName}: error=${JSON.stringify(e)}`);
-      throw e;
-    }
+      }
+    };  
   }
 
   public initialize = ({ cliVersion, commandLineOptionValues, configFile }: {

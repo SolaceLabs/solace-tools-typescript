@@ -1,30 +1,11 @@
-// import {
-//   CliApplicationImporter,
-//   ICliApplicationImporterRunReturn,
-//   CliEventApiImporter,
-//   ICliEventApiImporterRunReturn,
-//   ICliImporterOptions,
-//   ICliAssetsImporterRunOptions,
-// } from "../importers";
-// import {
-//   CliApplicationDomainsService,
-//   CliAsyncApiDocumentService,
-//   CliEventApisService,
-// } from "../services";
-// import CliAppsService from "../services/CliAppsService";
 import { CliEnumMigrator, ICliEnumMigratorRunReturn, ICliEnumsMigrateConfig } from "../migrators";
-import { CliInternalCodeInconsistencyError } from "./CliError";
 import { CliLogger, ECliStatusCodes } from "./CliLogger";
 import CliRunContext, {
   ECliRunContext_RunMode,
-  ICliApiFileRunContext,
   ICliRunContext,
-  ICliSetupTestApiRunContext,
-  ICliSetupTestDomainsContext,
 } from "./CliRunContext";
 import CliRunExecuteReturnLog from "./CliRunExecuteReturnLog";
 import CliRunSummary, { ECliRunSummary_Type } from "./CliRunSummary";
-import { CliUtils } from "./CliUtils";
 
 export enum ECliMigrateManagerMode {
   RELEASE_MODE = "release_mode",
@@ -49,8 +30,8 @@ export class CliMigrateManager {
   }
 
   private run_release_mode = async(): Promise<void> => {
-    const funcName = "run_release_mode";
-    const logName = `${CliMigrateManager.name}.${funcName}()`;
+    // const funcName = "run_release_mode";
+    // const logName = `${CliMigrateManager.name}.${funcName}()`;
 
     const rctxt: ICliRunContext = {
       runId: this.cliMigrateManagerOptions.runId,

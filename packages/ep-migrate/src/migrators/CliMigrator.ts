@@ -1,61 +1,24 @@
-import { 
-  ApplicationDomain, 
-  CustomAttribute, 
-  EventVersion 
-} from "@solace-labs/ep-openapi-node";
 import {
-  EEpSdkTask_Action,
-  EEpSdkTask_TargetState,
   EEpSdk_VersionTaskStrategy,
-  EpSdkApplicationDomainsService,
-  EpSdkApplicationDomainTask,
-  EpSdkCustomAttributeNameSourceApplicationDomainId,
-  EpSdkEpEventVersionsService,
   EpSdkTask,
-  IEpSdkApplicationDomainTask_ExecuteReturn,
   IEpSdkTask_ExecuteReturn,
   IEpSdkTask_TransactionConfig,
-  EpSdkStatesServiceClass,
   EpSdkStatesService,
   EEpSdkStateDTONames,
 } from "@solace-labs/ep-sdk";
 import {
-  CliEPApiContentError,
-  CliImporterError,
-  CliImporterTestRunAssetsInconsistencyError,
   CliInternalCodeInconsistencyError,
   CliRunExecuteReturnLog,
   CliUtils,
-  ECliAssetsApplicationDomainEnforcementPolicies,
   ECliRunContext_RunMode,
 } from "../cli-components";
 import { ECliMigrate_TargetStates, ECliMigrate_TargetVersionStrategies } from "./types";
-// import {
-//   CliEPStatesService,
-//   ECliImport_TargetLifecycleState,
-//   ICliPubSubEventVersionIds,
-// } from "../services";
+
 
 export interface ICliMigratorOptions {
   runId: string;
   applicationDomainPrefix?: string;
 }
-
-// export interface ICliImporterRunOptions {
-//   apiFile: string;
-//   applicationDomainName: string | undefined;
-//   assetApplicationDomainName: string | undefined;
-//   applicationDomainNamePrefix: string | undefined;
-//   overrideBrokerType: string | undefined;
-//   overrideChannelDelimiter: string | undefined;
-//   checkmode: boolean;
-// }
-// export interface ICliImporterRunReturn {
-//   applicationDomainName: string | undefined;
-//   assetApplicationDomainName: string | undefined;
-//   error: any;
-// }
-
 export interface ICliMigratorRunReturn {
   error: any;
 }
@@ -64,8 +27,7 @@ export abstract class CliMigrator {
   protected options: ICliMigratorOptions;
   protected transactionId: string;
   protected runMode: ECliRunContext_RunMode;
-  // private applicationDomainCache: Map<string, string> = new Map<string, string>();
-
+ 
   constructor(options: ICliMigratorOptions, runMode: ECliRunContext_RunMode) {
     this.options = options;
     this.transactionId = CliUtils.getUUID();
@@ -192,7 +154,7 @@ export abstract class CliMigrator {
           cliMigrate_TargetVersionStrategy: cliMigrate_TargetVersionStrategy ? cliMigrate_TargetVersionStrategy : 'undefined'
         });
     }
-  };
+  }
 
   protected get_IEpSdkTask_TransactionConfig = (): IEpSdkTask_TransactionConfig => {
     return {
@@ -201,22 +163,11 @@ export abstract class CliMigrator {
     };
   };
 
-  protected async executeTask({ epSdkTask, expectNoAction }: {
+  protected async executeTask({ epSdkTask }: {
     epSdkTask: EpSdkTask;
-    expectNoAction: boolean;
   }): Promise<IEpSdkTask_ExecuteReturn> {
-    const funcName = "executeTask";
-    const logName = `${CliMigrator.name}.${funcName}()`;
-
     const epSdkTask_ExecuteReturn: IEpSdkTask_ExecuteReturn = await epSdkTask.execute();
-    // save in global log
     CliRunExecuteReturnLog.add(epSdkTask_ExecuteReturn);
-    if (expectNoAction && epSdkTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action !== EEpSdkTask_Action.NO_ACTION) {
-      throw new CliImporterTestRunAssetsInconsistencyError(logName, {
-        message: `expect epSdkTask_TransactionLogData.epSdkTask_Action = '${EEpSdkTask_Action.NO_ACTION}', instead got '${epSdkTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action}'`,
-        epSdkTask_TransactionLogData: epSdkTask_ExecuteReturn.epSdkTask_TransactionLogData,
-      });
-    }
     return epSdkTask_ExecuteReturn;
   }
 

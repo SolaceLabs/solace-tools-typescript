@@ -5,7 +5,7 @@ import {
 } from "@solace-labs/ep-v1-openapi-node";
 export type EpV1Enum = Required<Enum>;
 export type EpV1EnumsResponse = EnumsResponse;
-export class EpV1EnumsService extends EnumsService {};
+export class EpV1EnumsService extends EnumsService {}
 
 export interface EpV1ApiMeta {
   pagination: {

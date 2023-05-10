@@ -45,34 +45,9 @@ export class CliUtils {
     return `${absoluteDir}/${fileName}`;
   }
 
-  public static convertStringToFilePath(str: string): string {
-    //eslint-disable-next-line
-    return str.replaceAll(/[^0-9a-zA-Z\/\.]+/g, '-');
-  }
-
   public static readYamlFile = (filePath: string): any => {
-    try {
-      const b: Buffer = fs.readFileSync(filePath);
-      return yaml.load(b.toString());
-    } catch(e) {
-      throw e;
-    }
-  }
-
-  // public static readFileContentsAsJson = (filePath: string): any => {
-  //   const b: Buffer = fs.readFileSync(filePath);
-  //   try {
-  //     return JSON.parse(b.toString());
-  //   } catch(e) {
-  //     throw e;
-  //   }
-  // }
-
-  public static saveContents2File = ({ content, filePath}: {
-    content: any;
-    filePath: string;
-  }) => {
-    fs.writeFileSync(filePath, content, { encoding: "utf8"});
+    const b: Buffer = fs.readFileSync(filePath);
+    return yaml.load(b.toString());
   }
 
   /* istanbul ignore next */

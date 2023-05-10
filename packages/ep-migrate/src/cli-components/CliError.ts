@@ -1,13 +1,19 @@
 /* istanbul ignore file */
 
-import { ApiError } from "@solace-labs/ep-openapi-node";
+import { 
+  ApiError 
+} from "@solace-labs/ep-openapi-node";
 import { 
   EpSdkError, 
-  IEpSdkTask_TransactionLogData 
 } from "@solace-labs/ep-sdk";
-import CliConfig, { ECliAssetsApplicationDomainEnforcementPolicies } from "./CliConfig";
-import { CliLogger, ECliStatusCodes } from "./CliLogger";
-import CliRunContext, { ECliRunContext_RunMode, ICliRunContext } from "./CliRunContext";
+import CliConfig from "./CliConfig";
+import { 
+  CliLogger, 
+  ECliStatusCodes 
+} from "./CliLogger";
+import CliRunContext, { 
+  ICliRunContext 
+} from "./CliRunContext";
 
 export class CliErrorFactory {
   public static createCliError = ({logName, error}: {
@@ -156,100 +162,6 @@ export class CliConfigNotInitializedError extends CliConfigError {
   }
 }
 
-export class CliConfigInvalidDirEnvVarError extends CliConfigError {
-  private static DefaultDescription = "Invalid Directory";
-  public dir: string;
-  public envVar: string;
-  public cause: string;
-  constructor(
-    internalLogName: string,
-    envVar: string,
-    dir: string,
-    cause: string
-  ) {
-    super(internalLogName, CliConfigInvalidDirEnvVarError.DefaultDescription);
-    this.dir = dir;
-    this.envVar = envVar;
-    this.cause = cause;
-  }
-}
-
-export class CliConfigInvalidUrlEnvVarError extends CliConfigError {
-  private static DefaultDescription = "Invalid URL format";
-  public url: string;
-  public envVar: string;
-  public error: any;
-  constructor(
-    internalLogName: string,
-    envVar: string,
-    url: string,
-    error: Error
-  ) {
-    super(internalLogName, CliConfigInvalidUrlEnvVarError.DefaultDescription);
-    this.error = error;
-    this.url = url;
-    this.envVar = envVar;
-  }
-}
-
-export class CliConfigInvalidConfigCombinationError extends CliConfigError {
-  private static Name = "CliConfigInvalidConfigCombinationError";
-  private static DefaultDescription = "Invalid CLI Config Combination";
-  public details: any;
-  constructor(internalLogName: string, details: any) {
-    super(internalLogName, CliConfigInvalidConfigCombinationError.DefaultDescription);
-    this.details = details;
-    this.name = CliConfigInvalidConfigCombinationError.Name;
-  }
-}
-
-export class CliConfigInvalidEnvVarValueOptionError extends CliConfigError {
-  private static DefaultDescription = "Invalid Environment Variable Option";
-  public envVarName: string;
-  public envVarValue: string;
-  public options: string;
-  constructor(
-    internalLogName: string,
-    envVarName: string,
-    envVarValue: string,
-    options: Array<string>
-  ) {
-    super(
-      internalLogName,
-      CliConfigInvalidEnvVarValueOptionError.DefaultDescription
-    );
-    this.envVarName = envVarName;
-    this.envVarValue = envVarValue;
-    this.options = options.join(", ");
-  }
-}
-
-export class CliAsyncApiParserError extends CliError {
-  protected static DefaultDescription = "Async Api Parser Error";
-  private parserError: any;
-  constructor(internalLogName: string, parserError: any) {
-    super(internalLogName, CliAsyncApiParserError.DefaultDescription);
-    this.parserError = parserError;
-  }
-}
-
-export class CliAsyncApiSpecFeatureNotSupportedError extends CliError {
-  protected static DefaultDescription =
-    "Async API Spec - Feature not supported";
-  private featureDescription: any;
-  constructor(
-    internalLogName: string,
-    message: string,
-    featureDescription: any
-  ) {
-    super(
-      internalLogName,
-      `${CliAsyncApiSpecFeatureNotSupportedError.DefaultDescription}: ${message}`
-    );
-    this.featureDescription = featureDescription;
-  }
-}
-
 export class CliInternalCodeInconsistencyError extends CliError {
   protected static DefaultDescription = "Internal Code Inconsistency Error";
   private details: any;
@@ -274,80 +186,3 @@ export class CliEPApiContentError extends CliError {
   }
 }
 
-export class EPApiResponseApiError extends CliError {
-  protected static apiDefaultDescription = "EP Api Error";
-  private apiError: ApiError;
-  constructor(
-    apiError: ApiError,
-    internalLogName: string,
-    internalMessage: string
-  ) {
-    super(internalLogName, internalMessage);
-    this.apiError = apiError;
-  }
-}
-
-export class CliImporterError extends CliError {
-  protected static DefaultDescription = "Importer Error";
-  private details: any;
-  constructor(internalLogName: string, cause: string, details: any) {
-    super(internalLogName, `${CliImporterError.DefaultDescription}: ${cause}`);
-    this.details = details;
-  }
-}
-
-export class CliImporterFeatureNotSupportedError extends CliError {
-  protected static DefaultDescription =
-    "Importer Error - Feature not supported";
-  private error: any;
-  private featureDescription: any;
-  constructor(internalLogName: string, error: any, featureDescription: any) {
-    super(
-      internalLogName,
-      CliImporterFeatureNotSupportedError.DefaultDescription
-    );
-    this.error = error;
-    this.featureDescription = featureDescription;
-  }
-}
-
-export class CliImporterTestRunAssetsInconsistencyError extends CliError {
-  protected static DefaultDescription = "Importer Test Run Assets Inconsistency Error";
-  public details: any;
-  constructor(internalLogName: string, details: any) {
-    super(internalLogName, CliImporterTestRunAssetsInconsistencyError.DefaultDescription);
-    this.details = details;
-  }
-}
-
-export type CliImporterTestRunAssetsApplicationDomainPolicyViolationErrorDetails = {
-  cliAssetsApplicationDomainEnforcementPolicy: ECliAssetsApplicationDomainEnforcementPolicies;
-  runMode: ECliRunContext_RunMode;
-  apiFile: string;
-  epObjectName: string;
-  // sourceApplicationDomainName: string; // same as target
-  targetApplicationDomainName: string;
-  allowedApplicationDomainName: string;
-  epSdkTask_TransactionLogData: IEpSdkTask_TransactionLogData;
-}
-export class CliImporterTestRunAssetsApplicationDomainPolicyViolationError extends CliError {
-  private static Name = "CliImporterTestRunAssetsApplicationDomainPolicyViolationError";
-  protected static DefaultDescription = "Not Authorized to Modify Object in Assets Application Domain - Policy Violation";
-  public details: CliImporterTestRunAssetsApplicationDomainPolicyViolationErrorDetails;
-  constructor(internalLogName: string, details: CliImporterTestRunAssetsApplicationDomainPolicyViolationErrorDetails) {
-    super(internalLogName, CliImporterTestRunAssetsApplicationDomainPolicyViolationError.DefaultDescription);
-    this.details = details;
-    this.name = CliImporterTestRunAssetsApplicationDomainPolicyViolationError.Name;
-  }
-}
-
-export class CliUsageError extends CliError {
-  protected static DefaultDescription = "CLI Usage Error";
-  public message: string;
-  public details: any;
-  constructor(internalLogName: string, message: string, details: any) {
-    super(internalLogName, `${CliUsageError.DefaultDescription}: ${message}`);
-    this.details = details;
-    this.message = message;
-  }
-}

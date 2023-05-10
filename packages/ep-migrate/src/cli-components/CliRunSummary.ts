@@ -7,7 +7,9 @@ import {
   IEpSdkTask_ExecuteReturn,
 } from "@solace-labs/ep-sdk";
 import CliConfig from "./CliConfig";
-import { CliError, CliUsageError } from "./CliError";
+import { 
+  CliError, 
+} from "./CliError";
 import {
   CliLogger,
   ECliStatusCodes,
@@ -171,24 +173,13 @@ class CliRunSummary {
   };
 
   public runError = ({ cliRunError }: { cliRunError: ICliRunError }): void => {
-    if (cliRunError.cliError instanceof CliUsageError) {
-      const consoleOutput = `
-
-  Usage Error: ------------------------  
-
-  ${cliRunError.cliError.message}
-  ${JSON.stringify(cliRunError.cliError.details, null, 2)}
-      `;
-      this.log(ECliSummaryStatusCodes.USAGE_ERROR, cliRunError, consoleOutput, true );
-    } else {
-      const consoleOutput = `
+    const consoleOutput = `
   Run Error: ------------------------
     See log file for more details.
   
   ${cliRunError.cliError}
       `;
-      this.log(ECliSummaryStatusCodes.RUN_ERROR, cliRunError, consoleOutput);
-    }
+    this.log(ECliSummaryStatusCodes.RUN_ERROR, cliRunError, consoleOutput);
   };
 
   public startRun = ({ cliRunSummary_StartRun }: {
