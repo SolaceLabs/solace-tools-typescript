@@ -1,17 +1,13 @@
 # 
-# Config file 
+# Config file for Tests
 # 
 
 logger:
   logSummary2Console: true
-  # logLevel: 
-  # - options: trace, debug, info, warn, error, fatal
   logLevel: info
   logFile: ./test/logs/ep-migrate.log
   prettyPrint: true
   log2Stdout: false
-  # epSdkLogLevel:
-  # - options: trace, debug, info, warn, error, fatal, silent
   epSdkLogLevel: silent
 epV1:
   apiUrl: https://api.solace.cloud
@@ -21,31 +17,12 @@ epV2:
   token: ${EP_MIGRATE_CLI_SOLACE_CLOUD_TOKEN_V2}
 migrate:
   epV2:
-    # applicationDomainPrefix:
-    # - optional
-    # - if specified, prepends applicationDomainPrefix to all created applicationDomains 
     applicationDomainPrefix: 'test-ep-migrate/epV1/'
-    # versions:
-    # - required
-    # - applies to all objects
-    # - can override by object
     versions:
-      # initialVersion:
-      # - format: simple, three part SemVer (e.g. 1.0.0)
-      # - the version when version object is first created
-      # - any mods of existing version, versionStrategy is applied
       initialVersion: 1.0.0
-      # versionStrategy:
-      # - version bump when existing version is found and any mods are applied to new version
-      # - options: bump_patch, bump_minor
       versionStrategy: bump_patch      
-      # state: options=Released, Draft 
-      state: Draft
+      state: Released
   enums:
     epV2:
       applicationDomainName: 'enums'
-      versions:
-        initialVersion: 2.0.0
-        versionStrategy: bump_patch      
-        state: Released
   
