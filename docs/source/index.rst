@@ -14,7 +14,6 @@ Solace Tools
   ep-asyncapi/index
   ep-sdk/index
   ep-async-api-importer/index
-  ep-migrate/index
 
 .. toctree::
   :maxdepth: 1
