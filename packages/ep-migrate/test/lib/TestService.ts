@@ -8,7 +8,7 @@ import {
 export class TestService {
 
   public static absent_EpV2_PrefixedApplicationDomains = async(prefix: string): Promise<void> => {
-    if(prefix.length < 4 ) return;
+    if(prefix.length < 2 ) return;
     const applicationDomainsResponse: ApplicationDomainsResponse = await EpSdkApplicationDomainsService.listAll({});
 
     const absentApplicationDomainNames: Array<string> = [];

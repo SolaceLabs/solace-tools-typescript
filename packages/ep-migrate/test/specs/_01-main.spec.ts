@@ -40,6 +40,7 @@ describe(`${scriptName}`, () => {
 
   after(async() => {
     TestContext.newItId();
+    await TestService.absent_EpV2_PrefixedApplicationDomains(CliConfig.getCliConfig().cliMigrateConfig.epV2.applicationDomainPrefix);
   });
 
   it(`${scriptName}: should run ep-migrate`, async () => {
