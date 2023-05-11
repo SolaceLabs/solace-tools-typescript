@@ -4,10 +4,6 @@ import {
   IEpSdkApplicationDomainTask_ExecuteReturn,
 } from "@solace-labs/ep-sdk";
 import {
-  ApplicationDomain,
-  TopicAddressEnum,
-} from "@solace-labs/ep-openapi-node";
-import {
   CliEPApiContentError,
   CliErrorFactory,
   CliLogger,
@@ -29,23 +25,20 @@ import {
   EpV1ApplicationDomainsService,
 } from "../epV1";
 import { 
-  CliSchemasMigrator, 
-  ICliSchemasMigrateConfig, 
-  ICliSchemasMigratorRunReturn 
-} from "./CliSchemasMigrator";
+  ICliMigratedApplicationDomain 
+} from "./types";
 
 
 export interface ICliApplicationDomainsMigrateConfig {
   epV2: {
+    // placeholder
   },
 }
 export interface ICliApplicationDomainsMigratorOptions extends ICliMigratorOptions {
   cliApplicationDomainsMigrateConfig: ICliApplicationDomainsMigrateConfig;
-  cliSchemasMigrateConfig: ICliSchemasMigrateConfig;
 }
 interface ICliApplicationDomainsMigratorRunMigrateReturn {
-  // should return from, to info cache for subsequent migrators
-  // applicationDomainCache: Map<string, string> = new Map<string, string>();
+  cliMigratedApplicationDomains: Array<ICliMigratedApplicationDomain>;
 }
 export interface ICliApplicationDomainsMigratorRunReturn extends ICliMigratorRunReturn {
   cliApplicationDomainsMigratorRunMigrateReturn: ICliApplicationDomainsMigratorRunMigrateReturn;
@@ -53,28 +46,10 @@ export interface ICliApplicationDomainsMigratorRunReturn extends ICliMigratorRun
 
 export class CliApplicationDomainsMigrator extends CliMigrator {
   protected options: ICliApplicationDomainsMigratorOptions;
+  private cliMigratedApplicationDomains: Array<ICliMigratedApplicationDomain> = [];
 
   constructor(options: ICliApplicationDomainsMigratorOptions, runMode: ECliRunContext_RunMode) {
     super(options, runMode);
-  }
-
-  private async migrateSchemas({ epV1ApplicationDomain, epV2ApplicationDomain }:{
-    epV1ApplicationDomain: EpV1ApplicationDomain;
-    epV2ApplicationDomain: ApplicationDomain;
-  }): Promise<void> {
-    // const funcName = 'migrateSchemas';
-    // const logName = `${CliApplicationDomainsMigrator.name}.${funcName}()`;
-
-    const cliSchemasMigrator = new CliSchemasMigrator({
-      runId: this.options.runId,
-      epV1ApplicationDomain,
-      epV2ApplicationDomain,
-      cliSchemasMigrateConfig: this.options.cliSchemasMigrateConfig,
-      }, 
-      ECliRunContext_RunMode.RELEASE,
-    );
-    const cliSchemasMigratorRunReturn: ICliSchemasMigratorRunReturn = await cliSchemasMigrator.run();
-    if(cliSchemasMigratorRunReturn.error) throw cliSchemasMigratorRunReturn.error;
   }
 
   private async migrateApplicationDomain({ epV1ApplicationDomain }:{
@@ -113,20 +88,15 @@ export class CliApplicationDomainsMigrator extends CliMigrator {
     });    
     CliRunSummary.presentEpV2ApplicationDomain({ epSdkApplicationDomainTask_ExecuteReturn });
     CliLogger.trace(CliLogger.createLogEntry(logName, {code: ECliStatusCodes.PRESENT_EP_V2_APPLICATION_DOMAIN, details: { epSdkApplicationDomainTask_ExecuteReturn }}));
-
-    // schemas
-    await this.migrateSchemas({
-      epV1ApplicationDomain,
-      epV2ApplicationDomain: epSdkApplicationDomainTask_ExecuteReturn.epObject
+    this.cliMigratedApplicationDomains.push({
+      epV1ApplicationDomain: epV1ApplicationDomain,
+      epV2ApplicationDomain: epSdkApplicationDomainTask_ExecuteReturn.epObject,
     });
-
     CliRunContext.pop();
   }
 
   private async run_migrate(): Promise<ICliApplicationDomainsMigratorRunMigrateReturn> {
-    const funcName = 'run_migrate';
-    const logName = `${CliApplicationDomainsMigrator.name}.${funcName}()`;
-    
+
     CliRunSummary.processingEpV1ApplicationDomains();
 
     // get all the application domains and walk the list
@@ -147,8 +117,9 @@ export class CliApplicationDomainsMigrator extends CliMigrator {
         nextPage = null;
       }
     }
-
+    CliRunSummary.processedEpV1ApplicationDomains();
     return {
+      cliMigratedApplicationDomains: this.cliMigratedApplicationDomains
     };
   } 
 
@@ -157,7 +128,9 @@ export class CliApplicationDomainsMigrator extends CliMigrator {
     const logName = `${CliApplicationDomainsMigrator.name}.${funcName}()`;
     CliLogger.debug(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.MIGRATE_APPLICATION_DOMAINS_START }));
     const cliApplicationDomainsMigratorRunReturn: ICliApplicationDomainsMigratorRunReturn = {
-      cliApplicationDomainsMigratorRunMigrateReturn: {},
+      cliApplicationDomainsMigratorRunMigrateReturn: {
+        cliMigratedApplicationDomains: [],
+      },
       error: undefined
     };
     try {

@@ -31,14 +31,17 @@ export enum ECliRunSummary_Type {
   MigrateSummary = "MigrateSummary",
 
   ProcessingEpV1ApplicationDomains = "ProcessingEpV1ApplicationDomains",
+  ProcessingEpV1ApplicationDomainsDone = "ProcessingEpV1ApplicationDomainsDone",
   ProcessingEpV1ApplicationDomainsNoneFound = "ProcessingEpV1ApplicationDomainsNoneFound",
   ProcessingEpV1ApplicationDomain = "ProcessingEpV1ApplicationDomain",
 
   ProcessingEpV1Enums = "ProcessingEpV1Enums",
+  ProcessingEpV1EnumsDone = "ProcessingEpV1EnumsDone",
   ProcessingEpV1EnumsNoneFound = "ProcessingEpV1EnumsNoneFound",
   ProcessingEpV1Enum = "ProcessingEpV1Enum",
 
   ProcessingEpV1Schemas = "ProcessingEpV1Schemas",
+  ProcessingEpV1SchemasDone = "ProcessingEpV1SchemasDone",
   ProcessingEpV1SchemasNoneFound = "ProcessingEpV1SchemasNoneFound",
   ProcessingEpV1Schema = "ProcessingEpV1Schema",
 
@@ -206,7 +209,7 @@ class CliRunSummary {
     const displayNameOutput = cliRunSummary_Task_VersionObject.displayName || "''"; 
     const consoleOutput = `
         ${cliRunSummary_Task_VersionObject.epObjectType}: ${displayNameOutput}@${cliRunSummary_Task_VersionObject.version}, state=${cliRunSummary_Task_VersionObject.state} (${cliRunSummary_Task_VersionObject.action})
-    `;
+`;
     this.log(code, this.addTaskElements(cliRunSummary_Task_VersionObject), consoleOutput);
   };
 
@@ -235,6 +238,13 @@ Start Run: ${cliRunSummary_StartRun.runMode} ------------------------
   Processing V1 Application Domains ...  
 `;
     this.log(ECliSummaryStatusCodes.PROCESSING_EP_V1_APPLICATION_DOMAINS, { type: ECliRunSummary_Type.ProcessingEpV1ApplicationDomains }, consoleOutput);
+  }
+  
+  public processedEpV1ApplicationDomains = () => {
+    const consoleOutput = `
+  Processing V1 Application Domains done.  
+    `;
+    this.log(ECliSummaryStatusCodes.PROCESSING_EP_V1_APPLICATION_DOMAINS_DONE, { type: ECliRunSummary_Type.ProcessingEpV1ApplicationDomainsDone }, consoleOutput);
   }
 
   public processingEpV1ApplicationDomainsNoneFound = () => {
@@ -279,6 +289,13 @@ Start Run: ${cliRunSummary_StartRun.runMode} ------------------------
   Processing V1 Enums ...  
 `;
     this.log(ECliSummaryStatusCodes.PROCESSING_EP_V1_ENUMS, { type: ECliRunSummary_Type.ProcessingEpV1Enums }, consoleOutput);
+  }
+
+  public processingEpV1EnumsDone = () => {
+    const consoleOutput = `
+  Processing V1 Enums done.  
+    `;
+    this.log(ECliSummaryStatusCodes.PROCESSING_EP_V1_ENUMS_DONE, { type: ECliRunSummary_Type.ProcessingEpV1EnumsDone }, consoleOutput);
   }
 
   public processingEpV1EnumsNoneFound = () => {
@@ -327,16 +344,23 @@ Start Run: ${cliRunSummary_StartRun.runMode} ------------------------
     this.presentEpV2VersionObject(ECliSummaryStatusCodes.PRESENT_EP_V2_ENUM_VERSION, applicationDomainName, epSdkEnumVersionTask_ExecuteReturn);
   }
 
-  public processingEpV1Schemas = () => {
-    const consoleOutput = `
-      Processing V1 Schemas ...  
+  public processingEpV1Schemas = (epV1ApplicationDomainName: string) => {
+    const consoleOutput = `\n
+  Processing V1 Schemas for Application Domain '${epV1ApplicationDomainName}' ...  
 `;
     this.log(ECliSummaryStatusCodes.PROCESSING_EP_V1_SCHEMAS, { type: ECliRunSummary_Type.ProcessingEpV1Schemas }, consoleOutput);
   }
 
+  public processingEpV1SchemasDone = (epV1ApplicationDomainName: string) => {
+    const consoleOutput = `\n
+  Processing V1 Schemas for Application Domain '${epV1ApplicationDomainName}' done.  
+    `;
+    this.log(ECliSummaryStatusCodes.PROCESSING_EP_V1_SCHEMAS_DONE, { type: ECliRunSummary_Type.ProcessingEpV1SchemasDone }, consoleOutput);
+  }
+
   public processingEpV1SchemasNoneFound = () => {
     const consoleOutput = `
-        No Schemas found.  
+      No Schemas found.  
 `;
     this.log(ECliSummaryStatusCodes.PROCESSING_EP_V1_SCHEMAS_NONE_FOUND, { type: ECliRunSummary_Type.ProcessingEpV1SchemasNoneFound }, consoleOutput);
   }
@@ -345,7 +369,7 @@ Start Run: ${cliRunSummary_StartRun.runMode} ------------------------
     schemaName: string;
   }) => {
     const consoleOutput = `
-        Processing V1 Schema '${schemaName}' ...  
+    Processing V1 Schema '${schemaName}' ...  
 `;
     const cliRunSummary_EpV1_Schema: ICliRunSummary_EpV1_Schema = {
       runMode: this.runMode,
@@ -361,7 +385,7 @@ Start Run: ${cliRunSummary_StartRun.runMode} ------------------------
     epSdkSchemaTask_ExecuteReturn: IEpSdkSchemaTask_ExecuteReturn;
   }): void => {
     const consoleOutput = `
-        V2: ${epSdkSchemaTask_ExecuteReturn.epObject.type}: ${epSdkSchemaTask_ExecuteReturn.epObject.name}, shared=${epSdkSchemaTask_ExecuteReturn.epObject.shared} (${epSdkSchemaTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action})
+      V2: ${epSdkSchemaTask_ExecuteReturn.epObject.type}: ${epSdkSchemaTask_ExecuteReturn.epObject.name}, shared=${epSdkSchemaTask_ExecuteReturn.epObject.shared} (${epSdkSchemaTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action})
 `;
     const cliRunSummary_Task_Schema: ICliRunSummary_Task_Schema = { 
       type: ECliRunSummary_Type.EpV2Schema, 
@@ -379,209 +403,6 @@ Start Run: ${cliRunSummary_StartRun.runMode} ------------------------
   }) => {
     this.presentEpV2VersionObject(ECliSummaryStatusCodes.PRESENT_EP_V2_SCHEMA_VERSION, applicationDomainName, epSdkSchemaVersionTask_ExecuteReturn);
   }
-
-  // public processedSchema = ({ epSdkSchemaTask_ExecuteReturn }: {
-  //   epSdkSchemaTask_ExecuteReturn: IEpSdkSchemaTask_ExecuteReturn;
-  // }): void => {
-  //   const consoleOutput = `
-  //       ${epSdkSchemaTask_ExecuteReturn.epObject.type}:
-  //         ${epSdkSchemaTask_ExecuteReturn.epObject.name}, shared=${epSdkSchemaTask_ExecuteReturn.epObject.shared} (${epSdkSchemaTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action})
-  //   `;
-  //   const cliRunSummary_Task_Schema: ICliRunSummary_Task_Schema = { 
-  //     type: ECliRunSummary_Type.Schema, 
-  //     name: epSdkSchemaTask_ExecuteReturn.epObject.name ? epSdkSchemaTask_ExecuteReturn.epObject.name : "undefined",
-  //     shared: epSdkSchemaTask_ExecuteReturn.epObject.shared || "undefined",
-  //     action: epSdkSchemaTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action,
-  //     applicationDomainName: this.assetApplicationDomainName,
-  //   };
-  //   this.log(ECliSummaryStatusCodes.PROCESSED_SCHEMA, this.addTaskElements(cliRunSummary_Task_Schema), consoleOutput );
-  // };
-
-  // public processedEvent = ({ epSdkEpEventTask_ExecuteReturn }: {
-  //   epSdkEpEventTask_ExecuteReturn: IEpSdkEpEventTask_ExecuteReturn;
-  // }): void => {
-  //   const consoleOutput = `
-  //       ${epSdkEpEventTask_ExecuteReturn.epObject.type}:
-  //         ${epSdkEpEventTask_ExecuteReturn.epObject.name}, shared=${epSdkEpEventTask_ExecuteReturn.epObject.shared} (${epSdkEpEventTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action})
-  //   `;
-  //   const cliRunSummary_Task_Event: ICliRunSummary_Task_Event = { 
-  //     type: ECliRunSummary_Type.Event, 
-  //     name: epSdkEpEventTask_ExecuteReturn.epObject.name ? epSdkEpEventTask_ExecuteReturn.epObject.name : "undefined",
-  //     shared: epSdkEpEventTask_ExecuteReturn.epObject.shared || "undefined",
-  //     action: epSdkEpEventTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action,
-  //     applicationDomainName: this.assetApplicationDomainName,
-  //   };
-  //   this.log(ECliSummaryStatusCodes.PROCESSED_EVENT, this.addTaskElements(cliRunSummary_Task_Event), consoleOutput );
-  // };
-
-  // public processedSchemaVersion = ({epSdkSchemaVersionTask_ExecuteReturn,}: {
-  //   epSdkSchemaVersionTask_ExecuteReturn: IEpSdkSchemaVersionTask_ExecuteReturn;
-  // }): void => {
-  //   this.processedVersionObject(ECliSummaryStatusCodes.PROCESSED_SCHEMA_VERSION, epSdkSchemaVersionTask_ExecuteReturn);
-  // };
-
-  // public processedEventVersion = ({ epSdkEpEventVersionTask_ExecuteReturn, }: {
-  //   epSdkEpEventVersionTask_ExecuteReturn: IEpSdkEpEventVersionTask_ExecuteReturn;
-  // }): void => {
-  //   const brokerType = epSdkEpEventVersionTask_ExecuteReturn.epObject.deliveryDescriptor?.brokerType;
-  //   this.processedVersionObject(ECliSummaryStatusCodes.PROCESSED_EVENT_VERSION, epSdkEpEventVersionTask_ExecuteReturn, brokerType);
-  // };
-
-  // public processingStartApplicationVersion = ({ exactTargetVersion, epSdkApplicationVersionTask_ExecuteReturn_Check, latestExistingApplicationVersionObjectBefore }: {
-  //   exactTargetVersion: string;
-  //   epSdkApplicationVersionTask_ExecuteReturn_Check: IEpSdkApplicationVersionTask_ExecuteReturn;
-  //   latestExistingApplicationVersionObjectBefore?: ApplicationVersion;
-  // }): void => {
-  //   const cliRunSummary_Task_VersionObject_Check: ICliRunSummary_Task_VersionObject_Check = {
-  //     type: ECliRunSummary_Type.VersionObjectCheck,
-  //     exactTargetVersion: exactTargetVersion,
-  //     targetVersionStateId: epSdkApplicationVersionTask_ExecuteReturn_Check.epObject.stateId,
-  //     action: epSdkApplicationVersionTask_ExecuteReturn_Check .epSdkTask_TransactionLogData.epSdkTask_Action,
-  //     epObjectType: epSdkApplicationVersionTask_ExecuteReturn_Check.epSdkTask_TransactionLogData.epObjectKeys.epObjectType,
-  //     displayName: epSdkApplicationVersionTask_ExecuteReturn_Check.epObject.displayName,
-  //     version: latestExistingApplicationVersionObjectBefore?.version,
-  //     state: latestExistingApplicationVersionObjectBefore?.stateId,
-  //     applicationDomainName: this.applicationDomainName,
-  //   };
-  //   const existingVersionOutput = latestExistingApplicationVersionObjectBefore ? `${cliRunSummary_Task_VersionObject_Check.version} (state: ${cliRunSummary_Task_VersionObject_Check.state})` : "None.";
-  //   let consoleOutput = `
-  //     Run Check for ${cliRunSummary_Task_VersionObject_Check.epObjectType}:
-  //       Name:     ${cliRunSummary_Task_VersionObject_Check.displayName}
-  //       Action:   ${cliRunSummary_Task_VersionObject_Check.action}
-  //       Exsiting Version: ${existingVersionOutput}
-  //       Target Version:   ${cliRunSummary_Task_VersionObject_Check.exactTargetVersion} (state: ${cliRunSummary_Task_VersionObject_Check.targetVersionStateId})`;
-  //   if(cliRunSummary_Task_VersionObject_Check.action !== EEpSdkTask_Action.NO_ACTION) {
-  //     consoleOutput += `
-  //       Updates Required: See epSdkTask_IsUpdateRequiredFuncReturn in details.
-  //     `;
-  //   } else {
-  //     consoleOutput += `
-  //     `;
-  //   }
-  //   this.log(ECliSummaryStatusCodes.PROCESSING_START_APPLICATION_VERSION, this.addTaskElements(cliRunSummary_Task_VersionObject_Check), consoleOutput );
-  // };
-
-  // public processedApplicationVersionWithError = ({ targetApplicationVersion, targetApplicationState, epSdkApplicationVersionTask_ExecuteReturn, latestExistingApplicationVersionObjectBefore, requestedUpdates }: {
-  //   targetApplicationVersion: string;
-  //   targetApplicationState: string;
-  //   epSdkApplicationVersionTask_ExecuteReturn: IEpSdkApplicationVersionTask_ExecuteReturn;
-  //   latestExistingApplicationVersionObjectBefore: ApplicationVersion;
-  //   requestedUpdates: any;
-  // }): void => {
-  //   const cliRunSummary_Task_VersionObject_Error: ICliRunSummary_Task_VersionObject_Error = {
-  //       type: ECliRunSummary_Type.ApplicationVersioningError,
-  //       action: epSdkApplicationVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action,
-  //       epObjectType: epSdkApplicationVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epObjectKeys.epObjectType,
-  //       displayName: epSdkApplicationVersionTask_ExecuteReturn.epObject.displayName,
-  //       existingVersion: latestExistingApplicationVersionObjectBefore.version ? latestExistingApplicationVersionObjectBefore.version : "undefined",
-  //       existingVersionState: latestExistingApplicationVersionObjectBefore.stateId ? latestExistingApplicationVersionObjectBefore.stateId : "undefined",
-  //       targetVersion: targetApplicationVersion,
-  //       targetVersionState: targetApplicationState,
-  //       newVersion: epSdkApplicationVersionTask_ExecuteReturn.epObject.version ? epSdkApplicationVersionTask_ExecuteReturn.epObject.version : "undefined",
-  //       newVersionState: epSdkApplicationVersionTask_ExecuteReturn.epObject.stateId ? epSdkApplicationVersionTask_ExecuteReturn.epObject.stateId : "undefined",
-  //       requestedUpdates: requestedUpdates,
-  //       applicationDomainName: this.applicationDomainName,
-  //     };
-  //   let consoleOutput: string;
-  //   if ( cliRunSummary_Task_VersionObject_Error.action === EEpSdkTask_Action.NO_ACTION) {
-  //     consoleOutput = `
-  //     Run Error for ${cliRunSummary_Task_VersionObject_Error.epObjectType}:
-  //       Error:    Inconsistent Application Versions
-  //       API Name: ${cliRunSummary_Task_VersionObject_Error.displayName}
-  //       Action:   ${cliRunSummary_Task_VersionObject_Error.action}
-  //       Existing Version: ${cliRunSummary_Task_VersionObject_Error.existingVersion}
-  //       Existing State:   ${cliRunSummary_Task_VersionObject_Error.existingVersionState}
-  //       Target Version:   ${cliRunSummary_Task_VersionObject_Error.targetVersion}
-  //       Target State:     ${cliRunSummary_Task_VersionObject_Error.targetVersionState}
-  //     `;
-  //   } else if (cliRunSummary_Task_VersionObject_Error.action === EEpSdkTask_Action.WOULD_FAIL_CREATE_NEW_VERSION_ON_EXACT_VERSION_REQUIREMENT) {
-  //     consoleOutput = `
-  //     Run Error for ${cliRunSummary_Task_VersionObject_Error.epObjectType}:
-  //       Error:    Inconsistent Application Versions
-  //       API Name: ${cliRunSummary_Task_VersionObject_Error.displayName}
-  //       Action:   ${cliRunSummary_Task_VersionObject_Error.action}
-  //       Existing Version: ${cliRunSummary_Task_VersionObject_Error.existingVersion}
-  //       Existing State:   ${cliRunSummary_Task_VersionObject_Error.existingVersionState}
-  //       Target Version:   ${cliRunSummary_Task_VersionObject_Error.targetVersion}
-  //       Target State:     ${cliRunSummary_Task_VersionObject_Error.targetVersionState}
-  //       New Version:      ${cliRunSummary_Task_VersionObject_Error.newVersion}
-  //       New State:        ${cliRunSummary_Task_VersionObject_Error.newVersionState}
-  //     `;
-  //   } else {
-  //     consoleOutput = `
-  //     Run Error for ${cliRunSummary_Task_VersionObject_Error.epObjectType}:
-  //       Error:    Inconsistent Application Versions
-  //       API Name: ${cliRunSummary_Task_VersionObject_Error.displayName}
-  //       Action:   ${cliRunSummary_Task_VersionObject_Error.action}
-  //       Existing Version: ${cliRunSummary_Task_VersionObject_Error.existingVersion}
-  //       Existing State:   ${cliRunSummary_Task_VersionObject_Error.existingVersionState}
-  //       Target Version:   ${cliRunSummary_Task_VersionObject_Error.targetVersion}
-  //       Target State:     ${cliRunSummary_Task_VersionObject_Error.targetVersionState}
-  //       Created Version:  ${cliRunSummary_Task_VersionObject_Error.newVersion}
-  //       Created State:    ${cliRunSummary_Task_VersionObject_Error.newVersionState}
-  //     `;
-  //   }
-  //   this.log(ECliSummaryStatusCodes.PROCESSED_APPLICATION_VERSION, this.addTaskElements(cliRunSummary_Task_VersionObject_Error), consoleOutput );
-  //   this.processedVersionObject(ECliSummaryStatusCodes.PROCESSED_APPLICATION_VERSION, epSdkApplicationVersionTask_ExecuteReturn);
-  // };
-
-
-  // public processedApplicationVersionWithWarning = ({ targetApplicationState, targetApplicationVersion, epSdkApplicationVersionTask_ExecuteReturn, latestExistingApplicationVersionObjectBefore, requestedUpdates }: {
-  //   targetApplicationVersion: string;
-  //   targetApplicationState: string;
-  //   epSdkApplicationVersionTask_ExecuteReturn: IEpSdkApplicationVersionTask_ExecuteReturn;
-  //   latestExistingApplicationVersionObjectBefore: ApplicationVersion;
-  //   requestedUpdates: any;
-  // }): void => {
-  //   const cliRunSummary_Task_VersionObject_Warning: ICliRunSummary_Task_VersionObject_Warning = {
-  //     type: ECliRunSummary_Type.VersionObjectWarning,
-  //     action: epSdkApplicationVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action,
-  //     epObjectType: epSdkApplicationVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epObjectKeys.epObjectType,
-  //     displayName: epSdkApplicationVersionTask_ExecuteReturn.epObject.displayName,
-  //     existingVersion: latestExistingApplicationVersionObjectBefore.version ? latestExistingApplicationVersionObjectBefore.version : "undefined",
-  //     existingVersionState: latestExistingApplicationVersionObjectBefore.stateId ? latestExistingApplicationVersionObjectBefore.stateId : "undefined",
-  //     targetVersion: targetApplicationVersion,
-  //     targetVersionState: targetApplicationState,
-  //     newVersion: epSdkApplicationVersionTask_ExecuteReturn.epObject.version ? epSdkApplicationVersionTask_ExecuteReturn.epObject.version : "undefined",
-  //     newVersionState: epSdkApplicationVersionTask_ExecuteReturn.epObject.stateId ? epSdkApplicationVersionTask_ExecuteReturn.epObject.stateId : "undefined",
-  //     requestedUpdates: requestedUpdates,
-  //     applicationDomainName: this.applicationDomainName,
-  //   };
-  //   let consoleOutput: string;
-  //   if(cliRunSummary_Task_VersionObject_Warning.action === EEpSdkTask_Action.NO_ACTION ) {
-  //     consoleOutput = `
-  //     Run Warning for ${cliRunSummary_Task_VersionObject_Warning.epObjectType}:
-  //       Warning:  Inconsistent Application Versions
-  //       Name:     ${cliRunSummary_Task_VersionObject_Warning.displayName}
-  //       Action:   ${cliRunSummary_Task_VersionObject_Warning.action}
-  //       Existing Version: ${cliRunSummary_Task_VersionObject_Warning.existingVersion}
-  //       Existing State:   ${cliRunSummary_Task_VersionObject_Warning.existingVersionState}
-  //       Target Version:   ${cliRunSummary_Task_VersionObject_Warning.targetVersion}
-  //       Target State:     ${cliRunSummary_Task_VersionObject_Warning.targetVersionState}
-  //     `;
-  //   } else {
-  //     consoleOutput = `
-  //     Run Warning for ${cliRunSummary_Task_VersionObject_Warning.epObjectType}:
-  //       Warning:  Inconsistent Application Versions
-  //       Name:     ${cliRunSummary_Task_VersionObject_Warning.displayName}
-  //       Action:   ${cliRunSummary_Task_VersionObject_Warning.action}
-  //       Existing Version: ${cliRunSummary_Task_VersionObject_Warning.existingVersion}
-  //       Existing State:   ${cliRunSummary_Task_VersionObject_Warning.existingVersionState}
-  //       Target Version:   ${cliRunSummary_Task_VersionObject_Warning.targetVersion}
-  //       Target State:     ${cliRunSummary_Task_VersionObject_Warning.targetVersionState}
-  //       Created Version:  ${cliRunSummary_Task_VersionObject_Warning.newVersion}
-  //       Created State:    ${cliRunSummary_Task_VersionObject_Warning.newVersionState}
-  //     `;
-  //   }
-  //   this.log(ECliSummaryStatusCodes.PROCESSING_START_APPLICATION_VERSION, this.addTaskElements(cliRunSummary_Task_VersionObject_Warning), consoleOutput);
-  //   this.processedVersionObject(ECliSummaryStatusCodes.PROCESSED_APPLICATION_VERSION, epSdkApplicationVersionTask_ExecuteReturn);
-  // };
-
-  // public processedApplicationVersion = ({ epSdkApplicationVersionTask_ExecuteReturn }: {
-  //   epSdkApplicationVersionTask_ExecuteReturn: IEpSdkApplicationVersionTask_ExecuteReturn;
-  // }): void => {
-  //   this.processedVersionObject(ECliSummaryStatusCodes.PROCESSED_APPLICATION_VERSION, epSdkApplicationVersionTask_ExecuteReturn );
-  // };
 
   public createMigrateSummary = (cliMigrateManagerMode: ECliMigrateManagerMode): ICliMigrateSummary => {
     const funcName = "createMigrateSummary";

@@ -6,6 +6,8 @@ import {
   ICliApplicationDomainsMigratorRunReturn,
   ICliApplicationDomainsMigrateConfig,
   ICliSchemasMigrateConfig,
+  CliSchemasMigrator,
+  ICliSchemasMigratorRunReturn,
 } from "../migrators";
 import { 
   CliLogger, 
@@ -70,12 +72,21 @@ export class CliMigrateManager {
         runId: this.cliMigrateManagerOptions.runId,
         applicationDomainPrefix: this.cliMigrateManagerOptions.epV2.applicationDomainPrefix,
         cliApplicationDomainsMigrateConfig: this.cliMigrateManagerOptions.applicationDomains,
-        cliSchemasMigrateConfig: this.cliMigrateManagerOptions.schemas
       }, 
       ECliRunContext_RunMode.RELEASE,
     );
     const cliApplicationDomainsMigratorRunReturn: ICliApplicationDomainsMigratorRunReturn = await cliApplicationDomainsMigrator.run();
     if(cliApplicationDomainsMigratorRunReturn.error) throw cliApplicationDomainsMigratorRunReturn.error;
+    // migrate schemas
+    const cliSchemasMigrator = new CliSchemasMigrator({
+        runId: this.cliMigrateManagerOptions.runId,
+        cliMigratedApplicationDomains: cliApplicationDomainsMigratorRunReturn.cliApplicationDomainsMigratorRunMigrateReturn.cliMigratedApplicationDomains,
+        cliSchemasMigrateConfig: this.cliMigrateManagerOptions.schemas,
+      }, 
+      ECliRunContext_RunMode.RELEASE,
+    );
+    const cliSchemasMigratorRunReturn: ICliSchemasMigratorRunReturn = await cliSchemasMigrator.run();
+    if(cliSchemasMigratorRunReturn.error) throw cliSchemasMigratorRunReturn.error;
 
     CliRunContext.pop();
   }

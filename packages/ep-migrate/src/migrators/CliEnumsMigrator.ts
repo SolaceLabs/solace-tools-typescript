@@ -166,6 +166,7 @@ export class CliEnumsMigrator extends CliMigrator {
       }
     }
     CliRunContext.pop();
+    CliRunSummary.processingEpV1EnumsDone();
     return {
       enumApplicationDomainId: epSdkApplicationDomainTask_ExecuteReturn.epObject.id,
       enumApplicationDomainName: epSdkApplicationDomainTask_ExecuteReturn.epObject.name,

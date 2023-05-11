@@ -1,20 +1,12 @@
 import {
   EEpSdkTask_TargetState,
-  EpSdkApplicationDomainTask,
-  IEpSdkApplicationDomainTask_ExecuteReturn,
-  EpSdkEnumTask,
-  IEpSdkEnumTask_ExecuteReturn,
-  EpSdkEnumVersionTask,
-  IEpSdkEnumVersionTask_ExecuteReturn,
   EpSdkSchemaTask,
   IEpSdkSchemaTask_ExecuteReturn,
   EpSdkSchemaVersionTask,
   IEpSdkSchemaVersionTask_ExecuteReturn,
 } from "@solace-labs/ep-sdk";
 import {
-  ApplicationDomain,
   SchemaObject,
-  TopicAddressEnum,
 } from "@solace-labs/ep-openapi-node";
 import {
   CliEPApiContentError,
@@ -24,8 +16,6 @@ import {
   CliRunContext,
   ECliRunContext_RunMode,
   CliRunSummary,
-  ICliEnumsRunContext,
-  ICliEnumRunContext,
   ICliSchemaRunContext,
 } from "../cli-components";
 import { 
@@ -35,15 +25,15 @@ import {
 } from "./CliMigrator";
 import { 
   EpV1ApiMeta,
-  EpV1ApplicationDomain,
-  EpV1Enum,
-  EpV1EnumsResponse,
-  EpV1EnumsService, 
   EpV1EventSchema, 
   EpV1SchemasResponse, 
   EpV1SchemasService
 } from "../epV1";
-import { ICliConfigEp2Versions } from "./types";
+import { 
+  ICliConfigEp2Versions, 
+  ICliMigratedApplicationDomain, 
+  ICliMigratedSchema
+} from "./types";
 
 
 export interface ICliSchemasMigrateConfig {
@@ -51,12 +41,12 @@ export interface ICliSchemasMigrateConfig {
     versions: ICliConfigEp2Versions;
   },
 }
-export interface ICliSchemasMigratorOptions extends ICliMigratorOptions {  
-  epV1ApplicationDomain: EpV1ApplicationDomain;
-  epV2ApplicationDomain: ApplicationDomain;
+export interface ICliSchemasMigratorOptions extends ICliMigratorOptions {
+  cliMigratedApplicationDomains: Array<ICliMigratedApplicationDomain>;
   cliSchemasMigrateConfig: ICliSchemasMigrateConfig;
 }
 interface ICliSchemasMigratorRunMigrateReturn {
+  cliMigratedSchemas: Array<ICliMigratedSchema>;
 }
 export interface ICliSchemasMigratorRunReturn extends ICliMigratorRunReturn {
   cliSchemasMigratorRunMigrateReturn: ICliSchemasMigratorRunMigrateReturn;
@@ -64,6 +54,7 @@ export interface ICliSchemasMigratorRunReturn extends ICliMigratorRunReturn {
 
 export class CliSchemasMigrator extends CliMigrator {
   protected options: ICliSchemasMigratorOptions;
+  private cliMigratedSchemas: Array<ICliMigratedSchema> = [];
 
   constructor(options: ICliSchemasMigratorOptions, runMode: ECliRunContext_RunMode) {
     super(options, runMode);
@@ -117,6 +108,13 @@ export class CliSchemasMigrator extends CliMigrator {
     const epSdkSchemaVersionTask_ExecuteReturn: IEpSdkSchemaVersionTask_ExecuteReturn = await this.executeTask({ epSdkTask: epSdkSchemaVersionTask });
     CliLogger.trace(CliLogger.createLogEntry(logName, {code: ECliStatusCodes.PRESENT_EP_V2_SCHEMA_VERSION, details: { epSdkSchemaVersionTask_ExecuteReturn }}));
     CliRunSummary.presentEpV2SchemaVersion({ applicationDomainName: epV2ApplicationDomainName, epSdkSchemaVersionTask_ExecuteReturn });
+    this.cliMigratedSchemas.push({
+      epV1Schema: epV1EventSchema,
+      epV2Schema: {
+        schemaObject: schemaObject,
+        schemaVersion: epSdkSchemaVersionTask_ExecuteReturn.epObject
+      }
+    })
     CliRunContext.pop();
   }
 
@@ -124,34 +122,36 @@ export class CliSchemasMigrator extends CliMigrator {
     const funcName = 'run_migrate';
     const logName = `${CliSchemasMigrator.name}.${funcName}()`;
     
-    CliRunSummary.processingEpV1Schemas();
-
-    /* istanbul ignore next */
-    if(this.options.epV2ApplicationDomain.id === undefined) throw new CliEPApiContentError(logName, "this.options.epV2ApplicationDomain.id", { epV2ApplicationDomain: this.options.epV2ApplicationDomain });
-
-    // get all the epv1 schemas in application domain and walk the list
-    let nextPage: number | null = 1;
-    while (nextPage !== null) {
-      const epV1SchemasResponse: EpV1SchemasResponse = await EpV1SchemasService.list2({ pageNumber: nextPage, pageSize: 10, applicationDomainId: this.options.epV1ApplicationDomain.id });
-      if(epV1SchemasResponse.data && epV1SchemasResponse.data.length > 0) {
-        for(const epV1EventSchema of epV1SchemasResponse.data) {
-          await this.migrateSchema({ 
-            epV1EventSchema: epV1EventSchema as EpV1EventSchema,
-            epV2ApplicationDomainId: this.options.epV2ApplicationDomain.id,
-            epV2ApplicationDomainName: this.options.epV2ApplicationDomain.name,
-          }); 
+    for(const cliMigratedApplicationDomain of this.options.cliMigratedApplicationDomains) {
+      CliRunSummary.processingEpV1Schemas(cliMigratedApplicationDomain.epV1ApplicationDomain.name);
+      /* istanbul ignore next */
+      if(cliMigratedApplicationDomain.epV2ApplicationDomain.id === undefined) throw new CliEPApiContentError(logName, "cliMigratedApplicationDomain.epV2ApplicationDomain.id", { epV2ApplicationDomain: cliMigratedApplicationDomain.epV2ApplicationDomain });
+      // get all the epv1 schemas in application domain and walk the list
+      let nextPage: number | null = 1;
+      while (nextPage !== null) {
+        const epV1SchemasResponse: EpV1SchemasResponse = await EpV1SchemasService.list2({ pageNumber: nextPage, pageSize: 10, applicationDomainId: cliMigratedApplicationDomain.epV1ApplicationDomain.id });
+        if(epV1SchemasResponse.data && epV1SchemasResponse.data.length > 0) {
+          for(const epV1EventSchema of epV1SchemasResponse.data) {
+            await this.migrateSchema({ 
+              epV1EventSchema: epV1EventSchema as EpV1EventSchema,
+              epV2ApplicationDomainId: cliMigratedApplicationDomain.epV2ApplicationDomain.id,
+              epV2ApplicationDomainName: cliMigratedApplicationDomain.epV2ApplicationDomain.name,
+            }); 
+          }
+        } else {
+          CliRunSummary.processingEpV1SchemasNoneFound();
         }
-      } else {
-        CliRunSummary.processingEpV1SchemasNoneFound();
+        if(epV1SchemasResponse.meta) {
+          const apiMeta = epV1SchemasResponse.meta as EpV1ApiMeta;
+          nextPage = apiMeta.pagination.nextPage;
+        } else {
+          nextPage = null;
+        }
       }
-      if(epV1SchemasResponse.meta) {
-        const apiMeta = epV1SchemasResponse.meta as EpV1ApiMeta;
-        nextPage = apiMeta.pagination.nextPage;
-      } else {
-        nextPage = null;
-      }
+      CliRunSummary.processingEpV1SchemasDone(cliMigratedApplicationDomain.epV1ApplicationDomain.name);
     }
     return {
+      cliMigratedSchemas: this.cliMigratedSchemas
     };
   } 
 
@@ -160,7 +160,9 @@ export class CliSchemasMigrator extends CliMigrator {
     const logName = `${CliSchemasMigrator.name}.${funcName}()`;
     CliLogger.debug(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.MIGRATE_SCHEMAS_START }));
     const cliSchemasMigratorRunReturn: ICliSchemasMigratorRunReturn = {
-      cliSchemasMigratorRunMigrateReturn: {},
+      cliSchemasMigratorRunMigrateReturn: {
+        cliMigratedSchemas: [],
+      },
       error: undefined
     };
     try {
