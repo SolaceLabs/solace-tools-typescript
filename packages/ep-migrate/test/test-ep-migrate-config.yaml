@@ -18,11 +18,21 @@ epV2:
 migrate:
   epV2:
     applicationDomainPrefix: 'test-ep-migrate/epV1/'
+    # applicationDomainPrefix: 'epV1/'
     versions:
       initialVersion: 1.0.0
       versionStrategy: bump_patch      
       state: Released
   enums:
     epV2:
-      applicationDomainName: 'enums'
+      applicationDomainName: 'enums'  
+  applicationDomains:
+    epV2:
+  schemas:
+    epV2:
+      versions:
+        initialVersion: 1.0.0
+        versionStrategy: bump_patch      
+        state: Released
+
   
