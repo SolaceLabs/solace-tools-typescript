@@ -60,4 +60,13 @@ migrate:
         initialVersion: 2.0.0
         versionStrategy: bump_patch      
         state: Released
+  applicationDomains:
+    epV2:
+  schemas:
+    epV2:
+      versions:
+        initialVersion: 1.0.0
+        versionStrategy: bump_patch      
+        state: Released
+
   

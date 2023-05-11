@@ -41,21 +41,21 @@ export interface ICliEnumsMigrateConfig {
     versions: ICliConfigEp2Versions;
   },
 }
-export interface ICliEnumMigratorOptions extends ICliMigratorOptions {
+export interface ICliEnumsMigratorOptions extends ICliMigratorOptions {
   cliEnumsMigrateConfig: ICliEnumsMigrateConfig;
 }
-interface ICliEnumMigratorRunMigrateReturn {
+interface ICliEnumsMigratorRunMigrateReturn {
   enumApplicationDomainName: string;
   enumApplicationDomainId: string;
 }
-export interface ICliEnumMigratorRunReturn extends ICliMigratorRunReturn {
-  cliEnumMigratorRunMigrateReturn: ICliEnumMigratorRunMigrateReturn;
+export interface ICliEnumsMigratorRunReturn extends ICliMigratorRunReturn {
+  cliEnumsMigratorRunMigrateReturn: ICliEnumsMigratorRunMigrateReturn;
 }
 
-export class CliEnumMigrator extends CliMigrator {
-  protected options: ICliEnumMigratorOptions;
+export class CliEnumsMigrator extends CliMigrator {
+  protected options: ICliEnumsMigratorOptions;
 
-  constructor(options: ICliEnumMigratorOptions, runMode: ECliRunContext_RunMode) {
+  constructor(options: ICliEnumsMigratorOptions, runMode: ECliRunContext_RunMode) {
     super(options, runMode);
   }
 
@@ -65,7 +65,7 @@ export class CliEnumMigrator extends CliMigrator {
     epV2ApplicationDomainId: string;
   }): Promise<void> {
     const funcName = 'migrateEnum';
-    const logName = `${CliEnumMigrator.name}.${funcName}()`;
+    const logName = `${CliEnumsMigrator.name}.${funcName}()`;
     const rctxt: ICliEnumRunContext = {
       epV2ApplicationDomainName,
       enumName: epV1Enum.name
@@ -116,9 +116,9 @@ export class CliEnumMigrator extends CliMigrator {
     CliRunContext.pop();
   }
 
-  private async run_migrate(): Promise<ICliEnumMigratorRunMigrateReturn> {
+  private async run_migrate(): Promise<ICliEnumsMigratorRunMigrateReturn> {
     const funcName = 'run_migrate';
-    const logName = `${CliEnumMigrator.name}.${funcName}()`;
+    const logName = `${CliEnumsMigrator.name}.${funcName}()`;
     
     const epV2ApplicationDomainName = this.options.applicationDomainPrefix ? `${this.options.applicationDomainPrefix}${this.options.cliEnumsMigrateConfig.epV2.applicationDomainName}` : this.options.cliEnumsMigrateConfig.epV2.applicationDomainName;
     const rctxt: ICliEnumsRunContext = {
@@ -151,10 +151,12 @@ export class CliEnumMigrator extends CliMigrator {
     let nextPage: number | null = 1;
     while (nextPage !== null) {
       const epV1EnumsResponse: EpV1EnumsResponse = await EpV1EnumsService.list8({ pageNumber: nextPage, pageSize: 10 });
-      if(epV1EnumsResponse.data) {
+      if(epV1EnumsResponse.data && epV1EnumsResponse.data.length > 0) {
         for(const epV1Enum of epV1EnumsResponse.data) {
           await this.migrateEnum({ epV1Enum: epV1Enum as EpV1Enum, epV2ApplicationDomainId: epSdkApplicationDomainTask_ExecuteReturn.epObject.id, epV2ApplicationDomainName });
         }
+      } else {
+        CliRunSummary.processingEpV1EnumsNoneFound();
       }
       if(epV1EnumsResponse.meta) {
         const apiMeta = epV1EnumsResponse.meta as EpV1ApiMeta;
@@ -170,27 +172,27 @@ export class CliEnumMigrator extends CliMigrator {
     };
   } 
 
-  public async run(): Promise<ICliEnumMigratorRunReturn> {
+  public async run(): Promise<ICliEnumsMigratorRunReturn> {
     const funcName = 'run';
-    const logName = `${CliEnumMigrator.name}.${funcName}()`;
+    const logName = `${CliEnumsMigrator.name}.${funcName}()`;
     CliLogger.debug(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.MIGRATE_ENUMS_START }));
-    const cliEnumMigratorRunReturn: ICliEnumMigratorRunReturn = {
-      cliEnumMigratorRunMigrateReturn: {
+    const cliEnumsMigratorRunReturn: ICliEnumsMigratorRunReturn = {
+      cliEnumsMigratorRunMigrateReturn: {
         enumApplicationDomainName: "undefined",
         enumApplicationDomainId: "undefined",  
       },
       error: undefined
     };
     try {
-      cliEnumMigratorRunReturn.cliEnumMigratorRunMigrateReturn = await this.run_migrate();
-      CliLogger.debug(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.MIGRATE_ENUMS_DONE, details: { cliEnumMigratorRunMigrateReturn: cliEnumMigratorRunReturn.cliEnumMigratorRunMigrateReturn }}));
+      cliEnumsMigratorRunReturn.cliEnumsMigratorRunMigrateReturn = await this.run_migrate();
+      CliLogger.debug(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.MIGRATE_ENUMS_DONE, details: { cliEnumMigratorRunMigrateReturn: cliEnumsMigratorRunReturn.cliEnumsMigratorRunMigrateReturn }}));
     } catch (e: any) {
-      cliEnumMigratorRunReturn.error = CliErrorFactory.createCliError({logName: logName, error: e });
+      cliEnumsMigratorRunReturn.error = CliErrorFactory.createCliError({logName: logName, error: e });
     } finally {
-      if (cliEnumMigratorRunReturn.error !== undefined) {
-        CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.MIGRATE_ENUMS_ERROR, details: { error: cliEnumMigratorRunReturn.error }}));
+      if (cliEnumsMigratorRunReturn.error !== undefined) {
+        CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.MIGRATE_ENUMS_ERROR, details: { error: cliEnumsMigratorRunReturn.error }}));
       }
     }
-    return cliEnumMigratorRunReturn;
+    return cliEnumsMigratorRunReturn;
   }
 }

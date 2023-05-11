@@ -1,8 +1,8 @@
 
-export enum ECliChannelOperation {
-  Publish = "publish",
-  Subscribe = "subscribe"
-}
+// export enum ECliChannelOperation {
+//   Publish = "publish",
+//   Subscribe = "subscribe"
+// }
 export enum ECliRunContext_RunMode {
   // TEST_PASS_1 = "test_pass_1",
   // TEST_PASS_2 = "test_pass_2",
@@ -18,58 +18,14 @@ export interface ICliEnumsRunContext extends Partial<ICliRunContext> {
 export interface ICliEnumRunContext extends ICliEnumsRunContext {
   enumName: string;
 }
-
-export interface ICliSetupTestDomainsContext extends Partial<ICliRunContext> {
-  runProcess: "setUpTestDomains"
+export interface ICliApplicationDomainRunContext extends Partial<ICliRunContext> {
+  epV1ApplicationDomainName: string;
 }
-export interface ICliSetupTestApiRunContext extends Partial<ICliRunContext> {
-  apiTitle: string;
-  fromApplicationDomainName: string;
-  toApplicationDomainName: string;
-  fromAssetsApplicationDomainName: string;
-  toAssetsApplicationDomainName: string;
-}
-export interface ICliApiFileRunContext extends Partial<ICliRunContext> {
-  apiFile: string;
-}
-export interface ICliApiRunContext extends Partial<ICliApiFileRunContext> {
-  apiTitle: string;
-  apiVersion: string;
-  apiBrokerType: string;
-  applicationDomainName: string;
-  assetApplicationDomainName: string;
-}
-export interface ICliGenerateApiOutputRunContext extends Partial<ICliApiFileRunContext> {
-  applicationDomainName: string | undefined;
-  applicationDomainId: string;
-  eventApiId: string;
-  eventApiVersionId: string;
-}
-export interface ICliApiRunContext_Channel extends Partial<ICliApiRunContext> {
-  channelTopic: string;
-  epEventName: string;
-}
-export interface ICliApiRunContext_Channel_Parameter extends Partial<ICliApiRunContext_Channel> {
-  parameter: string;
-  parameterEnumList?: Array<string>;
-}
-export interface ICliApiRunContext_Channel_Operation extends Partial<ICliApiRunContext_Channel> {
-  type: ECliChannelOperation;
-}
-export interface ICliApiRunContext_Channel_Operation_Message extends Partial<ICliApiRunContext_Channel_Operation> {
-  messageName: string; 
+export interface ICliSchemaRunContext extends Partial<ICliRunContext> {
+  epV2ApplicationDomainName: string;
+  schemaName: string;
 }
 
-// export interface ICliEpRunContext_EventApi extends Partial<ICliApiRunContext> {
-//   epEventApiName: string;
-// }
-// export interface ICliEpRunContext_EventApiVersion extends Partial<ICliEpRunContext_EventApi> {
-//   epLatestExistingEventApiVersion?: string;
-//   epTargetEventApiVersion: string;
-// }
-// export interface ICliEpRunContext_Channel_Event extends Partial<ICliEpRunContext_EventApiVersion> {
-//   epEventName: string;
-// }
 // export interface ICliEpRunContext_Application extends Partial<ICliApiRunContext> {
 //   epApplicationName: string;
 // }

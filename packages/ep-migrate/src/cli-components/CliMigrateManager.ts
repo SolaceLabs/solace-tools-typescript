@@ -1,5 +1,16 @@
-import { CliEnumMigrator, ICliEnumMigratorRunReturn, ICliEnumsMigrateConfig } from "../migrators";
-import { CliLogger, ECliStatusCodes } from "./CliLogger";
+import { 
+  CliEnumsMigrator, 
+  ICliEnumsMigratorRunReturn, 
+  ICliEnumsMigrateConfig, 
+  CliApplicationDomainsMigrator,
+  ICliApplicationDomainsMigratorRunReturn,
+  ICliApplicationDomainsMigrateConfig,
+  ICliSchemasMigrateConfig,
+} from "../migrators";
+import { 
+  CliLogger, 
+  ECliStatusCodes 
+} from "./CliLogger";
 import CliRunContext, {
   ECliRunContext_RunMode,
   ICliRunContext,
@@ -20,6 +31,8 @@ export interface ICliMigrateManagerOptions {
     applicationDomainPrefix?: string;
   },
   enums: ICliEnumsMigrateConfig;
+  applicationDomains: ICliApplicationDomainsMigrateConfig;
+  schemas: ICliSchemasMigrateConfig;
 }
 
 export class CliMigrateManager {
@@ -42,17 +55,28 @@ export class CliMigrateManager {
       type: ECliRunSummary_Type.StartRun,
       runMode: ECliRunContext_RunMode.RELEASE,
     }});
-
-    // cliMigratorOptions: ICliMigratorOptions, runMode: ECliRunContext_RunMode
-    const cliEnumMigrator = new CliEnumMigrator({
+    // migrate enums
+    const cliEnumsMigrator = new CliEnumsMigrator({
         runId: this.cliMigrateManagerOptions.runId,
         applicationDomainPrefix: this.cliMigrateManagerOptions.epV2.applicationDomainPrefix,
         cliEnumsMigrateConfig: this.cliMigrateManagerOptions.enums,
       }, 
       ECliRunContext_RunMode.RELEASE,
     );
-    const cliEnumMigratorRunReturn: ICliEnumMigratorRunReturn = await cliEnumMigrator.run();
-    if(cliEnumMigratorRunReturn.error) throw cliEnumMigratorRunReturn.error;
+    const cliEnumsMigratorRunReturn: ICliEnumsMigratorRunReturn = await cliEnumsMigrator.run();
+    if(cliEnumsMigratorRunReturn.error) throw cliEnumsMigratorRunReturn.error;
+    // migrate application domains
+    const cliApplicationDomainsMigrator = new CliApplicationDomainsMigrator({
+        runId: this.cliMigrateManagerOptions.runId,
+        applicationDomainPrefix: this.cliMigrateManagerOptions.epV2.applicationDomainPrefix,
+        cliApplicationDomainsMigrateConfig: this.cliMigrateManagerOptions.applicationDomains,
+        cliSchemasMigrateConfig: this.cliMigrateManagerOptions.schemas
+      }, 
+      ECliRunContext_RunMode.RELEASE,
+    );
+    const cliApplicationDomainsMigratorRunReturn: ICliApplicationDomainsMigratorRunReturn = await cliApplicationDomainsMigrator.run();
+    if(cliApplicationDomainsMigratorRunReturn.error) throw cliApplicationDomainsMigratorRunReturn.error;
+
     CliRunContext.pop();
   }
 

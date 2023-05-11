@@ -24,59 +24,61 @@ import {
   ICliMigrateManagerOptions 
 } from './CliMigrateManager';
 import { 
+  ICliApplicationDomainsMigrateConfig,
   ICliConfigEp2Versions,
-  ICliEnumsMigrateConfig
+  ICliEnumsMigrateConfig,
+  ICliSchemasMigrateConfig
 } from '../migrators';
 
 
-export enum ECliConfigRunIdGeneration {
-  AUTO = "auto",
-  CUSTOM = "custom-run-id",
-}
-export enum ECliAssetsApplicationDomainEnforcementPolicies {
-  STRICT = "strict",
-  LAX = "lax",
-  OFF = "off"
-}
+// export enum ECliConfigRunIdGeneration {
+//   AUTO = "auto",
+//   CUSTOM = "custom-run-id",
+// }
+// export enum ECliAssetsApplicationDomainEnforcementPolicies {
+//   STRICT = "strict",
+//   LAX = "lax",
+//   OFF = "off"
+// }
 
-export type TCliConfigEnvVarConfig = {
-  envVarName: ECliConfigEnvVarNames;
-  description: string;
-  format?: string;
-  default?: string;
-  required: boolean;
-  options?: Array<string>;
-  hidden?: boolean; // placeholder, to hide a config option
-  secret?: boolean; 
-};
+// export type TCliConfigEnvVarConfig = {
+//   envVarName: ECliConfigEnvVarNames;
+//   description: string;
+//   format?: string;
+//   default?: string;
+//   required: boolean;
+//   options?: Array<string>;
+//   hidden?: boolean; // placeholder, to hide a config option
+//   secret?: boolean; 
+// };
 
-enum ECliConfigEnvVarNames {
-  CLI_SOLACE_CLOUD_TOKEN = "CLI_SOLACE_CLOUD_TOKEN",
+// enum ECliConfigEnvVarNames {
+//   CLI_SOLACE_CLOUD_TOKEN = "CLI_SOLACE_CLOUD_TOKEN",
 
-  CLI_APP_NAME = "CLI_APP_NAME",
-  CLI_MODE = "CLI_MODE",
-  CLI_RUN_ID = "CLI_RUN_ID",
-  CLI_EP_API_BASE_URL = "CLI_EP_API_BASE_URL",
+//   CLI_APP_NAME = "CLI_APP_NAME",
+//   CLI_MODE = "CLI_MODE",
+//   CLI_RUN_ID = "CLI_RUN_ID",
+//   CLI_EP_API_BASE_URL = "CLI_EP_API_BASE_URL",
 
-  CLI_LOGGER_LOG_LEVEL = "CLI_LOGGER_LOG_LEVEL",
-  CLI_LOGGER_LOG_FILE = "CLI_LOGGER_LOG_FILE",
-  // CLI_LOGGER_LOG_DIR = "CLI_LOGGER_LOG_DIR",
-  CLI_LOGGER_LOG_TO_STDOUT = "CLI_LOGGER_LOG_TO_STDOUT",
-  CLI_LOGGER_EP_SDK_LOG_LEVEL = "CLI_LOGGER_EP_SDK_LOG_LEVEL",
-  CLI_LOGGER_PRETTY_PRINT = "CLI_LOGGER_PRETTY_PRINT",
-  CLI_LOGGER_LOG_SUMMARY_TO_CONSOLE = "CLI_LOGGER_LOG_SUMMARY_TO_CONSOLE",
-  CLI_IMPORT_DEFAULT_SHARED_FLAG = "CLI_IMPORT_DEFAULT_SHARED_FLAG",
-  CLI_IMPORT_DEFAULT_STATE_NAME = "CLI_IMPORT_DEFAULT_STATE_NAME",
-  CLI_IMPORT_ASSETS_TARGET_VERSION_STRATEGY = "CLI_IMPORT_ASSETS_TARGET_VERSION_STRATEGY",
-  CLI_IMPORT_ASSETS_OUTPUT_DIR = "CLI_IMPORT_ASSETS_OUTPUT_DIR",
-  CLI_IMPORT_CREATE_API_APPLICATION = "CLI_IMPORT_CREATE_API_APPLICATION",
-  CLI_IMPORT_CREATE_API_EVENT_API = "CLI_IMPORT_CREATE_API_EVENT_API",
-  CLI_IMPORT_BROKER_TYPE = "CLI_IMPORT_BROKER_TYPE",
-  CLI_IMPORT_CHANNEL_DELIMITER = "CLI_IMPORT_CHANNEL_DELIMITER",
-  CLI_TEST_SETUP_DOMAINS_FOR_APIS = "CLI_TEST_SETUP_DOMAINS_FOR_APIS",
-  CLI_VALIDATE_API_BEST_PRACTICES = "CLI_VALIDATE_API_BEST_PRACTICES",
-  CLI_ASSETS_APPLICATION_DOMAIN_ENFORCEMENT_POLICY = "CLI_ASSETS_APPLICATION_DOMAIN_ENFORCEMENT_POLICY"
-}
+//   CLI_LOGGER_LOG_LEVEL = "CLI_LOGGER_LOG_LEVEL",
+//   CLI_LOGGER_LOG_FILE = "CLI_LOGGER_LOG_FILE",
+//   // CLI_LOGGER_LOG_DIR = "CLI_LOGGER_LOG_DIR",
+//   CLI_LOGGER_LOG_TO_STDOUT = "CLI_LOGGER_LOG_TO_STDOUT",
+//   CLI_LOGGER_EP_SDK_LOG_LEVEL = "CLI_LOGGER_EP_SDK_LOG_LEVEL",
+//   CLI_LOGGER_PRETTY_PRINT = "CLI_LOGGER_PRETTY_PRINT",
+//   CLI_LOGGER_LOG_SUMMARY_TO_CONSOLE = "CLI_LOGGER_LOG_SUMMARY_TO_CONSOLE",
+//   CLI_IMPORT_DEFAULT_SHARED_FLAG = "CLI_IMPORT_DEFAULT_SHARED_FLAG",
+//   CLI_IMPORT_DEFAULT_STATE_NAME = "CLI_IMPORT_DEFAULT_STATE_NAME",
+//   CLI_IMPORT_ASSETS_TARGET_VERSION_STRATEGY = "CLI_IMPORT_ASSETS_TARGET_VERSION_STRATEGY",
+//   CLI_IMPORT_ASSETS_OUTPUT_DIR = "CLI_IMPORT_ASSETS_OUTPUT_DIR",
+//   CLI_IMPORT_CREATE_API_APPLICATION = "CLI_IMPORT_CREATE_API_APPLICATION",
+//   CLI_IMPORT_CREATE_API_EVENT_API = "CLI_IMPORT_CREATE_API_EVENT_API",
+//   CLI_IMPORT_BROKER_TYPE = "CLI_IMPORT_BROKER_TYPE",
+//   CLI_IMPORT_CHANNEL_DELIMITER = "CLI_IMPORT_CHANNEL_DELIMITER",
+//   CLI_TEST_SETUP_DOMAINS_FOR_APIS = "CLI_TEST_SETUP_DOMAINS_FOR_APIS",
+//   CLI_VALIDATE_API_BEST_PRACTICES = "CLI_VALIDATE_API_BEST_PRACTICES",
+//   CLI_ASSETS_APPLICATION_DOMAIN_ENFORCEMENT_POLICY = "CLI_ASSETS_APPLICATION_DOMAIN_ENFORCEMENT_POLICY"
+// }
 
 const DEFAULT_CLI_LOGGER_LOG_LEVEL = ECliLogger_LogLevel.INFO;
 // const DEFAULT_CLI_LOGGER_LOG_FILE = `./tmp/logs/${DefaultAppName}.log`;
@@ -96,6 +98,8 @@ interface ICliConfigFileMigrateConfig {
     versions: ICliConfigEp2Versions;
   },
   enums: ICliEnumsMigrateConfig;
+  applicationDomains: ICliApplicationDomainsMigrateConfig;
+  schemas: ICliSchemasMigrateConfig;
 }
 interface ICliConfigFile {
   logger: {
@@ -235,7 +239,20 @@ class CliConfig {
               ...configFileContents.migrate.enums.epV2.versions,
             }
           }
-        }
+        },
+        applicationDomains: {
+          epV2: {}
+        },
+        schemas: {
+          ...configFileContents.migrate.schemas,
+          epV2: {
+            ...configFileContents.migrate.schemas.epV2,
+            versions: {
+              ...configFileContents.migrate.epV2.versions,
+              ...configFileContents.migrate.schemas.epV2.versions,
+            }
+          }
+        },
       }
     };  
   }

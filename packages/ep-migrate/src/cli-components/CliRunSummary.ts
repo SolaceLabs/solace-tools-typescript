@@ -5,6 +5,8 @@ import {
   IEpSdkEnumTask_ExecuteReturn,
   IEpSdkEnumVersionTask_ExecuteReturn,
   IEpSdkTask_ExecuteReturn,
+  IEpSdkSchemaTask_ExecuteReturn,
+  IEpSdkSchemaVersionTask_ExecuteReturn,
 } from "@solace-labs/ep-sdk";
 import CliConfig from "./CliConfig";
 import { 
@@ -29,10 +31,16 @@ export enum ECliRunSummary_Type {
   MigrateSummary = "MigrateSummary",
 
   ProcessingEpV1ApplicationDomains = "ProcessingEpV1ApplicationDomains",
+  ProcessingEpV1ApplicationDomainsNoneFound = "ProcessingEpV1ApplicationDomainsNoneFound",
   ProcessingEpV1ApplicationDomain = "ProcessingEpV1ApplicationDomain",
 
   ProcessingEpV1Enums = "ProcessingEpV1Enums",
+  ProcessingEpV1EnumsNoneFound = "ProcessingEpV1EnumsNoneFound",
   ProcessingEpV1Enum = "ProcessingEpV1Enum",
+
+  ProcessingEpV1Schemas = "ProcessingEpV1Schemas",
+  ProcessingEpV1SchemasNoneFound = "ProcessingEpV1SchemasNoneFound",
+  ProcessingEpV1Schema = "ProcessingEpV1Schema",
 
   EpV2ApplicationDomain = "EpV2ApplicationDomain",
   EpV2Enum = "EpV2Enum",
@@ -46,7 +54,8 @@ export enum ECliRunSummary_Type {
 
 export enum ECliEpV1Object_Types {
   EpV1ApplicationDomain = "EpV1ApplicationDomain",
-  EpV1Enum = "EpV1Enum"  
+  EpV1Enum = "EpV1Enum",
+  EpV1Schema = "EpV1Schema",
 }
 
 // taskTransactionId: string;
@@ -71,8 +80,14 @@ export interface ICliMigrateSummary extends ICliRunSummary_LogBase {
   logFile: string;
   processedEpV1ApplicationDomains: number;
   createdEpV2ApplicationDomains: number;
+  updatedEpV2ApplicationDomains: number;
   processedEpV1Enums: number;
-  createdEpV2EnumVersions: number;
+  createdFirstEpV2EnumVersions: number;
+  createdNewEpV2EnumVersions: number;
+  processedEpV1Schemas: number;
+  createdFirstEpV2SchemaVersions: number;
+  createdNewEpV2SchemaVersions: number;
+
   // warnings: Array<ICliRunSummary_Task_VersionObject_Warning>;
   // errors: Array<ICliRunSummary_Task_VersionObject_Error>;
 }
@@ -91,6 +106,11 @@ export interface ICliRunSummary_EpV1_Enum extends ICliRunSummary_EpV1_Object {
   type: ECliRunSummary_Type.ProcessingEpV1Enum;
   epV1ObjectType: ECliEpV1Object_Types.EpV1Enum;
   enumName: string;
+}
+export interface ICliRunSummary_EpV1_Schema extends ICliRunSummary_EpV1_Object {
+  type: ECliRunSummary_Type.ProcessingEpV1Schema;
+  epV1ObjectType: ECliEpV1Object_Types.EpV1Schema;
+  schemaName: string;
 }
 
 
@@ -172,6 +192,24 @@ class CliRunSummary {
     };
   };
 
+  private presentEpV2VersionObject = (code: ECliSummaryStatusCodes, applicationDomainName: string, epSdkTask_ExecuteReturn: IEpSdkTask_ExecuteReturn): void => {
+    const cliRunSummary_Task_VersionObject: ICliRunSummary_Task_VersionObject = {
+      type: ECliRunSummary_Type.EpV2VersionObject,
+      action: epSdkTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action,
+      epObjectType: epSdkTask_ExecuteReturn.epSdkTask_TransactionLogData.epObjectKeys.epObjectType,
+      displayName: epSdkTask_ExecuteReturn.epObject.displayName,
+      version: epSdkTask_ExecuteReturn.epObject.version,
+      state: epSdkTask_ExecuteReturn.epObject.stateId,
+      brokerType: epSdkTask_ExecuteReturn.epObject.brokerType,
+      applicationDomainName,
+    };
+    const displayNameOutput = cliRunSummary_Task_VersionObject.displayName || "''"; 
+    const consoleOutput = `
+        ${cliRunSummary_Task_VersionObject.epObjectType}: ${displayNameOutput}@${cliRunSummary_Task_VersionObject.version}, state=${cliRunSummary_Task_VersionObject.state} (${cliRunSummary_Task_VersionObject.action})
+    `;
+    this.log(code, this.addTaskElements(cliRunSummary_Task_VersionObject), consoleOutput);
+  };
+
   public runError = ({ cliRunError }: { cliRunError: ICliRunError }): void => {
     const consoleOutput = `
   Run Error: ------------------------
@@ -199,6 +237,13 @@ Start Run: ${cliRunSummary_StartRun.runMode} ------------------------
     this.log(ECliSummaryStatusCodes.PROCESSING_EP_V1_APPLICATION_DOMAINS, { type: ECliRunSummary_Type.ProcessingEpV1ApplicationDomains }, consoleOutput);
   }
 
+  public processingEpV1ApplicationDomainsNoneFound = () => {
+    const consoleOutput = `
+        No Application Domains found.  
+`;
+    this.log(ECliSummaryStatusCodes.PROCESSING_EP_V1_APPLICATION_DOMAINS_NONE_FOUND, { type: ECliRunSummary_Type.ProcessingEpV1ApplicationDomainsNoneFound }, consoleOutput);
+  }
+
   public processingEpV1ApplicationDomain = ({ applicationDomainName }:{
     applicationDomainName: string;
   }) => {
@@ -214,11 +259,33 @@ Start Run: ${cliRunSummary_StartRun.runMode} ------------------------
     this.log(ECliSummaryStatusCodes.PROCESSING_EP_V1_APPLICATION_DOMAIN, cliRunSummary_EpV1_ApplicatonDomain , consoleOutput);
   }
 
+  public presentEpV2ApplicationDomain = ({ epSdkApplicationDomainTask_ExecuteReturn }: {
+    epSdkApplicationDomainTask_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn;
+  }): void => {
+    const applicationDomainName = epSdkApplicationDomainTask_ExecuteReturn.epObject.name;
+    const consoleOutput = `
+      V2: ${epSdkApplicationDomainTask_ExecuteReturn.epObject.type}: ${applicationDomainName} (${epSdkApplicationDomainTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action})
+`;
+    const cliRunSummary_Task_ApplicationDomain: Required<Omit<ICliRunSummary_Task_ApplicationDomain, "runMode">> = {
+      type: ECliRunSummary_Type.EpV2ApplicationDomain,
+      applicationDomainName,
+      action: epSdkApplicationDomainTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action
+    };
+    this.log(ECliSummaryStatusCodes.PRESENT_EP_V2_APPLICATION_DOMAIN, this.addTaskElements(cliRunSummary_Task_ApplicationDomain), consoleOutput);
+  };
+
   public processingEpV1Enums = () => {
     const consoleOutput = `
   Processing V1 Enums ...  
 `;
     this.log(ECliSummaryStatusCodes.PROCESSING_EP_V1_ENUMS, { type: ECliRunSummary_Type.ProcessingEpV1Enums }, consoleOutput);
+  }
+
+  public processingEpV1EnumsNoneFound = () => {
+    const consoleOutput = `
+        No Enums found.  
+`;
+    this.log(ECliSummaryStatusCodes.PROCESSING_EP_V1_ENUMS_NONE_FOUND, { type: ECliRunSummary_Type.ProcessingEpV1EnumsNoneFound }, consoleOutput);
   }
 
   public processingEpV1Enum = ({ enumName }:{
@@ -235,39 +302,6 @@ Start Run: ${cliRunSummary_StartRun.runMode} ------------------------
     }
     this.log(ECliSummaryStatusCodes.PROCESSING_EP_V1_ENUM, cliRunSummary_EpV1_Enum, consoleOutput);
   }
-
-  private presentEpV2VersionObject = (code: ECliSummaryStatusCodes, applicationDomainName: string, epSdkTask_ExecuteReturn: IEpSdkTask_ExecuteReturn): void => {
-    const cliRunSummary_Task_VersionObject: ICliRunSummary_Task_VersionObject = {
-      type: ECliRunSummary_Type.EpV2VersionObject,
-      action: epSdkTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action,
-      epObjectType: epSdkTask_ExecuteReturn.epSdkTask_TransactionLogData.epObjectKeys.epObjectType,
-      displayName: epSdkTask_ExecuteReturn.epObject.displayName,
-      version: epSdkTask_ExecuteReturn.epObject.version,
-      state: epSdkTask_ExecuteReturn.epObject.stateId,
-      brokerType: epSdkTask_ExecuteReturn.epObject.brokerType,
-      applicationDomainName,
-    };
-    const displayNameOutput = cliRunSummary_Task_VersionObject.displayName || "''"; 
-    const consoleOutput = `
-        ${cliRunSummary_Task_VersionObject.epObjectType}: ${displayNameOutput}@${cliRunSummary_Task_VersionObject.version}, state=${cliRunSummary_Task_VersionObject.state} (${cliRunSummary_Task_VersionObject.action})
-    `;
-    this.log(code, this.addTaskElements(cliRunSummary_Task_VersionObject), consoleOutput);
-  };
-
-  public presentEpV2ApplicationDomain = ({ epSdkApplicationDomainTask_ExecuteReturn }: {
-    epSdkApplicationDomainTask_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn;
-  }): void => {
-    const applicationDomainName = epSdkApplicationDomainTask_ExecuteReturn.epObject.name;
-    const consoleOutput = `
-    V2: ${epSdkApplicationDomainTask_ExecuteReturn.epObject.type}: ${applicationDomainName} (${epSdkApplicationDomainTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action})
-    `;
-    const cliRunSummary_Task_ApplicationDomain: Required<Omit<ICliRunSummary_Task_ApplicationDomain, "runMode">> = {
-      type: ECliRunSummary_Type.EpV2ApplicationDomain,
-      applicationDomainName,
-      action: epSdkApplicationDomainTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action
-    };
-    this.log(ECliSummaryStatusCodes.PRESENT_EP_V2_APPLICATION_DOMAIN, this.addTaskElements(cliRunSummary_Task_ApplicationDomain), consoleOutput);
-  };
 
   public presentEpV2Enum = ({ applicationDomainName, epSdkEnumTask_ExecuteReturn }: {
     applicationDomainName: string;
@@ -291,6 +325,59 @@ Start Run: ${cliRunSummary_StartRun.runMode} ------------------------
     epSdkEnumVersionTask_ExecuteReturn: IEpSdkEnumVersionTask_ExecuteReturn;
   }) => {
     this.presentEpV2VersionObject(ECliSummaryStatusCodes.PRESENT_EP_V2_ENUM_VERSION, applicationDomainName, epSdkEnumVersionTask_ExecuteReturn);
+  }
+
+  public processingEpV1Schemas = () => {
+    const consoleOutput = `
+      Processing V1 Schemas ...  
+`;
+    this.log(ECliSummaryStatusCodes.PROCESSING_EP_V1_SCHEMAS, { type: ECliRunSummary_Type.ProcessingEpV1Schemas }, consoleOutput);
+  }
+
+  public processingEpV1SchemasNoneFound = () => {
+    const consoleOutput = `
+        No Schemas found.  
+`;
+    this.log(ECliSummaryStatusCodes.PROCESSING_EP_V1_SCHEMAS_NONE_FOUND, { type: ECliRunSummary_Type.ProcessingEpV1SchemasNoneFound }, consoleOutput);
+  }
+
+  public processingEpV1Schema = ({ schemaName }:{
+    schemaName: string;
+  }) => {
+    const consoleOutput = `
+        Processing V1 Schema '${schemaName}' ...  
+`;
+    const cliRunSummary_EpV1_Schema: ICliRunSummary_EpV1_Schema = {
+      runMode: this.runMode,
+      type: ECliRunSummary_Type.ProcessingEpV1Schema,
+      epV1ObjectType: ECliEpV1Object_Types.EpV1Schema,
+      schemaName,
+    }
+    this.log(ECliSummaryStatusCodes.PROCESSING_EP_V1_SCHEMA, cliRunSummary_EpV1_Schema, consoleOutput);
+  }
+
+  public presentEpV2Schema = ({ applicationDomainName, epSdkSchemaTask_ExecuteReturn }: {
+    applicationDomainName: string;
+    epSdkSchemaTask_ExecuteReturn: IEpSdkSchemaTask_ExecuteReturn;
+  }): void => {
+    const consoleOutput = `
+        V2: ${epSdkSchemaTask_ExecuteReturn.epObject.type}: ${epSdkSchemaTask_ExecuteReturn.epObject.name}, shared=${epSdkSchemaTask_ExecuteReturn.epObject.shared} (${epSdkSchemaTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action})
+`;
+    const cliRunSummary_Task_Schema: ICliRunSummary_Task_Schema = { 
+      type: ECliRunSummary_Type.EpV2Schema, 
+      name: epSdkSchemaTask_ExecuteReturn.epObject.name ? epSdkSchemaTask_ExecuteReturn.epObject.name : "undefined",
+      shared: epSdkSchemaTask_ExecuteReturn.epObject.shared || "undefined",
+      action: epSdkSchemaTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action,
+      applicationDomainName,
+    };
+    this.log(ECliSummaryStatusCodes.PRESENT_EP_V2_SCHEMA, this.addTaskElements(cliRunSummary_Task_Schema), consoleOutput );
+  };
+
+  public presentEpV2SchemaVersion = ({ applicationDomainName, epSdkSchemaVersionTask_ExecuteReturn }:{
+    applicationDomainName: string;
+    epSdkSchemaVersionTask_ExecuteReturn: IEpSdkSchemaVersionTask_ExecuteReturn;
+  }) => {
+    this.presentEpV2VersionObject(ECliSummaryStatusCodes.PRESENT_EP_V2_SCHEMA_VERSION, applicationDomainName, epSdkSchemaVersionTask_ExecuteReturn);
   }
 
   // public processedSchema = ({ epSdkSchemaTask_ExecuteReturn }: {
@@ -533,12 +620,21 @@ Start Run: ${cliRunSummary_StartRun.runMode} ------------------------
     const cliRunSummary_ProcessedEpV1Enum_List: Array<ICliRunSummary_EpV1_Enum> = cliRunSummary_LogBase_Filtered_List.filter((cliRunSummary_LogBase: ICliRunSummary_LogBase) => {
       return cliRunSummary_LogBase.type === ECliRunSummary_Type.ProcessingEpV1Enum;
     }) as unknown as Array<ICliRunSummary_EpV1_Enum>;
+    // schemas
+    const cliRunSummary_ProcessedEpV1Schema_List: Array<ICliRunSummary_EpV1_Schema> = cliRunSummary_LogBase_Filtered_List.filter((cliRunSummary_LogBase: ICliRunSummary_LogBase) => {
+      return cliRunSummary_LogBase.type === ECliRunSummary_Type.ProcessingEpV1Schema;
+    }) as unknown as Array<ICliRunSummary_EpV1_Schema>;
 
     // counters
     const processedEpV1ApplicationDomains = cliRunSummary_ProcessedEpV1ApplicationDomain_List.length;
-    const createdEpV2ApplicationDomains = cliRunSummary_EpV2ApplicationDomain_List.reduce((count, item) => count + Number(item.action !== EEpSdkTask_Action.NO_ACTION), 0);
+    const createdEpV2ApplicationDomains = cliRunSummary_EpV2ApplicationDomain_List.reduce((count, item) => count + Number(item.action === EEpSdkTask_Action.CREATE), 0);
+    const updatedEpV2ApplicationDomains = cliRunSummary_EpV2ApplicationDomain_List.reduce((count, item) => count + Number(item.action === EEpSdkTask_Action.UPDATE), 0);
     const processedEpV1Enums = cliRunSummary_ProcessedEpV1Enum_List.length;
-    const createdEpV2EnumVersions = cliRunSummary_CreatedEpV2VersionObject_List.reduce((count, item) => count + Number(item.epObjectType === EEpSdkObjectTypes.ENUM_VERSION), 0);
+    const createdFirstEpV2EnumVersions = cliRunSummary_CreatedEpV2VersionObject_List.reduce((count, item) => count + Number(item.action === EEpSdkTask_Action.CREATE_FIRST_VERSION && item.epObjectType === EEpSdkObjectTypes.ENUM_VERSION), 0);
+    const createdNewEpV2EnumVersions = cliRunSummary_CreatedEpV2VersionObject_List.reduce((count, item) => count + Number(item.action === EEpSdkTask_Action.CREATE_NEW_VERSION && item.epObjectType === EEpSdkObjectTypes.ENUM_VERSION), 0);
+    const processedEpV1Schemas = cliRunSummary_ProcessedEpV1Schema_List.length;
+    const createdFirstEpV2SchemaVersions = cliRunSummary_CreatedEpV2VersionObject_List.reduce((count, item) => count + Number(item.action === EEpSdkTask_Action.CREATE_FIRST_VERSION && item.epObjectType === EEpSdkObjectTypes.SCHEMA_VERSION), 0);
+    const createdNewEpV2SchemaVersions = cliRunSummary_CreatedEpV2VersionObject_List.reduce((count, item) => count + Number(item.action === EEpSdkTask_Action.CREATE_NEW_VERSION && item.epObjectType === EEpSdkObjectTypes.SCHEMA_VERSION), 0);
 
     const logFile: string | undefined = CliConfig.getCliConfig().cliLoggerConfig.logFile;
 
@@ -548,8 +644,13 @@ Start Run: ${cliRunSummary_StartRun.runMode} ------------------------
       logFile: logFile ? logFile : "no log file.",
       processedEpV1ApplicationDomains,
       createdEpV2ApplicationDomains,
+      updatedEpV2ApplicationDomains,
       processedEpV1Enums,
-      createdEpV2EnumVersions,
+      createdFirstEpV2EnumVersions,
+      createdNewEpV2EnumVersions,
+      processedEpV1Schemas,
+      createdFirstEpV2SchemaVersions,
+      createdNewEpV2SchemaVersions
       // warnings: cliRunSummary_CreatedVersionObjectWarning_List,
       // errors: cliRunSummary_CreatedVersionObjectError_List,
     };
@@ -574,8 +675,13 @@ Migration Summary for mode: ${cliMigrateManagerOptions.cliMigrateManagerMode}
 
   Processed EpV1 Application Domains: ${cliMigrateSummary.processedEpV1ApplicationDomains}
     Created EpV2 Application Domains: ${cliMigrateSummary.createdEpV2ApplicationDomains}
+    Updated EpV2 Application Domains: ${cliMigrateSummary.updatedEpV2ApplicationDomains}
   Processed EpV1 Enums: ${cliMigrateSummary.processedEpV1Enums}
-    Created EpV2 Enum Versions: ${cliMigrateSummary.createdEpV2EnumVersions}
+    Created First EpV2 Enum Versions: ${cliMigrateSummary.createdFirstEpV2EnumVersions}
+    Created New EpV2 Enum Versions: ${cliMigrateSummary.createdNewEpV2EnumVersions}
+  Processed EpV1 Schemas: ${cliMigrateSummary.processedEpV1Schemas}
+    Created First EpV2 Schema Versions: ${cliMigrateSummary.createdFirstEpV2SchemaVersions}
+    Created New EpV2 Schema Versions: ${cliMigrateSummary.createdNewEpV2SchemaVersions}
   
     `;
     this.log(

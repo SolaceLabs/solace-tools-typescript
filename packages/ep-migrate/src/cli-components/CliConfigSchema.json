@@ -81,6 +81,35 @@
               }
             }
           }
+        },
+        "applicationDomains": {
+          "type": "object",
+          "required": ["epV2"],
+          "additionalProperties": false,
+          "properties": {
+            "epV2": {
+              "type": ["object", "null"],
+              "required": [],
+              "additionalProperties": false
+            }
+          }
+        },
+        "schemas": {
+          "type": "object",
+          "required": ["epV2"],
+          "additionalProperties": false,
+          "properties": {
+            "epV2": {
+              "type": ["object", "null"],
+              "required": [],
+              "additionalProperties": false,
+              "properties": {
+                "versions": {
+                  "$ref": "#/definitions/epV2Versions"
+                }
+              }
+            }
+          }
         }
       }
     }
