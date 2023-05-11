@@ -1,6 +1,8 @@
 name: Changeset Check Development
 
 on:
+  push:
+    branches: ["development"]
   pull_request:
     types: [opened, synchronize]
     branches: ['development']
