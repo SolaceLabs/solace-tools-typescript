@@ -1,6 +1,6 @@
 {
   "name": "@solace-labs/ep-migrate",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Migration Tool for Solace Event Portal V1 to V2",
   "bin": {
     "ep-migrate": "./dist/cli.js"
