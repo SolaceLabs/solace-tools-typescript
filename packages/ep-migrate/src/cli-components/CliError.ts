@@ -113,6 +113,17 @@ export class CliConfigError extends CliError {
   }
 }
 
+export class CliConfigTokenError extends CliError {
+  private static Name = "CliConfigTokenError";
+  private static DefaultDescription = "Unable to parse Token";
+  public details: any;
+  constructor(internalLogName: string, details: any) {
+    super(internalLogName, CliConfigTokenError.DefaultDescription);
+    this.name = CliConfigTokenError.Name;
+    this.details = details;
+  }
+}
+
 export class CliConfigInvalidConfigFileError extends CliConfigError {
   private static Name = "CliConfigInvalidConfigFileError";
   private static DefaultDescription = "Invalid CLI Config File";

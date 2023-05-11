@@ -9,6 +9,7 @@ import {
   CliSchemasMigrator,
   ICliSchemasMigratorRunReturn,
 } from "../migrators";
+import CliConfig from "./CliConfig";
 import { 
   CliLogger, 
   ECliStatusCodes 
@@ -55,6 +56,8 @@ export class CliMigrateManager {
     CliRunContext.push(rctxt);
     CliRunSummary.startRun({cliRunSummary_StartRun: {
       type: ECliRunSummary_Type.StartRun,
+      epV1OrganizationInfo: CliConfig.getCliConfig().epV1Config.organizationInfo,
+      epV2OrganizationInfo: CliConfig.getCliConfig().epV2Config.organizationInfo,
       runMode: ECliRunContext_RunMode.RELEASE,
     }});
     // migrate enums

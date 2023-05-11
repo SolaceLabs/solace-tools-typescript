@@ -1,12 +1,23 @@
-import { OptionValues } from 'commander';
-import { ValidationError, Validator, ValidatorResult } from 'jsonschema';
+import { 
+  OptionValues 
+} from 'commander';
+import jwt_decode from "jwt-decode";
+import { 
+  ValidationError, 
+  Validator, 
+  ValidatorResult 
+} from 'jsonschema';
 import CliConfigSchema from './CliConfigSchema.json';
-import { DefaultAppName, DefaultConfigFile } from "../constants";
+import { 
+  DefaultAppName, 
+  DefaultConfigFile 
+} from "../constants";
 import {
   CliConfigFileMissingEnvVarError,
   CliConfigFileParseError,
   CliConfigInvalidConfigFileError,
   CliConfigNotInitializedError,
+  CliConfigTokenError,
 } from "./CliError";
 import {
   CliLogger,
@@ -29,56 +40,6 @@ import {
   ICliEnumsMigrateConfig,
   ICliSchemasMigrateConfig
 } from '../migrators';
-
-
-// export enum ECliConfigRunIdGeneration {
-//   AUTO = "auto",
-//   CUSTOM = "custom-run-id",
-// }
-// export enum ECliAssetsApplicationDomainEnforcementPolicies {
-//   STRICT = "strict",
-//   LAX = "lax",
-//   OFF = "off"
-// }
-
-// export type TCliConfigEnvVarConfig = {
-//   envVarName: ECliConfigEnvVarNames;
-//   description: string;
-//   format?: string;
-//   default?: string;
-//   required: boolean;
-//   options?: Array<string>;
-//   hidden?: boolean; // placeholder, to hide a config option
-//   secret?: boolean; 
-// };
-
-// enum ECliConfigEnvVarNames {
-//   CLI_SOLACE_CLOUD_TOKEN = "CLI_SOLACE_CLOUD_TOKEN",
-
-//   CLI_APP_NAME = "CLI_APP_NAME",
-//   CLI_MODE = "CLI_MODE",
-//   CLI_RUN_ID = "CLI_RUN_ID",
-//   CLI_EP_API_BASE_URL = "CLI_EP_API_BASE_URL",
-
-//   CLI_LOGGER_LOG_LEVEL = "CLI_LOGGER_LOG_LEVEL",
-//   CLI_LOGGER_LOG_FILE = "CLI_LOGGER_LOG_FILE",
-//   // CLI_LOGGER_LOG_DIR = "CLI_LOGGER_LOG_DIR",
-//   CLI_LOGGER_LOG_TO_STDOUT = "CLI_LOGGER_LOG_TO_STDOUT",
-//   CLI_LOGGER_EP_SDK_LOG_LEVEL = "CLI_LOGGER_EP_SDK_LOG_LEVEL",
-//   CLI_LOGGER_PRETTY_PRINT = "CLI_LOGGER_PRETTY_PRINT",
-//   CLI_LOGGER_LOG_SUMMARY_TO_CONSOLE = "CLI_LOGGER_LOG_SUMMARY_TO_CONSOLE",
-//   CLI_IMPORT_DEFAULT_SHARED_FLAG = "CLI_IMPORT_DEFAULT_SHARED_FLAG",
-//   CLI_IMPORT_DEFAULT_STATE_NAME = "CLI_IMPORT_DEFAULT_STATE_NAME",
-//   CLI_IMPORT_ASSETS_TARGET_VERSION_STRATEGY = "CLI_IMPORT_ASSETS_TARGET_VERSION_STRATEGY",
-//   CLI_IMPORT_ASSETS_OUTPUT_DIR = "CLI_IMPORT_ASSETS_OUTPUT_DIR",
-//   CLI_IMPORT_CREATE_API_APPLICATION = "CLI_IMPORT_CREATE_API_APPLICATION",
-//   CLI_IMPORT_CREATE_API_EVENT_API = "CLI_IMPORT_CREATE_API_EVENT_API",
-//   CLI_IMPORT_BROKER_TYPE = "CLI_IMPORT_BROKER_TYPE",
-//   CLI_IMPORT_CHANNEL_DELIMITER = "CLI_IMPORT_CHANNEL_DELIMITER",
-//   CLI_TEST_SETUP_DOMAINS_FOR_APIS = "CLI_TEST_SETUP_DOMAINS_FOR_APIS",
-//   CLI_VALIDATE_API_BEST_PRACTICES = "CLI_VALIDATE_API_BEST_PRACTICES",
-//   CLI_ASSETS_APPLICATION_DOMAIN_ENFORCEMENT_POLICY = "CLI_ASSETS_APPLICATION_DOMAIN_ENFORCEMENT_POLICY"
-// }
 
 const DEFAULT_CLI_LOGGER_LOG_LEVEL = ECliLogger_LogLevel.INFO;
 // const DEFAULT_CLI_LOGGER_LOG_FILE = `./tmp/logs/${DefaultAppName}.log`;
@@ -116,9 +77,14 @@ interface ICliConfigFile {
 
 export interface ICliLoggerConfig extends ICliLoggerOptions {}
 
+export interface ICliOrganizationInfo {
+  name: string;
+  id: string;
+}
 export interface ICliEpConfig {
   baseUrl: string;
   token: string;
+  organizationInfo: ICliOrganizationInfo;
 }
 
 export interface ICliMigrateConfig extends ICliMigrateManagerOptions {}
@@ -186,6 +152,20 @@ class CliConfig {
     }));
   }
 
+  private getOrganizationInfo(token: string): ICliOrganizationInfo {
+    const funcName = "getOrganizationInfo";
+    const logName = `${CliConfig.name}.${funcName}()`;
+    const decoded: any = jwt_decode(token);    
+    /* istanbul ignore next */
+    if(decoded.org === undefined) throw new CliConfigTokenError(logName, "unable to read 'org' from token");
+    /* istanbul ignore next */
+    if(decoded.sub === undefined) throw new CliConfigTokenError(logName, "unable to read 'sub' from token");
+    return {
+      name: decoded.org,
+      id: decoded.sub
+    }
+  }
+
   private readConfigFile(configFile: string): void {
     const funcName = "readConfigFile";
     const logName = `${CliConfig.name}.${funcName}()`;
@@ -218,10 +198,12 @@ class CliConfig {
       epV1Config: {
         baseUrl: configFileContents.epV1.apiUrl,
         token: configFileContents.epV1.token,
+        organizationInfo: this.getOrganizationInfo(configFileContents.epV1.token)
       },
       epV2Config: {
         baseUrl: configFileContents.epV2.apiUrl,
-        token: configFileContents.epV2.token
+        token: configFileContents.epV2.token,
+        organizationInfo: this.getOrganizationInfo(configFileContents.epV1.token)
       },
       cliMigrateConfig: {
         appName, 

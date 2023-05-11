@@ -2,4 +2,9 @@
 "@solace-labs/ep-migrate": patch
 ---
 
-test framework
+new features & enhancements
+
+- test framework
+- logging & summary output
+- migrate application domains
+- migrate schemas

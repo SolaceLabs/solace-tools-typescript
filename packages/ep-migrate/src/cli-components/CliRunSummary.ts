@@ -8,7 +8,7 @@ import {
   IEpSdkSchemaTask_ExecuteReturn,
   IEpSdkSchemaVersionTask_ExecuteReturn,
 } from "@solace-labs/ep-sdk";
-import CliConfig from "./CliConfig";
+import CliConfig, { ICliOrganizationInfo } from "./CliConfig";
 import { 
   CliError, 
 } from "./CliError";
@@ -77,6 +77,8 @@ export interface ICliRunSummary_LogBase extends ICliRunSummary_Base {
 }
 export interface ICliRunSummary_StartRun extends ICliRunSummary_Base {
   type: ECliRunSummary_Type.StartRun;
+  epV1OrganizationInfo: ICliOrganizationInfo;
+  epV2OrganizationInfo: ICliOrganizationInfo;
 }
 export interface ICliMigrateSummary extends ICliRunSummary_LogBase {
   type: ECliRunSummary_Type.MigrateSummary;
@@ -228,7 +230,9 @@ class CliRunSummary {
   }): void => {
     this.runMode = cliRunSummary_StartRun.runMode;
     const consoleOutput = `
-Start Run: ${cliRunSummary_StartRun.runMode} ------------------------
+Start Run: ------------------------
+  Ep V1 Organization: ${cliRunSummary_StartRun.epV1OrganizationInfo.name} (${cliRunSummary_StartRun.epV1OrganizationInfo.id})
+  Ep V2 Organization: ${cliRunSummary_StartRun.epV2OrganizationInfo.name} (${cliRunSummary_StartRun.epV2OrganizationInfo.id})
     `;
     this.log(ECliSummaryStatusCodes.START_RUN, cliRunSummary_StartRun, consoleOutput );
   };

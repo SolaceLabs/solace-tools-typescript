@@ -71,6 +71,8 @@ export class CliApplicationDomainsMigrator extends CliMigrator {
       applicationDomainSettings: {
         description: epV1ApplicationDomain.description,
         uniqueTopicAddressEnforcementEnabled: epV1ApplicationDomain.enforceUniqueTopicNames,
+        // TODO: build TopicDomains service + task first
+        // TODO: only set to true if topicDomain not empty
         topicDomainEnforcementEnabled: epV1ApplicationDomain.enforceUniqueTopicNames,
         // TODO: enhance task
         // x: epV1ApplicationDomain.topicDomain
