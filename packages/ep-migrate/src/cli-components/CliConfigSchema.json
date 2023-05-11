@@ -1,0 +1,155 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CliConfigSchema",
+  "type": "object",
+  "required": ["logger", "epV1", "epV2"],
+  "additionalProperties": false,
+  "properties": {
+    "epV1": {
+      "$ref": "#/definitions/epConfig"
+    },
+    "epV2": {
+      "$ref": "#/definitions/epConfig"
+    },
+    "logger": {
+      "type": "object",
+      "required": [
+        "logSummary2Console",
+        "logLevel",
+        "logFile",
+        "prettyPrint",
+        "epSdkLogLevel"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "logSummary2Console": {
+          "type": "boolean"
+        },
+        "prettyPrint": {
+          "type": "boolean"
+        },
+        "log2Stdout": {
+          "type": "boolean"
+        },
+        "logFile": {
+          "type": "string"
+        },
+        "logLevel": {
+          "type": "string",
+          "enum": ["trace", "debug", "info", "warn", "error", "fatal"]
+        },
+        "epSdkLogLevel": {
+          "type": "string",
+          "enum": ["trace", "debug", "info", "warn", "error", "fatal", "silent"]
+        }
+      }
+    },
+    "migrate": {
+      "type": "object",
+      "required": ["epV2"],
+      "additionalProperties": false,
+      "properties": {
+        "epV2": {
+          "type": ["object"],
+          "required": ["versions"],
+          "additionalProperties": false,
+          "properties": {
+            "applicationDomainPrefix": {
+              "type": "string"
+            },
+            "versions": {
+              "$ref": "#/definitions/epV2Versions"
+            }
+          }
+        },
+        "enums": {
+          "type": "object",
+          "required": ["epV2"],
+          "additionalProperties": false,
+          "properties": {
+            "epV2": {
+              "type": "object",
+              "required": ["applicationDomainName"],
+              "additionalProperties": false,
+              "properties": {
+                "applicationDomainName": {
+                  "type": "string"
+                },
+                "versions": {
+                  "$ref": "#/definitions/epV2Versions"
+                }
+              }
+            }
+          }
+        },
+        "applicationDomains": {
+          "type": "object",
+          "required": ["epV2"],
+          "additionalProperties": false,
+          "properties": {
+            "epV2": {
+              "type": ["object", "null"],
+              "required": [],
+              "additionalProperties": false
+            }
+          }
+        },
+        "schemas": {
+          "type": "object",
+          "required": ["epV2"],
+          "additionalProperties": false,
+          "properties": {
+            "epV2": {
+              "type": ["object", "null"],
+              "required": [],
+              "additionalProperties": false,
+              "properties": {
+                "versions": {
+                  "$ref": "#/definitions/epV2Versions"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "epV2Versions": {
+      "type": "object",
+      "required": ["initialVersion", "versionStrategy", "state"],
+      "additionalProperties": false,
+      "properties": {
+        "initialVersion": {
+          "type": "string",
+          "pattern": "^(0|[1-9]d*).(0|[1-9]d*).(0|[1-9]d*)$"
+        },
+        "versionStrategy": {
+          "type": "string",
+          "enum": ["bump_patch", "bump_minor"]
+        },
+        "state": {
+          "type": "string",
+          "enum": ["Released", "Draft"]
+        }
+      }
+    },
+    "apiUrl": {
+      "format": "uri",
+      "pattern": "^https://"
+    },
+    "epConfig": {
+      "type": "object",
+      "required": ["apiUrl", "token"],
+      "additionalProperties": false,
+      "properties": {
+        "apiUrl": {
+          "$ref": "#/definitions/apiUrl"
+        },
+        "token": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

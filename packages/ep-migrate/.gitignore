@@ -1,0 +1,6 @@
+dist
+node_modules
+_todo*
+logs
+tmp
+output

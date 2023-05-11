@@ -1,0 +1,38 @@
+# 
+# Config file for Tests
+# 
+
+logger:
+  logSummary2Console: true
+  logLevel: info
+  logFile: ./test/logs/ep-migrate.log
+  prettyPrint: true
+  log2Stdout: false
+  epSdkLogLevel: silent
+epV1:
+  apiUrl: https://api.solace.cloud
+  token: ${EP_MIGRATE_CLI_SOLACE_CLOUD_TOKEN_V1}
+epV2:
+  apiUrl: https://api.solace.cloud
+  token: ${EP_MIGRATE_CLI_SOLACE_CLOUD_TOKEN_V2}
+migrate:
+  epV2:
+    applicationDomainPrefix: 'test-ep-migrate/epV1/'
+    # applicationDomainPrefix: 'epV1/'
+    versions:
+      initialVersion: 1.0.0
+      versionStrategy: bump_patch      
+      state: Released
+  enums:
+    epV2:
+      applicationDomainName: 'enums'  
+  applicationDomains:
+    epV2:
+  schemas:
+    epV2:
+      versions:
+        initialVersion: 1.0.0
+        versionStrategy: bump_patch      
+        state: Released
+
+  
