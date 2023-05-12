@@ -30,7 +30,7 @@ export class EpSdkTopicAddressLevelServiceClass extends EpSdkServiceClass {
 
   /**
    * Creates AddressLevel array from topic string.
-   * If topic string includes variables (denoted by {}), it tries to find the enum by Name in the provided enumApplicationDomainIds.
+   * If topic string includes variables (denoted by encapuslating curly braces), it tries to find the enum by Name in the provided enumApplicationDomainIds.
    * It will use the first one found.
    * It will use the latest enumVersion for the enumName.
    * If the enum cannot be found, it will assume an unbounded variable.

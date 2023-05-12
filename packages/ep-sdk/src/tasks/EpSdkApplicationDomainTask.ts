@@ -26,7 +26,11 @@ import {
   EEpSdkObjectTypes, 
   EpSdkBrokerTypes 
 } from "../types";
-import { EpSdkApplicationDomainsService, EpSdkTopicAddressLevelService, EpSdkTopicDomainsService } from "../services";
+import { 
+  EpSdkApplicationDomainsService, 
+  EpSdkTopicAddressLevelService, 
+  EpSdkTopicDomainsService 
+} from "../services";
 import {
   EpSdkTask,
   IEpSdkTask_Config,
@@ -40,13 +44,15 @@ import {
   IEpSdkTask_UpdateFuncReturn,
 } from "./EpSdkTask";
 
+/** @category Tasks */
 export type TEpSdkApplicationDomainTask_TopicDomainSettings = {
   brokerType: EpSdkBrokerTypes;
   topicDelimiter?: string[1];
   topicString: string;
   enumApplicationDomainIds?: Array<string>;
 }
-type TEpSdkApplicationDomainTask_Settings = Partial<Pick<ApplicationDomain, "topicDomainEnforcementEnabled" | "uniqueTopicAddressEnforcementEnabled" | "description">> & {
+/** @category Tasks */
+export type TEpSdkApplicationDomainTask_Settings = Partial<Pick<ApplicationDomain, "topicDomainEnforcementEnabled" | "uniqueTopicAddressEnforcementEnabled" | "description">> & {
   topicDomains?: Array<TEpSdkApplicationDomainTask_TopicDomainSettings>;
 };
 type TEpSdkApplicationDomainTask_CompareObject = Omit<TEpSdkApplicationDomainTask_Settings, "topicDomains"> & {
