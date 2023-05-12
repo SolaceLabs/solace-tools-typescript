@@ -32,7 +32,10 @@ import {
   EpV1EnumsResponse,
   EpV1EnumsService 
 } from "../epV1";
-import { ICliConfigEp2Versions } from "./types";
+import { 
+  ICliConfigEp2Versions, 
+  ICliMigratedEnum 
+} from "./types";
 
 
 export interface ICliEnumsMigrateConfig {
@@ -44,9 +47,10 @@ export interface ICliEnumsMigrateConfig {
 export interface ICliEnumsMigratorOptions extends ICliMigratorOptions {
   cliEnumsMigrateConfig: ICliEnumsMigrateConfig;
 }
-interface ICliEnumsMigratorRunMigrateReturn {
-  enumApplicationDomainName: string;
-  enumApplicationDomainId: string;
+export interface ICliEnumsMigratorRunMigrateReturn {
+  epV2EnumApplicationDomainName: string;
+  epV2EnumApplicationDomainId: string;
+  cliMigratedEnums: Array<ICliMigratedEnum>;
 }
 export interface ICliEnumsMigratorRunReturn extends ICliMigratorRunReturn {
   cliEnumsMigratorRunMigrateReturn: ICliEnumsMigratorRunMigrateReturn;
@@ -54,6 +58,7 @@ export interface ICliEnumsMigratorRunReturn extends ICliMigratorRunReturn {
 
 export class CliEnumsMigrator extends CliMigrator {
   protected options: ICliEnumsMigratorOptions;
+  private cliMigratedEnums: Array<ICliMigratedEnum> = [];
 
   constructor(options: ICliEnumsMigratorOptions, runMode: ECliRunContext_RunMode) {
     super(options, runMode);
@@ -113,6 +118,13 @@ export class CliEnumsMigrator extends CliMigrator {
     const epSdkEnumVersionTask_ExecuteReturn: IEpSdkEnumVersionTask_ExecuteReturn = await this.executeTask({ epSdkTask: epSdkEnumVersionTask });
     CliLogger.trace(CliLogger.createLogEntry(logName, {code: ECliStatusCodes.PRESENT_EP_V2_ENUM_VERSION, details: { epSdkEnumVersionTask_ExecuteReturn }}));
     CliRunSummary.presentEpV2EnumVersion({ applicationDomainName: epV2ApplicationDomainName, epSdkEnumVersionTask_ExecuteReturn });
+    this.cliMigratedEnums.push({
+      epV1Enum: epV1Enum,
+      epV2Enum: {
+        topicAddressEnum: enumObject,
+        topicAddressEnumVersion: epSdkEnumVersionTask_ExecuteReturn.epObject
+      }
+    });
     CliRunContext.pop();
   }
 
@@ -168,8 +180,9 @@ export class CliEnumsMigrator extends CliMigrator {
     CliRunContext.pop();
     CliRunSummary.processingEpV1EnumsDone();
     return {
-      enumApplicationDomainId: epSdkApplicationDomainTask_ExecuteReturn.epObject.id,
-      enumApplicationDomainName: epSdkApplicationDomainTask_ExecuteReturn.epObject.name,
+      epV2EnumApplicationDomainId: epSdkApplicationDomainTask_ExecuteReturn.epObject.id,
+      epV2EnumApplicationDomainName: epSdkApplicationDomainTask_ExecuteReturn.epObject.name,
+      cliMigratedEnums: this.cliMigratedEnums
     };
   } 
 
@@ -179,8 +192,9 @@ export class CliEnumsMigrator extends CliMigrator {
     CliLogger.debug(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.MIGRATE_ENUMS_START }));
     const cliEnumsMigratorRunReturn: ICliEnumsMigratorRunReturn = {
       cliEnumsMigratorRunMigrateReturn: {
-        enumApplicationDomainName: "undefined",
-        enumApplicationDomainId: "undefined",  
+        epV2EnumApplicationDomainName: "undefined",
+        epV2EnumApplicationDomainId: "undefined",  
+        cliMigratedEnums: []
       },
       error: undefined
     };

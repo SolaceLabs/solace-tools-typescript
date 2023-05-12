@@ -75,6 +75,7 @@ export class CliMigrateManager {
         runId: this.cliMigrateManagerOptions.runId,
         applicationDomainPrefix: this.cliMigrateManagerOptions.epV2.applicationDomainPrefix,
         cliApplicationDomainsMigrateConfig: this.cliMigrateManagerOptions.applicationDomains,
+        cliEnumsMigratorRunMigrateReturn: cliEnumsMigratorRunReturn.cliEnumsMigratorRunMigrateReturn
       }, 
       ECliRunContext_RunMode.RELEASE,
     );

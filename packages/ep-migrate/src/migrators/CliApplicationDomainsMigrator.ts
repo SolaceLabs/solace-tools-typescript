@@ -1,8 +1,16 @@
 import {
   EEpSdkTask_TargetState,
   EpSdkApplicationDomainTask,
+  EpSdkApplicationDomainsService,
+  EpSdkBrokerTypes,
+  EpSdkTopicAddressLevelService,
+  EpSdkTopicDomainTask,
   IEpSdkApplicationDomainTask_ExecuteReturn,
+  IEpSdkTopicDomainTask_ExecuteReturn,
 } from "@solace-labs/ep-sdk";
+import { 
+  AddressLevel 
+} from "@solace-labs/ep-openapi-node";
 import {
   CliEPApiContentError,
   CliErrorFactory,
@@ -25,8 +33,9 @@ import {
   EpV1ApplicationDomainsService,
 } from "../epV1";
 import { 
-  ICliMigratedApplicationDomain 
+  ICliMigratedApplicationDomain, 
 } from "./types";
+import { ICliEnumsMigratorRunMigrateReturn } from "./CliEnumsMigrator";
 
 
 export interface ICliApplicationDomainsMigrateConfig {
@@ -36,6 +45,7 @@ export interface ICliApplicationDomainsMigrateConfig {
 }
 export interface ICliApplicationDomainsMigratorOptions extends ICliMigratorOptions {
   cliApplicationDomainsMigrateConfig: ICliApplicationDomainsMigrateConfig;
+  cliEnumsMigratorRunMigrateReturn: ICliEnumsMigratorRunMigrateReturn;
 }
 interface ICliApplicationDomainsMigratorRunMigrateReturn {
   cliMigratedApplicationDomains: Array<ICliMigratedApplicationDomain>;
@@ -63,36 +73,63 @@ export class CliApplicationDomainsMigrator extends CliMigrator {
     CliRunContext.push(rctxt);
     CliRunSummary.processingEpV1ApplicationDomain({ applicationDomainName: epV1ApplicationDomain.name });
 
+    console.log(`\n\n\n${logName}: epV1ApplicationDomain.topicDomain = ${JSON.stringify(epV1ApplicationDomain.topicDomain)}`);
+    const topicAddressLevels: Array<AddressLevel> | undefined = await EpSdkTopicAddressLevelService.createTopicAddressLevels({
+      topicString: epV1ApplicationDomain.topicDomain,
+      enumApplicationDomainIds: [ this.options.cliEnumsMigratorRunMigrateReturn.epV2EnumApplicationDomainId]
+    });
+    console.log(`${logName}: topicAddressLevels = ${JSON.stringify(topicAddressLevels, null, 2)}\n\n\n\n`);
+
+    // check if we have topic domais
+    const addressLevels = await EpSdkTopicAddressLevelService.createTopicAddressLevels({
+      topicString: epV1ApplicationDomain.topicDomain,
+      enumApplicationDomainIds: [ this.options.cliEnumsMigratorRunMigrateReturn.epV2EnumApplicationDomainId ]
+    });
     // present epv2 application domain
     const epV2ApplicationDomainName = this.options.applicationDomainPrefix ? `${this.options.applicationDomainPrefix}${epV1ApplicationDomain.name}` : epV1ApplicationDomain.name;
+
+    // TODO: build topic domains into EpSdkApplicationDomainTask
     const applicationDomainsTask = new EpSdkApplicationDomainTask({
       epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
       applicationDomainName: epV2ApplicationDomainName,
       applicationDomainSettings: {
         description: epV1ApplicationDomain.description,
         uniqueTopicAddressEnforcementEnabled: epV1ApplicationDomain.enforceUniqueTopicNames,
-        // TODO: build TopicDomains service + task first
-        // TODO: only set to true if topicDomain not empty
-        topicDomainEnforcementEnabled: epV1ApplicationDomain.enforceUniqueTopicNames,
-        // TODO: enhance task
-        // x: epV1ApplicationDomain.topicDomain
+        topicDomainEnforcementEnabled: addressLevels ? true : false,
+        // topicDomains: [
+        //   array of array of AddressLevel
+        // ]
       },
       epSdkTask_TransactionConfig: this.get_IEpSdkTask_TransactionConfig(),
       checkmode: false,
     });
     const epSdkApplicationDomainTask_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn = await this.executeTask({ epSdkTask: applicationDomainsTask });
-    CliLogger.trace(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.MIGRATE_APPLICATION_DOMAIN, message: "application domain", details: {
-      epSdkApplicationDomainTask_ExecuteReturn: epSdkApplicationDomainTask_ExecuteReturn,
-    }}));
     /* istanbul ignore next */
     if(epSdkApplicationDomainTask_ExecuteReturn.epObject.id === undefined) throw new CliEPApiContentError(logName, "epSdkApplicationDomainTask_ExecuteReturn.epObject.id === undefined", {
       applicationDomainObject: epSdkApplicationDomainTask_ExecuteReturn.epObject,
     });    
+    // present topic domain
+    let epSdkTopicDomainTask_ExecuteReturn: IEpSdkTopicDomainTask_ExecuteReturn | undefined = undefined;
+    if(addressLevels !== undefined) {
+      const epSdkTopicDomainTask: EpSdkTopicDomainTask = new EpSdkTopicDomainTask({
+        epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
+        applicationDomainId: epSdkApplicationDomainTask_ExecuteReturn.epObject.id,
+        topicDomainSettings: {
+          brokerType: EpSdkBrokerTypes.Solace,
+          addressLevels
+        },
+      });
+      epSdkTopicDomainTask_ExecuteReturn = await this.executeTask({ epSdkTask: epSdkTopicDomainTask });  
+    }
     CliRunSummary.presentEpV2ApplicationDomain({ epSdkApplicationDomainTask_ExecuteReturn });
-    CliLogger.trace(CliLogger.createLogEntry(logName, {code: ECliStatusCodes.PRESENT_EP_V2_APPLICATION_DOMAIN, details: { epSdkApplicationDomainTask_ExecuteReturn }}));
+    CliLogger.trace(CliLogger.createLogEntry(logName, {code: ECliStatusCodes.PRESENT_EP_V2_APPLICATION_DOMAIN, details: { 
+      epSdkApplicationDomainTask_ExecuteReturn,
+      epSdkTopicDomainTask_ExecuteReturn
+     }}));
     this.cliMigratedApplicationDomains.push({
       epV1ApplicationDomain: epV1ApplicationDomain,
-      epV2ApplicationDomain: epSdkApplicationDomainTask_ExecuteReturn.epObject,
+      // get the new application domain - topic domain might have been added
+      epV2ApplicationDomain: await EpSdkApplicationDomainsService.getById({ applicationDomainId: epSdkApplicationDomainTask_ExecuteReturn.epObject.id }),
     });
     CliRunContext.pop();
   }
