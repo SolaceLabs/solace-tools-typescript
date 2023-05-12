@@ -5,14 +5,9 @@ import {
   EpSdkBrokerTypes,
   EpSdkDefaultTopicDelimitors,
   EpSdkTopicAddressLevelService,
-  EpSdkTopicDomainTask,
   IEpSdkApplicationDomainTask_ExecuteReturn,
-  IEpSdkTopicDomainTask_ExecuteReturn,
   TEpSdkApplicationDomainTask_TopicDomainSettings,
 } from "@solace-labs/ep-sdk";
-import { 
-  AddressLevel 
-} from "@solace-labs/ep-openapi-node";
 import {
   CliEPApiContentError,
   CliErrorFactory,
