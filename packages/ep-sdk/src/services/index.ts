@@ -57,3 +57,8 @@ export { default as EpSdkCustomAttributesQueryService } from './EpSdkCustomAttri
 export * from './EpSdkMessagingService';
 export { default as EpSdkMessagingService } from './EpSdkMessagingService';
 
+export * from './EpSdkTopicDomainsService';
+export { default as EpSdkTopicDomainsService } from './EpSdkTopicDomainsService';
+
+export * from './EpSdkTopicAddressLevelService';
+export { default as EpSdkTopicAddressLevelService } from './EpSdkTopicAddressLevelService';

@@ -17,7 +17,7 @@ epV2:
   token: ${EP_MIGRATE_CLI_SOLACE_CLOUD_TOKEN_V2}
 migrate:
   epV2:
-    applicationDomainPrefix: 'test-ep-migrate/epV1/'
+    applicationDomainPrefix: 'TEST_EP_MIGRATE/epV1/'
     # applicationDomainPrefix: 'epV1/'
     versions:
       initialVersion: 1.0.0

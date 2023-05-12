@@ -253,6 +253,16 @@ export abstract class EpSdkTask {
     return epSdkTask_DeleteFuncReturn;
   }
 
+  protected createReturn4UpdateFunc({epSdkTask_UpdateFuncReturn}:{
+    epSdkTask_UpdateFuncReturn: IEpSdkTask_UpdateFuncReturn;
+  }): IEpSdkTask_ExecuteReturn {
+    return {
+      epSdkTask_TransactionLogData: this.epSdkTask_TransactionLog.getData(),
+      epObject: epSdkTask_UpdateFuncReturn.epObject,
+      epObjectKeys: epSdkTask_UpdateFuncReturn.epObjectKeys,
+    };
+  }
+
   private async executePresent(epSdkTask_GetFuncReturn: IEpSdkTask_GetFuncReturn): Promise<IEpSdkTask_ExecuteReturn> {
     const funcName = "executePresent";
     const logName = `${EpSdkTask.name}.${funcName}()`;
@@ -287,11 +297,7 @@ export abstract class EpSdkTask {
         epSdkTask_IsUpdateRequiredFuncReturn: epSdkTask_IsUpdateRequiredFuncReturn,
         epSdkTask_UpdateFuncReturn: epSdkTask_UpdateFuncReturn,
       }}));
-      return {
-        epSdkTask_TransactionLogData: this.epSdkTask_TransactionLog.getData(),
-        epObject: epSdkTask_UpdateFuncReturn.epObject,
-        epObjectKeys: epSdkTask_UpdateFuncReturn.epObjectKeys,
-      };
+      return this.createReturn4UpdateFunc({ epSdkTask_UpdateFuncReturn });
     }
     // nothing to do
     return {

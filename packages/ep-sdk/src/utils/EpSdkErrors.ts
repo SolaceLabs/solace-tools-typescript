@@ -5,6 +5,7 @@ import {
   IEpSdkTask_TransactionLogData,
   EEpSdk_VersionTaskStrategy
 } from "../tasks";
+import { EEpSdkObjectTypes } from "../types";
 
 enum ELoggerCodes {
   EP_SDK_INTERNAL_ERROR = "EP_SDK_INTERNAL_ERROR"
@@ -215,5 +216,18 @@ export class EpSdkVersionTaskStrategyValidationError extends EpSdkError {
     this.details = details;
   }
 }
+
+/** @category Errors */
+export class EpSdkTaskUpdateNotSupportedError extends EpSdkError {
+  protected static DefaultDescription = 'EP Sdk Task: Update Object Not Supported';
+  public epObjectType: EEpSdkObjectTypes;
+  public details: any;
+  constructor(internalLogName: string, internalModuleName: string, epObjectType: EEpSdkObjectTypes, details: any) {
+    super(internalLogName, internalModuleName, EpSdkTaskUpdateNotSupportedError.DefaultDescription);
+    this.epObjectType = epObjectType;
+    this.details = details;
+  }
+}
+
 
 
