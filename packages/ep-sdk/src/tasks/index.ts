@@ -13,4 +13,3 @@ export * from './EpSdkEventApiVersionTask';
 export * from './EpSdkApplicationTask';
 export * from './EpSdkApplicationVersionTask';
 export * from './EpSdkCustomAttributeDefinitionTask';
-export * from './EpSdkTopicDomainTask';

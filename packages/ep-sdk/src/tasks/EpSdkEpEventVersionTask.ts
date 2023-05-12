@@ -158,7 +158,7 @@ export class EpSdkEpEventVersionTask extends EpSdkVersionTask {
   }
 
   protected async initializeTask(): Promise<void> {
-    const funcName = "getEpObjectKeys";
+    const funcName = "initializeTask";
     const logName = `${EpSdkEpEventVersionTask.name}.${funcName}()`;
     if(this.getTaskConfig().topicDelimiter === undefined) this.getTaskConfig().topicDelimiter = this.Default_TopicDelimiter;
     else {
@@ -172,14 +172,11 @@ export class EpSdkEpEventVersionTask extends EpSdkVersionTask {
     });
   }
 
-  public transform_EpSdkTask_Config(
-    epSdkEpEventVersionTask_Config: IEpSdkEpEventVersionTask_Config
-  ): IEpSdkEpEventVersionTask_Config {
-    epSdkEpEventVersionTask_Config.eventVersionSettings.displayName =
-      this.truncate(
-        epSdkEpEventVersionTask_Config.eventVersionSettings.displayName,
-        $EventVersion.properties.displayName.maxLength
-      );
+  public transform_EpSdkTask_Config(epSdkEpEventVersionTask_Config: IEpSdkEpEventVersionTask_Config): IEpSdkEpEventVersionTask_Config {
+    epSdkEpEventVersionTask_Config.eventVersionSettings.displayName = this.truncate(
+      epSdkEpEventVersionTask_Config.eventVersionSettings.displayName,
+      $EventVersion.properties.displayName.maxLength
+    );
     return epSdkEpEventVersionTask_Config;
   }
 

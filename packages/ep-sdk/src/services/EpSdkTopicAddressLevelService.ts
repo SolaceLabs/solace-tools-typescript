@@ -12,9 +12,9 @@ export class EpSdkTopicAddressLevelServiceClass extends EpSdkServiceClass {
   private async getEnumVersionId({ enumName, applicationDomainIds, xContextId }:{
     xContextId?: string;
     enumName: string;
-    applicationDomainIds: Array<string>;
+    applicationDomainIds?: Array<string>;
   }): Promise<string | undefined> {
-    if(applicationDomainIds.length > 0) {
+    if(applicationDomainIds && applicationDomainIds.length > 0) {
       for(const applicationDomainId of applicationDomainIds) {
         const topicAddressEnumVersion: TopicAddressEnumVersion | undefined = await EpSdkEnumVersionsService.getLatestVersionForEnumName({
           xContextId,
@@ -40,7 +40,7 @@ export class EpSdkTopicAddressLevelServiceClass extends EpSdkServiceClass {
     xContextId?: string;
     topicString: string;
     topicDelimiter?: string[1];
-    enumApplicationDomainIds: Array<string>;
+    enumApplicationDomainIds?: Array<string>;
   }): Promise<Array<AddressLevel> | undefined> {
     if(topicString.length === 0) return undefined;
     const topicLevelList: Array<string> = topicString.split(topicDelimiter);
