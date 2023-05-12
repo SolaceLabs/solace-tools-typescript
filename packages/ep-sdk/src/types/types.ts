@@ -3,7 +3,10 @@ export enum EpSdkBrokerTypes {
   Solace = "solace",
   Kafka = "kafka"
 }
-
+export enum EpSdkDefaultTopicDelimitors {
+  Solace = "/",
+  Kafka = '.'
+}
 /** @category General Types */
 export enum EEpSdkCustomAttributeEntityTypes {
   APPLICATION_DOMAIN = "applicationDomain",
@@ -24,6 +27,7 @@ export enum EEpSdkCustomAttributeEntityTypes {
 
 /** @category General Types */
 export enum EEpSdkObjectTypes {
+  TOPIC_DOMAIN = "topicDomain",
   CUSTOM_ATTRIBUTE_DEFINITION = "customAttributeDefinition",
   APPLICATION_DOMAIN = "applicationDomain",
   ENUM = "enum",
