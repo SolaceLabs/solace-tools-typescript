@@ -24,6 +24,7 @@ logger:
   # epSdkLogLevel:
   # - options: trace, debug, info, warn, error, fatal, silent
   # - log level for EpSdk library
+  # - Note: 'epSdkLogLevel' greater than 'logLevel' will be discarded, i.e. 'logLevel' setting prevails.
   epSdkLogLevel: silent
 epV1:
   apiUrl: https://api.solace.cloud
