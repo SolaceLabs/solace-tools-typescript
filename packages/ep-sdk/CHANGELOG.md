@@ -1,5 +1,11 @@
 # @solace-labs/ep-sdk
 
+## 0.60.0
+
+### Minor Changes
+
+- 6e0ab825: added topicDomains to EpSdkApplicationDomainTask
+
 ## 0.59.1
 
 ### Patch Changes
