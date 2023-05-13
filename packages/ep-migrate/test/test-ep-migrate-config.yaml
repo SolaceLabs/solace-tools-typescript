@@ -18,7 +18,6 @@ epV2:
 migrate:
   epV2:
     applicationDomainPrefix: 'TEST_EP_MIGRATE/epV1/'
-    # applicationDomainPrefix: 'epV1/'
     versions:
       initialVersion: 1.0.0
       versionStrategy: bump_patch      
