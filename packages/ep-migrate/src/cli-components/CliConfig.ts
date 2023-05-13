@@ -32,6 +32,7 @@ import {
 } from "./CliUtils";
 import { 
   ECliMigrateManagerMode, 
+  ECliMigrateManagerRunState, 
   ICliMigrateManagerOptions 
 } from './CliMigrateManager';
 import { 
@@ -62,7 +63,7 @@ interface ICliConfigFileMigrateConfig {
   applicationDomains: ICliApplicationDomainsMigrateConfig;
   schemas: ICliSchemasMigrateConfig;
 }
-interface ICliConfigFile {
+export interface ICliConfigFile {
   logger: {
     logLevel: string;
     logFile: string;
@@ -166,8 +167,11 @@ class CliConfig {
     }
   }
 
-  private readConfigFile(configFile: string): void {
-    const funcName = "readConfigFile";
+  private setConfig({ configFile, runState = ECliMigrateManagerRunState.PRESENT }:{
+    configFile: string;
+    runState: ECliMigrateManagerRunState;
+  }): void {
+    const funcName = "setConfig";
     const logName = `${CliConfig.name}.${funcName}()`;
     const rawConfigFileContents = CliUtils.readYamlFile(configFile);
     const configFileContents: ICliConfigFile = this.expandEnvVars(configFile, rawConfigFileContents);
@@ -203,12 +207,13 @@ class CliConfig {
       epV2Config: {
         baseUrl: configFileContents.epV2.apiUrl,
         token: configFileContents.epV2.token,
-        organizationInfo: this.getOrganizationInfo(configFileContents.epV1.token)
+        organizationInfo: this.getOrganizationInfo(configFileContents.epV2.token)
       },
       cliMigrateConfig: {
         appName, 
         runId,
         cliMigrateManagerMode: ECliMigrateManagerMode.RELEASE_MODE,
+        cliMigrateManagerRunState: runState,
         epV2: {
           applicationDomainPrefix: configFileContents.migrate.epV2 ? configFileContents.migrate.epV2.applicationDomainPrefix : undefined
         },
@@ -239,10 +244,11 @@ class CliConfig {
     };  
   }
 
-  public initialize = ({ cliVersion, commandLineOptionValues, configFile }: {
+  public initialize = ({ cliVersion, commandLineOptionValues, configFile, runState }: {
     cliVersion: string;
     commandLineOptionValues: OptionValues;
     configFile?: string;
+    runState: ECliMigrateManagerRunState;
   }): void => {
     const funcName = "initialize";
     const logName = `${CliConfig.name}.${funcName}()`;
@@ -251,7 +257,10 @@ class CliConfig {
     this.configFile = configFile ? configFile : DefaultConfigFile;
     const testedConfigFile = CliUtils.validateFilePathWithReadPermission(this.configFile);
     if(testedConfigFile === undefined) throw new CliConfigInvalidConfigFileError(logName, this.configFile, 'cannot read config file');
-    this.readConfigFile(testedConfigFile);
+    this.setConfig({
+      configFile: testedConfigFile,
+      runState
+    });
     // perhaps more validation is needed?
     // this.validateConfig();
   };

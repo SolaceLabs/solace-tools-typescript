@@ -6,14 +6,16 @@
 
 unset_source_env() {
     # env vars for tests
-    unset TEST_EP_MIGRATE_ENABLE_API_CALL_LOGGING
+    # unset TEST_EP_MIGRATE_ENABLE_API_CALL_LOGGING
+    unset TEST_EP_MIGRATE_DUMMY
     # unset this function
     unset -f unset_source_env
 }
 
 # ENV vars for tests
-export TEST_EP_MIGRATE_ENABLE_API_CALL_LOGGING="false"
-
+# export TEST_EP_MIGRATE_ENABLE_API_CALL_LOGGING="false"
+# export TEST_EP_MIGRATE_ENABLE_API_CALL_LOGGING="true"
+export TEST_EP_MIGRATE_DUMMY=dummy
 ######################################################
 
 logName='[source.env.sh]'

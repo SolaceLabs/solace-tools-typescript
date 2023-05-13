@@ -13,7 +13,12 @@ import {
 } from "@solace-labs/ep-sdk";
 import { TestContext } from "@internal/tools/src";
 import { TestConfig, TestLogger } from "./lib";
-import { CliConfig, CliLogger, CliError } from "../src/cli-components";
+import { 
+  CliConfig, 
+  CliLogger, 
+  CliError, 
+  ECliMigrateManagerRunState 
+} from "../src/cli-components";
 import { packageJson } from "../src/constants";
 import { CliEpV1Client } from "../src/cli-components/CliEpV1Client";
 
@@ -79,12 +84,12 @@ describe(`${scriptName}`, () => {
           cliVersion: packageJson.version,
           commandLineOptionValues: {},
           configFile: TestConfig.getConfig().configFile,
+          runState: ECliMigrateManagerRunState.PRESENT
         });
         if(TestConfig.isCi()) {
           CliConfig.getCliLoggerOptions().logSummary2Console = false;
           CliConfig.getCliLoggerOptions().log2Stdout = false;
         }
-        // CliConfig.getCliLoggerOptions().logFile = TestConfig.getConfig().logFile;
         CliLogger.initialize({ cliLoggerOptions: CliConfig.getCliLoggerOptions()});
         CliConfig.logConfig();
 

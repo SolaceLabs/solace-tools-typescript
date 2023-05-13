@@ -1,29 +1,14 @@
-# ############################################################
-# Config file for CLI: ep-migrate
-# ############################################################
+#############################################################
+# Development Config file for CLI: ep-migrate
+# for fully commented config file run: yarn start -h 
+#############################################################
 
 logger:
-  # logSummary2Console:
-  # - options: true, false
-  # - logs summary status of migrate actions to console
   logSummary2Console: true
-  # logLevel: 
-  # - options: trace, debug, info, warn, error, fatal
   logLevel: info
-  # logFile:
-  # - relative or absolute path + file name of log file
   logFile: ./logs/ep-migrate.log
-  # prettyPrint:
-  # - options: true, false
-  # - pretty print JSON in all logs (console/log file)
   prettyPrint: true
-  # log2Stdout:
-  # - options: true, false
-  # - log also to console
   log2Stdout: false
-  # epSdkLogLevel:
-  # - options: trace, debug, info, warn, error, fatal, silent
-  # - log level for EpSdk library
   epSdkLogLevel: silent
 epV1:
   apiUrl: https://api.solace.cloud
@@ -33,25 +18,12 @@ epV2:
   token: ${EP_MIGRATE_CLI_SOLACE_CLOUD_TOKEN_V2}
 migrate:
   epV2:
-    # applicationDomainPrefix:
-    # - optional
-    # - if specified, prepends applicationDomainPrefix to all created applicationDomains 
-    applicationDomainPrefix: 'epV1/'
-    # versions:
-    # - required
-    # - applies to all objects
-    # - can override by object
+    # applicationDomainPrefix: 'epV1/'
+    applicationDomainPrefix: 'epV1/cto/'
+    # applicationDomainPrefix: 'epV1/solace-iot-team/'
     versions:
-      # initialVersion:
-      # - format: simple, three part SemVer (e.g. 1.0.0)
-      # - the version when version object is first created
-      # - any mods of existing version, versionStrategy is applied
       initialVersion: 1.0.0
-      # versionStrategy:
-      # - version bump when existing version is found and any mods are applied to new version
-      # - options: bump_patch, bump_minor
       versionStrategy: bump_patch      
-      # state: options=Released, Draft 
       state: Draft
   enums:
     epV2:

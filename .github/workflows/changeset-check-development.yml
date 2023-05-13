@@ -1,17 +1,15 @@
-name: Changeset
+name: Changeset Check Development
 
 on:
-  # push:
-  #   branches: ["main"]
   pull_request:
     types: [opened, synchronize]
-    branches: ['main']
+    branches: ['development']
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
   changeset_check:
-    name: Changeset Check
+    name: Changeset Check Development
     timeout-minutes: 15
     runs-on: ubuntu-20.04
 
@@ -32,5 +30,5 @@ jobs:
 
       - name: Check Changeset Status
         run: |
-          git pull -f origin main:main
-          yarn changeset status --since=main
+          git pull -f origin development:development
+          yarn changeset status --since=development

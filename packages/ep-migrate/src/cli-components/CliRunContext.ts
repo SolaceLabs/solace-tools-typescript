@@ -2,6 +2,9 @@
 // export enum ECliChannelOperation {
 //   Publish = "publish",
 //   Subscribe = "subscribe"
+
+import { ECliMigrateManagerRunState } from "./CliMigrateManager";
+
 // }
 export enum ECliRunContext_RunMode {
   // TEST_PASS_1 = "test_pass_1",
@@ -10,6 +13,7 @@ export enum ECliRunContext_RunMode {
 }
 export interface ICliRunContext {
   runId: string;
+  runState: ECliMigrateManagerRunState;
   runMode: ECliRunContext_RunMode;
 }
 export interface ICliEnumsRunContext extends Partial<ICliRunContext> {
@@ -26,6 +30,7 @@ export interface ICliSchemaRunContext extends Partial<ICliRunContext> {
   schemaName: string;
 }
 
+
 // export interface ICliEpRunContext_Application extends Partial<ICliApiRunContext> {
 //   epApplicationName: string;
 // }
@@ -33,6 +38,10 @@ export interface ICliSchemaRunContext extends Partial<ICliRunContext> {
 //   epLatestExistingApplicationVersion?: string;
 //   epTargetApplicationVersion: string;
 // }
+
+export interface ICliApplicationDomainRunAbsentContext extends Partial<ICliRunContext> {
+  epV2ApplicationDomainPrefix: string;
+}
 
 
 const LogMe = false;
