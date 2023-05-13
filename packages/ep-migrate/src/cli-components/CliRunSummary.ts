@@ -19,16 +19,18 @@ import {
 } from "./CliLogger";
 import { ECliRunContext_RunMode } from "./CliRunContext";
 import { CliUtils } from "./CliUtils";
-import { ECliMigrateManagerMode, ICliMigrateManagerOptions } from "./CliMigrateManager";
+import { ECliMigrateManagerMode, ECliMigrateManagerRunState, ICliMigrateManagerOptions } from "./CliMigrateManager";
 
 export enum ECliChannelOperationType {
   PUBLISH = "publish",
   SUBSCRIBE = "subscribe",
 }
 export enum ECliRunSummary_Type {
-  StartRun = "StartRun",
+  StartRunPresent = "StartRunPresent",
+  StartRunAbsent = "StartRunAbsent",
   RunError = "RunError",
-  MigrateSummary = "MigrateSummary",
+  MigrateSummaryPresent = "MigrateSummaryPresent",
+  MigrateSummaryAbsent = "MigrateSummaryAbsent",
 
   ProcessingEpV1ApplicationDomains = "ProcessingEpV1ApplicationDomains",
   ProcessingEpV1ApplicationDomainsDone = "ProcessingEpV1ApplicationDomainsDone",
@@ -45,6 +47,9 @@ export enum ECliRunSummary_Type {
   ProcessingEpV1SchemasNoneFound = "ProcessingEpV1SchemasNoneFound",
   ProcessingEpV1Schema = "ProcessingEpV1Schema",
 
+  ProcessingEpV2ApplicationDomainsAbsent = "ProcessingEpV2ApplicationDomainsAbsent",
+  ProcessingEpV2ApplicationDomainsAbsentDone = "ProcessingEpV2ApplicationDomainsAbsentDone",
+  ProcessingEpV2ApplicationDomainsAbsentNoneFound = "ProcessingEpV2ApplicationDomainsAbsentNoneFound",
   EpV2ApplicationDomain = "EpV2ApplicationDomain",
   EpV2EnumApplicationDomain = "EpV2EnumApplicationDomain",
   EpV2Enum = "EpV2Enum",
@@ -71,18 +76,25 @@ export interface ICliRunError {
 export interface ICliRunSummary_Base {
   type: ECliRunSummary_Type;
   runMode?: ECliRunContext_RunMode;
+  runState?: ECliMigrateManagerRunState;
   // timestamp: number; // would have to create new set of interfaces: xxx_Create which omit timestamp
 }
 export interface ICliRunSummary_LogBase extends ICliRunSummary_Base {
   timestamp: number;
 }
 export interface ICliRunSummary_StartRun extends ICliRunSummary_Base {
-  type: ECliRunSummary_Type.StartRun;
   epV1OrganizationInfo: ICliOrganizationInfo;
   epV2OrganizationInfo: ICliOrganizationInfo;
 }
-export interface ICliMigrateSummary extends ICliRunSummary_LogBase {
-  type: ECliRunSummary_Type.MigrateSummary;
+export interface ICliRunSummary_StartRunPresent extends ICliRunSummary_StartRun {
+  type: ECliRunSummary_Type.StartRunPresent;
+}
+export interface ICliRunSummary_StartRunAbsent extends ICliRunSummary_StartRun {
+  type: ECliRunSummary_Type.StartRunAbsent;
+  applicationDomainPrefix: string;
+}
+export interface ICliMigrateSummaryPresent extends ICliRunSummary_LogBase {
+  type: ECliRunSummary_Type.MigrateSummaryPresent;
   logFile: string;
   processedEpV1ApplicationDomains: number;
   createdEpV2ApplicationDomains: number;
@@ -98,6 +110,11 @@ export interface ICliMigrateSummary extends ICliRunSummary_LogBase {
 
   // warnings: Array<ICliRunSummary_Task_VersionObject_Warning>;
   // errors: Array<ICliRunSummary_Task_VersionObject_Error>;
+}
+export interface ICliMigrateSummaryAbsent extends ICliRunSummary_LogBase {
+  type: ECliRunSummary_Type.MigrateSummaryAbsent;
+  logFile: string;
+  deletedEpV2ApplicationDomains: number;
 }
 
 
@@ -120,7 +137,11 @@ export interface ICliRunSummary_EpV1_Schema extends ICliRunSummary_EpV1_Object {
   epV1ObjectType: ECliEpV1Object_Types.EpV1Schema;
   schemaName: string;
 }
-
+// EpV2 Objects
+export interface ICliRunSummary_EpV2_ApplicatonDomainsAbsent extends ICliRunSummary_Base {
+  type: ECliRunSummary_Type.ProcessingEpV2ApplicationDomainsAbsent;
+  absentApplicationDomainNames: Array<string>;
+}
 
 // EpV2 tasks
 export interface ICliRunSummary_Task extends ICliRunSummary_Base {
@@ -231,12 +252,27 @@ class CliRunSummary {
     this.log(ECliSummaryStatusCodes.RUN_ERROR, cliRunError, consoleOutput);
   };
 
-  public startRun = ({ cliRunSummary_StartRun }: {
-    cliRunSummary_StartRun: Required<ICliRunSummary_StartRun>;
+  public startRunAbsent = ({ cliRunSummary_StartRun }: {
+    cliRunSummary_StartRun: Required<ICliRunSummary_StartRunAbsent>;
   }): void => {
     this.runMode = cliRunSummary_StartRun.runMode;
     const consoleOutput = `
-Start Run: ------------------------
+------------------------------------------------------------------------------------------------    
+Start Run: ${cliRunSummary_StartRun.runState}
+  Ep V1 Organization: ${cliRunSummary_StartRun.epV1OrganizationInfo.name} (${cliRunSummary_StartRun.epV1OrganizationInfo.id})
+  Ep V2 Organization: ${cliRunSummary_StartRun.epV2OrganizationInfo.name} (${cliRunSummary_StartRun.epV2OrganizationInfo.id})
+  Application Domain Prefix: ${cliRunSummary_StartRun.applicationDomainPrefix}
+    `;
+    this.log(ECliSummaryStatusCodes.START_RUN, cliRunSummary_StartRun, consoleOutput );
+  };
+
+  public startRunPresent = ({ cliRunSummary_StartRun }: {
+    cliRunSummary_StartRun: Required<ICliRunSummary_StartRunPresent>;
+  }): void => {
+    this.runMode = cliRunSummary_StartRun.runMode;
+    const consoleOutput = `
+------------------------------------------------------------------------------------------------    
+Start Run: ${cliRunSummary_StartRun.runState}
   Ep V1 Organization: ${cliRunSummary_StartRun.epV1OrganizationInfo.name} (${cliRunSummary_StartRun.epV1OrganizationInfo.id})
   Ep V2 Organization: ${cliRunSummary_StartRun.epV2OrganizationInfo.name} (${cliRunSummary_StartRun.epV2OrganizationInfo.id})
     `;
@@ -279,6 +315,51 @@ Start Run: ------------------------
     this.log(ECliSummaryStatusCodes.PROCESSING_EP_V1_APPLICATION_DOMAIN, cliRunSummary_EpV1_ApplicatonDomain , consoleOutput);
   }
 
+  public processingEpV2ApplicationDomainsAbsent = ({ absentApplicationDomainNames }:{
+    absentApplicationDomainNames: Array<string>;
+  }) => {
+    const consoleOutput = `
+    Processing V2 Application Domains for deletion ...
+${absentApplicationDomainNames.map(x => ` 
+      - ${x}` ).join('')}
+`;
+    const cliRunSummary_EpV2_ApplicatonDomainsAbsent: ICliRunSummary_EpV2_ApplicatonDomainsAbsent = {
+      runMode: this.runMode,
+      type: ECliRunSummary_Type.ProcessingEpV2ApplicationDomainsAbsent,
+      absentApplicationDomainNames,
+    }
+    this.log(ECliSummaryStatusCodes.PROCESSING_EP_V2_APPLICATION_DOMAINS_ABSENT, cliRunSummary_EpV2_ApplicatonDomainsAbsent , consoleOutput);
+  }
+
+  public processingEpV2ApplicationDomainsAbsentNoneFound = () => {
+    const consoleOutput = `
+      No Application Domains found.  
+`;
+    this.log(ECliSummaryStatusCodes.PROCESSING_EP_V2_APPLICATION_DOMAINS_ABSENT_NONE_FOUND, { type: ECliRunSummary_Type.ProcessingEpV2ApplicationDomainsAbsentNoneFound }, consoleOutput);
+  }
+
+  public processedEpV2ApplicationDomainsAbsent = () => {
+    const consoleOutput = `
+    Deleting V2 Application Domains done.  
+    `;
+    this.log(ECliSummaryStatusCodes.PROCESSING_EP_V2_APPLICATION_DOMAINS_ABSENT_DONE, { type: ECliRunSummary_Type.ProcessingEpV2ApplicationDomainsAbsentDone }, consoleOutput);
+  }
+
+  public absentEpV2ApplicationDomain = ({ epSdkApplicationDomainTask_ExecuteReturn }: {
+    epSdkApplicationDomainTask_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn;
+  }): void => {
+    const applicationDomainName = epSdkApplicationDomainTask_ExecuteReturn.epObject.name;
+    const consoleOutput = `
+      Deleted V2: ${epSdkApplicationDomainTask_ExecuteReturn.epObject.type}: ${applicationDomainName} (${epSdkApplicationDomainTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action})
+`;
+    const cliRunSummary_Task_ApplicationDomain: Required<Omit<ICliRunSummary_Task_ApplicationDomain, "runMode" | "runState">> = {
+      type: ECliRunSummary_Type.EpV2ApplicationDomain,
+      applicationDomainName,
+      action: epSdkApplicationDomainTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action
+    };
+    this.log(ECliSummaryStatusCodes.ABSENT_EP_V2_APPLICATION_DOMAIN, this.addTaskElements(cliRunSummary_Task_ApplicationDomain), consoleOutput);
+  };
+
   public presentEpV2ApplicationDomain = ({ epSdkApplicationDomainTask_ExecuteReturn }: {
     epSdkApplicationDomainTask_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn;
   }): void => {
@@ -286,7 +367,7 @@ Start Run: ------------------------
     const consoleOutput = `
       V2: ${epSdkApplicationDomainTask_ExecuteReturn.epObject.type}: ${applicationDomainName} (${epSdkApplicationDomainTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action})
 `;
-    const cliRunSummary_Task_ApplicationDomain: Required<Omit<ICliRunSummary_Task_ApplicationDomain, "runMode">> = {
+    const cliRunSummary_Task_ApplicationDomain: Required<Omit<ICliRunSummary_Task_ApplicationDomain, "runMode" | "runState">> = {
       type: ECliRunSummary_Type.EpV2ApplicationDomain,
       applicationDomainName,
       action: epSdkApplicationDomainTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action
@@ -301,7 +382,7 @@ Start Run: ------------------------
     const consoleOutput = `
       V2: ${epSdkApplicationDomainTask_ExecuteReturn.epObject.type}: ${applicationDomainName} (${epSdkApplicationDomainTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action})
 `;
-    const cliRunSummary_Task_ApplicationDomain: Required<Omit<ICliRunSummary_Task_EnumApplicationDomain, "runMode">> = {
+    const cliRunSummary_Task_ApplicationDomain: Required<Omit<ICliRunSummary_Task_EnumApplicationDomain, "runMode" | "runState">> = {
       type: ECliRunSummary_Type.EpV2EnumApplicationDomain,
       applicationDomainName,
       action: epSdkApplicationDomainTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action
@@ -429,8 +510,8 @@ Start Run: ------------------------
     this.presentEpV2VersionObject(ECliSummaryStatusCodes.PRESENT_EP_V2_SCHEMA_VERSION, applicationDomainName, epSdkSchemaVersionTask_ExecuteReturn);
   }
 
-  public createMigrateSummary = (cliMigrateManagerMode: ECliMigrateManagerMode): ICliMigrateSummary => {
-    const funcName = "createMigrateSummary";
+  public createMigrateSummaryPresent = (cliMigrateManagerMode: ECliMigrateManagerMode): ICliMigrateSummaryPresent => {
+    const funcName = "createMigrateSummaryPresent";
     const logName = `${CliRunSummary.name}.${funcName}()`;
 
     const cliRunSummary_LogBase_List: Array<ICliRunSummary_LogBase> = this.getSummaryLogList();
@@ -490,7 +571,7 @@ Start Run: ------------------------
     const logFile: string | undefined = CliConfig.getCliConfig().cliLoggerConfig.logFile;
 
     return {
-      type: ECliRunSummary_Type.MigrateSummary,
+      type: ECliRunSummary_Type.MigrateSummaryPresent,
       timestamp: Date.now(),
       logFile: logFile ? logFile : "no log file.",
       processedEpV1ApplicationDomains,
@@ -509,20 +590,21 @@ Start Run: ------------------------
     };
   };
 
-  public processedMigration = (logName: string, cliMigrateManagerOptions: ICliMigrateManagerOptions) => {
-    CliLogger.info(CliLogger.createLogEntry(logName, {code: ECliStatusCodes.MIGRATE_DONE, details: {
+  private processedMigrationPresent = (logName: string, cliMigrateManagerOptions: ICliMigrateManagerOptions) => {
+    CliLogger.info(CliLogger.createLogEntry(logName, {code: ECliStatusCodes.MIGRATE_PRESENT_DONE, details: {
       runMode: this.runMode,
       summaryLogList: this.getSummaryLogList(), 
     }}));
-    const cliMigrateSummary: ICliMigrateSummary = this.createMigrateSummary(cliMigrateManagerOptions.cliMigrateManagerMode);
-    CliLogger.info(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.MIGRATE_DONE, details: {
+    const cliMigrateSummary: ICliMigrateSummaryPresent = this.createMigrateSummaryPresent(cliMigrateManagerOptions.cliMigrateManagerMode);
+    CliLogger.info(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.MIGRATE_PRESENT_DONE, details: {
       runMode: this.runMode,
       cliMigrateSummary,
     }}));
 
     const consoleOutput = `
+
 ------------------------------------------------------------------------------------------------    
-Migration Summary for mode: ${cliMigrateManagerOptions.cliMigrateManagerMode}
+Migration Summary for run: ${cliMigrateManagerOptions.cliMigrateManagerRunState}
 
   Log file: ${cliMigrateSummary.logFile}  
 
@@ -540,13 +622,89 @@ Migration Summary for mode: ${cliMigrateManagerOptions.cliMigrateManagerMode}
   
     `;
     this.log(
-      ECliSummaryStatusCodes.MIGRATE_SUMMARY,
+      ECliSummaryStatusCodes.MIGRATE_SUMMARY_PRESENT,
       cliMigrateSummary,
       consoleOutput,
       true
     );
   };
 
+  public createMigrateSummaryAbsent = (cliMigrateManagerMode: ECliMigrateManagerMode): ICliMigrateSummaryAbsent => {
+    const funcName = "createMigrateSummaryAbsent";
+    const logName = `${CliRunSummary.name}.${funcName}()`;
+
+    const cliRunSummary_LogBase_List: Array<ICliRunSummary_LogBase> = this.getSummaryLogList();
+    let cliRunSummary_LogBase_Filtered_List: Array<ICliRunSummary_LogBase> = [];
+
+    switch (cliMigrateManagerMode) {
+      case ECliMigrateManagerMode.RELEASE_MODE:
+        cliRunSummary_LogBase_Filtered_List = cliRunSummary_LogBase_List.filter((cliRunSummary_LogBase: ICliRunSummary_LogBase) => {
+          return ( cliRunSummary_LogBase.runMode === ECliRunContext_RunMode.RELEASE );
+        });
+        break;
+      default:
+        CliUtils.assertNever(logName, cliMigrateManagerMode);
+    }
+
+    // application domains
+    const cliRunSummary_EpV2ApplicationDomain_List: Array<ICliRunSummary_Task_ApplicationDomain> = cliRunSummary_LogBase_Filtered_List.filter((cliRunSummary_LogBase: ICliRunSummary_LogBase) => {
+      return (cliRunSummary_LogBase.type === ECliRunSummary_Type.EpV2ApplicationDomain);
+    }) as unknown as Array<ICliRunSummary_Task_ApplicationDomain>;
+    
+    // counters
+    const deletedEpV2ApplicationDomains = cliRunSummary_EpV2ApplicationDomain_List.reduce((count, item) => count + Number(item.action === EEpSdkTask_Action.DELETE), 0);
+
+    const logFile: string | undefined = CliConfig.getCliConfig().cliLoggerConfig.logFile;
+
+    return {
+      type: ECliRunSummary_Type.MigrateSummaryAbsent,
+      timestamp: Date.now(),
+      logFile: logFile ? logFile : "no log file.",
+      deletedEpV2ApplicationDomains,
+    };
+  };
+
+  private processedMigrationAbsent = (logName: string, cliMigrateManagerOptions: ICliMigrateManagerOptions) => {
+    CliLogger.info(CliLogger.createLogEntry(logName, {code: ECliStatusCodes.MIGRATE_ABSENT_DONE, details: {
+      runMode: this.runMode,
+      summaryLogList: this.getSummaryLogList(), 
+    }}));
+    const cliMigrateSummary: ICliMigrateSummaryAbsent = this.createMigrateSummaryAbsent(cliMigrateManagerOptions.cliMigrateManagerMode);
+    CliLogger.info(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.MIGRATE_ABSENT_DONE, details: {
+      runMode: this.runMode,
+      cliMigrateSummary,
+    }}));
+
+    const consoleOutput = `
+
+------------------------------------------------------------------------------------------------    
+Migration Summary for run: ${cliMigrateManagerOptions.cliMigrateManagerRunState}
+
+  Log file: ${cliMigrateSummary.logFile}  
+
+  Deleted EpV2 Application Domains: ${cliMigrateSummary.deletedEpV2ApplicationDomains}  
+  
+    `;
+    this.log(
+      ECliSummaryStatusCodes.MIGRATE_SUMMARY_ABSENT,
+      cliMigrateSummary,
+      consoleOutput,
+      true
+    );
+  };
+
+  public processedMigration = (logName: string, cliMigrateManagerOptions: ICliMigrateManagerOptions) => {
+    switch(cliMigrateManagerOptions.cliMigrateManagerRunState) {
+      case ECliMigrateManagerRunState.PRESENT:
+        this.processedMigrationPresent(logName, cliMigrateManagerOptions);
+        break;
+      case ECliMigrateManagerRunState.ABSENT:
+        this.processedMigrationAbsent(logName, cliMigrateManagerOptions);
+        break;
+      default:
+        CliUtils.assertNever(logName, cliMigrateManagerOptions.cliMigrateManagerRunState);
+    }
+  }
 }
 
 export default new CliRunSummary();

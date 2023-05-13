@@ -197,3 +197,15 @@ export class CliEPApiContentError extends CliError {
   }
 }
 
+export class CliUsageError extends CliError {
+  private static Name = "CliUsageError";
+  protected static DefaultDescription = "CLI Usage Error";
+  public message: string;
+  public details: any;
+  constructor(internalLogName: string, message: string, details: any) {
+    super(internalLogName, `${CliUsageError.DefaultDescription}: ${message}`);
+    this.details = details;
+    this.message = message;
+    this.name = CliUsageError.Name;
+  }
+}

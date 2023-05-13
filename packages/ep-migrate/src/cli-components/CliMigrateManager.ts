@@ -9,7 +9,9 @@ import {
   CliSchemasMigrator,
   ICliSchemasMigratorRunReturn,
 } from "../migrators";
-import CliConfig from "./CliConfig";
+import { CliApplicationDomainsService } from "../services";
+import CliConfig, { ICliConfigFile } from "./CliConfig";
+import { CliUsageError } from "./CliError";
 import { 
   CliLogger, 
   ECliStatusCodes 
@@ -20,6 +22,12 @@ import CliRunContext, {
 } from "./CliRunContext";
 import CliRunExecuteReturnLog from "./CliRunExecuteReturnLog";
 import CliRunSummary, { ECliRunSummary_Type } from "./CliRunSummary";
+import { CliUtils } from "./CliUtils";
+
+export enum ECliMigrateManagerRunState {
+  PRESENT = "present",
+  ABSENT = "absent",
+}
 
 export enum ECliMigrateManagerMode {
   RELEASE_MODE = "release_mode",
@@ -30,6 +38,7 @@ export interface ICliMigrateManagerOptions {
   appName: string;
   runId: string;
   cliMigrateManagerMode: ECliMigrateManagerMode;
+  cliMigrateManagerRunState: ECliMigrateManagerRunState;
   epV2: {
     applicationDomainPrefix?: string;
   },
@@ -45,20 +54,54 @@ export class CliMigrateManager {
     this.cliMigrateManagerOptions = cliMigrateManagerOptions;
   }
 
-  private run_release_mode = async(): Promise<void> => {
-    // const funcName = "run_release_mode";
+  private run_absent = async(): Promise<void> => {
+    const funcName = "run_absent";
+    const logName = `${CliMigrateManager.name}.${funcName}()`;
+
+    const rctxt: ICliRunContext = {
+      runId: this.cliMigrateManagerOptions.runId,
+      runState: this.cliMigrateManagerOptions.cliMigrateManagerRunState,
+      runMode: ECliRunContext_RunMode.RELEASE,
+    };
+    CliRunContext.push(rctxt);
+    CliRunSummary.startRunAbsent({cliRunSummary_StartRun: {
+      type: ECliRunSummary_Type.StartRunAbsent,
+      epV1OrganizationInfo: CliConfig.getCliConfig().epV1Config.organizationInfo,
+      epV2OrganizationInfo: CliConfig.getCliConfig().epV2Config.organizationInfo,
+      runMode: ECliRunContext_RunMode.RELEASE,
+      runState: this.cliMigrateManagerOptions.cliMigrateManagerRunState,
+      applicationDomainPrefix: this.cliMigrateManagerOptions.epV2.applicationDomainPrefix ? this.cliMigrateManagerOptions.epV2.applicationDomainPrefix : "undefined"
+    }});
+
+    if(this.cliMigrateManagerOptions.epV2.applicationDomainPrefix === undefined) {
+      throw new CliUsageError(
+        logName, 
+        `Run state '${this.cliMigrateManagerOptions.cliMigrateManagerRunState}' currently only supported with '${CliUtils.nameOf<ICliConfigFile>("migrate.epV2.applicationDomainPrefix")}' defined.`,
+        undefined
+        );
+    }
+
+    await CliApplicationDomainsService.absent_EpV2_PrefixedApplicationDomains(this.cliMigrateManagerOptions.epV2.applicationDomainPrefix);
+
+    CliRunContext.pop();
+  }
+
+  private run_present = async(): Promise<void> => {
+    // const funcName = "run_present";
     // const logName = `${CliMigrateManager.name}.${funcName}()`;
 
     const rctxt: ICliRunContext = {
       runId: this.cliMigrateManagerOptions.runId,
+      runState: this.cliMigrateManagerOptions.cliMigrateManagerRunState,
       runMode: ECliRunContext_RunMode.RELEASE,
     };
     CliRunContext.push(rctxt);
-    CliRunSummary.startRun({cliRunSummary_StartRun: {
-      type: ECliRunSummary_Type.StartRun,
+    CliRunSummary.startRunPresent({cliRunSummary_StartRun: {
+      type: ECliRunSummary_Type.StartRunPresent,
       epV1OrganizationInfo: CliConfig.getCliConfig().epV1Config.organizationInfo,
       epV2OrganizationInfo: CliConfig.getCliConfig().epV2Config.organizationInfo,
       runMode: ECliRunContext_RunMode.RELEASE,
+      runState: this.cliMigrateManagerOptions.cliMigrateManagerRunState,
     }});
     // migrate enums
     const cliEnumsMigrator = new CliEnumsMigrator({
@@ -101,9 +144,21 @@ export class CliMigrateManager {
 
     CliRunExecuteReturnLog.reset();
     CliRunSummary.reset();
+    // DEBUG
+    // console.log(`\n${logName}: \nthis.cliMigrateManagerOptions=\n${JSON.stringify(this.cliMigrateManagerOptions, null, 2)}\n`);
+    // process.exit(1);
 
     try {
-      await this.run_release_mode();
+      switch(this.cliMigrateManagerOptions.cliMigrateManagerRunState) {
+        case ECliMigrateManagerRunState.PRESENT:
+          await this.run_present();
+          break;
+        case ECliMigrateManagerRunState.ABSENT:
+          await this.run_absent();
+          break;
+        default:
+          CliUtils.assertNever(logName, this.cliMigrateManagerOptions.cliMigrateManagerRunState);
+      }
       CliRunSummary.processedMigration(logName, this.cliMigrateManagerOptions);
     } catch (e) {
       CliRunSummary.processedMigration(logName, this.cliMigrateManagerOptions);

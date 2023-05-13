@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+/* istanbul ignore file */
+
 import chalk from "chalk";
 import clear from "clear";
 import figlet from "figlet";
@@ -21,10 +23,16 @@ import {
   CliRunSummary,
   ECliRunSummary_Type,
   CliMigrateManager,
-  CliEpV1Client
+  CliEpV1Client,
+  ECliMigrateManagerRunState,
+  CliUtils,
+  ICliConfigFile,
+  CliConfigInvalidConfigFileError
 } from "./cli-components";
 
+
 const ComponentName: string = path.basename(__filename);
+const ComponentDir: string = path.dirname(__filename);
 dotenv.config();
 
 process.on("uncaughtException", (err: Error) => {
@@ -75,10 +83,12 @@ function initialize(commandLineOptionValues: OptionValues) {
   // initialize with default values so we can log until initialized
   CliLogger.initialize({ cliLoggerOptions: CliConfig.getDefaultLoggerOptions() });
   const configFile = commandLineOptionValues.configFile;
+  const runState = commandLineOptionValues.runState;
   CliConfig.initialize({
     cliVersion: packageJson.version,
     commandLineOptionValues,
     configFile: configFile,
+    runState: runState
   });
   CliLogger.initialize({ cliLoggerOptions: CliConfig.getCliLoggerOptions() });
   CliConfig.logConfig();
@@ -95,6 +105,34 @@ function initialize(commandLineOptionValues: OptionValues) {
   });
 }
 
+const validateRunState = (value: string, _previous: ECliMigrateManagerRunState): ECliMigrateManagerRunState => {
+  if(!Object.values(ECliMigrateManagerRunState).includes(value as ECliMigrateManagerRunState)) {
+    console.log(`\nError: Invalid command line option: runState='${value}'. Valid options: ${JSON.stringify(Object.values(ECliMigrateManagerRunState))}.\n`);
+    process.exit(1);
+  }
+  return value as ECliMigrateManagerRunState;
+}
+
+function helpSampleConfigFile(): string {
+  const funcName = "helpSampleConfigFile";
+  const logName = `${ComponentName}.${funcName}()`;
+
+  const sampleConfigFilePath = `${ComponentDir}/files/ep-migrate-sample-config.yaml`;
+  const vaidatedSampleConfigFilePath = CliUtils.validateFilePathWithReadPermission(sampleConfigFilePath);
+  if(vaidatedSampleConfigFilePath === undefined) {
+    const err = new CliConfigInvalidConfigFileError(logName, sampleConfigFilePath, 'cannot read sample config file');
+    console.log(err);
+    process.exit(1);
+  }
+  const sampleConfigFileContents = CliUtils.getFileContent(vaidatedSampleConfigFilePath);
+  return `
+
+Sample Configuration File:
+    
+${sampleConfigFileContents}
+  `;
+}
+
 function getCommandLineOptionValues(): OptionValues {
   const Program = new Command();
 
@@ -108,7 +146,20 @@ function getCommandLineOptionValues(): OptionValues {
     .version(`${packageJson.version}`, "-v, --version")
     .usage("[Options]...")
     .addOption(configFileOption)
-    // .addHelpText("after", getCliConfigEnvVarHelp())
+    .option<ECliMigrateManagerRunState>(
+      "-rs, --runState <value>",
+      `Run state. 
+                            Options: ${JSON.stringify(Object.values(ECliMigrateManagerRunState))}. 
+                            ${JSON.stringify(ECliMigrateManagerRunState.PRESENT)}: migrates V1 to V2. 
+                            ${JSON.stringify(ECliMigrateManagerRunState.ABSENT)}: removes previously added V2 objects. 
+                              Note: Feature requires ${CliUtils.nameOf<ICliConfigFile>("migrate.epV2.applicationDomainPrefix")} to be defined. 
+                                    It removes all Application Domains starting with the prefix. 
+                                    Use with care!
+                            `,
+      validateRunState,
+      ECliMigrateManagerRunState.PRESENT
+    )
+    .addHelpText("after", helpSampleConfigFile())
     .parse(process.argv);
 
   const ovs = Program.opts();
