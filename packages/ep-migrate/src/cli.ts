@@ -105,7 +105,7 @@ function initialize(commandLineOptionValues: OptionValues) {
   });
 }
 
-const validateRunState = (value: string, _previous: ECliMigrateManagerRunState): ECliMigrateManagerRunState => {
+const validateRunState = (value: string): ECliMigrateManagerRunState => {
   if(!Object.values(ECliMigrateManagerRunState).includes(value as ECliMigrateManagerRunState)) {
     console.log(`\nError: Invalid command line option: runState='${value}'. Valid options: ${JSON.stringify(Object.values(ECliMigrateManagerRunState))}.\n`);
     process.exit(1);

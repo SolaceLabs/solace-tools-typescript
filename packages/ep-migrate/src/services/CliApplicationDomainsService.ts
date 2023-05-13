@@ -57,7 +57,7 @@ class CliApplicationDomainsService {
     }
     CliRunSummary.processingEpV2ApplicationDomainsAbsent({ absentApplicationDomainNames: absentApplicationDomains.map(x => x.name) });
 
-    let applicationDomainNames: Array<string> = absentApplicationDomains.map( x => x.name );
+    const applicationDomainNames: Array<string> = absentApplicationDomains.map( x => x.name );
     if(applicationDomainNames.length === 0) {
       CliRunSummary.processingEpV2ApplicationDomainsAbsentNoneFound();
     }
