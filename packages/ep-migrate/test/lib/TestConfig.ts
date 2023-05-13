@@ -20,7 +20,6 @@ class TestConfig extends TestApiConfigBase {
     const _testConfig: ITestConfig = {
       ...(this.testConfig as ITestApiConfigBase),
       configFile: `${scriptDir}/test-ep-migrate-config.yaml`,
-      // logFile: `${scriptDir}/logs/${this.getAppId()}.log`,
     };
     this.testConfig = _testConfig;
   }

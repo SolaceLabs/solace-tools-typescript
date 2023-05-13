@@ -207,7 +207,7 @@ class CliConfig {
       epV2Config: {
         baseUrl: configFileContents.epV2.apiUrl,
         token: configFileContents.epV2.token,
-        organizationInfo: this.getOrganizationInfo(configFileContents.epV1.token)
+        organizationInfo: this.getOrganizationInfo(configFileContents.epV2.token)
       },
       cliMigrateConfig: {
         appName, 

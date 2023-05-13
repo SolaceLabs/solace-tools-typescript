@@ -18,7 +18,9 @@ epV2:
   token: ${EP_MIGRATE_CLI_SOLACE_CLOUD_TOKEN_V2}
 migrate:
   epV2:
-    applicationDomainPrefix: 'epV1/'
+    # applicationDomainPrefix: 'epV1/'
+    applicationDomainPrefix: 'epV1/cto/'
+    # applicationDomainPrefix: 'epV1/solace-iot-team/'
     versions:
       initialVersion: 1.0.0
       versionStrategy: bump_patch      

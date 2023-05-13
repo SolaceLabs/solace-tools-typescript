@@ -90,7 +90,6 @@ describe(`${scriptName}`, () => {
           CliConfig.getCliLoggerOptions().logSummary2Console = false;
           CliConfig.getCliLoggerOptions().log2Stdout = false;
         }
-        // CliConfig.getCliLoggerOptions().logFile = TestConfig.getConfig().logFile;
         CliLogger.initialize({ cliLoggerOptions: CliConfig.getCliLoggerOptions()});
         CliConfig.logConfig();
 
