@@ -46,6 +46,7 @@ export enum ECliRunSummary_Type {
   ProcessingEpV1Schema = "ProcessingEpV1Schema",
 
   EpV2ApplicationDomain = "EpV2ApplicationDomain",
+  EpV2EnumApplicationDomain = "EpV2EnumApplicationDomain",
   EpV2Enum = "EpV2Enum",
   EpV2Schema = "EpV2Schema",
   EpV2Event = "EpV2Event",
@@ -86,6 +87,8 @@ export interface ICliMigrateSummary extends ICliRunSummary_LogBase {
   processedEpV1ApplicationDomains: number;
   createdEpV2ApplicationDomains: number;
   updatedEpV2ApplicationDomains: number;
+  createdEpV2EnumApplicationDomains: number;
+  updatedEpV2EnumApplicationDomains: number;
   processedEpV1Enums: number;
   createdFirstEpV2EnumVersions: number;
   createdNewEpV2EnumVersions: number;
@@ -126,6 +129,9 @@ export interface ICliRunSummary_Task extends ICliRunSummary_Base {
 }
 export interface ICliRunSummary_Task_ApplicationDomain extends ICliRunSummary_Task {
   type: ECliRunSummary_Type.EpV2ApplicationDomain;
+}
+export interface ICliRunSummary_Task_EnumApplicationDomain extends ICliRunSummary_Task {
+  type: ECliRunSummary_Type.EpV2EnumApplicationDomain;
 }
 export interface ICliRunSummary_Task_Object extends ICliRunSummary_Task {
   type: ECliRunSummary_Type;
@@ -288,6 +294,21 @@ Start Run: ------------------------
     this.log(ECliSummaryStatusCodes.PRESENT_EP_V2_APPLICATION_DOMAIN, this.addTaskElements(cliRunSummary_Task_ApplicationDomain), consoleOutput);
   };
 
+  public presentEpV2EnumApplicationDomain = ({ epSdkApplicationDomainTask_ExecuteReturn }: {
+    epSdkApplicationDomainTask_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn;
+  }): void => {
+    const applicationDomainName = epSdkApplicationDomainTask_ExecuteReturn.epObject.name;
+    const consoleOutput = `
+      V2: ${epSdkApplicationDomainTask_ExecuteReturn.epObject.type}: ${applicationDomainName} (${epSdkApplicationDomainTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action})
+`;
+    const cliRunSummary_Task_ApplicationDomain: Required<Omit<ICliRunSummary_Task_EnumApplicationDomain, "runMode">> = {
+      type: ECliRunSummary_Type.EpV2EnumApplicationDomain,
+      applicationDomainName,
+      action: epSdkApplicationDomainTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action
+    };
+    this.log(ECliSummaryStatusCodes.PRESENT_EP_V2_ENUM_APPLICATION_DOMAIN, this.addTaskElements(cliRunSummary_Task_ApplicationDomain), consoleOutput);
+  };
+
   public processingEpV1Enums = () => {
     const consoleOutput = `
   Processing V1 Enums ...  
@@ -429,6 +450,9 @@ Start Run: ------------------------
     const cliRunSummary_ProcessedEpV1ApplicationDomain_List: Array<ICliRunSummary_EpV1_ApplicatonDomain> = cliRunSummary_LogBase_Filtered_List.filter((cliRunSummary_LogBase: ICliRunSummary_LogBase) => {
       return cliRunSummary_LogBase.type === ECliRunSummary_Type.ProcessingEpV1ApplicationDomain;
     }) as unknown as Array<ICliRunSummary_EpV1_ApplicatonDomain>;
+    const cliRunSummary_EpV2EnumApplicationDomain_List: Array<ICliRunSummary_Task_EnumApplicationDomain> = cliRunSummary_LogBase_Filtered_List.filter((cliRunSummary_LogBase: ICliRunSummary_LogBase) => {
+      return (cliRunSummary_LogBase.type === ECliRunSummary_Type.EpV2EnumApplicationDomain);
+    }) as unknown as Array<ICliRunSummary_Task_EnumApplicationDomain>;
     const cliRunSummary_EpV2ApplicationDomain_List: Array<ICliRunSummary_Task_ApplicationDomain> = cliRunSummary_LogBase_Filtered_List.filter((cliRunSummary_LogBase: ICliRunSummary_LogBase) => {
       return (cliRunSummary_LogBase.type === ECliRunSummary_Type.EpV2ApplicationDomain);
     }) as unknown as Array<ICliRunSummary_Task_ApplicationDomain>;
@@ -454,6 +478,8 @@ Start Run: ------------------------
     const processedEpV1ApplicationDomains = cliRunSummary_ProcessedEpV1ApplicationDomain_List.length;
     const createdEpV2ApplicationDomains = cliRunSummary_EpV2ApplicationDomain_List.reduce((count, item) => count + Number(item.action === EEpSdkTask_Action.CREATE), 0);
     const updatedEpV2ApplicationDomains = cliRunSummary_EpV2ApplicationDomain_List.reduce((count, item) => count + Number(item.action === EEpSdkTask_Action.UPDATE), 0);
+    const createdEpV2EnumApplicationDomains = cliRunSummary_EpV2EnumApplicationDomain_List.reduce((count, item) => count + Number(item.action === EEpSdkTask_Action.CREATE), 0);
+    const updatedEpV2EnumApplicationDomains = cliRunSummary_EpV2EnumApplicationDomain_List.reduce((count, item) => count + Number(item.action === EEpSdkTask_Action.UPDATE), 0);
     const processedEpV1Enums = cliRunSummary_ProcessedEpV1Enum_List.length;
     const createdFirstEpV2EnumVersions = cliRunSummary_CreatedEpV2VersionObject_List.reduce((count, item) => count + Number(item.action === EEpSdkTask_Action.CREATE_FIRST_VERSION && item.epObjectType === EEpSdkObjectTypes.ENUM_VERSION), 0);
     const createdNewEpV2EnumVersions = cliRunSummary_CreatedEpV2VersionObject_List.reduce((count, item) => count + Number(item.action === EEpSdkTask_Action.CREATE_NEW_VERSION && item.epObjectType === EEpSdkObjectTypes.ENUM_VERSION), 0);
@@ -470,6 +496,8 @@ Start Run: ------------------------
       processedEpV1ApplicationDomains,
       createdEpV2ApplicationDomains,
       updatedEpV2ApplicationDomains,
+      createdEpV2EnumApplicationDomains,
+      updatedEpV2EnumApplicationDomains,
       processedEpV1Enums,
       createdFirstEpV2EnumVersions,
       createdNewEpV2EnumVersions,
@@ -498,12 +526,14 @@ Migration Summary for mode: ${cliMigrateManagerOptions.cliMigrateManagerMode}
 
   Log file: ${cliMigrateSummary.logFile}  
 
+  Processed EpV1 Enums: ${cliMigrateSummary.processedEpV1Enums}
+    Created EpV2 Enum Application Domains: ${cliMigrateSummary.createdEpV2EnumApplicationDomains}
+    Updated EpV2 Enum Application Domains: ${cliMigrateSummary.updatedEpV2EnumApplicationDomains}
+    Created First EpV2 Enum Versions: ${cliMigrateSummary.createdFirstEpV2EnumVersions}
+    Created New EpV2 Enum Versions: ${cliMigrateSummary.createdNewEpV2EnumVersions}
   Processed EpV1 Application Domains: ${cliMigrateSummary.processedEpV1ApplicationDomains}
     Created EpV2 Application Domains: ${cliMigrateSummary.createdEpV2ApplicationDomains}
     Updated EpV2 Application Domains: ${cliMigrateSummary.updatedEpV2ApplicationDomains}
-  Processed EpV1 Enums: ${cliMigrateSummary.processedEpV1Enums}
-    Created First EpV2 Enum Versions: ${cliMigrateSummary.createdFirstEpV2EnumVersions}
-    Created New EpV2 Enum Versions: ${cliMigrateSummary.createdNewEpV2EnumVersions}
   Processed EpV1 Schemas: ${cliMigrateSummary.processedEpV1Schemas}
     Created First EpV2 Schema Versions: ${cliMigrateSummary.createdFirstEpV2SchemaVersions}
     Created New EpV2 Schema Versions: ${cliMigrateSummary.createdNewEpV2SchemaVersions}
