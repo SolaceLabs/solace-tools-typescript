@@ -11,3 +11,5 @@ export * from './CliRunSummary';
 export { default as CliRunSummary } from './CliRunSummary';
 export * from './CliMigrateManager';
 export * from './CliEpV1Client';
+export * from './CliRunIssues';
+export { default as CliRunIssues } from './CliRunIssues';

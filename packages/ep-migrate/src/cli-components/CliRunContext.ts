@@ -1,8 +1,11 @@
 
-// export enum ECliChannelOperation {
-//   Publish = "publish",
-//   Subscribe = "subscribe"
-
+import { 
+  ApplicationDomain,
+} from "@solace-labs/ep-openapi-node";
+import { 
+  EpV1ApplicationDomain, 
+  EpV1EventSchema
+} from "../epV1";
 import { ECliMigrateManagerRunState } from "./CliMigrateManager";
 
 // }
@@ -26,8 +29,13 @@ export interface ICliApplicationDomainRunContext extends Partial<ICliRunContext>
   epV1ApplicationDomainName: string;
 }
 export interface ICliSchemaRunContext extends Partial<ICliRunContext> {
-  epV2ApplicationDomainName: string;
-  schemaName: string;
+  epV1: {
+    applicationDomain: EpV1ApplicationDomain;
+    epV1EventSchema: EpV1EventSchema;
+  },
+  epV2: {
+    applicationDomain: ApplicationDomain;
+  }
 }
 
 
@@ -84,7 +92,8 @@ class CliRunContext {
   // }
 
   public get = (): ICliRunContext => {
-    return this.runContextStack[this.runContextStack.length-1];
+    // return this.runContextStack[this.runContextStack.length-1];
+    return this.runContextStack.slice(-1)[0];
   };
 
 }
