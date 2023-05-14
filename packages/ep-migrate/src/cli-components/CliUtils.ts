@@ -2,6 +2,7 @@ import fs from 'fs';
 import yaml from 'js-yaml';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
+import short from 'short-uuid';
 
 // use with // @ts-ignore if getting Type instantiation is excessively deep and possibly infinite.  TS2589
 type DotPrefix<T extends string> = T extends "" ? "" : `.${T}`;
@@ -16,7 +17,7 @@ export class CliUtils {
 
   public static getUUID = (): string => { return uuidv4(); }
 
-  // public getShortUUID = (): string => { return short.generate(); }
+  public static getShortUUID = (): string => { return short.generate(); }
 
   public static nameOf<T>(name: DotNestedKeys<DeepPartial<T>>) {
     return name;

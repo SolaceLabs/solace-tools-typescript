@@ -156,14 +156,20 @@ class CliConfig {
   private getOrganizationInfo(token: string): ICliOrganizationInfo {
     const funcName = "getOrganizationInfo";
     const logName = `${CliConfig.name}.${funcName}()`;
-    const decoded: any = jwt_decode(token);    
-    /* istanbul ignore next */
-    if(decoded.org === undefined) throw new CliConfigTokenError(logName, "unable to read 'org' from token");
-    /* istanbul ignore next */
-    if(decoded.sub === undefined) throw new CliConfigTokenError(logName, "unable to read 'sub' from token");
-    return {
-      name: decoded.org,
-      id: decoded.sub
+    try {
+      const decoded: any = jwt_decode(token);    
+      /* istanbul ignore next */
+      if(decoded.org === undefined) throw new CliConfigTokenError(logName, "unable to read 'org' from token");
+      /* istanbul ignore next */
+      if(decoded.sub === undefined) throw new CliConfigTokenError(logName, "unable to read 'sub' from token");
+      return {
+        name: decoded.org,
+        id: decoded.sub
+      }    
+    } catch(e) {
+      console.log(`token='${token}'`);
+      if(!(e instanceof CliConfigTokenError)) throw new CliConfigTokenError(logName, "unable to decode token");
+      throw e;
     }
   }
 

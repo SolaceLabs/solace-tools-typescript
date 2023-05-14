@@ -4,6 +4,7 @@ import {
   IEpSdkSchemaTask_ExecuteReturn,
   EpSdkSchemaVersionTask,
   IEpSdkSchemaVersionTask_ExecuteReturn,
+  EpSdkError,
 } from "@solace-labs/ep-sdk";
 import {
   SchemaObject,
@@ -17,6 +18,9 @@ import {
   ECliRunContext_RunMode,
   CliRunSummary,
   ICliSchemaRunContext,
+  CliRunIssues,
+  ICliRunIssueSchema,
+  ECliRunIssueTypes,
 } from "../cli-components";
 import { 
   CliMigrator, 
@@ -60,23 +64,30 @@ export class CliSchemasMigrator extends CliMigrator {
     super(options, runMode);
   }
 
-  private async migrateSchema({ epV1EventSchema, epV2ApplicationDomainId, epV2ApplicationDomainName }:{
+  private async migrateSchema({ cliMigratedApplicationDomain, epV1EventSchema }:{
+    cliMigratedApplicationDomain: ICliMigratedApplicationDomain;
     epV1EventSchema: EpV1EventSchema;
-    epV2ApplicationDomainName: string;
-    epV2ApplicationDomainId: string;
   }): Promise<void> {
     const funcName = 'migrateSchema';
     const logName = `${CliSchemasMigrator.name}.${funcName}()`;
+    /* istanbul ignore next */
+    if(cliMigratedApplicationDomain.epV2ApplicationDomain.id === undefined) throw new CliEPApiContentError(logName,"cliMigratedApplicationDomain.epV2ApplicationDomain.id === undefined", { epV2ApplicationDomain: cliMigratedApplicationDomain.epV2ApplicationDomain });
+
     const rctxt: ICliSchemaRunContext = {
-      epV2ApplicationDomainName,
-      schemaName: epV1EventSchema.name
+      epV1: {
+        applicationDomain: cliMigratedApplicationDomain.epV1ApplicationDomain,
+        epV1EventSchema
+      },
+      epV2: {
+        applicationDomain: cliMigratedApplicationDomain.epV2ApplicationDomain,
+      }
     };
     CliRunContext.push(rctxt);
     CliRunSummary.processingEpV1Schema({ schemaName: epV1EventSchema.name });
     // present schema
     const epSdkSchemaTask = new EpSdkSchemaTask({
       epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
-      applicationDomainId: epV2ApplicationDomainId,
+      applicationDomainId: cliMigratedApplicationDomain.epV2ApplicationDomain.id,
       schemaName: epV1EventSchema.name,
       schemaObjectSettings: {
         shared: true,
@@ -89,11 +100,11 @@ export class CliSchemasMigrator extends CliMigrator {
     /* istanbul ignore next */
     if (schemaObject.id === undefined) throw new CliEPApiContentError(logName,"schemaObject.id === undefined", { schemaObject });
     CliLogger.trace(CliLogger.createLogEntry(logName, {code: ECliStatusCodes.PRESENT_EP_V2_SCHEMA, details: { epSdkSchemaTask_ExecuteReturn }}));
-    CliRunSummary.presentEpV2Schema({ applicationDomainName: epV2ApplicationDomainName, epSdkSchemaTask_ExecuteReturn });
+    CliRunSummary.presentEpV2Schema({ applicationDomainName: cliMigratedApplicationDomain.epV2ApplicationDomain.name, epSdkSchemaTask_ExecuteReturn });
     // present the schema version
     const epSdkSchemaVersionTask = new EpSdkSchemaVersionTask({
       epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
-      applicationDomainId: epV2ApplicationDomainId,
+      applicationDomainId: cliMigratedApplicationDomain.epV2ApplicationDomain.id,
       schemaId: schemaObject.id,
       versionString: this.options.cliSchemasMigrateConfig.epV2.versions.initialVersion,
       versionStrategy: this.get_EEpSdk_VersionTaskStrategy(this.options.cliSchemasMigrateConfig.epV2.versions.versionStrategy),
@@ -107,7 +118,7 @@ export class CliSchemasMigrator extends CliMigrator {
     });
     const epSdkSchemaVersionTask_ExecuteReturn: IEpSdkSchemaVersionTask_ExecuteReturn = await this.executeTask({ epSdkTask: epSdkSchemaVersionTask });
     CliLogger.trace(CliLogger.createLogEntry(logName, {code: ECliStatusCodes.PRESENT_EP_V2_SCHEMA_VERSION, details: { epSdkSchemaVersionTask_ExecuteReturn }}));
-    CliRunSummary.presentEpV2SchemaVersion({ applicationDomainName: epV2ApplicationDomainName, epSdkSchemaVersionTask_ExecuteReturn });
+    CliRunSummary.presentEpV2SchemaVersion({ applicationDomainName: cliMigratedApplicationDomain.epV2ApplicationDomain.name, epSdkSchemaVersionTask_ExecuteReturn });
     this.cliMigratedSchemas.push({
       epV1Schema: epV1EventSchema,
       epV2Schema: {
@@ -131,12 +142,29 @@ export class CliSchemasMigrator extends CliMigrator {
       while (nextPage !== null) {
         const epV1SchemasResponse: EpV1SchemasResponse = await EpV1SchemasService.list2({ pageNumber: nextPage, pageSize: 10, applicationDomainId: cliMigratedApplicationDomain.epV1ApplicationDomain.id });
         if(epV1SchemasResponse.data && epV1SchemasResponse.data.length > 0) {
-          for(const epV1EventSchema of epV1SchemasResponse.data) {
-            await this.migrateSchema({ 
-              epV1EventSchema: epV1EventSchema as EpV1EventSchema,
-              epV2ApplicationDomainId: cliMigratedApplicationDomain.epV2ApplicationDomain.id,
-              epV2ApplicationDomainName: cliMigratedApplicationDomain.epV2ApplicationDomain.name,
-            }); 
+          for(const eventSchema of epV1SchemasResponse.data) {
+            const epV1EventSchema: EpV1EventSchema = eventSchema as EpV1EventSchema;
+            try {
+              await this.migrateSchema({ cliMigratedApplicationDomain, epV1EventSchema });   
+            } catch(e: any) {
+              if(e instanceof EpSdkError) {
+                CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.MIGRATE_SCHEMAS_ERROR, details: { error: e }}));
+                // add to issues log  
+                const rctxt: ICliSchemaRunContext | undefined = CliRunContext.get() as ICliSchemaRunContext| undefined;
+                const issue: ICliRunIssueSchema = {
+                  type: ECliRunIssueTypes.SchemaIssue,
+                  epV1Id: epV1EventSchema.id,
+                  epV1EventSchema,
+                  cliRunContext: rctxt,
+                  cause: e
+                };
+                CliRunIssues.add(issue);
+        
+                // summarize issues at the end and put all details in log file
+        
+                CliRunSummary.processingEpV1SchemaIssue({ rctxt });        
+              } else throw e;
+            }
           }
         } else {
           CliRunSummary.processingEpV1SchemasNoneFound();

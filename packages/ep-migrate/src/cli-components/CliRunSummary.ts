@@ -17,9 +17,22 @@ import {
   ECliStatusCodes,
   ECliSummaryStatusCodes,
 } from "./CliLogger";
-import { ECliRunContext_RunMode } from "./CliRunContext";
-import { CliUtils } from "./CliUtils";
-import { ECliMigrateManagerMode, ECliMigrateManagerRunState, ICliMigrateManagerOptions } from "./CliMigrateManager";
+import { 
+  ECliRunContext_RunMode, 
+  ICliSchemaRunContext 
+} from "./CliRunContext";
+import { 
+  CliUtils 
+} from "./CliUtils";
+import { 
+  ECliMigrateManagerMode, 
+  ECliMigrateManagerRunState, 
+  ICliMigrateManagerOptions 
+} from "./CliMigrateManager";
+import CliRunIssues, { 
+  ECliRunIssueTypes, 
+  ICliRunIssueSchema 
+} from "./CliRunIssues";
 
 export enum ECliChannelOperationType {
   PUBLISH = "publish",
@@ -31,6 +44,7 @@ export enum ECliRunSummary_Type {
   RunError = "RunError",
   MigrateSummaryPresent = "MigrateSummaryPresent",
   MigrateSummaryAbsent = "MigrateSummaryAbsent",
+  MigrateSummaryIssues = "MigrateSummaryIssues",
 
   ProcessingEpV1ApplicationDomains = "ProcessingEpV1ApplicationDomains",
   ProcessingEpV1ApplicationDomainsDone = "ProcessingEpV1ApplicationDomainsDone",
@@ -46,6 +60,7 @@ export enum ECliRunSummary_Type {
   ProcessingEpV1SchemasDone = "ProcessingEpV1SchemasDone",
   ProcessingEpV1SchemasNoneFound = "ProcessingEpV1SchemasNoneFound",
   ProcessingEpV1Schema = "ProcessingEpV1Schema",
+  ProcessingEpV1SchemaIssue = "ProcessingEpV1SchemaIssue",
 
   ProcessingEpV2ApplicationDomainsAbsent = "ProcessingEpV2ApplicationDomainsAbsent",
   ProcessingEpV2ApplicationDomainsAbsentDone = "ProcessingEpV2ApplicationDomainsAbsentDone",
@@ -105,18 +120,20 @@ export interface ICliMigrateSummaryPresent extends ICliRunSummary_LogBase {
   createdFirstEpV2EnumVersions: number;
   createdNewEpV2EnumVersions: number;
   processedEpV1Schemas: number;
+  processingIssuesEpV1Schemas: number;
   createdFirstEpV2SchemaVersions: number;
   createdNewEpV2SchemaVersions: number;
-
-  // warnings: Array<ICliRunSummary_Task_VersionObject_Warning>;
-  // errors: Array<ICliRunSummary_Task_VersionObject_Error>;
 }
 export interface ICliMigrateSummaryAbsent extends ICliRunSummary_LogBase {
   type: ECliRunSummary_Type.MigrateSummaryAbsent;
   logFile: string;
   deletedEpV2ApplicationDomains: number;
 }
-
+export interface ICliMigrateSummaryIssues extends ICliRunSummary_LogBase {
+  type: ECliRunSummary_Type.MigrateSummaryIssues;
+  logFile: string;
+  cliRunSchemaIssues: Array<ICliRunIssueSchema>;
+}
 
 // EpV1 Objects
 export interface ICliRunSummary_EpV1_Object extends ICliRunSummary_Base {
@@ -133,7 +150,7 @@ export interface ICliRunSummary_EpV1_Enum extends ICliRunSummary_EpV1_Object {
   enumName: string;
 }
 export interface ICliRunSummary_EpV1_Schema extends ICliRunSummary_EpV1_Object {
-  type: ECliRunSummary_Type.ProcessingEpV1Schema;
+  type: ECliRunSummary_Type.ProcessingEpV1Schema | ECliRunSummary_Type.ProcessingEpV1SchemaIssue;
   epV1ObjectType: ECliEpV1Object_Types.EpV1Schema;
   schemaName: string;
 }
@@ -486,6 +503,20 @@ ${absentApplicationDomainNames.map(x => `
     }
     this.log(ECliSummaryStatusCodes.PROCESSING_EP_V1_SCHEMA, cliRunSummary_EpV1_Schema, consoleOutput);
   }
+  public processingEpV1SchemaIssue = ({ rctxt }:{
+    rctxt?: ICliSchemaRunContext;
+  }) => {
+    const consoleOutput = `
+      Issue migrating schema. Skipping.
+`;
+    const cliRunSummary_EpV1_Schema: ICliRunSummary_EpV1_Schema = {
+      runMode: this.runMode,
+      type: ECliRunSummary_Type.ProcessingEpV1SchemaIssue,
+      epV1ObjectType: ECliEpV1Object_Types.EpV1Schema,
+      schemaName: rctxt ? rctxt.epV1.epV1EventSchema.name : 'undefined'
+    }
+    this.log(ECliSummaryStatusCodes.PROCESSING_EP_V1_SCHEMA_ISSUE, cliRunSummary_EpV1_Schema, consoleOutput);
+  }
 
   public presentEpV2Schema = ({ applicationDomainName, epSdkSchemaTask_ExecuteReturn }: {
     applicationDomainName: string;
@@ -566,6 +597,7 @@ ${absentApplicationDomainNames.map(x => `
     const createdFirstEpV2EnumVersions = cliRunSummary_CreatedEpV2VersionObject_List.reduce((count, item) => count + Number(item.action === EEpSdkTask_Action.CREATE_FIRST_VERSION && item.epObjectType === EEpSdkObjectTypes.ENUM_VERSION), 0);
     const createdNewEpV2EnumVersions = cliRunSummary_CreatedEpV2VersionObject_List.reduce((count, item) => count + Number(item.action === EEpSdkTask_Action.CREATE_NEW_VERSION && item.epObjectType === EEpSdkObjectTypes.ENUM_VERSION), 0);
     const processedEpV1Schemas = cliRunSummary_ProcessedEpV1Schema_List.length;
+    const processingIssuesEpV1Schemas = CliRunIssues.get({ type: ECliRunIssueTypes.SchemaIssue }).length;
     const createdFirstEpV2SchemaVersions = cliRunSummary_CreatedEpV2VersionObject_List.reduce((count, item) => count + Number(item.action === EEpSdkTask_Action.CREATE_FIRST_VERSION && item.epObjectType === EEpSdkObjectTypes.SCHEMA_VERSION), 0);
     const createdNewEpV2SchemaVersions = cliRunSummary_CreatedEpV2VersionObject_List.reduce((count, item) => count + Number(item.action === EEpSdkTask_Action.CREATE_NEW_VERSION && item.epObjectType === EEpSdkObjectTypes.SCHEMA_VERSION), 0);
 
@@ -584,6 +616,7 @@ ${absentApplicationDomainNames.map(x => `
       createdFirstEpV2EnumVersions,
       createdNewEpV2EnumVersions,
       processedEpV1Schemas,
+      processingIssuesEpV1Schemas,
       createdFirstEpV2SchemaVersions,
       createdNewEpV2SchemaVersions
       // warnings: cliRunSummary_CreatedVersionObjectWarning_List,
@@ -618,6 +651,7 @@ Migration Summary for run: ${cliMigrateManagerOptions.cliMigrateManagerRunState}
     Created EpV2 Application Domains: ${cliMigrateSummary.createdEpV2ApplicationDomains}
     Updated EpV2 Application Domains: ${cliMigrateSummary.updatedEpV2ApplicationDomains}
   Processed EpV1 Schemas: ${cliMigrateSummary.processedEpV1Schemas}
+    EpV1 Schema processing Issues: ${cliMigrateSummary.processingIssuesEpV1Schemas}
     Created First EpV2 Schema Versions: ${cliMigrateSummary.createdFirstEpV2SchemaVersions}
     Created New EpV2 Schema Versions: ${cliMigrateSummary.createdNewEpV2SchemaVersions}
   
@@ -694,6 +728,61 @@ Migration Summary for run: ${cliMigrateManagerOptions.cliMigrateManagerRunState}
     );
   };
 
+  public createMigrateSummaryIssues = (): ICliMigrateSummaryIssues => {
+    // const funcName = "createMigrateSummaryIssues";
+    // const logName = `${CliRunSummary.name}.${funcName}()`;
+
+    const logFile: string | undefined = CliConfig.getCliConfig().cliLoggerConfig.logFile;
+
+    return {
+      type: ECliRunSummary_Type.MigrateSummaryIssues,
+      timestamp: Date.now(),
+      logFile: logFile ? logFile : "no log file.",
+      cliRunSchemaIssues: CliRunIssues.get({ type: ECliRunIssueTypes.SchemaIssue }) as Array<ICliRunIssueSchema>,
+    };
+  };
+
+
+  private processedMigrationIssues = (logName: string, cliMigrateManagerOptions: ICliMigrateManagerOptions) => {
+    CliLogger.warn(CliLogger.createLogEntry(logName, {code: ECliStatusCodes.MIGRATE_ISSUES, details: {
+      runMode: this.runMode,
+      issues: CliRunIssues.get({}),
+    }}));
+    const cliMigrateSummary: ICliMigrateSummaryIssues = this.createMigrateSummaryIssues();
+
+    const consoleOutputSchemaIssues = cliMigrateSummary.cliRunSchemaIssues.map((schemaIssue) => {
+      const cliRunContextSchema = schemaIssue.cliRunContext as ICliSchemaRunContext;
+      return `EpV1: Application Domain: ${cliRunContextSchema.epV1.applicationDomain.name}, Schema: ${cliRunContextSchema.epV1.epV1EventSchema.name} (issueId: ${schemaIssue.issueId})`
+    });
+    
+    let consoleOutput = `
+------------------------------------------------------------------------------------------------    
+Issues for run: ${cliMigrateManagerOptions.cliMigrateManagerRunState}
+  None. 
+    `;
+
+    if(consoleOutputSchemaIssues.length > 0) {
+      consoleOutput = `
+
+    ------------------------------------------------------------------------------------------------    
+    Issues for run: ${cliMigrateManagerOptions.cliMigrateManagerRunState}
+    
+      Log file: ${cliMigrateSummary.logFile}  
+    
+      EpV1 Migrate Schema Issues: 
+        ${consoleOutputSchemaIssues.map(x => `
+          - ${x}` ).join('')}  
+        `;      
+    }
+
+    this.log(
+      ECliSummaryStatusCodes.MIGRATE_SUMMARY_ISSUES,
+      cliMigrateSummary,
+      consoleOutput,
+      true
+    );
+  };
+
   public processedMigration = (logName: string, cliMigrateManagerOptions: ICliMigrateManagerOptions) => {
     switch(cliMigrateManagerOptions.cliMigrateManagerRunState) {
       case ECliMigrateManagerRunState.PRESENT:
@@ -705,6 +794,7 @@ Migration Summary for run: ${cliMigrateManagerOptions.cliMigrateManagerRunState}
       default:
         CliUtils.assertNever(logName, cliMigrateManagerOptions.cliMigrateManagerRunState);
     }
+    this.processedMigrationIssues(logName, cliMigrateManagerOptions);
   }
 }
 
