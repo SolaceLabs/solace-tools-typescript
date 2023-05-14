@@ -85,13 +85,13 @@ export interface ICliRunSummary_LogBase extends ICliRunSummary_Base {
 export interface ICliRunSummary_StartRun extends ICliRunSummary_Base {
   epV1OrganizationInfo: ICliOrganizationInfo;
   epV2OrganizationInfo: ICliOrganizationInfo;
+  epV2ApplicationDomainPrefix: string;
 }
 export interface ICliRunSummary_StartRunPresent extends ICliRunSummary_StartRun {
   type: ECliRunSummary_Type.StartRunPresent;
 }
 export interface ICliRunSummary_StartRunAbsent extends ICliRunSummary_StartRun {
   type: ECliRunSummary_Type.StartRunAbsent;
-  applicationDomainPrefix: string;
 }
 export interface ICliMigrateSummaryPresent extends ICliRunSummary_LogBase {
   type: ECliRunSummary_Type.MigrateSummaryPresent;
@@ -261,7 +261,7 @@ class CliRunSummary {
 Start Run: ${cliRunSummary_StartRun.runState}
   Ep V1 Organization: ${cliRunSummary_StartRun.epV1OrganizationInfo.name} (${cliRunSummary_StartRun.epV1OrganizationInfo.id})
   Ep V2 Organization: ${cliRunSummary_StartRun.epV2OrganizationInfo.name} (${cliRunSummary_StartRun.epV2OrganizationInfo.id})
-  Application Domain Prefix: ${cliRunSummary_StartRun.applicationDomainPrefix}
+  Ep V2 Application Domain Prefix: ${cliRunSummary_StartRun.epV2ApplicationDomainPrefix}
     `;
     this.log(ECliSummaryStatusCodes.START_RUN, cliRunSummary_StartRun, consoleOutput );
   };
@@ -275,6 +275,7 @@ Start Run: ${cliRunSummary_StartRun.runState}
 Start Run: ${cliRunSummary_StartRun.runState}
   Ep V1 Organization: ${cliRunSummary_StartRun.epV1OrganizationInfo.name} (${cliRunSummary_StartRun.epV1OrganizationInfo.id})
   Ep V2 Organization: ${cliRunSummary_StartRun.epV2OrganizationInfo.name} (${cliRunSummary_StartRun.epV2OrganizationInfo.id})
+  Ep V2 Application Domain Prefix: ${cliRunSummary_StartRun.epV2ApplicationDomainPrefix}
     `;
     this.log(ECliSummaryStatusCodes.START_RUN, cliRunSummary_StartRun, consoleOutput );
   };
@@ -350,7 +351,7 @@ ${absentApplicationDomainNames.map(x => `
   }): void => {
     const applicationDomainName = epSdkApplicationDomainTask_ExecuteReturn.epObject.name;
     const consoleOutput = `
-      Deleted V2: ${epSdkApplicationDomainTask_ExecuteReturn.epObject.type}: ${applicationDomainName} (${epSdkApplicationDomainTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action})
+      V2: ${epSdkApplicationDomainTask_ExecuteReturn.epObject.type}: ${applicationDomainName} (${epSdkApplicationDomainTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action})
 `;
     const cliRunSummary_Task_ApplicationDomain: Required<Omit<ICliRunSummary_Task_ApplicationDomain, "runMode" | "runState">> = {
       type: ECliRunSummary_Type.EpV2ApplicationDomain,

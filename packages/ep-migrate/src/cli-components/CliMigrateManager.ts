@@ -70,7 +70,7 @@ export class CliMigrateManager {
       epV2OrganizationInfo: CliConfig.getCliConfig().epV2Config.organizationInfo,
       runMode: ECliRunContext_RunMode.RELEASE,
       runState: this.cliMigrateManagerOptions.cliMigrateManagerRunState,
-      applicationDomainPrefix: this.cliMigrateManagerOptions.epV2.applicationDomainPrefix ? this.cliMigrateManagerOptions.epV2.applicationDomainPrefix : "undefined"
+      epV2ApplicationDomainPrefix: this.cliMigrateManagerOptions.epV2.applicationDomainPrefix ? this.cliMigrateManagerOptions.epV2.applicationDomainPrefix : "none"
     }});
 
     if(this.cliMigrateManagerOptions.epV2.applicationDomainPrefix === undefined) {
@@ -100,6 +100,7 @@ export class CliMigrateManager {
       type: ECliRunSummary_Type.StartRunPresent,
       epV1OrganizationInfo: CliConfig.getCliConfig().epV1Config.organizationInfo,
       epV2OrganizationInfo: CliConfig.getCliConfig().epV2Config.organizationInfo,
+      epV2ApplicationDomainPrefix: this.cliMigrateManagerOptions.epV2.applicationDomainPrefix ? this.cliMigrateManagerOptions.epV2.applicationDomainPrefix : "none",
       runMode: ECliRunContext_RunMode.RELEASE,
       runState: this.cliMigrateManagerOptions.cliMigrateManagerRunState,
     }});
