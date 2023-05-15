@@ -68,3 +68,9 @@ export type TEpSdkCustomAttribute = {
 
 /** @category General Types */
 export type TEpSdkCustomAttributeList = Array<TEpSdkCustomAttribute>;
+
+/** @category General Types */
+export type TEpSdkEnumValue = {
+  value: string;
+  label: string;
+}

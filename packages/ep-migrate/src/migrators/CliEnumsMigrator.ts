@@ -6,6 +6,7 @@ import {
   IEpSdkEnumTask_ExecuteReturn,
   EpSdkEnumVersionTask,
   IEpSdkEnumVersionTask_ExecuteReturn,
+  TEpSdkEnumValue,
 } from "@solace-labs/ep-sdk";
 import {
   TopicAddressEnum,
@@ -30,7 +31,8 @@ import {
   EpV1ApiMeta,
   EpV1Enum,
   EpV1EnumsResponse,
-  EpV1EnumsService 
+  EpV1EnumsService,
+  EpV1EnumValue
 } from "../epV1";
 import { 
   ICliConfigEp2Versions, 
@@ -94,12 +96,12 @@ export class CliEnumsMigrator extends CliMigrator {
     CliLogger.trace(CliLogger.createLogEntry(logName, {code: ECliStatusCodes.PRESENT_EP_V2_ENUM, details: { epSdkEnumTask_ExecuteReturn }}));
     CliRunSummary.presentEpV2Enum({ applicationDomainName: epV2ApplicationDomainName, epSdkEnumTask_ExecuteReturn });
     // present the enum version
-
-    // console.log(`\n\n${logName}: TODO: displayName, epV1Enum.values = ${JSON.stringify(epV1Enum.values, null, 2)}\n\n`);
-
-    const enumValues: Array<string> = epV1Enum.values.map( (epV1Enum) => { 
+    const enumValues: Array<TEpSdkEnumValue> = epV1Enum.values.map( (epV1Enum: EpV1EnumValue): TEpSdkEnumValue => { 
       if(epV1Enum.value === undefined) throw new CliEPApiContentError(logName,"epV1Enum.value === undefined", { epV1Enum });
-      return epV1Enum.value;
+      return {
+        value: epV1Enum.value,
+        label: epV1Enum.displayName ? epV1Enum.displayName : epV1Enum.value
+      }
     });
     const epSdkEnumVersionTask = new EpSdkEnumVersionTask({
       epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
