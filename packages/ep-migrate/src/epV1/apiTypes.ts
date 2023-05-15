@@ -8,10 +8,13 @@ import {
   SchemasService,
   SchemasResponse,
   EventSchema,
+  EnumValue,
 } from "@solace-labs/ep-v1-openapi-node";
 export type EpV1Enum = Required<Enum>;
+export type EpV1EnumValue = EnumValue;
 export type EpV1EnumsResponse = EnumsResponse;
 export class EpV1EnumsService extends EnumsService {}
+
 
 export class EpV1ApplicationDomainsService extends ApplicationDomainsService {}
 export type EpV1ApplicationDomainsResponse = ApplicationDomainsResponse;
