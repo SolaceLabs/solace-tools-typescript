@@ -52,16 +52,16 @@ describe(`${scriptName}`, () => {
 
   after(async () => {
     TestContext.newItId();
-    // const epSdkApplicationDomainTask = new EpSdkApplicationDomainTask({
-    //   epSdkTask_TargetState: EEpSdkTask_TargetState.ABSENT,
-    //   applicationDomainName: ApplicationDomainName,
-    // });
-    // await epSdkApplicationDomainTask.execute('contextId');
-    // const epSdkApplicationDomainTask_Enum = new EpSdkApplicationDomainTask({
-    //   epSdkTask_TargetState: EEpSdkTask_TargetState.ABSENT,
-    //   applicationDomainName: ApplicationDomainName_Enum,
-    // });
-    // await epSdkApplicationDomainTask_Enum.execute('contextId');
+    const epSdkApplicationDomainTask = new EpSdkApplicationDomainTask({
+      epSdkTask_TargetState: EEpSdkTask_TargetState.ABSENT,
+      applicationDomainName: ApplicationDomainName,
+    });
+    await epSdkApplicationDomainTask.execute('contextId');
+    const epSdkApplicationDomainTask_Enum = new EpSdkApplicationDomainTask({
+      epSdkTask_TargetState: EEpSdkTask_TargetState.ABSENT,
+      applicationDomainName: ApplicationDomainName_Enum,
+    });
+    await epSdkApplicationDomainTask_Enum.execute('contextId');
   });
 
   it(`${scriptName}: ensure application domains are absent`, async () => {
