@@ -9,9 +9,15 @@ import {
   CliSchemasMigrator,
   ICliSchemasMigratorRunReturn,
 } from "../migrators";
-import { CliApplicationDomainsService } from "../services";
-import CliConfig, { ICliConfigFile } from "./CliConfig";
-import { CliUsageError } from "./CliError";
+import { 
+  CliApplicationDomainsService 
+} from "../services";
+import CliConfig, { 
+  ICliConfigFile 
+} from "./CliConfig";
+import { 
+  CliUsageError 
+} from "./CliError";
 import { 
   CliLogger, 
   ECliStatusCodes 
@@ -21,8 +27,13 @@ import CliRunContext, {
   ICliRunContext,
 } from "./CliRunContext";
 import CliRunExecuteReturnLog from "./CliRunExecuteReturnLog";
-import CliRunSummary, { ECliRunSummary_Type } from "./CliRunSummary";
-import { CliUtils } from "./CliUtils";
+import CliRunIssues from "./CliRunIssues";
+import CliRunSummary, { 
+  ECliRunSummary_Type 
+} from "./CliRunSummary";
+import { 
+  CliUtils 
+} from "./CliUtils";
 
 export enum ECliMigrateManagerRunState {
   PRESENT = "present",
@@ -145,6 +156,7 @@ export class CliMigrateManager {
 
     CliRunExecuteReturnLog.reset();
     CliRunSummary.reset();
+    CliRunIssues.reset();
     // DEBUG
     // console.log(`\n${logName}: \nthis.cliMigrateManagerOptions=\n${JSON.stringify(this.cliMigrateManagerOptions, null, 2)}\n`);
     // process.exit(1);
