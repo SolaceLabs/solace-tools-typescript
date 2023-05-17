@@ -8,8 +8,14 @@ import {
   SchemaVersionsResponse,
   StateChangeRequestResponse,
 } from "@solace-labs/ep-openapi-node";
-import { EpSdkApiContentError, EpSdkServiceError } from "../utils";
-import { EpApiMaxPageSize, EpSdkCustomAttributeNameSourceApplicationDomainId } from "../constants";
+import { 
+  EpSdkApiContentError, 
+  EpSdkServiceError 
+} from "../utils";
+import { 
+  EpApiMaxPageSize, 
+  EpSdkCustomAttributeNameSourceApplicationDomainId 
+} from "../constants";
 import {
   EEpSdkTask_Action,
   EEpSdkTask_TargetState,
@@ -20,7 +26,9 @@ import {
   IEpSdkSchemaTask_ExecuteReturn,
 } from "../tasks";
 import EpSdkSchemasService from "./EpSdkSchemasService";
-import { EpSdkVersionServiceClass } from "./EpSdkVersionService";
+import { 
+  EpSdkVersionServiceClass 
+} from "./EpSdkVersionService";
 
 /** @category Services */
 export class EpSdkSchemaVersionsServiceClass extends EpSdkVersionServiceClass {

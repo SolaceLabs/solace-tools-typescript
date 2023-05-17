@@ -8,7 +8,7 @@ import {
   IEpSdkTask_GetFuncReturn, 
   IEpSdkTask_IsUpdateRequiredFuncReturn, 
   IEpSdkTask_UpdateFuncReturn 
-} from "./EpSdkTask";
+} from "./EpSdkTaskTypes";
 
 /** @category Tasks */
 export interface IEpSdkTask_TransactionLogData {

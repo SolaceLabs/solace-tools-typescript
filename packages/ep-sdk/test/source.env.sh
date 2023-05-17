@@ -24,6 +24,7 @@ unset_source_env() {
 # }
 export TEST_EP_SDK_LOG_LEVEL=0
 export TEST_EP_SDK_ENABLE_API_CALL_LOGGING="false"
+# export TEST_EP_SDK_ENABLE_API_CALL_LOGGING="true"
 
 ######################################################
 

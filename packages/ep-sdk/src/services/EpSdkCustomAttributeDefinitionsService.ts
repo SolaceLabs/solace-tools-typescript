@@ -7,13 +7,14 @@ import {
 import { 
   EpSdkApiContentError, 
   EpSdkLogger,
-  EEpSdkLoggerCodes
+  EEpSdkLoggerCodes,
 } from '../utils';
 import { 
   EpApiMaxPageSize 
 } from '../constants';
 import { 
   EEpSdkCustomAttributeEntityTypes, 
+  TEpSdkCustomAttributeList, 
 } from '../types';
 import { 
   EEpSdkTask_TargetState, 
@@ -25,19 +26,44 @@ import { EpSdkServiceClass } from './EpSdkService';
 /** @category Services */
 export class EpSdkCustomAttributeDefinitionsServiceClass extends EpSdkServiceClass {
 
+  public async listAll({ xContextId }:{
+    xContextId?: string;
+  }): Promise<Array<CustomAttributeDefinition>> {
+    const funcName = 'listAll';
+    const logName = `${EpSdkCustomAttributeDefinitionsServiceClass.name}.${funcName}()`;
+
+    const customAttributeDefintions: Array<CustomAttributeDefinition> = [];    
+    let nextPage: number | undefined | null = 1;
+    while(nextPage !== undefined && nextPage !== null) {
+      const customAttributeDefinitionsResponse: CustomAttributeDefinitionsResponse = await CustomAttributeDefinitionsService.getCustomAttributeDefinitions({
+        xContextId,
+        pageSize: 100,
+        pageNumber: nextPage,
+      });
+      if(customAttributeDefinitionsResponse.data === undefined || customAttributeDefinitionsResponse.data.length === 0) nextPage = undefined;
+      else {
+        customAttributeDefintions.push(...customAttributeDefinitionsResponse.data);
+        /* istanbul ignore next */
+        if(customAttributeDefinitionsResponse.meta === undefined) throw new EpSdkApiContentError(logName, this.constructor.name,'customAttributeDefinitionsResponse.meta === undefined', { customAttributeDefinitionsResponse });
+        /* istanbul ignore next */
+        if(customAttributeDefinitionsResponse.meta.pagination === undefined) throw new EpSdkApiContentError(logName, this.constructor.name,'customAttributeDefinitionsResponse.meta.pagination === undefined', { customAttributeDefinitionsResponse });
+        const pagination: Pagination = customAttributeDefinitionsResponse.meta.pagination;
+        nextPage = pagination.nextPage;  
+      }
+    }
+    return customAttributeDefintions;
+  }
   /**
    * Adds the associated entity type to existing list of entity types if definition exists.
    * Returns list of all associated enitity types.
    */
-  public async presentAssociatedEntityType({ xContextId, attributeName, associatedEntityType}:{
+  public async presentAssociatedEntityType({ xContextId, attributeName, associatedEntityType, applicationDomainId }:{
     xContextId?: string;
     attributeName: string;
     associatedEntityType: EEpSdkCustomAttributeEntityTypes;
+    applicationDomainId?: string;
   }): Promise<Array<EEpSdkCustomAttributeEntityTypes>> {
-    const customAttributeDefinition: CustomAttributeDefinition | undefined = await this.getByName({
-      xContextId: xContextId,
-      attributeName: attributeName,
-    });
+    const customAttributeDefinition: CustomAttributeDefinition | undefined = await this.getByName({ xContextId, attributeName, applicationDomainId });
     if(customAttributeDefinition === undefined || customAttributeDefinition.associatedEntityTypes === undefined) return [associatedEntityType];
     const exists = customAttributeDefinition.associatedEntityTypes.find( (x) => {
       return x === associatedEntityType;
@@ -101,41 +127,45 @@ export class EpSdkCustomAttributeDefinitionsServiceClass extends EpSdkServiceCla
     return epSdkCustomAttributeDefinitionTask_ExecuteReturn.epObject;
   }
 
-  /* istanbul ignore next */
-  // public getByAssociatedEntityTypes = async({ associatedEntityTypes, pageSize = EpApiHelpers.MaxPageSize }:{
-  //   associatedEntityTypes: Array<string>;
-  //   pageSize?: number; /** for testing */
-  // }): Promise<Array<CustomAttributeDefinition>> => {
-  //   const funcName = 'getByAssociatedEntityTypes';
-  //   const logName = `${EpSdkCustomAttributeDefinitionsService.name}.${funcName}()`;
+  /**
+   * Wrapper EpSdkCustomAttributeDefinitionTask to avoid circular import dependencies 
+   */
+  public async presentCustomAttributeDefinitions({ xContextId, epSdkCustomAttributeList, associatedEntityType }:{
+    xContextId?: string;
+    epSdkCustomAttributeList: TEpSdkCustomAttributeList;
+    associatedEntityType: EEpSdkCustomAttributeEntityTypes;
+  }): Promise<Array<CustomAttributeDefinition>> {
+    const funcName = "present";
+    const logName = `${EpSdkCustomAttributeDefinitionsServiceClass.name}.${funcName}()`;
 
-  //   if(associatedEntityTypes.length === 0) return [];
-
-  //   let customAttributeDefinitionList: Array<CustomAttributeDefinition> = [];
-  //   let nextPage: number | undefined | null = 1;
-
-  //   while(nextPage !== null) {
-  //     const customAttributeDefinitionsResponse: CustomAttributeDefinitionsResponse = await CustomAttributeDefinitionsService.getCustomAttributeDefinitions({
-  //       associatedEntityTypes: associatedEntityTypes,
-  //       pageSize: pageSize,
-  //       pageNumber: nextPage,
-  //     });
-  //     if(customAttributeDefinitionsResponse.data === undefined || customAttributeDefinitionsResponse.data.length === 0) nextPage = null;
-  //     else customAttributeDefinitionList.push(...customAttributeDefinitionsResponse.data);
-
-  //     /* istanbul ignore next */
-  //     if(customAttributeDefinitionsResponse.meta === undefined) throw new EpSdkApiContentError(logName, this.constructor.name,'customAttributeDefinitionsResponse.meta === undefined', {
-  //       customAttributeDefinitionsResponse: customAttributeDefinitionsResponse
-  //     });
-  //     /* istanbul ignore next */
-  //     if(customAttributeDefinitionsResponse.meta.pagination === undefined) throw new EpSdkApiContentError(logName, this.constructor.name,'customAttributeDefinitionsResponse.meta.pagination === undefined', {
-  //       customAttributeDefinitionsResponse: customAttributeDefinitionsResponse
-  //     });      
-  //     const pagination: Pagination = customAttributeDefinitionsResponse.meta.pagination;
-  //     nextPage = pagination.nextPage;
-  //   }
-  //   return customAttributeDefinitionList;
-  // }
+    // create full list of associated entity types for all attributes
+    for(const epSdkCustomAttribute of epSdkCustomAttributeList) {
+      const associatedEntityTypes: Array<EEpSdkCustomAttributeEntityTypes> = await this.presentAssociatedEntityType({
+        xContextId,
+        attributeName: epSdkCustomAttribute.name,
+        associatedEntityType,
+      });
+      epSdkCustomAttribute.epSdkCustomAttributeEntityTypes = associatedEntityTypes;
+    }
+    const epSdkCustomAttributeDefinitionTask_ExecuteReturns: Array<IEpSdkCustomAttributeDefinitionTask_ExecuteReturn> = [];
+    for(const epSdkCustomAttribute of epSdkCustomAttributeList) {
+      const epSdkCustomAttributeDefinitionTask = new EpSdkCustomAttributeDefinitionTask({
+        epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
+        attributeName: epSdkCustomAttribute.name,
+        customAttributeDefinitionObjectSettings: {
+          associatedEntityTypes: epSdkCustomAttribute.epSdkCustomAttributeEntityTypes,
+          scope: epSdkCustomAttribute.scope,
+          applicationDomainId: epSdkCustomAttribute.applicationDomainId,
+          valueType: epSdkCustomAttribute.valueType
+        },
+      });
+      const epSdkCustomAttributeDefinitionTask_ExecuteReturn: IEpSdkCustomAttributeDefinitionTask_ExecuteReturn = await epSdkCustomAttributeDefinitionTask.execute(xContextId);
+      epSdkCustomAttributeDefinitionTask_ExecuteReturns.push(epSdkCustomAttributeDefinitionTask_ExecuteReturn);
+    }
+    return epSdkCustomAttributeDefinitionTask_ExecuteReturns.map((epSdkCustomAttributeDefinitionTask_ExecuteReturn) => {
+      return epSdkCustomAttributeDefinitionTask_ExecuteReturn.epObject;
+    });
+  }
 
   /**
    * Get attribute definition by name. Name is unique.
@@ -153,7 +183,7 @@ export class EpSdkCustomAttributeDefinitionsServiceClass extends EpSdkServiceCla
     let nextPage: number | undefined | null = 1;
 
     while(nextPage !== null) {
-      let customAttributeDefinitionsResponse: CustomAttributeDefinitionsResponse
+      let customAttributeDefinitionsResponse: CustomAttributeDefinitionsResponse;
       if(applicationDomainId) {
         customAttributeDefinitionsResponse = await CustomAttributeDefinitionsService.getCustomAttributeDefinitionsByApplicationDomain({
           xContextId: xContextId,
@@ -168,6 +198,17 @@ export class EpSdkCustomAttributeDefinitionsServiceClass extends EpSdkServiceCla
           pageNumber: nextPage,
         });  
       }
+
+      // // DEBUG
+      // const log1 = {
+      //   applicationDomainId: applicationDomainId ? applicationDomainId : 'undefined',
+      //   attributeName,
+      //   customAttributeDefinitionsResponse
+      // }
+      // console.log(`\n\n\n${logName}: log1 = ${JSON.stringify(log1, null, 2)}\n\n\n`);
+
+
+
       if(customAttributeDefinitionsResponse.data === undefined || customAttributeDefinitionsResponse.data.length === 0) nextPage = null;
       else {
         const filteredList = customAttributeDefinitionsResponse.data.filter( (customAttributeDefinition: CustomAttributeDefinition) => {
@@ -182,6 +223,16 @@ export class EpSdkCustomAttributeDefinitionsServiceClass extends EpSdkServiceCla
           if(customAttributeDefinition.name === attributeName) doInclude = true;          
           return doInclude;
         });
+
+      // // DEBUG
+      // const log_filteredList = {
+      //   applicationDomainId: applicationDomainId ? applicationDomainId : 'undefined',
+      //   attributeName,
+      //   filteredList
+      // }
+      // console.log(`\n\n\n${logName}: log_filteredList = ${JSON.stringify(log_filteredList, null, 2)}\n\n\n`);
+
+
         customAttributeDefinitionList.push(...filteredList);
       }
       /* istanbul ignore next */
@@ -199,6 +250,18 @@ export class EpSdkCustomAttributeDefinitionsServiceClass extends EpSdkServiceCla
     if(customAttributeDefinitionList.length > 1) throw new EpSdkApiContentError(logName, this.constructor.name,'customAttributeDefinitionList.length > 1', {
       customAttributeDefinitionList: customAttributeDefinitionList
     });
+
+      // // DEBUG
+      // const log2 = {
+      //   applicationDomainId: applicationDomainId ? applicationDomainId : 'undefined',
+      //   attributeName,
+      //   customAttributeDefinitionList_0: customAttributeDefinitionList[0]
+      // }
+      // console.log(`\n\n\n${logName}: log2 = ${JSON.stringify(log2, null, 2)}\n\n\n`);
+
+
+
+
     return customAttributeDefinitionList[0];
   }
 
@@ -244,24 +307,15 @@ export class EpSdkCustomAttributeDefinitionsServiceClass extends EpSdkServiceCla
     customAttributeDefinitionId: string;
     applicationDomainId?: string;
   }): Promise<CustomAttributeDefinition> => {
-    const customAttributeDefinition: CustomAttributeDefinition = await this.getById({
-      xContextId: xContextId,
-      customAttributeDefinitionId: customAttributeDefinitionId,
-      applicationDomainId: applicationDomainId
-    });
+    const customAttributeDefinition: CustomAttributeDefinition = await this.getById({xContextId, customAttributeDefinitionId, applicationDomainId });
     if(applicationDomainId) {
-      const xvoid: void = await CustomAttributeDefinitionsService.deleteCustomAttributeDefinitionOfApplicationDomain({
-        xContextId: xContextId,
-        applicationDomainId: applicationDomainId,
+      await CustomAttributeDefinitionsService.deleteCustomAttributeDefinitionOfApplicationDomain({xContextId, applicationDomainId,
         customAttributeId: customAttributeDefinitionId
       });
-      xvoid;
     } else {
-      const xvoid: void = await CustomAttributeDefinitionsService.deleteCustomAttributeDefinition({
-        xContextId: xContextId,
+      await CustomAttributeDefinitionsService.deleteCustomAttributeDefinition({ xContextId,
         id: customAttributeDefinitionId,
       });
-      xvoid;  
     }
     return customAttributeDefinition;
   }

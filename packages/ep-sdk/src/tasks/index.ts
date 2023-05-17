@@ -1,5 +1,5 @@
 export * from './EpSdkTask_TransactionLog';
-export * from './EpSdkTask';
+export * from './EpSdkTaskTypes';
 export * from './EpSdkVersionTask';
 export * from './EpSdkApplicationDomainTask';
 export * from './EpSdkEnumTask';

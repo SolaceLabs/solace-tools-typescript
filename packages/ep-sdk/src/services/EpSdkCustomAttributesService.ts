@@ -45,10 +45,10 @@ export class EpSdkCustomAttributesServiceClass {
       const epSdkCustomAttributeDefinitionTask = new EpSdkCustomAttributeDefinitionTask({
         epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
         attributeName: epSdkCustomAttribute.name,
-        applicationDomainId: applicationDomainId,
         customAttributeDefinitionObjectSettings: {
           associatedEntityTypes: associatedEntityTypes,
-          scope: scope ? scope : CustomAttributeDefinition.scope.ORGANIZATION
+          scope: scope,
+          applicationDomainId: applicationDomainId,
         },
       });
       const epSdkCustomAttributeDefinitionTask_ExecuteReturn: IEpSdkCustomAttributeDefinitionTask_ExecuteReturn = await epSdkCustomAttributeDefinitionTask.execute(xContextId);

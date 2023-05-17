@@ -22,7 +22,7 @@ import {
   IEpSdkTask_IsUpdateRequiredFuncReturn,
   IEpSdkTask_Keys,
   IEpSdkTask_UpdateFuncReturn,
-} from "./EpSdkTask";
+} from "./EpSdkTaskTypes";
 import {
   EEpSdk_VersionTaskStrategy,
   EpSdkVersionTask,

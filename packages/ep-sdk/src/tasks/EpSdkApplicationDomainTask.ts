@@ -11,6 +11,8 @@ import {
   ApplicationDomain,
   ApplicationDomainResponse,
   ApplicationDomainsService,
+  CustomAttribute,
+  CustomAttributeDefinition,
   TopicDomain,
   TopicDomainResponse,
   TopicDomainsResponse,
@@ -23,16 +25,22 @@ import {
   EEpSdkLoggerCodes,
 } from "../utils";
 import { 
+  EEpSdkCustomAttributeEntityTypes,
   EEpSdkObjectTypes, 
-  EpSdkBrokerTypes 
+  EpSdkBrokerTypes, 
+  TEpSdkCustomAttribute, 
+  TEpSdkCustomAttributeList
 } from "../types";
 import { 
   EpSdkApplicationDomainsService, 
+  EpSdkCustomAttributeDefinitionsService, 
   EpSdkTopicAddressLevelService, 
   EpSdkTopicDomainsService 
 } from "../services";
 import {
   EpSdkTask,
+} from "./EpSdkTask";
+import {
   IEpSdkTask_Config,
   IEpSdkTask_CreateFuncReturn,
   IEpSdkTask_DeleteFuncReturn,
@@ -42,7 +50,8 @@ import {
   IEpSdkTask_IsUpdateRequiredFuncReturn,
   IEpSdkTask_Keys,
   IEpSdkTask_UpdateFuncReturn,
-} from "./EpSdkTask";
+} from "./EpSdkTaskTypes";
+
 
 /** @category Tasks */
 export type TEpSdkApplicationDomainTask_TopicDomainSettings = {
@@ -54,6 +63,7 @@ export type TEpSdkApplicationDomainTask_TopicDomainSettings = {
 /** @category Tasks */
 export type TEpSdkApplicationDomainTask_Settings = Partial<Pick<ApplicationDomain, "topicDomainEnforcementEnabled" | "uniqueTopicAddressEnforcementEnabled" | "description">> & {
   topicDomains?: Array<TEpSdkApplicationDomainTask_TopicDomainSettings>;
+  customAttributes?: Array<Pick<TEpSdkCustomAttribute, "name" | "scope" | "value" | "valueType">>;
 };
 type TEpSdkApplicationDomainTask_CompareObject = Omit<TEpSdkApplicationDomainTask_Settings, "topicDomains"> & {
   topicDomains?: Array<TopicDomain>;
@@ -121,30 +131,16 @@ export class EpSdkApplicationDomainTask extends EpSdkTask {
     return settings;
   }
 
+  protected getEpObjectType(): EEpSdkObjectTypes { return EEpSdkObjectTypes.APPLICATION_DOMAIN; }
+
   constructor(taskConfig: IEpSdkApplicationDomainTask_Config) {
     super(taskConfig);
   }
 
-  // protected async initializeTask(): Promise<void> {
-  //   const funcName = "initializeTask";
-  //   const logName = `${EpSdkApplicationDomainTask.name}.${funcName}()`;
-
-  //   if(this.getTaskConfig().topicDelimiter === undefined) this.getTaskConfig().topicDelimiter = this.Default_TopicDelimiter;
-  //   else {
-  //     if(this.getTaskConfig().topicDelimiter.length !== 1) throw new EpSdkTaskConfigValidationError(logName, this.constructor.name, undefined, 'topicDelimiter length must be equal to 1', {
-  //       config: this.getTaskConfig()
-  //     });
-  //   }
-  //   this.topicAddressLevelList = await this.initializeTopicAddressLevels({
-  //     topicString: this.getTaskConfig().topicString,
-  //     topicDelimiter: this.getTaskConfig().topicDelimiter
-  //   });
-  // }
-
   protected getDefaultEpObjectKeys(): IEpSdkTask_EpObjectKeys {
     return {
       epObjectId: "undefined",
-      epObjectType: EEpSdkObjectTypes.APPLICATION_DOMAIN,
+      epObjectType: this.getEpObjectType(),
     };
   }
 
@@ -153,10 +149,9 @@ export class EpSdkApplicationDomainTask extends EpSdkTask {
   ): IEpSdkTask_EpObjectKeys {
     const funcName = "getEpObjectKeys";
     const logName = `${EpSdkApplicationDomainTask.name}.${funcName}()`;
-
-    if (epObject === undefined) return this.getDefaultEpObjectKeys();
+    if(epObject === undefined) return this.getDefaultEpObjectKeys();
     /* istanbul ignore next */
-    if (epObject.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "epObject.id === undefined", { epObject: epObject });
+    if(epObject.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "epObject.id === undefined", { epObject: epObject });
     return {
       ...this.getDefaultEpObjectKeys(),
       epObjectId: epObject.id,
@@ -186,6 +181,7 @@ export class EpSdkApplicationDomainTask extends EpSdkTask {
       applicationDomain: applicationDomain ? applicationDomain : "undefined",
     }}));
     if(applicationDomain === undefined) return this.Empty_IEpSdkApplicationDomainTask_GetFuncReturn;
+    /* istanbul ignore next */
     if(applicationDomain.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "applicationDomain.id === undefined", { applicationDomain }); 
     // get the topic domains
     const topicDomainsResponse: TopicDomainsResponse = await EpSdkTopicDomainsService.listAll({ applicationDomainId: applicationDomain.id });
@@ -235,10 +231,11 @@ export class EpSdkApplicationDomainTask extends EpSdkTask {
   protected async isUpdateRequiredFunc(epSdkApplicationDomainTask_GetFuncReturn: IEpSdkApplicationDomainTask_GetFuncReturn): Promise<IEpSdkTask_IsUpdateRequiredFuncReturn> {
     const funcName = "isUpdateRequiredFunc";
     const logName = `${EpSdkApplicationDomainTask.name}.${funcName}()`;
-
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_START_IS_UPDATE_REQUIRED, module: this.constructor.name, details: { epSdkApplicationDomainTask_GetFuncReturn }}));
 
+    /* istanbul ignore next */
     if (epSdkApplicationDomainTask_GetFuncReturn.epObject === undefined) throw new EpSdkInternalTaskError(logName, this.constructor.name, "epSdkApplicationDomainTask_GetFuncReturn.epObject === undefined");
+    /* istanbul ignore next */
     if (epSdkApplicationDomainTask_GetFuncReturn.epObject.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "epSdkApplicationDomainTask_GetFuncReturn.epObject.id", { epSdkApplicationDomainTask_GetFuncReturn });
     // application domain
     const existingObject: ApplicationDomain = epSdkApplicationDomainTask_GetFuncReturn.epObject;
@@ -257,7 +254,8 @@ export class EpSdkApplicationDomainTask extends EpSdkTask {
       description: existingObject.description,
       topicDomainEnforcementEnabled: existingObject.topicDomainEnforcementEnabled,
       uniqueTopicAddressEnforcementEnabled: existingObject.uniqueTopicAddressEnforcementEnabled,
-      topicDomains: existingTopicDomains
+      topicDomains: existingTopicDomains,
+      customAttributes: await this.createSortedEpSdkCustomAttributeList({ customAttributes: epSdkApplicationDomainTask_GetFuncReturn.epObject.customAttributes })
     }
     const requestedTopicDomains: Array<TopicDomain> | undefined = await this.createEpTopicDomainsFromTopicDomainSettings({ applicationDomainId: epSdkApplicationDomainTask_GetFuncReturn.epObject.id });
     let sortedRequestedTopicDomains: Array<TopicDomain> | undefined = undefined;
@@ -266,7 +264,8 @@ export class EpSdkApplicationDomainTask extends EpSdkTask {
     }
     const requestedCompareObject: TEpSdkApplicationDomainTask_CompareObject = {
       ...this.createObjectSettings(),
-      topicDomains: sortedRequestedTopicDomains ? sortedRequestedTopicDomains : []
+      topicDomains: sortedRequestedTopicDomains ? sortedRequestedTopicDomains : [],
+      customAttributes: this.sortEpSdkCustomAttributeList({ epSdkCustomAttributeList: this.getTaskConfig().applicationDomainSettings.customAttributes }),
     }
 
     const epSdkTask_IsUpdateRequiredFuncReturn: IEpSdkTask_IsUpdateRequiredFuncReturn = this.create_IEpSdkTask_IsUpdateRequiredFuncReturn({
@@ -347,17 +346,115 @@ export class EpSdkApplicationDomainTask extends EpSdkTask {
     return deletedTopicDomains;
   }
 
+  // TODO: to base class
+  protected createCustomAttributes({ epSdkCustomAttributeList, customAttributeDefinitions }:{
+    epSdkCustomAttributeList?: TEpSdkCustomAttributeList;
+    customAttributeDefinitions?: Array<CustomAttributeDefinition>;
+  }): Array<CustomAttribute> | undefined {
+    const funcName = "createCustomAttributes";
+    const logName = `${EpSdkApplicationDomainTask.name}.${funcName}()`;
+    /* istanbul ignore next */
+    if(epSdkCustomAttributeList === undefined || epSdkCustomAttributeList.length === 0) return undefined;
+    /* istanbul ignore next */
+    if(customAttributeDefinitions === undefined) throw new EpSdkInternalTaskError(logName, this.constructor.name, {
+      message: 'customAttributeDefinitions === undefined',
+      epSdkCustomAttributeList
+    });
+    /* istanbul ignore next */
+    if(customAttributeDefinitions.length === 0) throw new EpSdkInternalTaskError(logName, this.constructor.name, {
+      message: 'customAttributeDefinitions.length === 0',
+      epSdkCustomAttributeList
+    });
+    const customAttributes: Array<CustomAttribute> = [];
+    for(const epSdkCustomAttribute of epSdkCustomAttributeList) {
+      const found = customAttributeDefinitions.find(x => x.name === epSdkCustomAttribute.name );
+      /* istanbul ignore next */
+      if(found === undefined) throw new EpSdkInternalTaskError(logName, this.constructor.name, {
+        message: 'cound not find customAttributeDefintion for name',
+        name: epSdkCustomAttribute.name,
+        customAttributeDefinitions,
+      });
+      const customAttribute: CustomAttribute = {
+        customAttributeDefinitionId: found.id,
+        customAttributeDefinitionName: epSdkCustomAttribute.name,
+        value: epSdkCustomAttribute.value,
+      };
+      customAttributes.push(customAttribute);
+    }
+    return customAttributes;
+  }
+
+  // TODO: to base class
+  protected createCustomAttributes4Checkmode({ epSdkCustomAttributeList }:{
+    epSdkCustomAttributeList: TEpSdkCustomAttributeList;
+  }): Array<CustomAttribute> | undefined {
+    if(epSdkCustomAttributeList === undefined || epSdkCustomAttributeList.length === 0) return undefined;
+    return epSdkCustomAttributeList.map((epSdkCustomAttribute) => {
+      return {
+        customAttributeDefinitionId: 'undefined',
+        customAttributeDefinitionName: epSdkCustomAttribute.name,
+        value: epSdkCustomAttribute.value
+      };
+    });
+  }
+
+  // TODO: to base class
+  protected async presentCustomAttributeDefinitions({ applicationDomainId, epSdkCustomAttributeList }:{
+    applicationDomainId: string;
+    epSdkCustomAttributeList?: TEpSdkCustomAttributeList;
+  }): Promise<Array<CustomAttributeDefinition> | undefined> {
+    const funcName = "presentCustomAttributeDefinitions";
+    const logName = `${EpSdkApplicationDomainTask.name}.${funcName}()`;
+    if(epSdkCustomAttributeList === undefined || epSdkCustomAttributeList.length === 0) return undefined;
+    const associatedEntityType = this.getEpObjectType() as unknown as EEpSdkCustomAttributeEntityTypes;
+    // create present list
+    const internalPresentEpSdkCustomAttributeList: TEpSdkCustomAttributeList = epSdkCustomAttributeList.map( (epSdkCustomAttribute) => {
+      return {
+        ...epSdkCustomAttribute,
+        applicationDomainId: epSdkCustomAttribute.scope === CustomAttributeDefinition.scope.APPLICATION_DOMAIN ? applicationDomainId : undefined,
+      }
+    });
+    const customAttributeDefinitions = await EpSdkCustomAttributeDefinitionsService.presentCustomAttributeDefinitions({
+      xContextId: this.xContextId,
+      epSdkCustomAttributeList: internalPresentEpSdkCustomAttributeList,
+      associatedEntityType,
+    });
+    return customAttributeDefinitions;
+  }
+
+  private async createApplicationDomain(): Promise<ApplicationDomain> {
+    const funcName = "createApplicationDomain";
+    const logName = `${EpSdkApplicationDomainTask.name}.${funcName}()`;
+
+    const create: ApplicationDomain = {
+      ...this.createObjectSettings(),
+      name: this.getTaskConfig().applicationDomainName,
+      customAttributes: undefined
+    };
+
+    const applicationDomainResponse: ApplicationDomainResponse = await ApplicationDomainsService.createApplicationDomain({
+      xContextId: this.xContextId,
+      requestBody: create,
+    });
+    /* istanbul ignore next */
+    if(applicationDomainResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "applicationDomainResponse.data === undefined", { applicationDomainResponse });
+    return applicationDomainResponse.data;
+  }
+
   protected async createFunc(): Promise<IEpSdkApplicationDomainTask_CreateFuncReturn> {
     const funcName = "createFunc";
     const logName = `${EpSdkApplicationDomainTask.name}.${funcName}()`;
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_START_CREATE, module: this.constructor.name }));
+
+    const epSdkCustomAttributeList = this.getTaskConfig().applicationDomainSettings ? this.getTaskConfig().applicationDomainSettings.customAttributes : undefined;
+
     const create: ApplicationDomain = {
       ...this.createObjectSettings(),
       name: this.getTaskConfig().applicationDomainName,
     };
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_CREATE, module: this.constructor.name, details: {
       epSdkApplicationDomainTask_Config: this.getTaskConfig(),
-      create: create,
+      create,
     }}));
 
     if(this.isCheckmode()) {
@@ -366,37 +463,49 @@ export class EpSdkApplicationDomainTask extends EpSdkTask {
         epObject: create,
         epObjectKeys: this.getEpObjectKeys({
           ...create,
+          customAttributes: this.createCustomAttributes4Checkmode({ epSdkCustomAttributeList }),
           id: "undefined",
         }),
       };
     }
 
-    const applicationDomainResponse: ApplicationDomainResponse = await ApplicationDomainsService.createApplicationDomain({
-      xContextId: this.xContextId,
-      requestBody: create,
-    });
-    /* istanbul ignore next */
-    if(applicationDomainResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "applicationDomainResponse.data === undefined", { applicationDomainResponse });
-    if(applicationDomainResponse.data.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "applicationDomainResponse.data.id === undefined", { applicationDomainResponse });
-    const applicationDomainId = applicationDomainResponse.data.id;
+    let applicationDomain: ApplicationDomain = await this.createApplicationDomain();
+    if(applicationDomain.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "applicationDomain.id === undefined", { applicationDomain });
+    const applicationDomainId = applicationDomain.id;
     // topic domains
     const createdTopicDomains: Array<TopicDomain> = await this.createTopicDomains({ applicationDomainId });
+    // custom attributes
+    const customAttributeDefinitions: Array<CustomAttributeDefinition> = await this.presentCustomAttributeDefinitions({
+      applicationDomainId, epSdkCustomAttributeList
+    });
+    // // DEBUG
+    // const log1 = {
+    //   customAttributeDefinitions
+    // };
+    // console.log(`\n\n\n${logName}: log1 = ${JSON.stringify(log1, null, 2)}\n\n\n`);
+    // const debug = true; if(debug) throw new Error(`${logName}: continue here`);
 
+    if(epSdkCustomAttributeList !== undefined && epSdkCustomAttributeList.length > 0) {
+      const applicationDomainResponse: ApplicationDomainResponse = await ApplicationDomainsService.updateApplicationDomain({ 
+        xContextId: this.xContextId,
+        id: applicationDomainId,
+        requestBody: {
+          name: this.getTaskConfig().applicationDomainName,
+          customAttributes: this.createCustomAttributes({ epSdkCustomAttributeList, customAttributeDefinitions })
+        }
+      });
+      /* istanbul ignore next */
+      if(applicationDomainResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'applicationDomainResponse.data === undefined', { applicationDomainResponse });
+      applicationDomain = applicationDomainResponse.data  
+    }
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_CREATE, module: this.constructor.name, details: {
       epSdkApplicationDomainTask_Config: this.getTaskConfig(),
-      create: create,
-      applicationDomainResponse: applicationDomainResponse,
+      applicationDomain,
     }}));
-    /* istanbul ignore next */
-    if (applicationDomainResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "applicationDomainResponse.data === undefined", {
-      epSdkApplicationDomainTask_Config: this.getTaskConfig(),
-      create: create,
-      applicationDomainResponse: applicationDomainResponse,
-    });
     return {
       epSdkTask_Action: this.getCreateFuncAction(),
-      epObject: applicationDomainResponse.data,
-      epObjectKeys: this.getEpObjectKeys(applicationDomainResponse.data),
+      epObject: applicationDomain,
+      epObjectKeys: this.getEpObjectKeys(applicationDomain),
       epTopicDomains: createdTopicDomains.length > 0 ? createdTopicDomains : undefined
     };
   }
@@ -407,6 +516,7 @@ export class EpSdkApplicationDomainTask extends EpSdkTask {
 
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_START_UPDATE, module: this.constructor.name }));
 
+    /* istanbul ignore next */
     if(epSdkApplicationDomainTask_GetFuncReturn.epObject === undefined) throw new EpSdkInternalTaskError(logName, this.constructor.name, "epSdkApplicationDomainTask_GetFuncReturn.epObject === undefined");
     /* istanbul ignore next */
     if(epSdkApplicationDomainTask_GetFuncReturn.epObject.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "epSdkApplicationDomainTask_GetFuncReturn.epObject.id === undefined", {
@@ -442,11 +552,23 @@ export class EpSdkApplicationDomainTask extends EpSdkTask {
         epTopicDomains: wouldBe_EpTopicDomains
       };
     }
-
+    // custom attributes
+    const epSdkCustomAttributeList = this.getTaskConfig().applicationDomainSettings ? this.getTaskConfig().applicationDomainSettings.customAttributes : undefined;
+    let customAttributes: Array<CustomAttribute> | undefined = undefined;
+    if(epSdkCustomAttributeList !== undefined && epSdkCustomAttributeList.length > 0) {
+      const customAttributeDefinitions: Array<CustomAttributeDefinition> = await this.presentCustomAttributeDefinitions({
+        applicationDomainId, epSdkCustomAttributeList
+      });  
+      customAttributes = this.createCustomAttributes({ epSdkCustomAttributeList, customAttributeDefinitions });
+    }
+    // do the update
     const applicationDomainResponse: ApplicationDomainResponse = await ApplicationDomainsService.updateApplicationDomain({
       xContextId: this.xContextId,
       id: epSdkApplicationDomainTask_GetFuncReturn.epObject.id,
-      requestBody: update,
+      requestBody: {
+        ...update,
+        customAttributes,
+      }
     });
     // brute force, remove topic domains and add the configure ones again
     // delete topic domains

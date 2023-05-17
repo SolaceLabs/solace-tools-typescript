@@ -58,8 +58,8 @@ export class EpSdkEpEventsServiceClass extends EpSdkServiceClass {
   }
 
   /**
-   * Sets the custom attributes in the list on the application.
-   * Creates attribute definitions / adds entity type 'application' if it doesn't exist.
+   * Sets the custom attributes in the list on the event.
+   * Creates attribute definitions / adds entity type 'event' if it doesn't exist.
    * @param param0 
    * @returns 
    */

@@ -6,13 +6,15 @@ import {
   EEpSdk_VersionStrategy
 } from "../utils";
 import { 
-  EEpSdkTask_Action, 
   EpSdkTask, 
+} from "./EpSdkTask";
+import { 
+  EEpSdkTask_Action, 
   IEpSdkTask_Config, 
   IEpSdkTask_DeleteFuncReturn, 
   IEpSdkTask_EpObjectKeys, 
   IEpSdkTask_GetFuncReturn 
-} from "./EpSdkTask";
+} from "./EpSdkTaskTypes";
 
 
 /** @category Tasks */

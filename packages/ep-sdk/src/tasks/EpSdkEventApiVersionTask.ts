@@ -18,7 +18,7 @@ import {
   IEpSdkTask_IsUpdateRequiredFuncReturn,
   IEpSdkTask_Keys,
   IEpSdkTask_UpdateFuncReturn,
-} from "./EpSdkTask";
+} from "./EpSdkTaskTypes";
 import {
   EEpSdk_VersionTaskStrategy,
   EpSdkVersionTask,
@@ -27,16 +27,7 @@ import {
 } from "./EpSdkVersionTask";
 
 /** @category Tasks */
-export type TEpSdkEventApiVersionTask_Settings = Required<
-  Pick<
-    EventApiVersion,
-    | "description"
-    | "displayName"
-    | "stateId"
-    | "producedEventVersionIds"
-    | "consumedEventVersionIds"
-  >
->;
+export type TEpSdkEventApiVersionTask_Settings = Required<Pick<EventApiVersion,"description" | "displayName" | "stateId" | "producedEventVersionIds" | "consumedEventVersionIds">>;
 type TEpSdkEventApiVersionTask_CompareObject = Partial<TEpSdkEventApiVersionTask_Settings> & Pick<EventApiVersion, "version">;
 
 /** @category Tasks */

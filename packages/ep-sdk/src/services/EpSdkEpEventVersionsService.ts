@@ -23,7 +23,8 @@ import {
   EpSdkPagination 
 } from "../types";
 import { 
-  EpApiMaxPageSize, EpSdkCustomAttributeNameSourceApplicationDomainId 
+  EpApiMaxPageSize, 
+  EpSdkCustomAttributeNameSourceApplicationDomainId 
 } from '../constants';
 import { 
   EpSdkEpEventTask, 
@@ -461,7 +462,7 @@ export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
       epSdkCustomAttributeList: [ 
         { name: EpSdkCustomAttributeNameSourceApplicationDomainId, value: fromEvent.applicationDomainId }
       ]
-    });        
+    });
     // create target event version
     const epSdkEpEventVersionTask = new EpSdkEpEventVersionTask({
       epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
