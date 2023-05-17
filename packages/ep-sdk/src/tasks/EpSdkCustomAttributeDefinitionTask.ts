@@ -9,7 +9,6 @@ import {
   EpSdkLogger,
   EEpSdkLoggerCodes,
   EpSdkTaskConfigValidationError,
-  EpSdkTaskUpdateNotSupportedError,
 } from "../utils";
 import { 
   EEpSdkCustomAttributeEntityTypes,
@@ -22,7 +21,6 @@ import {
   EpSdkTask,
 } from "./EpSdkTask";
 import {
-  EEpSdkTask_TargetState,
   IEpSdkTask_Config,
   IEpSdkTask_CreateFuncReturn,
   IEpSdkTask_DeleteFuncReturn,
@@ -33,17 +31,6 @@ import {
   IEpSdkTask_Keys,
   IEpSdkTask_UpdateFuncReturn,
 } from "./EpSdkTaskTypes";
-import { log } from "console";
-
-// scope: organization
-// associatedEntityTypes?: Array<string>;
-
-// scope: applicationDomainId
-// associatedEntities?: Array<AssociatedEntity>;
-// export type AssociatedEntity = {
-//   entityType?: string;
-//   applicationDomainIds?: Array<string>;
-// };
 
 
 /** @category Tasks */

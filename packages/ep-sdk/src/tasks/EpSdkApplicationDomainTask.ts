@@ -403,8 +403,8 @@ export class EpSdkApplicationDomainTask extends EpSdkTask {
     applicationDomainId: string;
     epSdkCustomAttributeList?: TEpSdkCustomAttributeList;
   }): Promise<Array<CustomAttributeDefinition> | undefined> {
-    const funcName = "presentCustomAttributeDefinitions";
-    const logName = `${EpSdkApplicationDomainTask.name}.${funcName}()`;
+    // const funcName = "presentCustomAttributeDefinitions";
+    // const logName = `${EpSdkApplicationDomainTask.name}.${funcName}()`;
     if(epSdkCustomAttributeList === undefined || epSdkCustomAttributeList.length === 0) return undefined;
     const associatedEntityType = this.getEpObjectType() as unknown as EEpSdkCustomAttributeEntityTypes;
     // create present list

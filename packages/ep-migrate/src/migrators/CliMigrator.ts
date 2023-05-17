@@ -12,7 +12,10 @@ import {
   CliUtils,
   ECliRunContext_RunMode,
 } from "../cli-components";
-import { ECliMigrate_TargetStates, ECliMigrate_TargetVersionStrategies } from "./types";
+import { 
+  ECliMigrate_TargetStates, 
+  ECliMigrate_TargetVersionStrategies 
+} from "./types";
 
 
 export interface ICliMigratorOptions {

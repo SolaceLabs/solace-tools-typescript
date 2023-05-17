@@ -135,8 +135,8 @@ export class EpSdkCustomAttributeDefinitionsServiceClass extends EpSdkServiceCla
     epSdkCustomAttributeList: TEpSdkCustomAttributeList;
     associatedEntityType: EEpSdkCustomAttributeEntityTypes;
   }): Promise<Array<CustomAttributeDefinition>> {
-    const funcName = "present";
-    const logName = `${EpSdkCustomAttributeDefinitionsServiceClass.name}.${funcName}()`;
+    // const funcName = "present";
+    // const logName = `${EpSdkCustomAttributeDefinitionsServiceClass.name}.${funcName}()`;
 
     // create full list of associated entity types for all attributes
     for(const epSdkCustomAttribute of epSdkCustomAttributeList) {
