@@ -14,7 +14,8 @@ unset_source_env() {
 ######################################################
 
 # here
-export TEST_EP_OPEN_API_NODE_ENABLE_API_CALL_LOGGING=true
+export TEST_EP_OPEN_API_NODE_ENABLE_API_CALL_LOGGING=false
+# export TEST_EP_OPEN_API_NODE_ENABLE_API_CALL_LOGGING=true
 # external
 NOLOG_TEST_EP_OPEN_API_NODE_SOLACE_CLOUD_TOKEN=$TEST_EP_OPEN_API_NODE_SOLACE_CLOUD_TOKEN
 export TEST_EP_OPEN_API_NODE_SOLACE_CLOUD_TOKEN="***"
