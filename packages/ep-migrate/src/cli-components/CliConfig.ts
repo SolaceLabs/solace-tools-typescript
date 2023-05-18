@@ -15,6 +15,7 @@ import {
 import {
   CliConfigFileMissingEnvVarError,
   CliConfigFileParseError,
+  CliConfigInvalidConfigError,
   CliConfigInvalidConfigFileError,
   CliConfigNotInitializedError,
   CliConfigTokenError,
@@ -43,6 +44,8 @@ import {
   ICliEventsMigrateConfig,
   ICliSchemasMigrateConfig
 } from '../migrators';
+import { EpSdkEnvironmentsService } from '@solace-labs/ep-sdk';
+import { Environment } from '@solace-labs/ep-openapi-node';
 
 const DEFAULT_CLI_LOGGER_LOG_LEVEL = ECliLogger_LogLevel.INFO;
 // const DEFAULT_CLI_LOGGER_LOG_FILE = `./tmp/logs/${DefaultAppName}.log`;
@@ -274,6 +277,20 @@ class CliConfig {
     };  
   }
 
+  public validate = async() => {
+    const funcName = "validate";
+    const logName = `${CliConfig.name}.${funcName}()`;
+    const environmentName = this.config.cliMigrateConfig.applications.epV2.environment.environmentName;
+    const environment: Environment | undefined = await EpSdkEnvironmentsService.getByName({ environmentName });
+    if(environment === undefined) {
+      throw new CliConfigInvalidConfigError(logName, {
+        message: 'Ep V2 environment for applications not found',
+        environmentName
+      });  
+    }
+
+  }
+
   public initialize = ({ cliVersion, commandLineOptionValues, configFile, runState }: {
     cliVersion: string;
     commandLineOptionValues: OptionValues;
@@ -291,8 +308,6 @@ class CliConfig {
       configFile: testedConfigFile,
       runState
     });
-    // perhaps more validation is needed?
-    // this.validateConfig();
   };
 
   private maskSecrets = (k: string, v: any) => {

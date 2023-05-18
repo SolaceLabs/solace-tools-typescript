@@ -141,10 +141,20 @@
           "additionalProperties": false,
           "properties": {
             "epV2": {
-              "type": ["object", "null"],
-              "required": [],
+              "type": ["object"],
+              "required": ["environment"],
               "additionalProperties": false,
               "properties": {
+                "environment": {
+                  "type": "object",
+                  "required": ["environmentName"],
+                  "additionalProperties": false,
+                  "properties": {
+                    "environmentName": {
+                      "type": "string"
+                    }
+                  }
+                },
                 "versions": {
                   "$ref": "#/definitions/epV2Versions"
                 }

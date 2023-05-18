@@ -77,6 +77,9 @@ migrate:
         state: Released
   applications:
     epV2:
+      environment:
+        # Environment must exist in Ep V2
+        name: 'epV1'
       versions:
         initialVersion: 1.0.0
         versionStrategy: bump_patch      

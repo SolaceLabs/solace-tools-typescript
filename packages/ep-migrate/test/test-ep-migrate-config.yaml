@@ -41,6 +41,8 @@ migrate:
         state: Released
   applications:
     epV2:
+      environment:
+        name: 'TEST_EP_MIGRATE/epV1'
       versions:
         initialVersion: 1.0.0
         versionStrategy: bump_patch      

@@ -46,6 +46,8 @@ migrate:
         state: Released
   applications:
     epV2:
+      environment:
+        environmentName: 'epV1Migrate'
       versions:
         initialVersion: 1.0.0
         versionStrategy: bump_patch      

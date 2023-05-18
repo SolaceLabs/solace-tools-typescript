@@ -193,6 +193,12 @@ export class CliMigrateManager {
     // DEBUG
     // console.log(`\n${logName}: \nthis.cliMigrateManagerOptions=\n${JSON.stringify(this.cliMigrateManagerOptions, null, 2)}\n`);
     // process.exit(1);
+    try {
+      await CliConfig.validate();
+    } catch(e) {
+      CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.CONFIG_ERROR, details: { error: e }}));
+      throw e;
+    }
 
     try {
       switch(this.cliMigrateManagerOptions.cliMigrateManagerRunState) {

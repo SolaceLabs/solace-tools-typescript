@@ -40,9 +40,12 @@ import {
   ICliMigratedSchema
 } from "./types";
 
-
+export interface ICliConfigApplicationsEnvironment {
+  environmentName: string;
+}
 export interface ICliApplicationsMigrateConfig {
   epV2: {
+    environment: ICliConfigApplicationsEnvironment;
     versions: ICliConfigEp2Versions;
   },
 }
