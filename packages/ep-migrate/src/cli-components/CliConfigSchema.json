@@ -46,7 +46,7 @@
     },
     "migrate": {
       "type": "object",
-      "required": ["epV2"],
+      "required": ["epV2", "enums", "applicationDomains", "schemas", "events"],
       "additionalProperties": false,
       "properties": {
         "epV2": {
@@ -95,6 +95,23 @@
           }
         },
         "schemas": {
+          "type": "object",
+          "required": ["epV2"],
+          "additionalProperties": false,
+          "properties": {
+            "epV2": {
+              "type": ["object", "null"],
+              "required": [],
+              "additionalProperties": false,
+              "properties": {
+                "versions": {
+                  "$ref": "#/definitions/epV2Versions"
+                }
+              }
+            }
+          }
+        },
+        "events": {
           "type": "object",
           "required": ["epV2"],
           "additionalProperties": false,

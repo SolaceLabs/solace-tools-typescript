@@ -39,6 +39,7 @@ import {
   ICliApplicationDomainsMigrateConfig,
   ICliConfigEp2Versions,
   ICliEnumsMigrateConfig,
+  ICliEventsMigrateConfig,
   ICliSchemasMigrateConfig
 } from '../migrators';
 
@@ -62,6 +63,7 @@ interface ICliConfigFileMigrateConfig {
   enums: ICliEnumsMigrateConfig;
   applicationDomains: ICliApplicationDomainsMigrateConfig;
   schemas: ICliSchemasMigrateConfig;
+  events: ICliEventsMigrateConfig;
 }
 export interface ICliConfigFile {
   logger: {
@@ -243,6 +245,16 @@ class CliConfig {
             versions: {
               ...configFileContents.migrate.epV2.versions,
               ...configFileContents.migrate.schemas.epV2.versions,
+            }
+          }
+        },
+        events: {
+          ...configFileContents.migrate.events,
+          epV2: {
+            ...configFileContents.migrate.events.epV2,
+            versions: {
+              ...configFileContents.migrate.epV2.versions,
+              ...configFileContents.migrate.events.epV2.versions,
             }
           }
         },

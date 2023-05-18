@@ -1,4 +1,5 @@
 import { 
+  EpV1Event,
   EpV1EventSchema 
 } from "../epV1";
 import { 
@@ -9,7 +10,8 @@ import {
 } from "./CliUtils";
 
 export enum ECliRunIssueTypes {
-  SchemaIssue = "SchemaIssue"
+  SchemaIssue = "SchemaIssue",
+  EventIssue = "EventIssue",
 }
 export interface ICliRunIssue {
   type: ECliRunIssueTypes;
@@ -22,6 +24,11 @@ export interface ICliRunIssue {
 export interface ICliRunIssueSchema extends ICliRunIssue {
   type: ECliRunIssueTypes.SchemaIssue;
   epV1EventSchema: EpV1EventSchema;
+}
+
+export interface ICliRunIssueEvent extends ICliRunIssue {
+  type: ECliRunIssueTypes.EventIssue;
+  epV1Event: EpV1Event;
 }
 
 

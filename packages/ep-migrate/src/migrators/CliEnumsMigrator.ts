@@ -162,7 +162,7 @@ export class CliEnumsMigrator extends CliMigrator {
     // get all the enums and walk the list
     let nextPage: number | null = 1;
     while (nextPage !== null) {
-      const epV1EnumsResponse: EpV1EnumsResponse = await EpV1EnumsService.list8({ pageNumber: nextPage, pageSize: 10 });
+      const epV1EnumsResponse: EpV1EnumsResponse = await EpV1EnumsService.list8({ pageNumber: nextPage, pageSize: 100 });
       if(epV1EnumsResponse.data && epV1EnumsResponse.data.length > 0) {
         for(const epV1Enum of epV1EnumsResponse.data) {
           await this.migrateEnum({ epV1Enum: epV1Enum as EpV1Enum, epV2ApplicationDomainId: epSdkApplicationDomainTask_ExecuteReturn.epObject.id, epV2ApplicationDomainName });

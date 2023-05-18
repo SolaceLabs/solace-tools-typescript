@@ -140,7 +140,7 @@ export class CliSchemasMigrator extends CliMigrator {
       // get all the epv1 schemas in application domain and walk the list
       let nextPage: number | null = 1;
       while (nextPage !== null) {
-        const epV1SchemasResponse: EpV1SchemasResponse = await EpV1SchemasService.list2({ pageNumber: nextPage, pageSize: 10, applicationDomainId: cliMigratedApplicationDomain.epV1ApplicationDomain.id });
+        const epV1SchemasResponse: EpV1SchemasResponse = await EpV1SchemasService.list2({ pageNumber: nextPage, pageSize: 100, applicationDomainId: cliMigratedApplicationDomain.epV1ApplicationDomain.id });
         if(epV1SchemasResponse.data && epV1SchemasResponse.data.length > 0) {
           for(const eventSchema of epV1SchemasResponse.data) {
             const epV1EventSchema: EpV1EventSchema = eventSchema as EpV1EventSchema;
@@ -150,7 +150,7 @@ export class CliSchemasMigrator extends CliMigrator {
               if(e instanceof EpSdkError) {
                 CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.MIGRATE_SCHEMAS_ERROR, details: { error: e }}));
                 // add to issues log  
-                const rctxt: ICliSchemaRunContext | undefined = CliRunContext.get() as ICliSchemaRunContext| undefined;
+                const rctxt: ICliSchemaRunContext | undefined = CliRunContext.pop() as ICliSchemaRunContext| undefined;
                 const issue: ICliRunIssueSchema = {
                   type: ECliRunIssueTypes.SchemaIssue,
                   epV1Id: epV1EventSchema.id,
@@ -159,10 +159,7 @@ export class CliSchemasMigrator extends CliMigrator {
                   cause: e
                 };
                 CliRunIssues.add(issue);
-        
-                // summarize issues at the end and put all details in log file
-        
-                CliRunSummary.processingEpV1SchemaIssue({ rctxt });        
+                CliRunSummary.processingEpV1SchemaIssue({ rctxt });
               } else throw e;
             }
           }

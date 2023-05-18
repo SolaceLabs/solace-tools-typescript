@@ -69,6 +69,12 @@ migrate:
         initialVersion: 1.0.0
         versionStrategy: bump_patch      
         state: Released
+  events:
+    epV2:
+      versions:
+        initialVersion: 1.0.0
+        versionStrategy: bump_patch      
+        state: Released
 
   
 #############################################################
