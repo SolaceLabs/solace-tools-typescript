@@ -11,7 +11,9 @@ import {
 import { 
   EpApiMaxPageSize 
 } from '../constants';
-import { EpSdkServiceClass } from './EpSdkService';
+import { 
+  EpSdkServiceClass 
+} from './EpSdkService';
 
 
 /** @category Services */

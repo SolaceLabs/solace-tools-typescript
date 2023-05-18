@@ -17,7 +17,8 @@ import {
   EpSdkValidationError 
 } from "../utils";
 import { 
-  EpApiMaxPageSize, EpSdkCustomAttributeNameSourceApplicationDomainId 
+  EpApiMaxPageSize, 
+  EpSdkCustomAttributeNameSourceApplicationDomainId 
 } from '../constants';
 import { 
   EEpSdkObjectTypes 
@@ -30,7 +31,9 @@ import {
   IEpSdkEventApiVersionTask_ExecuteReturn,
   EEpSdk_VersionTaskStrategy
 } from '../tasks';
-import { EpSdkVersionServiceClass } from "./EpSdkVersionService";
+import { 
+  EpSdkVersionServiceClass 
+} from "./EpSdkVersionService";
 import EpSdkEventApisService from './EpSdkEventApisService';
 import EpSdkEpEventVersionsService from './EpSdkEpEventVersionsService';
 
@@ -384,12 +387,16 @@ export class EpSdkEventApiVersionsServiceClass extends EpSdkVersionServiceClass 
     // }
     // add the source application domain id to custom attribute
     await EpSdkEventApisService.setCustomAttributes({
-      xContextId: xContextId,
-      applicationDomainId: toApplicationDomainId,
+      xContextId,
       eventApiId: epSdkEventApiTask_ExecuteReturn.epObjectKeys.epObjectId,
-      scope: CustomAttributeDefinition.scope.APPLICATION_DOMAIN,
-      epSdkCustomAttributeList: [ 
-        { name: EpSdkCustomAttributeNameSourceApplicationDomainId, value: fromEventApi.applicationDomainId }
+      epSdkCustomAttributes: [ 
+        { 
+          name: EpSdkCustomAttributeNameSourceApplicationDomainId, 
+          value: fromEventApi.applicationDomainId,
+          valueType: CustomAttributeDefinition.valueType.STRING,
+          scope: CustomAttributeDefinition.scope.APPLICATION_DOMAIN,
+          applicationDomainId: toApplicationDomainId,
+        }
       ]
     });
     // create target event api version

@@ -11,6 +11,7 @@ import {
   EpSdkError,
   EEpSdkTask_Action,
   EEpSdkTask_TargetState,
+  EEpSdkObjectTypes,
   EEpSdkCustomAttributeEntityTypes,
   EpSdkCustomAttributeDefinitionsService,
   EpSdkCustomAttributeDefinitionTask,

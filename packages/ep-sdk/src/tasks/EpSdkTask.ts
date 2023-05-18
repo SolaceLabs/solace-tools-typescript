@@ -1,7 +1,5 @@
 import { 
   ApiError, 
-  CustomAttribute, 
-  CustomAttributeDefinition
 } from "@solace-labs/ep-openapi-node";
 import {
   EpSdkEpApiError,
@@ -13,17 +11,9 @@ import {
   EpSdkUtils,
   IEpSdkDeepCompareResult,
 } from "../utils";
-import { 
-  EEpSdkObjectTypes, 
-  TEpSdkCustomAttribute, 
-  TEpSdkCustomAttributeList 
-} from "../types";
 import {
   EpSdkTask_TransactionLog,
 } from "./EpSdkTask_TransactionLog";
-import { 
-  EpSdkCustomAttributeDefinitionsService 
-} from "../services";
 import { 
   EEpSdkTask_Action,
   EEpSdkTask_TargetState, 
@@ -47,49 +37,62 @@ export abstract class EpSdkTask {
   private taskTransactionId: string;
   protected epSdkTask_TransactionLog: EpSdkTask_TransactionLog;
 
-  // TODO: make this abstract when fully implemented
-  protected getEpObjectType(): EEpSdkObjectTypes { 
-    const funcName = "getEpObjectType";
-    const logName = `${EpSdkTask.name}.${funcName}()`;
-    throw new EpSdkInternalTaskError(logName, this.constructor.name, 'implement in derived class');
-  }
- 
-  protected sortEpSdkCustomAttributeList({ epSdkCustomAttributeList }:{ 
-    epSdkCustomAttributeList: TEpSdkCustomAttributeList | undefined;
-  }): TEpSdkCustomAttributeList | undefined {
-    if(epSdkCustomAttributeList === undefined || epSdkCustomAttributeList.length === 0) return undefined;
-    return epSdkCustomAttributeList.sort((one: TEpSdkCustomAttribute, two: TEpSdkCustomAttribute) => {
-      if(one.name>two.name) return -1;
-      if(two.name>one.name) return 1;
-      return 0;
-    });
-  }
+  // // TODO: make this abstract when fully implemented
+  // protected getEpObjectType(): EEpSdkObjectTypes { 
+  //   const funcName = "getEpObjectType";
+  //   const logName = `${EpSdkTask.name}.${funcName}()`;
+  //   throw new EpSdkInternalTaskError(logName, this.constructor.name, 'implement in derived class');
+  // }
 
-  protected async createSortedEpSdkCustomAttributeList({ customAttributes }:{
-    customAttributes?: Array<CustomAttribute>;
-  }): Promise<TEpSdkCustomAttributeList | undefined> {
-    const funcName = "createSortedEpSdkCustomAttributeList";
-    const logName = `${EpSdkTask.name}.${funcName}()`;
-    if(customAttributes === undefined) return undefined;
-    // get all the definitions
-    const customAttributeDefinitions: Array<CustomAttributeDefinition> = [];
-    for(const customAttribute of customAttributes) {
-      const customAttributeDefinition = await EpSdkCustomAttributeDefinitionsService.getById({ xContextId: this.xContextId, customAttributeDefinitionId: customAttribute.customAttributeDefinitionId });
-      customAttributeDefinitions.push(customAttributeDefinition);
-    }
-    const epSdkCustomAttributeList: TEpSdkCustomAttributeList = customAttributes.map( (customAttribute): TEpSdkCustomAttribute => {
-      const customAttributeDefinition = customAttributeDefinitions.find( x => x.id === customAttribute.customAttributeDefinitionId );
-      /* istanbul ignore next */
-      if(customAttributeDefinition === undefined) throw new EpSdkInternalTaskError(logName, this.constructor.name, { message: 'customAttributeDefinition === undefined' });
-      return {
-        name: customAttribute.customAttributeDefinitionName,
-        value: customAttribute.value,
-        scope: customAttributeDefinition.scope,
-        valueType: customAttributeDefinition.valueType
-      }
-    });
-    return this.sortEpSdkCustomAttributeList({ epSdkCustomAttributeList });
-  }
+  // protected sortCustomAttributes({ customAttributes }:{
+  //   customAttributes?: Array<CustomAttribute>;
+  // }): Array<CustomAttribute> | undefined {
+  //   if(customAttributes === undefined) return undefined;
+  //   return customAttributes.sort((one: CustomAttribute, two: CustomAttribute) => {
+  //     if(one.customAttributeDefinitionName>two.customAttributeDefinitionName) return -1;
+  //     if(two.customAttributeDefinitionName>one.customAttributeDefinitionName) return 1;
+  //     return 0;
+  //   });    
+  // }
+
+  // /** @deprecated */
+  // protected sortEpSdkCustomAttributeList({ epSdkCustomAttributeList }:{ 
+  //   epSdkCustomAttributeList: TEpSdkCustomAttributeList | undefined;
+  // }): TEpSdkCustomAttributeList | undefined {
+  //   if(epSdkCustomAttributeList === undefined || epSdkCustomAttributeList.length === 0) return undefined;
+  //   return epSdkCustomAttributeList.sort((one: TEpSdkCustomAttribute, two: TEpSdkCustomAttribute) => {
+  //     if(one.name>two.name) return -1;
+  //     if(two.name>one.name) return 1;
+  //     return 0;
+  //   });
+  // }
+
+  // /** @deprecated */
+  // protected async createSortedEpSdkCustomAttributeList({ customAttributes }:{
+  //   customAttributes?: Array<CustomAttribute>;
+  // }): Promise<TEpSdkCustomAttributeList | undefined> {
+  //   const funcName = "createSortedEpSdkCustomAttributeList";
+  //   const logName = `${EpSdkTask.name}.${funcName}()`;
+  //   if(customAttributes === undefined) return undefined;
+  //   // get all the definitions
+  //   const customAttributeDefinitions: Array<CustomAttributeDefinition> = [];
+  //   for(const customAttribute of customAttributes) {
+  //     const customAttributeDefinition = await EpSdkCustomAttributeDefinitionsService.getById({ xContextId: this.xContextId, customAttributeDefinitionId: customAttribute.customAttributeDefinitionId });
+  //     customAttributeDefinitions.push(customAttributeDefinition);
+  //   }
+  //   const epSdkCustomAttributeList: TEpSdkCustomAttributeList = customAttributes.map( (customAttribute): TEpSdkCustomAttribute => {
+  //     const customAttributeDefinition = customAttributeDefinitions.find( x => x.id === customAttribute.customAttributeDefinitionId );
+  //     /* istanbul ignore next */
+  //     if(customAttributeDefinition === undefined) throw new EpSdkInternalTaskError(logName, this.constructor.name, { message: 'customAttributeDefinition === undefined' });
+  //     return {
+  //       name: customAttribute.customAttributeDefinitionName,
+  //       value: customAttribute.value,
+  //       scope: customAttributeDefinition.scope,
+  //       valueType: customAttributeDefinition.valueType
+  //     }
+  //   });
+  //   return this.sortEpSdkCustomAttributeList({ epSdkCustomAttributeList });
+  // }
 
   protected isCheckmode(): boolean {
     if (this.epSdkTask_Config.checkmode === undefined) return false;

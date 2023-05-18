@@ -17,14 +17,15 @@ import {
   EpSdkError,
   EEpSdkTask_Action,
   EEpSdkTask_TargetState,
-  EEpSdkCustomAttributeEntityTypes,
+  EEpSdkObjectTypes,
+  TEpSdkCustomAttribute,
   EpSdkCustomAttributeDefinitionsService,
   EpSdkCustomAttributeDefinitionTask,
   IEpSdkCustomAttributeDefinitionTask_ExecuteReturn,
   EpSdkApplicationDomainTask,
   IEpSdkApplicationDomainTask_ExecuteReturn,
-  TEpSdkCustomAttributeList,
   EpSdkTaskConfigValidationError,
+  EEpSdkCustomAttributeEntityTypes,
 } from "../../../src";
 
 const scriptName: string = path.basename(__filename);
@@ -34,10 +35,8 @@ const TestSpecId = TestUtils.getShortUUID();
 
 let ApplicationDomainName_1: string;
 let ApplicationDomainId_1: string;
-let ApplicationDomainName_2: string;
-let ApplicationDomainId_2: string;
 
-const CustomAttributeList: TEpSdkCustomAttributeList = [
+const CustomAttributeList: Array<TEpSdkCustomAttribute> = [
   {
     name: 'org-attr-simple-1',
     value: 'org-attr-simple-1',
@@ -90,7 +89,6 @@ const CustomAttributeList: TEpSdkCustomAttributeList = [
 
 const initializeGlobals = () => {
   ApplicationDomainName_1 = `${TestConfig.getAppId()}/${TestSpecName}/1`;
-  ApplicationDomainName_2 = `${TestConfig.getAppId()}/${TestSpecName}/2`;
 };
 
 const cleanTest = async() => {
@@ -100,12 +98,6 @@ const cleanTest = async() => {
       applicationDomainName: ApplicationDomainName_1,
     });
     await epSdkApplicationDomainTask_1.execute('contextId');
-
-    const epSdkApplicationDomainTask_2 = new EpSdkApplicationDomainTask({
-      epSdkTask_TargetState: EEpSdkTask_TargetState.ABSENT,
-      applicationDomainName: ApplicationDomainName_2,
-    });
-    await epSdkApplicationDomainTask_2.execute('contextId');
 
     for(const epSdkCustomAttribute of CustomAttributeList) {
       const epSdkCustomAttributeDefinitionTask = new EpSdkCustomAttributeDefinitionTask({
@@ -148,12 +140,6 @@ describe(`${scriptName}`, () => {
       const epSdkApplicationDomainTask_ExecuteReturn_1: IEpSdkApplicationDomainTask_ExecuteReturn = await epSdkApplicationDomainTask_1.execute('contextId');
       ApplicationDomainId_1 = epSdkApplicationDomainTask_ExecuteReturn_1.epObject.id;
 
-      const epSdkApplicationDomainTask_2 = new EpSdkApplicationDomainTask({
-        epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
-        applicationDomainName: ApplicationDomainName_2,
-      });
-      const epSdkApplicationDomainTask_ExecuteReturn_2: IEpSdkApplicationDomainTask_ExecuteReturn = await epSdkApplicationDomainTask_2.execute('contextId');
-      ApplicationDomainId_2 = epSdkApplicationDomainTask_ExecuteReturn_2.epObject.id;
     } catch (e) {
       if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
       expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
@@ -327,9 +313,9 @@ describe(`${scriptName}`, () => {
           applicationDomainId: ApplicationDomainId_1
         });
         const message1 = TestLogger.createLogMessage("customAttributeDefinition", customAttributeDefinition);
-        expect(customAttributeDefinition.associatedEntityTypes, message1).to.include(EEpSdkCustomAttributeEntityTypes.ENUM);
-        expect(customAttributeDefinition.associatedEntityTypes, message1).to.include(EEpSdkCustomAttributeEntityTypes.APPLICATION_DOMAIN);
-        expect(customAttributeDefinition.associatedEntityTypes, message1).to.include(EEpSdkCustomAttributeEntityTypes.APPLICATION);
+        expect(customAttributeDefinition.associatedEntityTypes, message1).to.include(EEpSdkObjectTypes.ENUM);
+        expect(customAttributeDefinition.associatedEntityTypes, message1).to.include(EEpSdkObjectTypes.APPLICATION_DOMAIN);
+        expect(customAttributeDefinition.associatedEntityTypes, message1).to.include(EEpSdkObjectTypes.APPLICATION);
       }
       // DEBUG
       // const message = TestLogger.createLogMessage("epSdkCustomAttributeDefinitionTask_ExecuteReturns", epSdkCustomAttributeDefinitionTask_ExecuteReturns);

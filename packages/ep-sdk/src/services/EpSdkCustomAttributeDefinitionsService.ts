@@ -13,8 +13,7 @@ import {
   EpApiMaxPageSize 
 } from '../constants';
 import { 
-  EEpSdkCustomAttributeEntityTypes, 
-  TEpSdkCustomAttributeList, 
+  EEpSdkCustomAttributeEntityTypes
 } from '../types';
 import { 
   EEpSdkTask_TargetState, 
@@ -53,6 +52,7 @@ export class EpSdkCustomAttributeDefinitionsServiceClass extends EpSdkServiceCla
     }
     return customAttributeDefintions;
   }
+
   /**
    * Adds the associated entity type to existing list of entity types if definition exists.
    * Returns list of all associated enitity types.
@@ -71,24 +71,6 @@ export class EpSdkCustomAttributeDefinitionsServiceClass extends EpSdkServiceCla
     if(!exists) return customAttributeDefinition.associatedEntityTypes.concat([associatedEntityType]) as Array<EEpSdkCustomAttributeEntityTypes>;
     return customAttributeDefinition.associatedEntityTypes.concat([]) as Array<EEpSdkCustomAttributeEntityTypes>;
   }
-
-  /* istanbul ignore next */
-  // /**
-  //  * Removes the associated entity type from the existing list.
-  //  * Returns list of remaining associated entity types, which could be empty.
-  //  */
-  // public async absentAssociatedEntityType({ attributeName, associatedEntityType}:{
-  //   attributeName: string;
-  //   associatedEntityType: EEpSdkCustomAttributeEntityTypes;
-  // }): Promise<Array<EEpSdkCustomAttributeEntityTypes>> {
-  //   const customAttributeDefinition: CustomAttributeDefinition | undefined = await this.getByName({
-  //     attributeName: attributeName,
-  //   });
-  //   if(customAttributeDefinition === undefined || customAttributeDefinition.associatedEntityTypes === undefined) return [];
-  //   return customAttributeDefinition.associatedEntityTypes.filter( (x) => {
-  //     return x !== associatedEntityType;
-  //   }).concat([]) as Array<EEpSdkCustomAttributeEntityTypes>;
-  // }
 
   /**
    * Removes the associatedEntityType from the custom attribute definition.
@@ -125,46 +107,6 @@ export class EpSdkCustomAttributeDefinitionsServiceClass extends EpSdkServiceCla
     const epSdkCustomAttributeDefinitionTask_ExecuteReturn: IEpSdkCustomAttributeDefinitionTask_ExecuteReturn = await epSdkCustomAttributeDefinitionTask.execute(xContextId);
     if(epSdkTask_TargetState === EEpSdkTask_TargetState.ABSENT) return undefined;
     return epSdkCustomAttributeDefinitionTask_ExecuteReturn.epObject;
-  }
-
-  /**
-   * Wrapper EpSdkCustomAttributeDefinitionTask to avoid circular import dependencies 
-   */
-  public async presentCustomAttributeDefinitions({ xContextId, epSdkCustomAttributeList, associatedEntityType }:{
-    xContextId?: string;
-    epSdkCustomAttributeList: TEpSdkCustomAttributeList;
-    associatedEntityType: EEpSdkCustomAttributeEntityTypes;
-  }): Promise<Array<CustomAttributeDefinition>> {
-    // const funcName = "present";
-    // const logName = `${EpSdkCustomAttributeDefinitionsServiceClass.name}.${funcName}()`;
-
-    // create full list of associated entity types for all attributes
-    for(const epSdkCustomAttribute of epSdkCustomAttributeList) {
-      const associatedEntityTypes: Array<EEpSdkCustomAttributeEntityTypes> = await this.presentAssociatedEntityType({
-        xContextId,
-        attributeName: epSdkCustomAttribute.name,
-        associatedEntityType,
-      });
-      epSdkCustomAttribute.epSdkCustomAttributeEntityTypes = associatedEntityTypes;
-    }
-    const epSdkCustomAttributeDefinitionTask_ExecuteReturns: Array<IEpSdkCustomAttributeDefinitionTask_ExecuteReturn> = [];
-    for(const epSdkCustomAttribute of epSdkCustomAttributeList) {
-      const epSdkCustomAttributeDefinitionTask = new EpSdkCustomAttributeDefinitionTask({
-        epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
-        attributeName: epSdkCustomAttribute.name,
-        customAttributeDefinitionObjectSettings: {
-          associatedEntityTypes: epSdkCustomAttribute.epSdkCustomAttributeEntityTypes,
-          scope: epSdkCustomAttribute.scope,
-          applicationDomainId: epSdkCustomAttribute.applicationDomainId,
-          valueType: epSdkCustomAttribute.valueType
-        },
-      });
-      const epSdkCustomAttributeDefinitionTask_ExecuteReturn: IEpSdkCustomAttributeDefinitionTask_ExecuteReturn = await epSdkCustomAttributeDefinitionTask.execute(xContextId);
-      epSdkCustomAttributeDefinitionTask_ExecuteReturns.push(epSdkCustomAttributeDefinitionTask_ExecuteReturn);
-    }
-    return epSdkCustomAttributeDefinitionTask_ExecuteReturns.map((epSdkCustomAttributeDefinitionTask_ExecuteReturn) => {
-      return epSdkCustomAttributeDefinitionTask_ExecuteReturn.epObject;
-    });
   }
 
   /**

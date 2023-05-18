@@ -23,7 +23,14 @@ import {
 import EpSdkApplicationsService from "./EpSdkApplicationsService";
 import { EpSdkVersionServiceClass } from "./EpSdkVersionService";
 import EpSdkEpEventVersionsService from './EpSdkEpEventVersionsService';
-import { EEpSdkTask_TargetState, EEpSdk_VersionTaskStrategy, EpSdkApplicationTask, EpSdkApplicationVersionTask, IEpSdkApplicationTask_ExecuteReturn, IEpSdkApplicationVersionTask_ExecuteReturn } from '../tasks';
+import { 
+  EEpSdkTask_TargetState, 
+  EEpSdk_VersionTaskStrategy, 
+  EpSdkApplicationTask, 
+  EpSdkApplicationVersionTask, 
+  IEpSdkApplicationTask_ExecuteReturn, 
+  IEpSdkApplicationVersionTask_ExecuteReturn 
+} from '../tasks';
 
 /** @category Services */
 export type EpSdkApplication = Required<Pick<Application, "applicationDomainId" | "id" | "name">> & Omit<Application, "applicationDomainId" | "id" | "name">;
@@ -444,12 +451,16 @@ export class EpSdkApplicationVersionsServiceClass extends EpSdkVersionServiceCla
       const epSdkApplicationTask_ExecuteReturn: IEpSdkApplicationTask_ExecuteReturn = await epSdkApplicationTask.execute(xContextId);
       // add the source application domain id to custom attribute
       await EpSdkApplicationsService.setCustomAttributes({
-        xContextId: xContextId,
-        applicationDomainId: toApplicationDomainId,
+        xContextId,
         applicationId: epSdkApplicationTask_ExecuteReturn.epObjectKeys.epObjectId,
-        scope: CustomAttributeDefinition.scope.APPLICATION_DOMAIN,
-        epSdkCustomAttributeList: [ 
-          { name: EpSdkCustomAttributeNameSourceApplicationDomainId, value: fromApplication.applicationDomainId }
+        epSdkCustomAttributes: [ 
+          { 
+            name: EpSdkCustomAttributeNameSourceApplicationDomainId, 
+            value: fromApplication.applicationDomainId,
+            scope: CustomAttributeDefinition.scope.APPLICATION_DOMAIN,
+            applicationDomainId: toApplicationDomainId,
+            valueType: CustomAttributeDefinition.valueType.STRING
+          }
         ]
       });
       // create target application version

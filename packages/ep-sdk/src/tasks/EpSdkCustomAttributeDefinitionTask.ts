@@ -90,8 +90,6 @@ export class EpSdkCustomAttributeDefinitionTask extends EpSdkTask {
     applicationDomainId: undefined,
   };
 
-  protected getEpObjectType(): EEpSdkObjectTypes { return EEpSdkObjectTypes.CUSTOM_ATTRIBUTE_DEFINITION; }
-
   private getTaskConfig(): IEpSdkCustomAttributeDefinitionTask_Config { return this.epSdkTask_Config as IEpSdkCustomAttributeDefinitionTask_Config; }
 
   private sortEpSdkCustomAttributeEntityTypes({ epSdkCustomAttributeEntityTypes }:{

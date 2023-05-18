@@ -25,10 +25,10 @@ import {
   EpSdkSchemaTask,
   IEpSdkSchemaTask_ExecuteReturn,
 } from "../tasks";
-import EpSdkSchemasService from "./EpSdkSchemasService";
 import { 
   EpSdkVersionServiceClass 
 } from "./EpSdkVersionService";
+import EpSdkSchemasService from "./EpSdkSchemasService";
 
 /** @category Services */
 export class EpSdkSchemaVersionsServiceClass extends EpSdkVersionServiceClass {
@@ -350,12 +350,16 @@ export class EpSdkSchemaVersionsServiceClass extends EpSdkVersionServiceClass {
     }
     // add the source application domain id to custom attribute
     await EpSdkSchemasService.setCustomAttributes({
-      xContextId: xContextId,
-      applicationDomainId: toApplicationDomainId,
+      xContextId,
       schemaId: epSdkSchemaTask_ExecuteReturn.epObjectKeys.epObjectId,
-      scope: CustomAttributeDefinition.scope.APPLICATION_DOMAIN,
-      epSdkCustomAttributeList: [ 
-        { name: EpSdkCustomAttributeNameSourceApplicationDomainId, value: fromSchemaObject.applicationDomainId }
+      epSdkCustomAttributes: [ 
+        { 
+          name: EpSdkCustomAttributeNameSourceApplicationDomainId, 
+          value: fromSchemaObject.applicationDomainId,
+          scope: CustomAttributeDefinition.scope.APPLICATION_DOMAIN,
+          applicationDomainId: toApplicationDomainId,
+          valueType: CustomAttributeDefinition.valueType.STRING
+        }
       ]
     });    
     // create target schema version

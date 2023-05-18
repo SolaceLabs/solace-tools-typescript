@@ -1,6 +1,4 @@
-import { 
-  CustomAttributeDefinition 
-} from "@solace-labs/ep-openapi-node";
+import { CustomAttributeDefinition } from "@solace-labs/ep-openapi-node";
 
 /** @category General Types */
 export enum EpSdkBrokerTypes {
@@ -68,14 +66,10 @@ export interface EpSdkSortInfo {
 export type TEpSdkCustomAttribute = {
   name: string;
   value: string;
-  valueType?: CustomAttributeDefinition.valueType;
-  scope?: CustomAttributeDefinition.scope;
+  scope: CustomAttributeDefinition.scope;
+  valueType: CustomAttributeDefinition.valueType;
   applicationDomainId?: string;
-  epSdkCustomAttributeEntityTypes?: Array<EEpSdkCustomAttributeEntityTypes>;
 }
-
-/** @category General Types */
-export type TEpSdkCustomAttributeList = Array<TEpSdkCustomAttribute>;
 
 /** @category General Types */
 export type TEpSdkEnumValue = {

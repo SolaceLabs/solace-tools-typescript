@@ -23,7 +23,9 @@ import {
   EpSdkSortInfo,
   IEpSdkAttributesQuery
 } from "../types";
-import { EpSdkVersionServiceClass } from "./EpSdkVersionService";
+import { 
+  EpSdkVersionServiceClass 
+} from "./EpSdkVersionService";
 import EpSdkEventApiProductsService from './EpSdkEventApiProductsService';
 import EpSdkMessagingService from './EpSdkMessagingService';
 

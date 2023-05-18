@@ -13,6 +13,7 @@ import {
   Plan,
   SolaceClassOfServicePolicy,
   EventApiProductVersionResponse,
+  CustomAttributeDefinition,
 } from "@solace-labs/ep-openapi-node";
 import {
   MessagingServicesService,
@@ -25,7 +26,6 @@ import {
   EpSdkEventApiProductVersionsService,
   EpSdkEventApiProductAndVersionList,
   EpSdkEventApiProductAndVersionListResponse,
-  TEpSdkCustomAttributeList,
   TEpSdkCustomAttribute,
   IEpSdkAttributesQuery,
   EEpSdkComparisonOps,
@@ -109,39 +109,55 @@ const XEpDevPDomainSharingListAttributeValue = `${XEpDevPDomainSharing_1}.${XEpD
 const CorrectPublishDestinationAttribute: TEpSdkCustomAttribute = {
   name: EEpDevPManageAssetObjectAttributeNames.PUBLISH_DESTINATION,
   value: CorrectPublishDestination,
+  valueType: CustomAttributeDefinition.valueType.STRING,
+  scope: CustomAttributeDefinition.scope.ORGANIZATION
 };
 const UnknownPublishDestinationAttribute: TEpSdkCustomAttribute = {
   name: EEpDevPManageAssetObjectAttributeNames.PUBLISH_DESTINATION,
   value: UnknownPublishDestination,
+  valueType: CustomAttributeDefinition.valueType.STRING,
+  scope: CustomAttributeDefinition.scope.ORGANIZATION
 };
-const CorrectDomainCustomAttributeList: TEpSdkCustomAttributeList = [
+const CorrectDomainCustomAttributeList: Array<TEpSdkCustomAttribute> = [
   {
     name: EEpDevPManageAssetObjectAttributeNames._X_EP_DEVP_DOMAIN_OWNING_ID_,
     value: XEpDevPDomainOwningId,
-  },
+    valueType: CustomAttributeDefinition.valueType.STRING,
+    scope: CustomAttributeDefinition.scope.ORGANIZATION
+    },
   {
     name: EEpDevPManageAssetObjectAttributeNames._X_EP_DEVP_DOMAIN_SHARING_LIST_,
     value: XEpDevPDomainSharingListAttributeValue,
-  },
+    valueType: CustomAttributeDefinition.valueType.STRING,
+    scope: CustomAttributeDefinition.scope.ORGANIZATION
+    },
 ];
-const UnknownDomainCustomAttributeList: TEpSdkCustomAttributeList = [
+const UnknownDomainCustomAttributeList: Array<TEpSdkCustomAttribute> = [
   {
     name: EEpDevPManageAssetObjectAttributeNames._X_EP_DEVP_DOMAIN_OWNING_ID_,
     value: "unknown-id",
-  },
+    valueType: CustomAttributeDefinition.valueType.STRING,
+    scope: CustomAttributeDefinition.scope.ORGANIZATION
+    },
   {
     name: EEpDevPManageAssetObjectAttributeNames._X_EP_DEVP_DOMAIN_SHARING_LIST_,
     value: "unknown-id-1.unknown-id-2",
-  },
+    valueType: CustomAttributeDefinition.valueType.STRING,
+    scope: CustomAttributeDefinition.scope.ORGANIZATION
+    },
 ];
-const AdditionalCustomAttributeList: TEpSdkCustomAttributeList = [
+const AdditionalCustomAttributeList: Array<TEpSdkCustomAttribute> = [
   {
     name: "eventApiProduct_1",
     value: "eventApiProduct_1 value",
+    valueType: CustomAttributeDefinition.valueType.STRING,
+    scope: CustomAttributeDefinition.scope.ORGANIZATION  
   },
   {
     name: "eventApiProduct_2",
     value: "eventApiProduct_2 value",
+    valueType: CustomAttributeDefinition.valueType.STRING,
+    scope: CustomAttributeDefinition.scope.ORGANIZATION  
   },
 ];
 
@@ -325,31 +341,25 @@ describe(`${scriptName}`, () => {
             );
           if (withPlan_i % 2 === 0) {
             // add correct domains
-            const eventApiProduct: EventApiProduct =
-              await EpSdkEventApiProductsService.setCustomAttributes({
-                eventApiProductId: eventApiProductResponse.data.id,
-                epSdkCustomAttributeList: CorrectDomainCustomAttributeList,
-              });
+            const eventApiProduct: EventApiProduct = await EpSdkEventApiProductsService.setCustomAttributes({
+              eventApiProductId: eventApiProductResponse.data.id,
+              epSdkCustomAttributes: CorrectDomainCustomAttributeList,
+            });
           } else {
             // add unknown domains
-            const eventApiProduct: EventApiProduct =
-              await EpSdkEventApiProductsService.setCustomAttributes({
-                eventApiProductId: eventApiProductResponse.data.id,
-                epSdkCustomAttributeList: UnknownDomainCustomAttributeList,
-              });
+            const eventApiProduct: EventApiProduct = await EpSdkEventApiProductsService.setCustomAttributes({
+              eventApiProductId: eventApiProductResponse.data.id,
+              epSdkCustomAttributes: UnknownDomainCustomAttributeList,
+            });
           }
         }
         if (withPlan) withPlan_i++;
         i++;
       }
     } catch (e) {
-      if (e instanceof ApiError)
-        expect(false, TestLogger.createApiTestFailMessage("failed", e)).to.be
-          .true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
-        .to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
-        .true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed", e)).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 
@@ -358,23 +368,19 @@ describe(`${scriptName}`, () => {
       const setList = [];
       for (let i = 0; i < NumEventApiProducts; i++) {
         if (i % 2 === 0) {
-          const eventApiProduct: EventApiProduct =
-            await EpSdkEventApiProductsService.setCustomAttributes({
-              eventApiProductId: EventApiProductIdList[i],
-              epSdkCustomAttributeList: [CorrectPublishDestinationAttribute],
-            });
+          const eventApiProduct: EventApiProduct = await EpSdkEventApiProductsService.setCustomAttributes({
+            eventApiProductId: EventApiProductIdList[i],
+            epSdkCustomAttributes: [CorrectPublishDestinationAttribute],
+          });
           setList.push(eventApiProduct);
         }
       }
       // // DEBUG
       // expect(false, `setList=${JSON.stringify(setList, null, 2)}`).to.be.true;
     } catch (e) {
-      if (e instanceof ApiError)
-        expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
-        .to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
-        .true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 
@@ -415,22 +421,18 @@ describe(`${scriptName}`, () => {
     try {
       for (let i = 0; i < NumEventApiProducts; i++) {
         if (i % 2 === 1) {
-          const eventApiProduct: EventApiProduct =
-            await EpSdkEventApiProductsService.setCustomAttributes({
-              eventApiProductId: EventApiProductIdList[i],
-              epSdkCustomAttributeList: [UnknownPublishDestinationAttribute],
-            });
+          const eventApiProduct: EventApiProduct = await EpSdkEventApiProductsService.setCustomAttributes({
+            eventApiProductId: EventApiProductIdList[i],
+            epSdkCustomAttributes: [UnknownPublishDestinationAttribute],
+          });
         }
       }
       // // DEBUG
       // expect(false, `application.customAttributes=${JSON.stringify(application.customAttributes, null, 2)}`).to.be.true;
     } catch (e) {
-      if (e instanceof ApiError)
-        expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
-        .to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
-        .true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 
@@ -444,37 +446,26 @@ describe(`${scriptName}`, () => {
           pageSize: 100,
           objectAttributesQuery: PublishDestinationAttributesQuery,
         });
-      const epSdkEventApiProductAndVersionList: EpSdkEventApiProductAndVersionList =
-        epSdkEventApiProductAndVersionListResponse.data;
+      const epSdkEventApiProductAndVersionList: EpSdkEventApiProductAndVersionList = epSdkEventApiProductAndVersionListResponse.data;
 
-      const message = `epSdkEventApiProductAndVersionList=\n${JSON.stringify(
-        epSdkEventApiProductAndVersionList,
-        null,
-        2
-      )}`;
+      const message = `epSdkEventApiProductAndVersionList=\n${JSON.stringify(epSdkEventApiProductAndVersionList, null, 2)}`;
       // // DEBUG
       // expect(false, message).to.be.true;
-      expect(epSdkEventApiProductAndVersionList.length, message).to.equal(
-        NumEventApiProducts / 2
-      );
+      expect(epSdkEventApiProductAndVersionList.length, message).to.equal(NumEventApiProducts / 2);
     } catch (e) {
-      if (e instanceof ApiError)
-        expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
-        .to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
-        .true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 
   it(`${scriptName}: should set additional attributes on all eventApiProducts`, async () => {
     try {
       for (let i = 0; i < NumEventApiProducts; i++) {
-        const eventApiProduct: EventApiProduct =
-          await EpSdkEventApiProductsService.setCustomAttributes({
-            eventApiProductId: EventApiProductIdList[i],
-            epSdkCustomAttributeList: AdditionalCustomAttributeList,
-          });
+        const eventApiProduct: EventApiProduct = await EpSdkEventApiProductsService.setCustomAttributes({
+          eventApiProductId: EventApiProductIdList[i],
+          epSdkCustomAttributes: AdditionalCustomAttributeList,
+        });
       }
       // // DEBUG
       // expect(false, `application.customAttributes=${JSON.stringify(application.customAttributes, null, 2)}`).to.be.true;

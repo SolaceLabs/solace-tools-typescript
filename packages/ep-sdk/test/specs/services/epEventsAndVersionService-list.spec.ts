@@ -8,9 +8,16 @@ import {
   EventsService,
   EventResponse,
   EventsResponse,
+  CustomAttributeDefinition,
 } from "@solace-labs/ep-openapi-node";
-import { TestContext, TestUtils } from "@internal/tools/src";
-import { TestLogger, TestConfig } from "../../lib";
+import { 
+  TestContext, 
+  TestUtils 
+} from "@internal/tools/src";
+import { 
+  TestLogger, 
+  TestConfig 
+} from "../../lib";
 import {
   EpSdkError,
   EpSdkEpEventsService,
@@ -47,6 +54,8 @@ const EventVersionString_2 = "1.1.0";
 const EventAttribute: TEpSdkCustomAttribute = {
   name: `${TestSpecName}-attribute`,
   value: 'value',
+  valueType: CustomAttributeDefinition.valueType.STRING,
+  scope: CustomAttributeDefinition.scope.ORGANIZATION
 };
 const EventAttributesQuery: IEpSdkAttributesQuery = {
   AND: {
@@ -115,7 +124,7 @@ describe(`${scriptName}`, () => {
         // add the custom attribute
         const x = await EpSdkEpEventsService.setCustomAttributes({
           eventId: eventId,
-          epSdkCustomAttributeList: [EventAttribute]
+          epSdkCustomAttributes: [EventAttribute]
         });
         // create version 1
         const version1 = await EventsService.createEventVersionForEvent({
@@ -267,121 +276,60 @@ describe(`${scriptName}`, () => {
 
   it(`${scriptName}: should get complete list of latest event versions for any application domain`, async () => {
     try {
-      const epSdkEpEventAndVersionListResponse: EpSdkEpEventAndVersionListResponse =
-        await EpSdkEpEventVersionsService.listLatestVersions({
-          applicationDomainIds: ApplicationDomainIdList,
-          shared: true,
-          pageNumber: 1,
-          pageSize: 100,
-        });
-      const epSdkEpEventAndVersionList: EpSdkEpEventAndVersionList =
-        epSdkEpEventAndVersionListResponse.data;
-      expect(
-        epSdkEpEventAndVersionList.length,
-        TestLogger.createApiTestFailMessage("no versions found")
-      ).to.be.greaterThan(0);
+      const epSdkEpEventAndVersionListResponse: EpSdkEpEventAndVersionListResponse = await EpSdkEpEventVersionsService.listLatestVersions({
+        applicationDomainIds: ApplicationDomainIdList,
+        shared: true,
+        pageNumber: 1,
+        pageSize: 100,
+      });
+      const epSdkEpEventAndVersionList: EpSdkEpEventAndVersionList = epSdkEpEventAndVersionListResponse.data;
+      expect(epSdkEpEventAndVersionList.length, TestLogger.createApiTestFailMessage("no versions found")).to.be.greaterThan(0);
       // DEBUG
       // const message = TestLogger.createLogMessage('epSdkEpEventAndVersionList', epSdkEpEventAndVersionList);
       // TestLogger.logMessageWithId(message);
     } catch (e) {
-      if (e instanceof ApiError)
-        expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
-        .to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
-        .true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 
   it(`${scriptName}: should get the latest version of for all events`, async () => {
     try {
-      const eventsResponse: EventsResponse = await EpSdkEpEventsService.listAll(
-        {
-          applicationDomainIds: ApplicationDomainIdList,
-          shared: EventShared,
-        }
-      );
-      let message = `eventsResponse=\n${JSON.stringify(
-        eventsResponse,
-        null,
-        2
-      )}`;
+      const eventsResponse: EventsResponse = await EpSdkEpEventsService.listAll({
+        applicationDomainIds: ApplicationDomainIdList,
+        shared: EventShared,
+      });
+      let message = `eventsResponse=\n${JSON.stringify(eventsResponse, null, 2 )}`;
       expect(eventsResponse.data, message).to.not.be.undefined;
-      expect(eventsResponse.data.length, message).to.equal(
-        NumApplicationDomains
-      );
+      expect(eventsResponse.data.length, message).to.equal(NumApplicationDomains);
       for (const epEvent of eventsResponse.data) {
         // get the latest object & version for each event
-        const latest_EpSdkEpEventAndVersionResponse: EpSdkEpEventAndVersionResponse =
-          await EpSdkEpEventVersionsService.getObjectAndVersionForEventId({
-            eventId: epEvent.id,
-            stateIds: undefined,
-          });
-        message = `latest_EpSdkEpEventAndVersionResponse=\n${JSON.stringify(
-          latest_EpSdkEpEventAndVersionResponse,
-          null,
-          2
-        )}`;
-        expect(
-          latest_EpSdkEpEventAndVersionResponse.event.id,
-          message
-        ).to.equal(epEvent.id);
-        expect(
-          latest_EpSdkEpEventAndVersionResponse.eventVersion.version,
-          message
-        ).to.equal(EventVersionString_2);
-        expect(
-          JSON.stringify(
-            latest_EpSdkEpEventAndVersionResponse.meta.versionStringList
-          ),
-          message
-        ).to.include(EventVersionString_1);
-        expect(
-          JSON.stringify(
-            latest_EpSdkEpEventAndVersionResponse.meta.versionStringList
-          ),
-          message
-        ).to.include(EventVersionString_2);
+        const latest_EpSdkEpEventAndVersionResponse: EpSdkEpEventAndVersionResponse = await EpSdkEpEventVersionsService.getObjectAndVersionForEventId({
+          eventId: epEvent.id,
+          stateIds: undefined,
+        });
+        message = `latest_EpSdkEpEventAndVersionResponse=\n${JSON.stringify(latest_EpSdkEpEventAndVersionResponse, null, 2)}`;
+        expect(latest_EpSdkEpEventAndVersionResponse.event.id, message).to.equal(epEvent.id);
+        expect(latest_EpSdkEpEventAndVersionResponse.eventVersion.version, message).to.equal(EventVersionString_2);
+        expect(JSON.stringify(latest_EpSdkEpEventAndVersionResponse.meta.versionStringList), message).to.include(EventVersionString_1);
+        expect(JSON.stringify(latest_EpSdkEpEventAndVersionResponse.meta.versionStringList), message).to.include(EventVersionString_2);
         // get the version 1 for each event object
-        const version1_EpSdkEpEventAndVersionResponse: EpSdkEpEventAndVersionResponse =
-          await EpSdkEpEventVersionsService.getObjectAndVersionForEventId({
-            eventId: epEvent.id,
-            stateIds: undefined,
-            versionString: EventVersionString_1,
-          });
-        message = `version1_EpSdkEpEventAndVersionResponse=\n${JSON.stringify(
-          version1_EpSdkEpEventAndVersionResponse,
-          null,
-          2
-        )}`;
-        expect(
-          version1_EpSdkEpEventAndVersionResponse.event.id,
-          message
-        ).to.equal(epEvent.id);
-        expect(
-          version1_EpSdkEpEventAndVersionResponse.eventVersion.version,
-          message
-        ).to.equal(EventVersionString_1);
-        expect(
-          JSON.stringify(
-            version1_EpSdkEpEventAndVersionResponse.meta.versionStringList
-          ),
-          message
-        ).to.include(EventVersionString_1);
-        expect(
-          JSON.stringify(
-            version1_EpSdkEpEventAndVersionResponse.meta.versionStringList
-          ),
-          message
-        ).to.include(EventVersionString_2);
+        const version1_EpSdkEpEventAndVersionResponse: EpSdkEpEventAndVersionResponse = await EpSdkEpEventVersionsService.getObjectAndVersionForEventId({
+          eventId: epEvent.id,
+          stateIds: undefined,
+          versionString: EventVersionString_1,
+        });
+        message = `version1_EpSdkEpEventAndVersionResponse=\n${JSON.stringify(version1_EpSdkEpEventAndVersionResponse, null, 2)}`;
+        expect(version1_EpSdkEpEventAndVersionResponse.event.id, message).to.equal(epEvent.id);
+        expect(version1_EpSdkEpEventAndVersionResponse.eventVersion.version, message).to.equal(EventVersionString_1);
+        expect(JSON.stringify(version1_EpSdkEpEventAndVersionResponse.meta.versionStringList), message).to.include(EventVersionString_1);
+        expect(JSON.stringify(version1_EpSdkEpEventAndVersionResponse.meta.versionStringList), message).to.include(EventVersionString_2);
       }
     } catch (e) {
-      if (e instanceof ApiError)
-        expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
-        .to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
-        .true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 });

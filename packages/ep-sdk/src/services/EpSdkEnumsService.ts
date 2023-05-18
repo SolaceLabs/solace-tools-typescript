@@ -1,20 +1,24 @@
 import {
   CustomAttribute,
-  CustomAttributeDefinition,
   EnumsService, 
   TopicAddressEnum,
   TopicAddressEnumResponse, 
   TopicAddressEnumsResponse,
 } from '@solace-labs/ep-openapi-node';
-import { EEpSdkCustomAttributeEntityTypes, TEpSdkCustomAttributeList } from '../types';
+import { 
+  EEpSdkCustomAttributeEntityTypes,
+  TEpSdkCustomAttribute
+} from '../types';
 import { 
   EpSdkApiContentError, 
   EpSdkServiceError,
   EpSdkLogger,
   EEpSdkLoggerCodes,
 } from '../utils';
+import { 
+  EpSdkServiceClass 
+} from './EpSdkService';
 import EpSdkCustomAttributesService from './EpSdkCustomAttributesService';
-import { EpSdkServiceClass } from './EpSdkService';
 
 
 /** @category Services */
@@ -46,28 +50,19 @@ export class EpSdkEnumsServiceClass extends EpSdkServiceClass {
    * Sets the custom attributes in the list on the event api product.
    * Creates attribute definitions / adds entity type 'eventApiProduct' if it doesn't exist.
    */
-  public async setCustomAttributes({ xContextId, enumId, epSdkCustomAttributeList, scope, applicationDomainId}:{
+  public async setCustomAttributes({ xContextId, enumId, epSdkCustomAttributes}:{
     xContextId?: string;
     enumId: string;
-    epSdkCustomAttributeList: TEpSdkCustomAttributeList;
-    scope?: CustomAttributeDefinition.scope;
-    applicationDomainId?: string;
+    epSdkCustomAttributes: Array<TEpSdkCustomAttribute>;
   }): Promise<TopicAddressEnum> {
     // const funcName = 'setCustomAttributes';
     // const logName = `${EpSdkEnumsServiceClass.name}.${funcName}()`;
-    const topicAddressEnum: TopicAddressEnum = await this.getById({
-      xContextId,
-      enumId: enumId,
-    });
-    scope;
+    const topicAddressEnum: TopicAddressEnum = await this.getById({xContextId, enumId });
     const customAttributes: Array<CustomAttribute> = await EpSdkCustomAttributesService.createCustomAttributesWithNew({
       xContextId,
       existingCustomAttributes: topicAddressEnum.customAttributes,
-      epSdkCustomAttributeList: epSdkCustomAttributeList,
+      epSdkCustomAttributes,
       epSdkCustomAttributeEntityType: EEpSdkCustomAttributeEntityTypes.ENUM,
-      applicationDomainId: applicationDomainId
-      // note: adding scope if not organization currently causes EP to return an internal server error
-      // scope: scope
     });
     return await this.updateEnum({
       xContextId,

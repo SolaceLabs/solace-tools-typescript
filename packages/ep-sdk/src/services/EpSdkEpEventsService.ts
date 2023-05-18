@@ -1,7 +1,6 @@
 import { 
   ApiError,
   CustomAttribute,
-  CustomAttributeDefinition,
   Event as EPEvent,
   EventResponse, 
   EventsResponse,
@@ -9,15 +8,15 @@ import {
   Pagination,
 } from '@solace-labs/ep-openapi-node';
 import { 
-  EEpSdkCustomAttributeEntityTypes,
   EpSdkBrokerTypes,
   IEpSdkAttributesQuery,
-  TEpSdkCustomAttributeList,
   EpSdkEvent,
   EpSdkEventResponse,
   EpSdkEventCreate,
   EpSdkEventUpdate,
   EpSdkEventsResponse,
+  TEpSdkCustomAttribute,
+  EEpSdkCustomAttributeEntityTypes,
 } from '../types';
 import { 
   EpSdkApiContentError, 
@@ -25,10 +24,12 @@ import {
   EpSdkLogger,
   EEpSdkLoggerCodes
 } from '../utils';
+import { 
+  EpSdkServiceClass 
+} from './EpSdkService';
 import EpSdkCustomAttributeDefinitionsService from './EpSdkCustomAttributeDefinitionsService';
 import EpSdkCustomAttributesQueryService from './EpSdkCustomAttributesQueryService';
 import EpSdkCustomAttributesService from './EpSdkCustomAttributesService';
-import { EpSdkServiceClass } from './EpSdkService';
 
 /** @category Services */
 export class EpSdkEpEventsServiceClass extends EpSdkServiceClass {
@@ -63,26 +64,17 @@ export class EpSdkEpEventsServiceClass extends EpSdkServiceClass {
    * @param param0 
    * @returns 
    */
-  public async setCustomAttributes({ xContextId, eventId, epSdkCustomAttributeList, scope, applicationDomainId }:{
+  public async setCustomAttributes({ xContextId, eventId, epSdkCustomAttributes }:{
     xContextId?: string;
     eventId: string;
-    epSdkCustomAttributeList: TEpSdkCustomAttributeList;
-    scope?: CustomAttributeDefinition.scope;
-    applicationDomainId?: string;
+    epSdkCustomAttributes: Array<TEpSdkCustomAttribute>;
   }): Promise<EpSdkEvent> {
-    const epSdkEvent: EpSdkEvent = await this.getById({
-      xContextId,
-      eventId: eventId
-    });
-    scope;
+    const epSdkEvent: EpSdkEvent = await this.getById({xContextId, eventId });
     const customAttributes: Array<CustomAttribute> = await EpSdkCustomAttributesService.createCustomAttributesWithNew({
       xContextId,
       existingCustomAttributes: epSdkEvent.customAttributes,
-      epSdkCustomAttributeList: epSdkCustomAttributeList,
+      epSdkCustomAttributes,
       epSdkCustomAttributeEntityType: EEpSdkCustomAttributeEntityTypes.EVENT,
-      applicationDomainId: applicationDomainId,
-      // note: adding scope if not organization currently causes EP to return an internal server error
-      // scope: scope
     });
     return await this.updateEpEvent({
       xContextId,
@@ -97,18 +89,18 @@ export class EpSdkEpEventsServiceClass extends EpSdkServiceClass {
    * Unsets the custom attributes in the list on the event.
    * Leaves attibute definitions as-is.
    */
-  public async unsetCustomAttributes({ xContextId, eventId, epSdkCustomAttributeList }:{
+  public async unsetCustomAttributes({ xContextId, eventId, epSdkCustomAttributes }:{
     xContextId?: string;
     eventId: string;
-    epSdkCustomAttributeList: TEpSdkCustomAttributeList;
+    epSdkCustomAttributes: Array<TEpSdkCustomAttribute>;
   }): Promise<EpSdkEvent> {
     const epSdkEvent: EpSdkEvent = await this.getById({
       xContextId,
       eventId: eventId
     });
-    const customAttributes: Array<CustomAttribute> = await EpSdkCustomAttributesService.createCustomAttributesExcluding({
+    const customAttributes: Array<CustomAttribute> = EpSdkCustomAttributesService.createCustomAttributesExcluding({
       existingCustomAttributes: epSdkEvent.customAttributes,
-      epSdkCustomAttributeList: epSdkCustomAttributeList,
+      epSdkCustomAttributes
     });
     return await this.updateEpEvent({
       xContextId,
