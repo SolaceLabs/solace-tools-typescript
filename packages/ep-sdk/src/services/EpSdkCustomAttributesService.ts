@@ -1,12 +1,12 @@
 import { 
-  CustomAttribute, CustomAttributeDefinition,
+  CustomAttribute,
 } from "@solace-labs/ep-openapi-node";
 import { 
   EpSdkApiContentError 
 } from "../utils";
 import { 
-  EEpSdkCustomAttributeEntityTypes, 
-  TEpSdkCustomAttributeList 
+  EEpSdkCustomAttributeEntityTypes,
+  TEpSdkCustomAttribute, 
 } from "../types";
 import { 
   EEpSdkTask_TargetState, 
@@ -22,20 +22,18 @@ export class EpSdkCustomAttributesServiceClass {
    * Returns full custom attributes including existing & new ones.
    * Ensures any missing definitions are created or their entity types added.
    */
-  public async createCustomAttributesWithNew({ xContextId, existingCustomAttributes, epSdkCustomAttributeList, epSdkCustomAttributeEntityType, scope, applicationDomainId }:{
+  public async createCustomAttributesWithNew({ xContextId, existingCustomAttributes, epSdkCustomAttributes, epSdkCustomAttributeEntityType }:{
     xContextId?: string;
     existingCustomAttributes?: Array<CustomAttribute>;
-    epSdkCustomAttributeList: TEpSdkCustomAttributeList;
+    epSdkCustomAttributes: Array<TEpSdkCustomAttribute>;
     epSdkCustomAttributeEntityType: EEpSdkCustomAttributeEntityTypes;
-    scope?: CustomAttributeDefinition.scope;
-    applicationDomainId?: string;
   }): Promise<Array<CustomAttribute>> {
     const funcName = 'createCustomAttributesWithNew';
     const logName = `${EpSdkCustomAttributesServiceClass.name}.${funcName}()`;
 
     const customAttributeList: Array<CustomAttribute> = [];
 
-    for(const epSdkCustomAttribute of epSdkCustomAttributeList) {
+    for(const epSdkCustomAttribute of epSdkCustomAttributes) {
       const associatedEntityTypes: Array<EEpSdkCustomAttributeEntityTypes> = await EpSdkCustomAttributeDefinitionsService.presentAssociatedEntityType({
         xContextId: xContextId,
         attributeName: epSdkCustomAttribute.name,
@@ -45,10 +43,11 @@ export class EpSdkCustomAttributesServiceClass {
       const epSdkCustomAttributeDefinitionTask = new EpSdkCustomAttributeDefinitionTask({
         epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
         attributeName: epSdkCustomAttribute.name,
-        applicationDomainId: applicationDomainId,
         customAttributeDefinitionObjectSettings: {
-          associatedEntityTypes: associatedEntityTypes,
-          scope: scope ? scope : CustomAttributeDefinition.scope.ORGANIZATION
+          associatedEntityTypes,
+          scope: epSdkCustomAttribute.scope,
+          applicationDomainId: epSdkCustomAttribute.applicationDomainId,
+          valueType: epSdkCustomAttribute.valueType,
         },
       });
       const epSdkCustomAttributeDefinitionTask_ExecuteReturn: IEpSdkCustomAttributeDefinitionTask_ExecuteReturn = await epSdkCustomAttributeDefinitionTask.execute(xContextId);
@@ -56,7 +55,7 @@ export class EpSdkCustomAttributesServiceClass {
       if(epSdkCustomAttributeDefinitionTask_ExecuteReturn.epObject.id == undefined) throw new EpSdkApiContentError(logName, this.constructor.name,'epSdkCustomAttributeDefinitionTask_ExecuteReturn.epObject.id == undefined', {
         epSdkCustomAttributeDefinitionTask_ExecuteReturn_epObject: epSdkCustomAttributeDefinitionTask_ExecuteReturn.epObject
       });
-      customAttributeList.push({ 
+      customAttributeList.push({
         customAttributeDefinitionId: epSdkCustomAttributeDefinitionTask_ExecuteReturn.epObject.id,
         customAttributeDefinitionName: epSdkCustomAttribute.name,
         value: epSdkCustomAttribute.value
@@ -77,10 +76,10 @@ export class EpSdkCustomAttributesServiceClass {
   /**
    * Returns full custom attributes exluding list of attributes.
    */
-  public async createCustomAttributesExcluding({ existingCustomAttributes, epSdkCustomAttributeList }:{
+  public createCustomAttributesExcluding({ existingCustomAttributes, epSdkCustomAttributes }:{
     existingCustomAttributes?: Array<CustomAttribute>;
-    epSdkCustomAttributeList: TEpSdkCustomAttributeList;
-  }): Promise<Array<CustomAttribute>> {
+    epSdkCustomAttributes: Array<TEpSdkCustomAttribute>;
+  }): Array<CustomAttribute> {
     // const funcName = 'createCustomAttributesExcluding';
     // const logName = `${EpSdkCustomAttributesService.name}.${funcName}()`;
 
@@ -88,7 +87,7 @@ export class EpSdkCustomAttributesServiceClass {
 
     if(existingCustomAttributes === undefined) return [];
     for(const existingCustomAttribute of existingCustomAttributes) {
-      const exists = epSdkCustomAttributeList.find( (x) => {
+      const exists = epSdkCustomAttributes.find( (x) => {
         return x.name === existingCustomAttribute.customAttributeDefinitionName;
       });
       if(exists === undefined) customAttributeList.push(existingCustomAttribute);

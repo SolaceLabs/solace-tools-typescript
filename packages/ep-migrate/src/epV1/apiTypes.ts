@@ -9,6 +9,12 @@ import {
   SchemasResponse,
   EventSchema,
   EnumValue,
+  Event,
+  EventsResponse,
+  EventsService,
+  ApplicationsService,
+  ApplicationsResponse,
+  Application
 } from "@solace-labs/ep-v1-openapi-node";
 export type EpV1Enum = Required<Enum>;
 export type EpV1EnumValue = EnumValue;
@@ -24,6 +30,13 @@ export class EpV1SchemasService extends SchemasService {}
 export type EpV1SchemasResponse = SchemasResponse;
 export type EpV1EventSchema = Required<EventSchema>;
 
+export class EpV1EventsService extends EventsService {}
+export type EpV1EventsResponse = EventsResponse;
+export type EpV1Event = Required<Event>;
+
+export class EpV1ApplicationsService extends ApplicationsService {}
+export type EpV1ApplicationsResponse = ApplicationsResponse;
+export type EpV1Application = Required<Application>;
 
 export interface EpV1ApiMeta {
   pagination: {

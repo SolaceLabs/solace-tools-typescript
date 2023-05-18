@@ -46,7 +46,14 @@
     },
     "migrate": {
       "type": "object",
-      "required": ["epV2"],
+      "required": [
+        "epV2",
+        "enums",
+        "applicationDomains",
+        "schemas",
+        "events",
+        "applications"
+      ],
       "additionalProperties": false,
       "properties": {
         "epV2": {
@@ -104,6 +111,50 @@
               "required": [],
               "additionalProperties": false,
               "properties": {
+                "versions": {
+                  "$ref": "#/definitions/epV2Versions"
+                }
+              }
+            }
+          }
+        },
+        "events": {
+          "type": "object",
+          "required": ["epV2"],
+          "additionalProperties": false,
+          "properties": {
+            "epV2": {
+              "type": ["object", "null"],
+              "required": [],
+              "additionalProperties": false,
+              "properties": {
+                "versions": {
+                  "$ref": "#/definitions/epV2Versions"
+                }
+              }
+            }
+          }
+        },
+        "applications": {
+          "type": "object",
+          "required": ["epV2"],
+          "additionalProperties": false,
+          "properties": {
+            "epV2": {
+              "type": ["object"],
+              "required": ["environment"],
+              "additionalProperties": false,
+              "properties": {
+                "environment": {
+                  "type": "object",
+                  "required": ["environmentName"],
+                  "additionalProperties": false,
+                  "properties": {
+                    "environmentName": {
+                      "type": "string"
+                    }
+                  }
+                },
                 "versions": {
                   "$ref": "#/definitions/epV2Versions"
                 }

@@ -15,6 +15,7 @@ import {
 import {
   CliConfigFileMissingEnvVarError,
   CliConfigFileParseError,
+  CliConfigInvalidConfigError,
   CliConfigInvalidConfigFileError,
   CliConfigNotInitializedError,
   CliConfigTokenError,
@@ -37,10 +38,14 @@ import {
 } from './CliMigrateManager';
 import { 
   ICliApplicationDomainsMigrateConfig,
+  ICliApplicationsMigrateConfig,
   ICliConfigEp2Versions,
   ICliEnumsMigrateConfig,
+  ICliEventsMigrateConfig,
   ICliSchemasMigrateConfig
 } from '../migrators';
+import { EpSdkEnvironmentsService } from '@solace-labs/ep-sdk';
+import { Environment } from '@solace-labs/ep-openapi-node';
 
 const DEFAULT_CLI_LOGGER_LOG_LEVEL = ECliLogger_LogLevel.INFO;
 // const DEFAULT_CLI_LOGGER_LOG_FILE = `./tmp/logs/${DefaultAppName}.log`;
@@ -62,6 +67,8 @@ interface ICliConfigFileMigrateConfig {
   enums: ICliEnumsMigrateConfig;
   applicationDomains: ICliApplicationDomainsMigrateConfig;
   schemas: ICliSchemasMigrateConfig;
+  events: ICliEventsMigrateConfig;
+  applications: ICliApplicationsMigrateConfig;
 }
 export interface ICliConfigFile {
   logger: {
@@ -246,8 +253,42 @@ class CliConfig {
             }
           }
         },
+        events: {
+          ...configFileContents.migrate.events,
+          epV2: {
+            ...configFileContents.migrate.events.epV2,
+            versions: {
+              ...configFileContents.migrate.epV2.versions,
+              ...configFileContents.migrate.events.epV2.versions,
+            }
+          }
+        },
+        applications: {
+          ...configFileContents.migrate.applications,
+          epV2: {
+            ...configFileContents.migrate.applications.epV2,
+            versions: {
+              ...configFileContents.migrate.epV2.versions,
+              ...configFileContents.migrate.applications.epV2.versions,
+            }
+          }
+        },
       }
     };  
+  }
+
+  public validate = async() => {
+    const funcName = "validate";
+    const logName = `${CliConfig.name}.${funcName}()`;
+    const environmentName = this.config.cliMigrateConfig.applications.epV2.environment.environmentName;
+    const environment: Environment | undefined = await EpSdkEnvironmentsService.getByName({ environmentName });
+    if(environment === undefined) {
+      throw new CliConfigInvalidConfigError(logName, {
+        message: 'Ep V2 environment for applications not found',
+        environmentName
+      });  
+    }
+
   }
 
   public initialize = ({ cliVersion, commandLineOptionValues, configFile, runState }: {
@@ -267,8 +308,6 @@ class CliConfig {
       configFile: testedConfigFile,
       runState
     });
-    // perhaps more validation is needed?
-    // this.validateConfig();
   };
 
   private maskSecrets = (k: string, v: any) => {

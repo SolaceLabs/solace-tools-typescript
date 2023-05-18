@@ -12,7 +12,8 @@ import {
   EpSdkApiContentError 
 } from "../utils";
 import { 
-  EpApiMaxPageSize, EpSdkCustomAttributeNameSourceApplicationDomainId 
+  EpApiMaxPageSize, 
+  EpSdkCustomAttributeNameSourceApplicationDomainId 
 } from '../constants';
 import { 
   EpSdkEnumTask, 
@@ -23,13 +24,13 @@ import {
   IEpSdkEnumVersionTask_ExecuteReturn,
   EEpSdk_VersionTaskStrategy,
 } from "../tasks";
+import { 
+  EpSdkVersionServiceClass 
+} from "./EpSdkVersionService";
 import EpSdkEnumsService from "./EpSdkEnumsService";
-import { EpSdkVersionServiceClass } from "./EpSdkVersionService";
-import { EEpSdkCustomAttributeEntityTypes } from '../types';
 
 /** @category Services */
 export class EpSdkEnumVersionsServiceClass extends EpSdkVersionServiceClass {
-  private readonly CustomAttributeEntityType = EEpSdkCustomAttributeEntityTypes.ENUM_VERSION;
 
   public getVersionByVersion = async ({ xContextId, enumId, enumVersionString }: {
     xContextId?: string;
@@ -265,12 +266,16 @@ export class EpSdkEnumVersionsServiceClass extends EpSdkVersionServiceClass {
     }
     // add the source application domain id to custom attribute
     await EpSdkEnumsService.setCustomAttributes({
-      xContextId: xContextId,
-      applicationDomainId: toApplicationDomainId,
+      xContextId,
       enumId: epSdkEnumTask_ExecuteReturn.epObjectKeys.epObjectId,
-      scope: CustomAttributeDefinition.scope.APPLICATION_DOMAIN,
-      epSdkCustomAttributeList: [ 
-        { name: EpSdkCustomAttributeNameSourceApplicationDomainId, value: fromTopicAddressEnum.applicationDomainId }
+      epSdkCustomAttributes: [ 
+        { 
+          name: EpSdkCustomAttributeNameSourceApplicationDomainId, 
+          value: fromTopicAddressEnum.applicationDomainId,
+          valueType: CustomAttributeDefinition.valueType.STRING,
+          scope: CustomAttributeDefinition.scope.APPLICATION_DOMAIN,
+          applicationDomainId: toApplicationDomainId,
+        }
       ]
     });
     // create target enum version

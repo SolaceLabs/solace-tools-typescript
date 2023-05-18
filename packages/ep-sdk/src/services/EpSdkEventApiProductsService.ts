@@ -12,12 +12,14 @@ import {
   EpSdkLogger 
 } from '../utils';
 import { 
-  EEpSdkCustomAttributeEntityTypes, 
+  EEpSdkCustomAttributeEntityTypes,
   EpSdkBrokerTypes, 
   IEpSdkAttributesQuery, 
-  TEpSdkCustomAttributeList 
+  TEpSdkCustomAttribute, 
 } from '../types';
-import { EpSdkServiceClass } from './EpSdkService';
+import { 
+  EpSdkServiceClass 
+} from './EpSdkService';
 import EpSdkCustomAttributesService from './EpSdkCustomAttributesService';
 import EpSdkCustomAttributeDefinitionsService from './EpSdkCustomAttributeDefinitionsService';
 import EpSdkCustomAttributesQueryService from './EpSdkCustomAttributesQueryService';
@@ -54,19 +56,16 @@ export class EpSdkEventApiProductsServiceClass extends EpSdkServiceClass {
    * Sets the custom attributes in the list on the event api product.
    * Creates attribute definitions / adds entity type 'eventApiProduct' if it doesn't exist.
    */
-  public async setCustomAttributes({ xContextId, eventApiProductId, epSdkCustomAttributeList}:{
+  public async setCustomAttributes({ xContextId, eventApiProductId, epSdkCustomAttributes}:{
     xContextId?: string;
     eventApiProductId: string;
-    epSdkCustomAttributeList: TEpSdkCustomAttributeList;
+    epSdkCustomAttributes: Array<TEpSdkCustomAttribute>;
   }): Promise<EventApiProduct> {
-    const eventApiProduct: EventApiProduct = await this.getById({
-      xContextId,
-      eventApiProductId: eventApiProductId,
-    });
+    const eventApiProduct: EventApiProduct = await this.getById({ xContextId, eventApiProductId });
     const customAttributes: Array<CustomAttribute> = await EpSdkCustomAttributesService.createCustomAttributesWithNew({
       xContextId,
       existingCustomAttributes: eventApiProduct.customAttributes,
-      epSdkCustomAttributeList: epSdkCustomAttributeList,
+      epSdkCustomAttributes,
       epSdkCustomAttributeEntityType: EEpSdkCustomAttributeEntityTypes.EVENT_API_PRODUCT
     });
     return await this.updateEventApiProduct({
@@ -82,18 +81,15 @@ export class EpSdkEventApiProductsServiceClass extends EpSdkServiceClass {
    * Unsets the custom attributes in the list on the event api product.
    * Leaves attibute definitions as-is.
    */
-  public async unsetCustomAttributes({ xContextId, eventApiProductId, epSdkCustomAttributeList }:{
+  public async unsetCustomAttributes({ xContextId, eventApiProductId, epSdkCustomAttributes }:{
     xContextId?: string;
     eventApiProductId: string;
-    epSdkCustomAttributeList: TEpSdkCustomAttributeList;
+    epSdkCustomAttributes: Array<TEpSdkCustomAttribute>;
   }): Promise<EventApiProduct> {
-    const eventApiProduct: EventApiProduct = await this.getById({
-      xContextId,
-      eventApiProductId: eventApiProductId,
-    });
+    const eventApiProduct: EventApiProduct = await this.getById({xContextId, eventApiProductId });
     const customAttributes: Array<CustomAttribute> = await EpSdkCustomAttributesService.createCustomAttributesExcluding({
       existingCustomAttributes: eventApiProduct.customAttributes,
-      epSdkCustomAttributeList: epSdkCustomAttributeList,
+      epSdkCustomAttributes,
     });
     return await this.updateEventApiProduct({
       xContextId,

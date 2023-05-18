@@ -38,13 +38,15 @@ import * as __requestLib from '../../generated-src/core/request';
     const cancelablePromise: CancelablePromise<ApiResult> = customRequest<ApiResult>(config, options) as CancelablePromise<ApiResult>;
 
 
-    cancelablePromise.then((value: ApiResult) => {
+    cancelablePromise.then(
+      (value: ApiResult) => {
         TestContext.setApiResult(value);
         if(TestConfig.getConfig().enableApiLogging) TestLogger.logApiResult(TestContext.getItId(), TestContext.getApiResult());
-    }, (reason) => {
+      }, 
+      (reason) => {
         TestContext.setApiError(reason);
         if(!TestConfig.getConfig().enableApiLogging) {
-          TestLogger.logApiRequestOptions(TestContext.getItId(), options);
+          TestLogger.logApiRequestOptions(TestContext.getItId(), TestContext.getApiRequestOptions());
           TestLogger.logApiResult(TestContext.getItId(), TestContext.getApiResult());
         }
         TestLogger.logApiError(TestContext.getItId(), TestContext.getApiError());

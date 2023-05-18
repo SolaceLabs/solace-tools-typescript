@@ -3,7 +3,9 @@ import {
   ApplicationDomain,
 } from "@solace-labs/ep-openapi-node";
 import { 
+  EpV1Application,
   EpV1ApplicationDomain, 
+  EpV1Event, 
   EpV1EventSchema
 } from "../epV1";
 import { ECliMigrateManagerRunState } from "./CliMigrateManager";
@@ -37,15 +39,25 @@ export interface ICliSchemaRunContext extends Partial<ICliRunContext> {
     applicationDomain: ApplicationDomain;
   }
 }
+export interface ICliEventRunContext extends Partial<ICliRunContext> {
+  epV1: {
+    applicationDomain: EpV1ApplicationDomain;
+    epV1Event: EpV1Event;
+  },
+  epV2: {
+    applicationDomain: ApplicationDomain;
+  }
+}
 
-
-// export interface ICliEpRunContext_Application extends Partial<ICliApiRunContext> {
-//   epApplicationName: string;
-// }
-// export interface ICliEpRunContext_ApplicationVersion extends Partial<ICliEpRunContext_Application> {
-//   epLatestExistingApplicationVersion?: string;
-//   epTargetApplicationVersion: string;
-// }
+export interface ICliApplicationRunContext extends Partial<ICliRunContext> {
+  epV1: {
+    applicationDomain: EpV1ApplicationDomain;
+    epV1Application: EpV1Application;
+  },
+  epV2: {
+    applicationDomain: ApplicationDomain;
+  }
+}
 
 export interface ICliApplicationDomainRunAbsentContext extends Partial<ICliRunContext> {
   epV2ApplicationDomainPrefix: string;

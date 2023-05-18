@@ -4,7 +4,6 @@ import {
   ApplicationsResponse,
   ApplicationsService,
   CustomAttribute,
-  CustomAttributeDefinition,
   Pagination,
 } from '@solace-labs/ep-openapi-node';
 import { 
@@ -16,8 +15,13 @@ import {
 import { 
   EpApiMaxPageSize 
 } from '../constants';
-import { EpSdkServiceClass } from './EpSdkService';
-import { EEpSdkCustomAttributeEntityTypes, TEpSdkCustomAttributeList } from '../types';
+import { 
+  EpSdkServiceClass 
+} from './EpSdkService';
+import { 
+  EEpSdkCustomAttributeEntityTypes,
+  TEpSdkCustomAttribute
+} from '../types';
 import EpSdkCustomAttributesService from './EpSdkCustomAttributesService';
 import EpSdkCustomAttributeDefinitionsService from './EpSdkCustomAttributeDefinitionsService';
 
@@ -98,24 +102,17 @@ export class EpSdkApplicationsServiceClass extends EpSdkServiceClass {
    * @param param0 
    * @returns 
    */
-  public async setCustomAttributes({ xContextId, applicationId, epSdkCustomAttributeList, scope, applicationDomainId }:{
+  public async setCustomAttributes({ xContextId, applicationId, epSdkCustomAttributes }:{
     xContextId?: string;
     applicationId: string;
-    epSdkCustomAttributeList: TEpSdkCustomAttributeList;
-    scope?: CustomAttributeDefinition.scope;
-    applicationDomainId?: string;
+    epSdkCustomAttributes: Array<TEpSdkCustomAttribute>;
   }): Promise<Application> {
-    const application: Application = await this.getById({
-      xContextId: xContextId,
-      applicationId: applicationId
-    });
-    scope;
+    const application: Application = await this.getById({xContextId, applicationId });
     const customAttributes: Array<CustomAttribute> = await EpSdkCustomAttributesService.createCustomAttributesWithNew({
       xContextId: xContextId,
       existingCustomAttributes: application.customAttributes,
-      epSdkCustomAttributeList: epSdkCustomAttributeList,
+      epSdkCustomAttributes,
       epSdkCustomAttributeEntityType: EEpSdkCustomAttributeEntityTypes.APPLICATION,
-      applicationDomainId: applicationDomainId
     });
     return await this.updateApplication({
       xContextId: xContextId,
@@ -130,18 +127,15 @@ export class EpSdkApplicationsServiceClass extends EpSdkServiceClass {
    * Unsets the custom attributes in the list on the application.
    * Leaves attibute definitions as-is.
    */
-  public async unsetCustomAttributes({ xContextId, applicationId, epSdkCustomAttributeList }:{
+  public async unsetCustomAttributes({ xContextId, applicationId, epSdkCustomAttributes }:{
     xContextId?: string;
     applicationId: string;
-    epSdkCustomAttributeList: TEpSdkCustomAttributeList;
+    epSdkCustomAttributes: Array<TEpSdkCustomAttribute>;
   }): Promise<Application> {
-    const application: Application = await this.getById({
-      xContextId: xContextId,
-      applicationId: applicationId
-    });
+    const application: Application = await this.getById({xContextId, applicationId });
     const customAttributes: Array<CustomAttribute> = await EpSdkCustomAttributesService.createCustomAttributesExcluding({
       existingCustomAttributes: application.customAttributes,
-      epSdkCustomAttributeList: epSdkCustomAttributeList,
+      epSdkCustomAttributes,
     });
     return await this.updateApplication({
       xContextId: xContextId,
@@ -158,7 +152,7 @@ export class EpSdkApplicationsServiceClass extends EpSdkServiceClass {
   }): Promise<void> {
     for(const customAttributeName of customAttributeNames) {
       await EpSdkCustomAttributeDefinitionsService.removeAssociatedEntityTypeFromCustomAttributeDefinition({
-        xContextId: xContextId,
+        xContextId,
         attributeName: customAttributeName,
         associatedEntityType: EEpSdkCustomAttributeEntityTypes.APPLICATION,
       });

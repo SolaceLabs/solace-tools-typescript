@@ -20,9 +20,9 @@ stub.callsFake(
     config: OpenAPIConfig,
     options: ApiRequestOptions
   ): CancelablePromise<ApiResult> => {
+    
     TestContext.setApiRequestOptions(options);
-    if (TestConfig.getConfig().enableApiLogging)
-      TestLogger.logApiRequestOptions(TestContext.getItId(), options);
+    if(TestConfig.getConfig().enableApiLogging) TestLogger.logApiRequestOptions(TestContext.getItId(), options);
 
     TestContext.setApiResult(undefined);
     TestContext.setApiError(undefined);

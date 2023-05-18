@@ -137,6 +137,17 @@ export class CliConfigInvalidConfigFileError extends CliConfigError {
   }
 }
 
+export class CliConfigInvalidConfigError extends CliConfigError {
+  private static Name = "CliConfigInvalidConfigError";
+  private static DefaultDescription = "Invalid CLI Config";
+  public details: any;
+  constructor(internalLogName: string, details: any) {
+    super(internalLogName, CliConfigInvalidConfigError.DefaultDescription);
+    this.details = details;
+    this.name = CliConfigInvalidConfigError.Name;
+  }
+}
+
 export class CliConfigFileParseError extends CliConfigError {
   private static Name = "CliConfigFileParseError";
   private static DefaultDescription = "CLI Config File Parse Error";

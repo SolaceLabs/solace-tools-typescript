@@ -8,6 +8,12 @@ import {
   ICliSchemasMigrateConfig,
   CliSchemasMigrator,
   ICliSchemasMigratorRunReturn,
+  CliEventsMigrator,
+  ICliEventsMigratorRunReturn,
+  ICliEventsMigrateConfig,
+  CliApplicationsMigrator,
+  ICliApplicationsMigratorRunReturn,
+  ICliApplicationsMigrateConfig,
 } from "../migrators";
 import { 
   CliApplicationDomainsService 
@@ -56,6 +62,8 @@ export interface ICliMigrateManagerOptions {
   enums: ICliEnumsMigrateConfig;
   applicationDomains: ICliApplicationDomainsMigrateConfig;
   schemas: ICliSchemasMigrateConfig;
+  events: ICliEventsMigrateConfig;
+  applications: ICliApplicationsMigrateConfig;
 }
 
 export class CliMigrateManager {
@@ -146,6 +154,31 @@ export class CliMigrateManager {
     );
     const cliSchemasMigratorRunReturn: ICliSchemasMigratorRunReturn = await cliSchemasMigrator.run();
     if(cliSchemasMigratorRunReturn.error) throw cliSchemasMigratorRunReturn.error;
+    // migrate events
+    const cliEventsMigrator = new CliEventsMigrator({
+        runId: this.cliMigrateManagerOptions.runId,
+        cliMigratedApplicationDomains: cliApplicationDomainsMigratorRunReturn.cliApplicationDomainsMigratorRunMigrateReturn.cliMigratedApplicationDomains,
+        cliMigratedSchemas: cliSchemasMigratorRunReturn.cliSchemasMigratorRunMigrateReturn.cliMigratedSchemas,
+        cliMigratedEnums: cliEnumsMigratorRunReturn.cliEnumsMigratorRunMigrateReturn.cliMigratedEnums,
+        cliEventsMigrateConfig: this.cliMigrateManagerOptions.events,
+      }, 
+      ECliRunContext_RunMode.RELEASE,
+    );
+    const cliEventsMigratorRunReturn: ICliEventsMigratorRunReturn = await cliEventsMigrator.run();
+    if(cliEventsMigratorRunReturn.error) throw cliEventsMigratorRunReturn.error;
+    // migrate applications
+    const cliApplicationsMigrator = new CliApplicationsMigrator({
+        runId: this.cliMigrateManagerOptions.runId,
+        cliMigratedApplicationDomains: cliApplicationDomainsMigratorRunReturn.cliApplicationDomainsMigratorRunMigrateReturn.cliMigratedApplicationDomains,
+        cliMigratedSchemas: cliSchemasMigratorRunReturn.cliSchemasMigratorRunMigrateReturn.cliMigratedSchemas,
+        cliMigratedEnums: cliEnumsMigratorRunReturn.cliEnumsMigratorRunMigrateReturn.cliMigratedEnums,
+        cliMigratedEvents: cliEventsMigratorRunReturn.cliEventsMigratorRunMigrateReturn.cliMigratedEvents,
+        cliApplicationsMigrateConfig: this.cliMigrateManagerOptions.applications,
+      }, 
+      ECliRunContext_RunMode.RELEASE,
+    );
+    const cliApplicationsMigratorRunReturn: ICliApplicationsMigratorRunReturn = await cliApplicationsMigrator.run();
+    if(cliApplicationsMigratorRunReturn.error) throw cliApplicationsMigratorRunReturn.error;
 
     CliRunContext.pop();
   }
@@ -160,6 +193,12 @@ export class CliMigrateManager {
     // DEBUG
     // console.log(`\n${logName}: \nthis.cliMigrateManagerOptions=\n${JSON.stringify(this.cliMigrateManagerOptions, null, 2)}\n`);
     // process.exit(1);
+    try {
+      await CliConfig.validate();
+    } catch(e) {
+      CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.CONFIG_ERROR, details: { error: e }}));
+      throw e;
+    }
 
     try {
       switch(this.cliMigrateManagerOptions.cliMigrateManagerRunState) {

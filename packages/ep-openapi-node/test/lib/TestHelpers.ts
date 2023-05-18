@@ -3,6 +3,8 @@ import {
   ApiError,
   ApplicationDomainsResponse,
   ApplicationDomainsService,
+  CustomAttributeDefinitionsResponse,
+  CustomAttributeDefinitionsService,
 } from '../../generated-src';
 import { TestLogger } from './TestLogger';
 
@@ -26,6 +28,26 @@ export class TestHelpers {
           id: applicationDomainsResponse.data[0].id,
         });  
       }
+    } catch(e) {
+      expect(e instanceof ApiError, TestLogger.createNotApiErrorMessage(e.message)).to.be.true;
+      expect(false, TestLogger.createApiTestFailMessage('failed', e)).to.be.true;
+    }
+  }
+
+  public static customAttributeDefinitionAbsent = async({ customAttributeDefinitionName }:{ 
+    customAttributeDefinitionName?: string; 
+  }): Promise<void> => {
+    const funcName = 'customAttributeDefinitionAbsent';
+    const logName = `${TestHelpers.name}.${funcName}()`;
+    try {
+      if(customAttributeDefinitionName === undefined) throw new Error(`${logName}: customAttributeDefinitionName === undefined`);
+      const customAttributeDefinitionsResponse: CustomAttributeDefinitionsResponse = await CustomAttributeDefinitionsService.getCustomAttributeDefinitions({ pageSize: 100 });
+      if(customAttributeDefinitionsResponse.data === undefined) return;
+      const found = customAttributeDefinitionsResponse.data.find(x => x.name === customAttributeDefinitionName );
+      if(found === undefined) return;
+      await CustomAttributeDefinitionsService.deleteCustomAttributeDefinition({ 
+        id: found.id,        
+      });
     } catch(e) {
       expect(e instanceof ApiError, TestLogger.createNotApiErrorMessage(e.message)).to.be.true;
       expect(false, TestLogger.createApiTestFailMessage('failed', e)).to.be.true;
