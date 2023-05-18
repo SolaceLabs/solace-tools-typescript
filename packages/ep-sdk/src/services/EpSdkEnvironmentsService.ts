@@ -82,6 +82,15 @@ export class EpSdkEnvironmentsServiceClass extends EpSdkServiceClass {
     return environment;
   }
 
+  public getByName = async ({ xContextId, environmentName }: {
+    xContextId?: string;
+    environmentName: string;
+  }): Promise<Environment | undefined> => {
+    const environmentsResponse: EnvironmentsResponse = await this.listAll({ xContextId });
+    if(environmentsResponse.data === undefined || environmentsResponse.data.length === 0) return undefined;
+    return environmentsResponse.data.find( x => x.name === environmentName );
+  }
+  
 }
 /** @category Services */
 export default new EpSdkEnvironmentsServiceClass();

@@ -5,7 +5,7 @@ import {
   ApiError,
   Environment,
   EnvironmentsResponse,
-} from "@solace-labs/ep-openapi-node";
+} from "@solace-labs/ep-rt-openapi-node";
 import { TestContext, TestUtils } from "@internal/tools/src";
 import { TestLogger } from "../../lib";
 import {
@@ -51,13 +51,28 @@ describe(`${scriptName}`, () => {
     }
   });
 
-  it(`${scriptName}: should get each environment by Id`, async () => {
+  it(`${scriptName}: should get each environment by Id & by Name`, async () => {
     try {
       const environmentsResponse: EnvironmentsResponse = await EpSdkEnvironmentsService.listAll({});
       if(environmentsResponse.data === undefined) throw new Error('environmentsResponse.data === undefined');
       for(const environment of environmentsResponse.data) {
-        const env: Environment = await EpSdkEnvironmentsService.getById({ environmentId: environment.id });        
+        const envById: Environment = await EpSdkEnvironmentsService.getById({ environmentId: environment.id });        
+        const envByName: Environment = await EpSdkEnvironmentsService.getByName({ environmentName: environment.name });    
+        const message = TestLogger.createLogMessage("envByName", envByName);    
+        expect(envByName, message).to.not.be.undefined;
+        expect(envByName.id, message).to.equal(envById.id);
       }
+    } catch (e) {
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
+    }
+  });
+
+  it(`${scriptName}: should handle enviironment not found by Name`, async () => {
+    try {
+      const envByName = await EpSdkEnvironmentsService.getByName({ environmentName: 'non-existent-environment' });
+      expect(envByName, 'envByName not undefined').to.be.undefined;
     } catch (e) {
       if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
       expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
