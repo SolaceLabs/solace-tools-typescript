@@ -161,7 +161,7 @@ export class CliMigrateManager {
       ECliRunContext_RunMode.RELEASE,
     );
     const cliEventsMigratorRunReturn: ICliEventsMigratorRunReturn = await cliEventsMigrator.run();
-    // if(cliEventsMigratorRunReturn.error) throw cliEventsMigratorRunReturn.error;
+    if(cliEventsMigratorRunReturn.error) throw cliEventsMigratorRunReturn.error;
     // // migrate applications
     // const cliApplicationsMigrator = new CliApplicationsMigrator({
     //     runId: this.cliMigrateManagerOptions.runId,

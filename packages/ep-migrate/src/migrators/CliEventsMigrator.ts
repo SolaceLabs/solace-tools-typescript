@@ -1,15 +1,12 @@
 import {
-  EEpSdkTask_TargetState,
-  EpSdkSchemaTask,
-  IEpSdkSchemaTask_ExecuteReturn,
-  EpSdkSchemaVersionTask,
-  IEpSdkSchemaVersionTask_ExecuteReturn,
+  // EEpSdkTask_TargetState,
+  // EpSdkSchemaTask,
+  // IEpSdkSchemaTask_ExecuteReturn,
+  // EpSdkSchemaVersionTask,
+  // IEpSdkSchemaVersionTask_ExecuteReturn,
   EpSdkError,
   EpSdkFeatureNotSupportedError,
 } from "@solace-labs/ep-sdk";
-import {
-  SchemaObject,
-} from "@solace-labs/ep-openapi-node";
 import {
   CliEPApiContentError,
   CliErrorFactory,
@@ -18,9 +15,7 @@ import {
   CliRunContext,
   ECliRunContext_RunMode,
   CliRunSummary,
-  ICliSchemaRunContext,
   CliRunIssues,
-  ICliRunIssueSchema,
   ECliRunIssueTypes,
   ICliEventRunContext,
   ICliRunIssueEvent,
@@ -33,11 +28,8 @@ import {
 import { 
   EpV1ApiMeta,
   EpV1Event,
-  EpV1EventSchema, 
   EpV1EventsResponse, 
   EpV1EventsService, 
-  EpV1SchemasResponse, 
-  EpV1SchemasService
 } from "../epV1";
 import { 
   ICliConfigEp2Versions, 
