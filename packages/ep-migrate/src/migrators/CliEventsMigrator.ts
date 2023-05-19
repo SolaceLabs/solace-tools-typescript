@@ -1,12 +1,10 @@
-import {
-  // EEpSdkTask_TargetState,
-  // EpSdkSchemaTask,
-  // IEpSdkSchemaTask_ExecuteReturn,
-  // EpSdkSchemaVersionTask,
-  // IEpSdkSchemaVersionTask_ExecuteReturn,
-  EpSdkError,
-  EpSdkFeatureNotSupportedError,
-} from "@solace-labs/ep-sdk";
+// import {
+  //   // EEpSdkTask_TargetState,
+  //   // EpSdkSchemaTask,
+  //   // IEpSdkSchemaTask_ExecuteReturn,
+  //   // EpSdkSchemaVersionTask,
+  //   // IEpSdkSchemaVersionTask_ExecuteReturn,
+  // } from "@solace-labs/ep-sdk";
 import {
   CliEPApiContentError,
   CliErrorFactory,
@@ -19,6 +17,7 @@ import {
   ECliRunIssueTypes,
   ICliEventRunContext,
   ICliRunIssueEvent,
+  CliFeatureNotSupportedError,
 } from "../cli-components";
 import { 
   CliMigrator, 
@@ -87,54 +86,14 @@ export class CliEventsMigrator extends CliMigrator {
     CliRunContext.push(rctxt);
     CliRunSummary.processingEpV1Event({ eventName: epV1Event.name });
 
-    throw new EpSdkFeatureNotSupportedError(logName, this.constructor.name, 'implement processing event', {
-      todo: 'implement me'
+    throw new CliFeatureNotSupportedError(logName, {
+      todo: 'implement processing event'
     });
 
     // TODO: implement me
+    // - check any schema issues and create event issue with cause: schemaIssueId
+    //   (this way we know it is a follow-on error)
 
-    // // present schema
-    // const epSdkSchemaTask = new EpSdkSchemaTask({
-    //   epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
-    //   applicationDomainId: cliMigratedApplicationDomain.epV2ApplicationDomain.id,
-    //   schemaName: epV1EventSchema.name,
-    //   schemaObjectSettings: {
-    //     shared: true,
-    //     contentType: epV1EventSchema.contentType.toLowerCase()
-    //   },
-    //   epSdkTask_TransactionConfig: this.get_IEpSdkTask_TransactionConfig(),
-    // });
-    // const epSdkSchemaTask_ExecuteReturn: IEpSdkSchemaTask_ExecuteReturn = await this.executeTask({epSdkTask: epSdkSchemaTask });
-    // const schemaObject: SchemaObject = epSdkSchemaTask_ExecuteReturn.epObject;
-    // /* istanbul ignore next */
-    // if (schemaObject.id === undefined) throw new CliEPApiContentError(logName,"schemaObject.id === undefined", { schemaObject });
-    // CliLogger.trace(CliLogger.createLogEntry(logName, {code: ECliStatusCodes.PRESENT_EP_V2_SCHEMA, details: { epSdkSchemaTask_ExecuteReturn }}));
-    // CliRunSummary.presentEpV2Schema({ applicationDomainName: cliMigratedApplicationDomain.epV2ApplicationDomain.name, epSdkSchemaTask_ExecuteReturn });
-    // // present the schema version
-    // const epSdkSchemaVersionTask = new EpSdkSchemaVersionTask({
-    //   epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
-    //   applicationDomainId: cliMigratedApplicationDomain.epV2ApplicationDomain.id,
-    //   schemaId: schemaObject.id,
-    //   versionString: this.options.cliSchemasMigrateConfig.epV2.versions.initialVersion,
-    //   versionStrategy: this.get_EEpSdk_VersionTaskStrategy(this.options.cliSchemasMigrateConfig.epV2.versions.versionStrategy),
-    //   schemaVersionSettings: {
-    //     description: epV1EventSchema.description,
-    //     stateId: this.get_EpSdk_StateId(this.options.cliSchemasMigrateConfig.epV2.versions.state),
-    //     content: epV1EventSchema.content,
-    //   },
-    //   epSdkTask_TransactionConfig: this.get_IEpSdkTask_TransactionConfig(),
-    //   checkmode: false,
-    // });
-    // const epSdkSchemaVersionTask_ExecuteReturn: IEpSdkSchemaVersionTask_ExecuteReturn = await this.executeTask({ epSdkTask: epSdkSchemaVersionTask });
-    // CliLogger.trace(CliLogger.createLogEntry(logName, {code: ECliStatusCodes.PRESENT_EP_V2_SCHEMA_VERSION, details: { epSdkSchemaVersionTask_ExecuteReturn }}));
-    // CliRunSummary.presentEpV2SchemaVersion({ applicationDomainName: cliMigratedApplicationDomain.epV2ApplicationDomain.name, epSdkSchemaVersionTask_ExecuteReturn });
-    // this.cliMigratedSchemas.push({
-    //   epV1Schema: epV1EventSchema,
-    //   epV2Schema: {
-    //     schemaObject: schemaObject,
-    //     schemaVersion: epSdkSchemaVersionTask_ExecuteReturn.epObject
-    //   }
-    // })
     CliRunContext.pop();
   }
 
@@ -156,20 +115,18 @@ export class CliEventsMigrator extends CliMigrator {
             try {
               await this.migrateEvent({ cliMigratedApplicationDomain, epV1Event });   
             } catch(e: any) {
-              if(e instanceof EpSdkError) {
-                CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.MIGRATE_EVENTS_ERROR, details: { error: e }}));
-                // add to issues log  
-                const rctxt: ICliEventRunContext | undefined = CliRunContext.pop() as ICliEventRunContext| undefined;
-                const issue: ICliRunIssueEvent = {
-                  type: ECliRunIssueTypes.EventIssue,
-                  epV1Id: epV1Event.id,
-                  epV1Event,
-                  cliRunContext: rctxt,
-                  cause: e
-                };
-                CliRunIssues.add(issue);
-                CliRunSummary.processingEpV1EventIssue({ rctxt });        
-              } else throw e;
+              CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.MIGRATE_EVENTS_ERROR, details: { error: e }}));
+              // add to issues log  
+              const rctxt: ICliEventRunContext | undefined = CliRunContext.pop() as ICliEventRunContext| undefined;
+              const issue: ICliRunIssueEvent = {
+                type: ECliRunIssueTypes.EventIssue,
+                epV1Id: epV1Event.id,
+                epV1Event,
+                cliRunContext: rctxt,
+                cause: e
+              };
+              CliRunIssues.add(issue);
+              CliRunSummary.processingEpV1EventIssue({ rctxt });        
             }
           }
         } else {

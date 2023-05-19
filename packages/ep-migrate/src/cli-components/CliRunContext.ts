@@ -1,12 +1,13 @@
 
 import { 
-  ApplicationDomain,
+  ApplicationDomain, SchemaObject, SchemaVersion,
 } from "@solace-labs/ep-openapi-node";
 import { 
   EpV1Application,
   EpV1ApplicationDomain, 
   EpV1Event, 
-  EpV1EventSchema
+  EpV1EventSchema,
+  EpV1Tag
 } from "../epV1";
 import { ECliMigrateManagerRunState } from "./CliMigrateManager";
 
@@ -34,9 +35,12 @@ export interface ICliSchemaRunContext extends Partial<ICliRunContext> {
   epV1: {
     applicationDomain: EpV1ApplicationDomain;
     epV1EventSchema: EpV1EventSchema;
+    epV1Tags: Array<EpV1Tag>;
   },
   epV2: {
     applicationDomain: ApplicationDomain;
+    schemaObject?: SchemaObject;
+    schemaVersion?: SchemaVersion;
   }
 }
 export interface ICliEventRunContext extends Partial<ICliRunContext> {

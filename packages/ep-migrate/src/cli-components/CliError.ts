@@ -220,3 +220,25 @@ export class CliUsageError extends CliError {
     this.name = CliUsageError.Name;
   }
 }
+
+export class CliEPMigrateTagsError extends CliError {
+  protected static DefaultDescription = "Migrate Tags Error";
+  private cause: any;
+  private details: any;
+  constructor(internalLogName: string, cause: any, details: any) {
+    super(internalLogName, CliEPMigrateTagsError.DefaultDescription);
+    this.cause = cause;
+    this.details = details;
+  }
+}
+
+export class CliFeatureNotSupportedError extends CliError {
+  private static Name = "CliFeatureNotSupportedError";
+  protected static DefaultDescription = "CLI Feature Not Supported Error";
+  private details: any;
+  constructor(internalLogName: string, details: any) {
+    super(internalLogName, CliFeatureNotSupportedError.DefaultDescription);
+    this.name = CliFeatureNotSupportedError.Name;
+    this.details = details;
+  }
+}

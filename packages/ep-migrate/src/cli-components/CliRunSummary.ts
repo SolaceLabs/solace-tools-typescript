@@ -553,7 +553,7 @@ ${absentApplicationDomainNames.map(x => `
     rctxt?: ICliSchemaRunContext;
   }) => {
     const consoleOutput = `
-      Issue migrating schema. Skipping.
+      Issue migrating schema. See log for details.
 `;
     const cliRunSummary_EpV1_Schema: ICliRunSummary_EpV1_Schema = {
       runMode: this.runMode,
@@ -627,7 +627,7 @@ ${absentApplicationDomainNames.map(x => `
     rctxt?: ICliEventRunContext;
   }) => {
     const consoleOutput = `
-      Issue migrating event. Skipping.
+      Issue migrating event. See log for details.
 `;
     const cliRunSummary_EpV1_Event: ICliRunSummary_EpV1_Event = {
       runMode: this.runMode,
@@ -701,7 +701,7 @@ ${absentApplicationDomainNames.map(x => `
     rctxt?: ICliApplicationRunContext;
   }) => {
     const consoleOutput = `
-      Issue migrating application. Skipping.
+      Issue migrating application. See log for details.
 `;
     const cliRunSummary_EpV1_Application: ICliRunSummary_EpV1_Application = {
       runMode: this.runMode,

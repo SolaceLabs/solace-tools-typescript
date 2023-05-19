@@ -1,12 +1,10 @@
-import {
-  // EEpSdkTask_TargetState,
-  // EpSdkSchemaTask,
-  // IEpSdkSchemaTask_ExecuteReturn,
-  // EpSdkSchemaVersionTask,
-  // IEpSdkSchemaVersionTask_ExecuteReturn,
-  EpSdkError,
-  EpSdkFeatureNotSupportedError,
-} from "@solace-labs/ep-sdk";
+// import {
+//   // EEpSdkTask_TargetState,
+//   // EpSdkSchemaTask,
+//   // IEpSdkSchemaTask_ExecuteReturn,
+//   // EpSdkSchemaVersionTask,
+//   // IEpSdkSchemaVersionTask_ExecuteReturn,
+// } from "@solace-labs/ep-sdk";
 import {
   CliEPApiContentError,
   CliErrorFactory,
@@ -19,6 +17,7 @@ import {
   ECliRunIssueTypes,
   ICliApplicationRunContext,
   ICliRunIssueApplication,
+  CliFeatureNotSupportedError,
 } from "../cli-components";
 import { 
   CliMigrator, 
@@ -104,8 +103,8 @@ export class CliApplicationsMigrator extends CliMigrator {
     CliRunContext.push(rctxt);
     CliRunSummary.processingEpV1Application({ applicationName: epV1Application.name });
 
-    throw new EpSdkFeatureNotSupportedError(logName, this.constructor.name, 'implement processing application', {
-      todo: 'implement me'
+    throw new CliFeatureNotSupportedError(logName, {
+      todo: 'implement processing application'
     });
 
     CliRunContext.pop();
@@ -129,20 +128,18 @@ export class CliApplicationsMigrator extends CliMigrator {
             try {
               await this.migrateApplication({ cliMigratedApplicationDomain, epV1Application });   
             } catch(e: any) {
-              if(e instanceof EpSdkError) {
-                CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.MIGRATE_APPLICATIONS_ERROR, details: { error: e }}));
-                // add to issues log  
-                const rctxt: ICliApplicationRunContext | undefined = CliRunContext.pop() as ICliApplicationRunContext| undefined;
-                const issue: ICliRunIssueApplication = {
-                  type: ECliRunIssueTypes.ApplicationIssue,
-                  epV1Id: epV1Application.id,
-                  epV1Application,
-                  cliRunContext: rctxt,
-                  cause: e
-                };
-                CliRunIssues.add(issue);
-                CliRunSummary.processingEpV1ApplicationIssue({ rctxt });        
-              } else throw e;
+              CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.MIGRATE_APPLICATIONS_ERROR, details: { error: e }}));
+              // add to issues log  
+              const rctxt: ICliApplicationRunContext | undefined = CliRunContext.pop() as ICliApplicationRunContext| undefined;
+              const issue: ICliRunIssueApplication = {
+                type: ECliRunIssueTypes.ApplicationIssue,
+                epV1Id: epV1Application.id,
+                epV1Application,
+                cliRunContext: rctxt,
+                cause: e
+              };
+              CliRunIssues.add(issue);
+              CliRunSummary.processingEpV1ApplicationIssue({ rctxt });        
             }
           }
         } else {
