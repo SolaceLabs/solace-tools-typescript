@@ -1,10 +1,13 @@
-// import {
-  //   // EEpSdkTask_TargetState,
-  //   // EpSdkSchemaTask,
-  //   // IEpSdkSchemaTask_ExecuteReturn,
-  //   // EpSdkSchemaVersionTask,
-  //   // IEpSdkSchemaVersionTask_ExecuteReturn,
-  // } from "@solace-labs/ep-sdk";
+import { 
+  EEpSdkTask_TargetState, 
+  EpSdkEpEventTask, 
+  EpSdkEpEventVersionTask, 
+  EpSdkEpEventsService, 
+  EpSdkEvent, 
+  IEpSdkEpEventTask_ExecuteReturn, 
+  IEpSdkEpEventVersionTask_EnumInfo, 
+  IEpSdkEpEventVersionTask_ExecuteReturn 
+} from "@solace-labs/ep-sdk";
 import {
   CliEPApiContentError,
   CliErrorFactory,
@@ -17,7 +20,6 @@ import {
   ECliRunIssueTypes,
   ICliEventRunContext,
   ICliRunIssueEvent,
-  CliFeatureNotSupportedError,
   ICliRunIssueSchema,
   CliMigrateReferenceIssueError,
   CliInternalCodeInconsistencyError,
@@ -38,7 +40,6 @@ import {
   EpV1Tag,
   EpV1TagResponse,
   EpV1TagsService,
-  EpV1TopicAddress,
   EpV1TopicNodeDTO, 
 } from "../epV1";
 import { 
@@ -48,9 +49,6 @@ import {
   ICliMigratedEvent, 
   ICliMigratedSchema
 } from "./types";
-import { EEpSdkTask_TargetState, EpSdkEpEventTask, EpSdkEpEventVersionTask, EpSdkEpEventsService, EpSdkEvent, IEpSdkEpEventTask_ExecuteReturn, IEpSdkEpEventVersionTask_EnumInfo, IEpSdkEpEventVersionTask_ExecuteReturn } from "@solace-labs/ep-sdk";
-import { unescape } from "lodash";
-
 
 export interface ICliEventsMigrateConfig {
   epV2: {

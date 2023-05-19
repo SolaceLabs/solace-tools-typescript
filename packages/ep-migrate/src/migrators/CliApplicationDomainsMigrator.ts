@@ -97,16 +97,16 @@ export class CliApplicationDomainsMigrator extends CliMigrator {
       enumApplicationDomainIds: [ this.options.cliEnumsMigratorRunMigrateReturn.epV2EnumApplicationDomainId ]
     });
     let topicDomainSettings: TEpSdkApplicationDomainTask_TopicDomainSettings | undefined;
-    let topicDomainEnforcementEnabled = false;
-    if(addressLevels !== undefined) {
-      topicDomainSettings = {
-        brokerType: EpSdkBrokerTypes.Solace,
-        topicString: epV1ApplicationDomain.topicDomain,
-        enumApplicationDomainIds: [ this.options.cliEnumsMigratorRunMigrateReturn.epV2EnumApplicationDomainId],
-        topicDelimiter: EpSdkDefaultTopicDelimitors.Solace
-      };
-      topicDomainEnforcementEnabled = true;
-    }
+    // let topicDomainEnforcementEnabled = false;
+    // if(addressLevels !== undefined) {
+    //   topicDomainSettings = {
+    //     brokerType: EpSdkBrokerTypes.Solace,
+    //     topicString: epV1ApplicationDomain.topicDomain,
+    //     enumApplicationDomainIds: [ this.options.cliEnumsMigratorRunMigrateReturn.epV2EnumApplicationDomainId],
+    //     topicDelimiter: EpSdkDefaultTopicDelimitors.Solace
+    //   };
+    //   topicDomainEnforcementEnabled = true;
+    // }
     const applicationDomainsTask = new EpSdkApplicationDomainTask({
       epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
       applicationDomainName: epV2ApplicationDomainName,
