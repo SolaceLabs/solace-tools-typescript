@@ -14,6 +14,7 @@ import {
 import CliRunContext, { 
   ICliRunContext 
 } from "./CliRunContext";
+import { ICliRunIssue } from "./CliRunIssues";
 
 export class CliErrorFactory {
   public static createCliError = ({logName, error}: {
@@ -239,6 +240,28 @@ export class CliFeatureNotSupportedError extends CliError {
   constructor(internalLogName: string, details: any) {
     super(internalLogName, CliFeatureNotSupportedError.DefaultDescription);
     this.name = CliFeatureNotSupportedError.Name;
+    this.details = details;
+  }
+}
+
+export class CliMigrateReferenceIssueError extends CliError {
+  private static Name = "CliMigrateReferenceIssueError";
+  protected static DefaultDescription = "CLI Migrate Reference Issue Error";
+  private cliRunIssues: Array<ICliRunIssue>;
+  constructor(internalLogName: string, cliRunIssues: Array<ICliRunIssue>) {
+    super(internalLogName, CliMigrateReferenceIssueError.DefaultDescription);
+    this.name = CliMigrateReferenceIssueError.Name;
+    this.cliRunIssues = cliRunIssues;
+  }
+}
+
+export class CliMigrateEventReferenceEnumIssueError extends CliError {
+  private static Name = "CliMigrateEventReferenceEnumIssueError";
+  protected static DefaultDescription = "CLI Migrate Event Reference Enum Issue Error";
+  private details: any;
+  constructor(internalLogName: string, details: any) {
+    super(internalLogName, CliMigrateEventReferenceEnumIssueError.DefaultDescription);
+    this.name = CliMigrateEventReferenceEnumIssueError.Name;
     this.details = details;
   }
 }

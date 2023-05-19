@@ -17,6 +17,7 @@ import {
   ECliRunContext_RunMode,
   CliRunSummary,
   ICliApplicationDomainRunContext,
+  ICliMigrateManagerOptionsEpV1,
 } from "../cli-components";
 import { 
   CliMigrator, 
@@ -38,6 +39,7 @@ import {
 
 
 export interface ICliApplicationDomainsMigrateConfig {
+  epV1?: ICliMigrateManagerOptionsEpV1;
   epV2: {
     // placeholder
   },
@@ -111,7 +113,9 @@ export class CliApplicationDomainsMigrator extends CliMigrator {
       applicationDomainSettings: {
         description: epV1ApplicationDomain.description,
         uniqueTopicAddressEnforcementEnabled: epV1ApplicationDomain.enforceUniqueTopicNames,
-        topicDomainEnforcementEnabled: topicDomainEnforcementEnabled,
+        // EP V1 does not enforce it, so enabling it would fail to migrate
+        // topicDomainEnforcementEnabled: topicDomainEnforcementEnabled,
+        topicDomainEnforcementEnabled: false,
         topicDomains: topicDomainSettings ? [topicDomainSettings] : undefined,
       },
       epSdkTask_TransactionConfig: this.get_IEpSdkTask_TransactionConfig(),
@@ -146,8 +150,28 @@ export class CliApplicationDomainsMigrator extends CliMigrator {
     while (nextPage !== null) {
       const epV1ApplicationDomainsResponse: EpV1ApplicationDomainsResponse = await EpV1ApplicationDomainsService.list12({ pageNumber: nextPage, pageSize: 10 });
       if(epV1ApplicationDomainsResponse.data && epV1ApplicationDomainsResponse.data.length > 0) {
-        for(const epV1ApplicationDomain of epV1ApplicationDomainsResponse.data) {
-          await this.migrateApplicationDomain({ epV1ApplicationDomain: epV1ApplicationDomain as EpV1ApplicationDomain });          
+        for(const applicationDomain of epV1ApplicationDomainsResponse.data) {
+          const epV1ApplicationDomain: EpV1ApplicationDomain = applicationDomain as EpV1ApplicationDomain;
+          let doInclude = true;
+          if(
+            this.options.cliApplicationDomainsMigrateConfig.epV1 && 
+            this.options.cliApplicationDomainsMigrateConfig.epV1.applicationDomainNames
+          ) {
+            if(
+              this.options.cliApplicationDomainsMigrateConfig.epV1.applicationDomainNames.include && 
+              this.options.cliApplicationDomainsMigrateConfig.epV1.applicationDomainNames.include.length > 0
+            ) {
+              doInclude = this.options.cliApplicationDomainsMigrateConfig.epV1.applicationDomainNames.include.includes(epV1ApplicationDomain.name);
+            }
+            if(
+              this.options.cliApplicationDomainsMigrateConfig.epV1.applicationDomainNames.exclude && 
+              this.options.cliApplicationDomainsMigrateConfig.epV1.applicationDomainNames.exclude.length > 0 &&
+              doInclude
+            ) {
+              doInclude = !this.options.cliApplicationDomainsMigrateConfig.epV1.applicationDomainNames.exclude.includes(epV1ApplicationDomain.name);
+            }
+          }
+          if(doInclude) await this.migrateApplicationDomain({ epV1ApplicationDomain: epV1ApplicationDomain as EpV1ApplicationDomain });          
         }
       } else {
         CliRunSummary.processingEpV1ApplicationDomainsNoneFound();

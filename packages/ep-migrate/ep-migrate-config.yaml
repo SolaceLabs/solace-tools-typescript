@@ -17,6 +17,16 @@ epV2:
   apiUrl: https://api.solace.cloud
   token: ${EP_MIGRATE_CLI_SOLACE_CLOUD_TOKEN_V2}
 migrate:
+  epV1:
+    # applicationDomainNames:
+    # - only use it in development
+    # - does not pull through referenced objects, hence will create issue when references are not found 
+    # applicationDomainNames:
+    #   include: 
+    #   - "APIM-Car-Co"
+    #   - "EP_MIGRATE/TEST"
+    #   exclude:
+    #   - "EP_MIGRATE/exclude"
   epV2:
     applicationDomainPrefix: ${EP_MIGRATE_CLI_V2_APPLICATION_DOMAIN_PREFIX}
     versions:

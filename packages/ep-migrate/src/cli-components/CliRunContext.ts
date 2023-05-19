@@ -1,6 +1,6 @@
 
 import { 
-  ApplicationDomain, SchemaObject, SchemaVersion,
+  ApplicationDomain, EventVersion, SchemaObject, SchemaVersion,
 } from "@solace-labs/ep-openapi-node";
 import { 
   EpV1Application,
@@ -10,6 +10,7 @@ import {
   EpV1Tag
 } from "../epV1";
 import { ECliMigrateManagerRunState } from "./CliMigrateManager";
+import { EpSdkEvent } from "@solace-labs/ep-sdk";
 
 // }
 export enum ECliRunContext_RunMode {
@@ -50,6 +51,8 @@ export interface ICliEventRunContext extends Partial<ICliRunContext> {
   },
   epV2: {
     applicationDomain: ApplicationDomain;
+    epSdkEvent?: EpSdkEvent;
+    eventVersion?: EventVersion;
   }
 }
 
