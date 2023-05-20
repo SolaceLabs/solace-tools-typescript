@@ -1,3 +1,6 @@
+import { 
+  CustomAttributeDefinition 
+} from "@solace-labs/ep-openapi-node";
 import {
   EEpSdk_VersionTaskStrategy,
   EpSdkTask,
@@ -5,6 +8,8 @@ import {
   IEpSdkTask_TransactionConfig,
   EpSdkStatesService,
   EEpSdkStateDTONames,
+  EEpSdkCustomAttributeEntityTypes,
+  TEpSdkCustomAttribute,
 } from "@solace-labs/ep-sdk";
 import {
   CliInternalCodeInconsistencyError,
@@ -16,6 +21,9 @@ import {
   ECliMigrate_TargetStates, 
   ECliMigrate_TargetVersionStrategies 
 } from "./types";
+import { 
+  EpV1Tag 
+} from "../epV1";
 
 
 export interface ICliMigratorOptions {
@@ -31,6 +39,34 @@ export abstract class CliMigrator {
   protected transactionId: string;
   protected runMode: ECliRunContext_RunMode;
  
+  protected static EpV2TagCustomAttributeDefinition = {
+    name: "tags",
+    scope: CustomAttributeDefinition.scope.APPLICATION_DOMAIN,
+    valueType: CustomAttributeDefinition.valueType.STRING,
+    associatedEntityTypes: [ 
+      EEpSdkCustomAttributeEntityTypes.APPLICATION_DOMAIN,
+      EEpSdkCustomAttributeEntityTypes.APPLICATION,
+      EEpSdkCustomAttributeEntityTypes.SCHEMA_OBJECT,
+      EEpSdkCustomAttributeEntityTypes.EVENT
+    ]
+  }
+  
+  protected transformEpV1TagNames2EpV2CustomAttributeValue(epV1Tags: Array<EpV1Tag>): string {
+    return epV1Tags.map( x => x.name).join(' - ').replaceAll(',','').trim();
+  }
+  protected transformEpV1Tags2EpSdkCustomAttribute({ epV1Tags, applicationDomainId }:{
+    epV1Tags: Array<EpV1Tag>;
+    applicationDomainId: string;
+  }): TEpSdkCustomAttribute {
+    return {
+      name: CliMigrator.EpV2TagCustomAttributeDefinition.name,
+      value: this.transformEpV1TagNames2EpV2CustomAttributeValue(epV1Tags),
+      scope: CliMigrator.EpV2TagCustomAttributeDefinition.scope,
+      valueType: CliMigrator.EpV2TagCustomAttributeDefinition.valueType,
+      applicationDomainId,
+    };
+  }
+
   constructor(options: ICliMigratorOptions, runMode: ECliRunContext_RunMode) {
     this.options = options;
     this.transactionId = CliUtils.getUUID();

@@ -34,7 +34,8 @@ import {
 import { 
   ECliMigrateManagerMode, 
   ECliMigrateManagerRunState, 
-  ICliMigrateManagerOptions 
+  ICliMigrateManagerOptions, 
+  ICliMigrateManagerOptionsEpV1
 } from './CliMigrateManager';
 import { 
   ICliApplicationDomainsMigrateConfig,
@@ -60,10 +61,11 @@ interface ICliConfigFileEpConfig {
   token: string;
 }
 interface ICliConfigFileMigrateConfig {
+  epV1?: ICliMigrateManagerOptionsEpV1;
   epV2: {
     applicationDomainPrefix?: string;
     versions: ICliConfigEp2Versions;
-  },
+  };
   enums: ICliEnumsMigrateConfig;
   applicationDomains: ICliApplicationDomainsMigrateConfig;
   schemas: ICliSchemasMigrateConfig;
@@ -227,6 +229,7 @@ class CliConfig {
         runId,
         cliMigrateManagerMode: ECliMigrateManagerMode.RELEASE_MODE,
         cliMigrateManagerRunState: runState,
+        epV1: configFileContents.migrate.epV1,
         epV2: {
           applicationDomainPrefix: configFileContents.migrate.epV2 ? configFileContents.migrate.epV2.applicationDomainPrefix : undefined
         },
@@ -241,6 +244,7 @@ class CliConfig {
           }
         },
         applicationDomains: {
+          epV1: configFileContents.migrate.epV1,
           epV2: {}
         },
         schemas: {

@@ -14,7 +14,13 @@ import {
   EventsService,
   ApplicationsService,
   ApplicationsResponse,
-  Application
+  Application,
+  IdsResponse,
+  Tag,
+  TagsService,
+  TagResponse,
+  TopicAddress,
+  TopicNodeDTO
 } from "@solace-labs/ep-v1-openapi-node";
 export type EpV1Enum = Required<Enum>;
 export type EpV1EnumValue = EnumValue;
@@ -37,6 +43,16 @@ export type EpV1Event = Required<Event>;
 export class EpV1ApplicationsService extends ApplicationsService {}
 export type EpV1ApplicationsResponse = ApplicationsResponse;
 export type EpV1Application = Required<Application>;
+
+export class EpV1TagsService extends TagsService {}
+export type EpV1TagResponse = TagResponse;
+export type EpV1IdsResponse = IdsResponse;
+export type EpV1Tag = Tag;
+
+export type EpV1TopicAddress = TopicAddress;
+export type EpV1TopicNodeDTO = TopicNodeDTO & {
+  enumId?: string;
+}
 
 export interface EpV1ApiMeta {
   pagination: {

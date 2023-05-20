@@ -14,6 +14,7 @@ import {
 import CliRunContext, { 
   ICliRunContext 
 } from "./CliRunContext";
+import { ICliRunIssue } from "./CliRunIssues";
 
 export class CliErrorFactory {
   public static createCliError = ({logName, error}: {
@@ -218,5 +219,49 @@ export class CliUsageError extends CliError {
     this.details = details;
     this.message = message;
     this.name = CliUsageError.Name;
+  }
+}
+
+export class CliEPMigrateTagsError extends CliError {
+  protected static DefaultDescription = "Migrate Tags Error";
+  private cause: any;
+  private details: any;
+  constructor(internalLogName: string, cause: any, details: any) {
+    super(internalLogName, CliEPMigrateTagsError.DefaultDescription);
+    this.cause = cause;
+    this.details = details;
+  }
+}
+
+export class CliFeatureNotSupportedError extends CliError {
+  private static Name = "CliFeatureNotSupportedError";
+  protected static DefaultDescription = "CLI Feature Not Supported Error";
+  private details: any;
+  constructor(internalLogName: string, details: any) {
+    super(internalLogName, CliFeatureNotSupportedError.DefaultDescription);
+    this.name = CliFeatureNotSupportedError.Name;
+    this.details = details;
+  }
+}
+
+export class CliMigrateReferenceIssueError extends CliError {
+  private static Name = "CliMigrateReferenceIssueError";
+  protected static DefaultDescription = "CLI Migrate Reference Issue Error";
+  private cliRunIssues: Array<ICliRunIssue>;
+  constructor(internalLogName: string, cliRunIssues: Array<ICliRunIssue>) {
+    super(internalLogName, CliMigrateReferenceIssueError.DefaultDescription);
+    this.name = CliMigrateReferenceIssueError.Name;
+    this.cliRunIssues = cliRunIssues;
+  }
+}
+
+export class CliMigrateEventReferenceEnumIssueError extends CliError {
+  private static Name = "CliMigrateEventReferenceEnumIssueError";
+  protected static DefaultDescription = "CLI Migrate Event Reference Enum Issue Error";
+  private details: any;
+  constructor(internalLogName: string, details: any) {
+    super(internalLogName, CliMigrateEventReferenceEnumIssueError.DefaultDescription);
+    this.name = CliMigrateEventReferenceEnumIssueError.Name;
+    this.details = details;
   }
 }

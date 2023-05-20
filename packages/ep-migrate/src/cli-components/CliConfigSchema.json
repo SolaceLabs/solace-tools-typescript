@@ -56,6 +56,30 @@
       ],
       "additionalProperties": false,
       "properties": {
+        "epV1": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "properties": {
+            "applicationDomainNames": {
+              "type": ["object", "null"],
+              "additionalProperties": false,
+              "properties": {
+                "include": {
+                  "type": ["array", "null"],
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "exclude": {
+                  "type": ["array", "null"],
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
         "epV2": {
           "type": ["object"],
           "required": ["versions"],

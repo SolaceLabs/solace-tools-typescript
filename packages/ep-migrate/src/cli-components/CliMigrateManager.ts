@@ -51,11 +51,18 @@ export enum ECliMigrateManagerMode {
   // TEST_MODE = "test_mode",
   // TEST_MODE_KEEP = "test_mode_keep",
 }
+export interface ICliMigrateManagerOptionsEpV1 {
+  applicationDomainNames?: {
+    include?: Array<string>;
+    exclude?: Array<string>;
+  }
+}
 export interface ICliMigrateManagerOptions {
   appName: string;
   runId: string;
   cliMigrateManagerMode: ECliMigrateManagerMode;
   cliMigrateManagerRunState: ECliMigrateManagerRunState;
+  epV1?: ICliMigrateManagerOptionsEpV1;
   epV2: {
     applicationDomainPrefix?: string;
   },
