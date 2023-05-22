@@ -1,4 +1,5 @@
 import {
+  CustomAttribute,
   CustomAttributeDefinition,
   Pagination,
   SchemaObject,
@@ -28,10 +29,66 @@ import {
 import { 
   EpSdkVersionServiceClass 
 } from "./EpSdkVersionService";
+import { 
+  EEpSdkCustomAttributeEntityTypes, 
+  TEpSdkCustomAttribute 
+} from "../types";
 import EpSdkSchemasService from "./EpSdkSchemasService";
+import EpSdkCustomAttributesService from "./EpSdkCustomAttributesService";
 
 /** @category Services */
 export class EpSdkSchemaVersionsServiceClass extends EpSdkVersionServiceClass {
+
+  private async updateSchemaVersion({ xContextId, update }:{
+    xContextId?: string;
+    update: SchemaVersion;
+  }): Promise<SchemaVersion> {
+    const funcName = 'updateEnumVersion';
+    const logName = `${EpSdkSchemaVersionsServiceClass.name}.${funcName}()`;
+    /* istanbul ignore next */
+    if(update.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'update.id === undefined', { update });
+    const schemaVersionResponse: SchemaVersionResponse = await SchemasService.updateSchemaVersion({ 
+      xContextId, 
+      id: update.id,
+      requestBody: update
+    })
+    /* istanbul ignore next */
+    if(schemaVersionResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'schemaVersionResponse.data === undefined', { schemaVersionResponse });
+    return schemaVersionResponse.data;
+  }
+
+  /**
+   * Sets the custom attributes in the list on the Schema Version object.
+   * Creates attribute definitions / adds entity type 'schemaVersion' if it doesn't exist.
+   */
+  public async setCustomAttributes({ xContextId, schemaVersionId, epSdkCustomAttributes}:{
+    xContextId?: string;
+    schemaVersionId: string;
+    epSdkCustomAttributes: Array<TEpSdkCustomAttribute>;
+  }): Promise<SchemaVersion> {
+    const funcName = 'setCustomAttributes';
+    const logName = `${EpSdkSchemaVersionsServiceClass.name}.${funcName}()`;
+    const schemaVersionResponse: SchemaVersionResponse = await SchemasService.getSchemaVersion({ 
+      xContextId,
+      versionId: schemaVersionId
+    });
+    /* istanbul ignore next */
+    if(schemaVersionResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'schemaVersionResponse.data === undefined', { schemaVersionResponse });    
+    const customAttributes: Array<CustomAttribute> = await EpSdkCustomAttributesService.createCustomAttributesWithNew({
+      xContextId,
+      existingCustomAttributes: schemaVersionResponse.data?.customAttributes,
+      epSdkCustomAttributes,
+      epSdkCustomAttributeEntityType: EEpSdkCustomAttributeEntityTypes.SCHEMA_VERSION,
+    });
+    return await this.updateSchemaVersion({
+      xContextId,
+      update: {
+        ...schemaVersionResponse.data,
+        customAttributes,
+      }
+    });
+  }
+
   public getVersionByVersion = async ({
     xContextId, schemaId,
     schemaVersionString,

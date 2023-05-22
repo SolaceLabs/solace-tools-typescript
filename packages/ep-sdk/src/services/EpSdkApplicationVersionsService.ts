@@ -9,19 +9,24 @@ import {
   ApplicationsResponse,
   StateChangeRequestResponse,
   EventVersion,
-  CustomAttributeDefinition
+  CustomAttributeDefinition,
+  CustomAttribute
 } from '@solace-labs/ep-openapi-node';
 import { 
   EpSdkApiContentError 
 } from "../utils";
 import { 
-  EpApiMaxPageSize, EpSdkCustomAttributeNameSourceApplicationDomainId 
+  EpApiMaxPageSize, 
+  EpSdkCustomAttributeNameSourceApplicationDomainId 
 } from '../constants';
 import { 
-  EpSdkPagination 
+  EEpSdkCustomAttributeEntityTypes,
+  EpSdkPagination, TEpSdkCustomAttribute 
 } from "../types";
 import EpSdkApplicationsService from "./EpSdkApplicationsService";
-import { EpSdkVersionServiceClass } from "./EpSdkVersionService";
+import { 
+  EpSdkVersionServiceClass 
+} from "./EpSdkVersionService";
 import EpSdkEpEventVersionsService from './EpSdkEpEventVersionsService';
 import { 
   EEpSdkTask_TargetState, 
@@ -31,6 +36,7 @@ import {
   IEpSdkApplicationTask_ExecuteReturn, 
   IEpSdkApplicationVersionTask_ExecuteReturn 
 } from '../tasks';
+import EpSdkCustomAttributesService from './EpSdkCustomAttributesService';
 
 /** @category Services */
 export type EpSdkApplication = Required<Pick<Application, "applicationDomainId" | "id" | "name">> & Omit<Application, "applicationDomainId" | "id" | "name">;
@@ -61,6 +67,56 @@ export type EpSdkApplicationAndVersionResponse = EpSdkApplicationAndVersion & {
 
 /** @category Services */
 export class EpSdkApplicationVersionsServiceClass extends EpSdkVersionServiceClass {
+
+  private async updateApplicationVersion({ xContextId, update }:{
+    xContextId?: string;
+    update: ApplicationVersion;
+  }): Promise<ApplicationVersion> {
+    const funcName = 'updateApplicationVersion';
+    const logName = `${EpSdkApplicationVersionsServiceClass.name}.${funcName}()`;
+    /* istanbul ignore next */
+    if(update.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'update.id === undefined', { update });
+    const applicationVersionResponse: ApplicationVersionResponse = await ApplicationsService.updateApplicationVersion({
+      xContextId,
+      versionId: update.id,
+      requestBody: update
+    })
+    /* istanbul ignore next */
+    if(applicationVersionResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'applicationVersionResponse.data === undefined', { applicationVersionResponse });
+    return applicationVersionResponse.data;
+  }
+
+  /**
+   * Sets the custom attributes in the list on the Event Version object.
+   * Creates attribute definitions / adds entity type 'eventVersion' if it doesn't exist.
+   */
+  public async setCustomAttributes({ xContextId, applicationVersionId, epSdkCustomAttributes}:{
+    xContextId?: string;
+    applicationVersionId: string;
+    epSdkCustomAttributes: Array<TEpSdkCustomAttribute>;
+  }): Promise<ApplicationVersion> {
+    const funcName = 'setCustomAttributes';
+    const logName = `${EpSdkApplicationVersionsServiceClass.name}.${funcName}()`;
+    const applicationVersionResponse: ApplicationVersionResponse = await ApplicationsService.getApplicationVersion({
+      xContextId,
+      versionId: applicationVersionId
+    });
+    /* istanbul ignore next */
+    if(applicationVersionResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'applicationVersionResponse.data === undefined', { applicationVersionResponse });    
+    const customAttributes: Array<CustomAttribute> = await EpSdkCustomAttributesService.createCustomAttributesWithNew({
+      xContextId,
+      existingCustomAttributes: applicationVersionResponse.data?.customAttributes,
+      epSdkCustomAttributes,
+      epSdkCustomAttributeEntityType: EEpSdkCustomAttributeEntityTypes.APPLICATION_VERSION,
+    });
+    return await this.updateApplicationVersion({
+      xContextId,
+      update: {
+        ...applicationVersionResponse.data,
+        customAttributes,
+      }
+    });
+  }
 
   public getObjectAndVersionForApplicationId = async({ xContextId, applicationId, stateId, versionString }:{
     applicationId: string;
