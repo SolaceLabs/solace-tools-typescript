@@ -9,3 +9,8 @@ enhancements:
   - added applicationDomain scoped custom attribute defintions feature
     - Note: updating custom attribute definition when applicationDomain scoped does not work, throw error. see source code for more info.
 - added scope custom attributes to each service class
+- added method setCustomAttributes to version service classes:
+  - EpSdkEnumVersionsService.ts
+  - EpSdkSchemaVersionsService.ts
+  - EpSdkEventVersionsService.ts
+  - EpSdkApplicationVersionsService.ts

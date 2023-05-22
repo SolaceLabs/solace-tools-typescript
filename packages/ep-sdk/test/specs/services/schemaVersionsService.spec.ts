@@ -7,6 +7,7 @@ import {
   ApiError,
   ApplicationDomainResponse,
   ApplicationDomainsService,
+  CustomAttributeDefinition,
   SchemaResponse,
   SchemasService,
   SchemaVersion,
@@ -20,6 +21,10 @@ import {
   EEpSdkSchemaType,
   EpSdkStatesService,
   EpSdkSchemaVersionsService,
+  TEpSdkCustomAttribute,
+  EpSdkApplicationDomainTask,
+  EEpSdkTask_TargetState,
+  EpSdkCustomAttributeDefinitionTask,
 } from "../../../src";
 
 const scriptName: string = path.basename(__filename);
@@ -35,21 +40,50 @@ let SchemaVersionId: string | undefined;
 const SchemaNextVersionString = "1.0.1";
 let SchemaNextVersionId: string | undefined;
 
+const VersionCustomAttribute: TEpSdkCustomAttribute = {
+  name: 'VersionCustomAttribute',
+  value: "VersionCustomAttribute",
+  valueType: CustomAttributeDefinition.valueType.STRING,
+  scope: CustomAttributeDefinition.scope.ORGANIZATION
+};
+
 const initializeGlobals = () => {
   ApplicationDomainName = `${TestConfig.getAppId()}/services/${TestSpecName}`;
   SchemaName = `${TestConfig.getAppId()}-services-${TestSpecName}`;
 };
 
+const cleanTest = async() => {
+  try {
+    const epSdkApplicationDomainTask_1 = new EpSdkApplicationDomainTask({
+      epSdkTask_TargetState: EEpSdkTask_TargetState.ABSENT,
+      applicationDomainName: ApplicationDomainName,
+    });
+    await epSdkApplicationDomainTask_1.execute('contextId');
+
+    const epSdkCustomAttributeDefinitionTask_1 = new EpSdkCustomAttributeDefinitionTask({
+      epSdkTask_TargetState: EEpSdkTask_TargetState.ABSENT,
+      attributeName: VersionCustomAttribute.name,
+      customAttributeDefinitionObjectSettings: {}
+    });
+    await epSdkCustomAttributeDefinitionTask_1.execute();
+
+  } catch (e) {
+    if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+    expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+    expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
+  }
+}
+
 describe(`${scriptName}`, () => {
   before(async () => {
     initializeGlobals();
     TestContext.newItId();
-    const applicationDomainResponse: ApplicationDomainResponse =
-      await ApplicationDomainsService.createApplicationDomain({
-        requestBody: {
-          name: ApplicationDomainName,
-        },
-      });
+    await cleanTest();
+    const applicationDomainResponse: ApplicationDomainResponse = await ApplicationDomainsService.createApplicationDomain({
+      requestBody: {
+        name: ApplicationDomainName,
+      },
+    });
     ApplicationDomainId = applicationDomainResponse.data.id;
 
     const schemaResponse: SchemaResponse = await SchemasService.createSchema({
@@ -69,10 +103,7 @@ describe(`${scriptName}`, () => {
 
   after(async () => {
     TestContext.newItId();
-    // delete application domain
-    await EpSdkApplicationDomainsService.deleteById({
-      applicationDomainId: ApplicationDomainId,
-    });
+    await cleanTest();
   });
 
   it(`${scriptName}: should create schema version`, async () => {
@@ -82,22 +113,35 @@ describe(`${scriptName}`, () => {
         description: `schema version for schema = ${SchemaName}, id=${SchemaId}`,
         version: SchemaVersionString,
       };
-
-      const created: SchemaVersion =
-        await EpSdkSchemaVersionsService.createSchemaVersion({
-          applicationDomainId: ApplicationDomainId,
-          schemaId: SchemaId,
-          schemaVersion: create,
-          targetLifecycleStateId: EpSdkStatesService.releasedId,
-        });
+      const created: SchemaVersion = await EpSdkSchemaVersionsService.createSchemaVersion({
+        applicationDomainId: ApplicationDomainId,
+        schemaId: SchemaId,
+        schemaVersion: create,
+        targetLifecycleStateId: EpSdkStatesService.releasedId,
+      });
       SchemaVersionId = created.id;
     } catch (e) {
-      if (e instanceof ApiError)
-        expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
-        .to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
-        .true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
+    }
+  });
+
+  it(`${scriptName}: should set VersionCustomAttribute on schema version`, async () => {
+    try {
+      const schemaVersion: SchemaVersion = await EpSdkSchemaVersionsService.setCustomAttributes({
+        schemaVersionId: SchemaVersionId,
+        epSdkCustomAttributes: [VersionCustomAttribute],
+      });
+      const customAttributes = schemaVersion.customAttributes;
+      const message = TestLogger.createLogMessage("customAttributes", customAttributes);
+      expect(customAttributes, message).to.not.be.undefined;
+      // DEBUG
+      // expect(false, message).to.be.true;
+    } catch (e) {
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 

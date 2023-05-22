@@ -1,6 +1,11 @@
+import { 
+  ApplicationDomain, 
+} from "@solace-labs/ep-openapi-node";
 import {
+  EEpSdkTask_Action,
   EEpSdkTask_TargetState,
   EpSdkApplicationDomainTask,
+  EpSdkApplicationDomainsService,
   EpSdkBrokerTypes,
   EpSdkCustomAttributeDefinitionTask,
   EpSdkDefaultTopicDelimitors,
@@ -18,6 +23,8 @@ import {
   CliRunSummary,
   ICliApplicationDomainRunContext,
   ICliMigrateManagerOptionsEpV1,
+  CliMigrateManager,
+  CliConfig,
 } from "../cli-components";
 import { 
   CliMigrator, 
@@ -61,6 +68,31 @@ export class CliApplicationDomainsMigrator extends CliMigrator {
 
   constructor(options: ICliApplicationDomainsMigratorOptions, runMode: ECliRunContext_RunMode) {
     super(options, runMode);
+  }
+
+  private async presentCustomAttributes({ epSdkApplicationDomainTask_ExecuteReturn }:{
+    epSdkApplicationDomainTask_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn;
+  }): Promise<ApplicationDomain> {
+    const funcName = 'presentCustomAttributes';
+    const logName = `${CliApplicationDomainsMigrator.name}.${funcName}()`;
+    // runId
+    if(epSdkApplicationDomainTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action !== EEpSdkTask_Action.CREATE) return epSdkApplicationDomainTask_ExecuteReturn.epObject;
+    /* istanbul ignore next */
+    if(epSdkApplicationDomainTask_ExecuteReturn.epObject.id === undefined) throw new CliEPApiContentError(logName, "epSdkApplicationDomainTask_ExecuteReturn.epObject.id === undefined", {
+      applicationDomain: epSdkApplicationDomainTask_ExecuteReturn.epObject,
+    });
+    const newApplicationDomain: ApplicationDomain = await EpSdkApplicationDomainsService.setCustomAttributes({
+      applicationDomainId: epSdkApplicationDomainTask_ExecuteReturn.epObject.id,
+      epSdkCustomAttributes: [
+        { 
+          name: CliMigrateManager.EpV2RunIdCustomAttributeDefinition.name,
+          scope: CliMigrateManager.EpV2RunIdCustomAttributeDefinition.scope,
+          valueType: CliMigrateManager.EpV2RunIdCustomAttributeDefinition.valueType,
+          value: CliConfig.getRunId(),
+        }
+      ]
+    });
+    return newApplicationDomain;
   }
 
   private async presentCustomAttributeDefinitions({ applicationDomainId }:{
@@ -107,7 +139,7 @@ export class CliApplicationDomainsMigrator extends CliMigrator {
       };
       //topicDomainEnforcementEnabled = true;
     }
-    const applicationDomainsTask = new EpSdkApplicationDomainTask({
+    const applicationDomainTask = new EpSdkApplicationDomainTask({
       epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
       applicationDomainName: epV2ApplicationDomainName,
       applicationDomainSettings: {
@@ -121,7 +153,7 @@ export class CliApplicationDomainsMigrator extends CliMigrator {
       epSdkTask_TransactionConfig: this.get_IEpSdkTask_TransactionConfig(),
       checkmode: false,
     });
-    const epSdkApplicationDomainTask_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn = await this.executeTask({ epSdkTask: applicationDomainsTask });
+    const epSdkApplicationDomainTask_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn = await this.executeTask({ epSdkTask: applicationDomainTask });
     /* istanbul ignore next */
     if(epSdkApplicationDomainTask_ExecuteReturn.epObject.id === undefined) throw new CliEPApiContentError(logName, "epSdkApplicationDomainTask_ExecuteReturn.epObject.id === undefined", {
       applicationDomainObject: epSdkApplicationDomainTask_ExecuteReturn.epObject,
@@ -130,6 +162,9 @@ export class CliApplicationDomainsMigrator extends CliMigrator {
     await this.presentCustomAttributeDefinitions({ 
       applicationDomainId: epSdkApplicationDomainTask_ExecuteReturn.epObject.id
     });
+    // set custom attributes
+    epSdkApplicationDomainTask_ExecuteReturn.epObject = await this.presentCustomAttributes({ epSdkApplicationDomainTask_ExecuteReturn });
+    // summary & log
     CliRunSummary.presentEpV2ApplicationDomain({ epSdkApplicationDomainTask_ExecuteReturn });
     CliLogger.trace(CliLogger.createLogEntry(logName, {code: ECliStatusCodes.PRESENT_EP_V2_APPLICATION_DOMAIN, details: { 
       epSdkApplicationDomainTask_ExecuteReturn,

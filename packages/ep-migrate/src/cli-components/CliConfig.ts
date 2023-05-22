@@ -120,15 +120,9 @@ class CliConfig {
   };
 
   private generatedRunId = () => {
-    const pad = (n: number, pad?: number): string => {
-      return String(n).padStart(pad ? pad : 2, "0");
-    };
+    const pad = (n: number, pad?: number): string => { return String(n).padStart(pad ? pad : 2, "0"); };
     const d = new Date();
-    return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(
-      d.getUTCDate()
-    )}-${pad(d.getUTCHours())}-${pad(d.getUTCMinutes())}-${pad(
-      d.getUTCSeconds()
-    )}-${pad(d.getUTCMilliseconds(), 3)}`;
+    return `${d.getUTCFullYear()}_${pad(d.getUTCMonth() + 1)}_${pad(d.getUTCDate())}_${pad(d.getUTCHours())}_${pad(d.getUTCMinutes())}_${pad(d.getUTCSeconds())}_${pad(d.getUTCMilliseconds(), 3)}`;
   };
 
   private expandEnvVar(configFile: string, key: string, value: string): string {
@@ -323,7 +317,10 @@ class CliConfig {
     const funcName = "logConfig";
     const logName = `${CliConfig.name}.${funcName}()`;
     this.assertIsInitialized();
-    console.log(`\nLog file: ${this.config.cliLoggerConfig.logFile}\n`);
+    console.log('\n');
+    console.log(`Version: ${this.cliVersion}`);
+    console.log(`RunId: ${this.config.runId}`);
+    console.log(`Log file: ${this.config.cliLoggerConfig.logFile}\n`);
     CliLogger.info(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.INITIALIZED, message: "config", details: {
       cliVersion: this.cliVersion,
       commandLineOptionValues: this.commandLineOptionValues ? this.commandLineOptionValues : 'undefined',
@@ -333,8 +330,12 @@ class CliConfig {
   };
 
   public getAppName = (): string => {
-    if (this.config) return this.config.appName;
+    if(this.config) return this.config.appName;
     return DefaultAppName;
+  };
+  public getRunId = (): string => {
+    this.assertIsInitialized();
+    return this.config.runId;
   };
   public getCliConfig = (): ICliConfig => {
     this.assertIsInitialized();

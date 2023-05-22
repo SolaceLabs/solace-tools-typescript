@@ -5,9 +5,11 @@ import {
   EpSdkSchemaVersionTask,
   IEpSdkSchemaVersionTask_ExecuteReturn,
   EpSdkSchemasService,
+  EEpSdkTask_Action,
+  EpSdkSchemaVersionsService,
 } from "@solace-labs/ep-sdk";
 import {
-  SchemaObject,
+  SchemaObject, SchemaVersion,
 } from "@solace-labs/ep-openapi-node";
 import {
   CliEPApiContentError,
@@ -22,6 +24,8 @@ import {
   ICliRunIssueSchema,
   ECliRunIssueTypes,
   CliEPMigrateTagsError,
+  CliMigrateManager,
+  CliConfig,
 } from "../cli-components";
 import { 
   CliMigrator, 
@@ -67,6 +71,55 @@ export class CliSchemasMigrator extends CliMigrator {
 
   constructor(options: ICliSchemasMigratorOptions, runMode: ECliRunContext_RunMode) {
     super(options, runMode);
+  }
+
+  private async presentSchemaCustomAttributes({ epSdkSchemaTask_ExecuteReturn }:{
+    epSdkSchemaTask_ExecuteReturn: IEpSdkSchemaTask_ExecuteReturn;
+  }): Promise<SchemaObject> {
+    const funcName = 'presentSchemaCustomAttributes';
+    const logName = `${CliSchemasMigrator.name}.${funcName}()`;
+    // runId
+    if(epSdkSchemaTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action !== EEpSdkTask_Action.CREATE) return epSdkSchemaTask_ExecuteReturn.epObject;
+    /* istanbul ignore next */
+    if(epSdkSchemaTask_ExecuteReturn.epObject.id === undefined) throw new CliEPApiContentError(logName, "epSdkSchemaTask_ExecuteReturn.epObject.id === undefined", { schemaObject: epSdkSchemaTask_ExecuteReturn.epObject });    
+    const newSchemaObject: SchemaObject = await EpSdkSchemasService.setCustomAttributes({
+      schemaId: epSdkSchemaTask_ExecuteReturn.epObject.id,
+      epSdkCustomAttributes: [
+        { 
+          name: CliMigrateManager.EpV2RunIdCustomAttributeDefinition.name,
+          scope: CliMigrateManager.EpV2RunIdCustomAttributeDefinition.scope,
+          valueType: CliMigrateManager.EpV2RunIdCustomAttributeDefinition.valueType,
+          value: CliConfig.getRunId(),
+        }
+      ]
+    });
+    return newSchemaObject;
+  }
+
+  private async presentSchemaVersionCustomAttributes({ epSdkSchemaVersionTask_ExecuteReturn }:{
+    epSdkSchemaVersionTask_ExecuteReturn: IEpSdkSchemaVersionTask_ExecuteReturn;
+  }): Promise<SchemaVersion> {
+    const funcName = 'presentSchemaVersionCustomAttributes';
+    const logName = `${CliSchemasMigrator.name}.${funcName}()`;
+    // runId
+    if(
+      epSdkSchemaVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action !== EEpSdkTask_Action.CREATE_FIRST_VERSION &&
+      epSdkSchemaVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action !== EEpSdkTask_Action.CREATE_NEW_VERSION
+    ) return epSdkSchemaVersionTask_ExecuteReturn.epObject;
+    /* istanbul ignore next */
+    if(epSdkSchemaVersionTask_ExecuteReturn.epObject.id === undefined) throw new CliEPApiContentError(logName, "epSdkSchemaVersionTask_ExecuteReturn.epObject.id === undefined", { schemaVersion: epSdkSchemaVersionTask_ExecuteReturn.epObject });    
+    const newSchemaVersion: SchemaVersion = await EpSdkSchemaVersionsService.setCustomAttributes({
+      schemaVersionId: epSdkSchemaVersionTask_ExecuteReturn.epObject.id,
+      epSdkCustomAttributes: [
+        { 
+          name: CliMigrateManager.EpV2RunIdCustomAttributeDefinition.name,
+          scope: CliMigrateManager.EpV2RunIdCustomAttributeDefinition.scope,
+          valueType: CliMigrateManager.EpV2RunIdCustomAttributeDefinition.valueType,
+          value: CliConfig.getRunId(),
+        }
+      ]
+    });
+    return newSchemaVersion;
   }
 
   private async getTags({ id }:{
@@ -145,6 +198,8 @@ export class CliSchemasMigrator extends CliMigrator {
     rctxt.epV2.schemaObject = schemaObject;
     /* istanbul ignore next */
     if (schemaObject.id === undefined) throw new CliEPApiContentError(logName,"schemaObject.id === undefined", { schemaObject });
+    // set custom attributes
+    epSdkSchemaTask_ExecuteReturn.epObject = await this.presentSchemaCustomAttributes({ epSdkSchemaTask_ExecuteReturn });
     CliLogger.trace(CliLogger.createLogEntry(logName, {code: ECliStatusCodes.PRESENT_EP_V2_SCHEMA, details: { epSdkSchemaTask_ExecuteReturn }}));
     CliRunSummary.presentEpV2Schema({ applicationDomainName: cliMigratedApplicationDomain.epV2ApplicationDomain.name, epSdkSchemaTask_ExecuteReturn });
     // present the schema version
@@ -164,6 +219,8 @@ export class CliSchemasMigrator extends CliMigrator {
     });
     const epSdkSchemaVersionTask_ExecuteReturn: IEpSdkSchemaVersionTask_ExecuteReturn = await this.executeTask({ epSdkTask: epSdkSchemaVersionTask });
     rctxt.epV2.schemaVersion = epSdkSchemaVersionTask_ExecuteReturn.epObject;
+    // set custom attributes
+    epSdkSchemaVersionTask_ExecuteReturn.epObject = await this.presentSchemaVersionCustomAttributes({ epSdkSchemaVersionTask_ExecuteReturn });
     // migrate tags
     schemaObject = await this.migrateTags({ epV1Tags, schemaObject });
 

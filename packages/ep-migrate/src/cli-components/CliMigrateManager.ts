@@ -1,4 +1,9 @@
 import { 
+  EEpSdkCustomAttributeEntityTypes, 
+  EEpSdkTask_TargetState, 
+  EpSdkCustomAttributeDefinitionTask, 
+} from "@solace-labs/ep-sdk";
+import { 
   CliEnumsMigrator, 
   ICliEnumsMigratorRunReturn, 
   ICliEnumsMigrateConfig, 
@@ -40,6 +45,7 @@ import CliRunSummary, {
 import { 
   CliUtils 
 } from "./CliUtils";
+import { CustomAttributeDefinition } from "@solace-labs/ep-openapi-node";
 
 export enum ECliMigrateManagerRunState {
   PRESENT = "present",
@@ -76,8 +82,38 @@ export interface ICliMigrateManagerOptions {
 export class CliMigrateManager {
   private cliMigrateManagerOptions: ICliMigrateManagerOptions;
 
+  public static EpV2RunIdCustomAttributeDefinition = {
+    name: "ep-migrate-run-id",
+    scope: CustomAttributeDefinition.scope.ORGANIZATION,
+    valueType: CustomAttributeDefinition.valueType.STRING,
+    associatedEntityTypes: [ 
+      EEpSdkCustomAttributeEntityTypes.APPLICATION_DOMAIN,
+      EEpSdkCustomAttributeEntityTypes.APPLICATION,
+      EEpSdkCustomAttributeEntityTypes.APPLICATION_VERSION,
+      EEpSdkCustomAttributeEntityTypes.EVENT,
+      EEpSdkCustomAttributeEntityTypes.EVENT_VERSION,
+      EEpSdkCustomAttributeEntityTypes.SCHEMA_OBJECT,
+      EEpSdkCustomAttributeEntityTypes.SCHEMA_VERSION,
+      EEpSdkCustomAttributeEntityTypes.ENUM,
+      EEpSdkCustomAttributeEntityTypes.ENUM_VERSION,
+    ],
+  }
+
   constructor(cliMigrateManagerOptions: ICliMigrateManagerOptions) {
     this.cliMigrateManagerOptions = cliMigrateManagerOptions;
+  }
+
+  private async absentGlobalCustomAttributeDefinitions(): Promise<void> {
+    const epSdkCustomAttributeDefinitionTask = new EpSdkCustomAttributeDefinitionTask({
+      epSdkTask_TargetState: EEpSdkTask_TargetState.ABSENT,
+      attributeName: CliMigrateManager.EpV2RunIdCustomAttributeDefinition.name,
+      customAttributeDefinitionObjectSettings: {
+        associatedEntityTypes: CliMigrateManager.EpV2RunIdCustomAttributeDefinition.associatedEntityTypes,
+        scope: CliMigrateManager.EpV2RunIdCustomAttributeDefinition.scope,
+        valueType: CliMigrateManager.EpV2RunIdCustomAttributeDefinition.valueType,
+      },
+    });
+    await epSdkCustomAttributeDefinitionTask.execute();
   }
 
   private run_absent = async(): Promise<void> => {
@@ -107,9 +143,28 @@ export class CliMigrateManager {
         );
     }
 
+    console.log(`\n>>>>> $${logName}: TODO: absent objects based on either prefix and/or runId ...\n`);
     await CliApplicationDomainsService.absent_EpV2_PrefixedApplicationDomains(this.cliMigrateManagerOptions.epV2.applicationDomainPrefix);
 
+    await this.absentGlobalCustomAttributeDefinitions();
+
     CliRunContext.pop();
+  }
+
+  private async presentGlobalCustomAttributeDefinitions(): Promise<void> {
+    // const funcName = "presentGlobalCustomAttributeDefinitions";
+    // const logName = `${CliMigrateManager.name}.${funcName}()`;
+    // runId
+    const epSdkCustomAttributeDefinitionTask = new EpSdkCustomAttributeDefinitionTask({
+      epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
+      attributeName: CliMigrateManager.EpV2RunIdCustomAttributeDefinition.name,
+      customAttributeDefinitionObjectSettings: {
+        associatedEntityTypes: CliMigrateManager.EpV2RunIdCustomAttributeDefinition.associatedEntityTypes,
+        scope: CliMigrateManager.EpV2RunIdCustomAttributeDefinition.scope,
+        valueType: CliMigrateManager.EpV2RunIdCustomAttributeDefinition.valueType,
+      },
+    });
+    await epSdkCustomAttributeDefinitionTask.execute();
   }
 
   private run_present = async(): Promise<void> => {
@@ -130,6 +185,8 @@ export class CliMigrateManager {
       runMode: ECliRunContext_RunMode.RELEASE,
       runState: this.cliMigrateManagerOptions.cliMigrateManagerRunState,
     }});
+    // create global custom attribute definitions
+    await this.presentGlobalCustomAttributeDefinitions();
     // migrate enums
     const cliEnumsMigrator = new CliEnumsMigrator({
         runId: this.cliMigrateManagerOptions.runId,
@@ -161,6 +218,12 @@ export class CliMigrateManager {
     );
     const cliSchemasMigratorRunReturn: ICliSchemasMigratorRunReturn = await cliSchemasMigrator.run();
     if(cliSchemasMigratorRunReturn.error) throw cliSchemasMigratorRunReturn.error;
+
+
+    // const devel=true; if(devel) throw new Error(`${logName}: continue here`);
+
+
+
     // migrate events
     const cliEventsMigrator = new CliEventsMigrator({
         runId: this.cliMigrateManagerOptions.runId,

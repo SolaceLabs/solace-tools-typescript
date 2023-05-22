@@ -48,7 +48,7 @@ export abstract class CliMigrator {
       EEpSdkCustomAttributeEntityTypes.APPLICATION,
       EEpSdkCustomAttributeEntityTypes.SCHEMA_OBJECT,
       EEpSdkCustomAttributeEntityTypes.EVENT
-    ]
+    ],
   }
   
   protected transformEpV1TagNames2EpV2CustomAttributeValue(epV1Tags: Array<EpV1Tag>): string {
