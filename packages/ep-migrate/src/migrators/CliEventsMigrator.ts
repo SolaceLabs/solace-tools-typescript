@@ -1,7 +1,9 @@
 import { 
+  EEpSdkTask_Action,
   EEpSdkTask_TargetState, 
   EpSdkEpEventTask, 
   EpSdkEpEventVersionTask, 
+  EpSdkEpEventVersionsService, 
   EpSdkEpEventsService, 
   EpSdkEvent, 
   IEpSdkEpEventTask_ExecuteReturn, 
@@ -25,6 +27,8 @@ import {
   CliInternalCodeInconsistencyError,
   CliEPMigrateTagsError,
   CliMigrateEventReferenceEnumIssueError,
+  CliMigrateManager,
+  CliConfig,
 } from "../cli-components";
 import { 
   CliMigrator, 
@@ -49,6 +53,7 @@ import {
   ICliMigratedEvent, 
   ICliMigratedSchema
 } from "./types";
+import { EventVersion } from "@solace-labs/ep-openapi-node";
 
 export interface ICliEventsMigrateConfig {
   epV2: {
@@ -93,6 +98,55 @@ export class CliEventsMigrator extends CliMigrator {
       };
       this.epSdkEnumInfoMap.set(epSdkEpEventVersionTask_EnumInfo.enumName, epSdkEpEventVersionTask_EnumInfo);
     }
+  }
+
+  private async presentEventCustomAttributes({ epSdkEpEventTask_ExecuteReturn }:{
+    epSdkEpEventTask_ExecuteReturn: IEpSdkEpEventTask_ExecuteReturn;
+  }): Promise<EpSdkEvent> {
+    const funcName = 'presentEventCustomAttributes';
+    const logName = `${CliEventsMigrator.name}.${funcName}()`;
+    // runId
+    if(epSdkEpEventTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action !== EEpSdkTask_Action.CREATE) return epSdkEpEventTask_ExecuteReturn.epObject;
+    /* istanbul ignore next */
+    if(epSdkEpEventTask_ExecuteReturn.epObject.id === undefined) throw new CliEPApiContentError(logName, "epSdkEpEventTask_ExecuteReturn.epObject.id === undefined", { epSdkEvent: epSdkEpEventTask_ExecuteReturn.epObject });    
+    const newEpSdkEvent: EpSdkEvent = await EpSdkEpEventsService.setCustomAttributes({
+      eventId: epSdkEpEventTask_ExecuteReturn.epObject.id,
+      epSdkCustomAttributes: [
+        { 
+          name: CliMigrateManager.EpV2RunIdCustomAttributeDefinition.name,
+          scope: CliMigrateManager.EpV2RunIdCustomAttributeDefinition.scope,
+          valueType: CliMigrateManager.EpV2RunIdCustomAttributeDefinition.valueType,
+          value: CliConfig.getRunId(),
+        }
+      ]
+    });
+    return newEpSdkEvent;
+  }
+
+  private async presentEventVersionCustomAttributes({ epSdkEpEventVersionTask_ExecuteReturn }:{
+    epSdkEpEventVersionTask_ExecuteReturn: IEpSdkEpEventVersionTask_ExecuteReturn;
+  }): Promise<EventVersion> {
+    const funcName = 'presentEventVersionCustomAttributes';
+    const logName = `${CliEventsMigrator.name}.${funcName}()`;
+    // runId
+    if(
+      epSdkEpEventVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action !== EEpSdkTask_Action.CREATE_FIRST_VERSION &&
+      epSdkEpEventVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action !== EEpSdkTask_Action.CREATE_NEW_VERSION
+    ) return epSdkEpEventVersionTask_ExecuteReturn.epObject;
+    /* istanbul ignore next */
+    if(epSdkEpEventVersionTask_ExecuteReturn.epObject.id === undefined) throw new CliEPApiContentError(logName, "epSdkEpEventVersionTask_ExecuteReturn.epObject.id === undefined", { eventVersion: epSdkEpEventVersionTask_ExecuteReturn.epObject });    
+    const newEventVersion: EventVersion = await EpSdkEpEventVersionsService.setCustomAttributes({
+      eventVersionId: epSdkEpEventVersionTask_ExecuteReturn.epObject.id,
+      epSdkCustomAttributes: [
+        { 
+          name: CliMigrateManager.EpV2RunIdCustomAttributeDefinition.name,
+          scope: CliMigrateManager.EpV2RunIdCustomAttributeDefinition.scope,
+          valueType: CliMigrateManager.EpV2RunIdCustomAttributeDefinition.valueType,
+          value: CliConfig.getRunId(),
+        }
+      ]
+    });
+    return newEventVersion;
   }
 
   private async getTags({ id }:{
@@ -204,6 +258,8 @@ export class CliEventsMigrator extends CliMigrator {
     rctxt.epV2.epSdkEvent = epSdkEvent;
     /* istanbul ignore next */
     if (epSdkEvent.id === undefined) throw new CliEPApiContentError(logName,"epSdkEvent.id === undefined", { epSdkEvent });
+    // set custom attributes
+    epSdkEpEventTask_ExecuteReturn.epObject = await this.presentEventCustomAttributes({ epSdkEpEventTask_ExecuteReturn });
     CliLogger.trace(CliLogger.createLogEntry(logName, {code: ECliStatusCodes.PRESENT_EP_V2_EVENT, details: { epSdkEpEventTask_ExecuteReturn }}));
     CliRunSummary.presentEpV2Event({ applicationDomainName: cliMigratedApplicationDomain.epV2ApplicationDomain.name, epSdkEpEventTask_ExecuteReturn });
     // present the event version
@@ -254,9 +310,10 @@ export class CliEventsMigrator extends CliMigrator {
     });
     const epSdkEpEventVersionTask_ExecuteReturn: IEpSdkEpEventVersionTask_ExecuteReturn = await this.executeTask({ epSdkTask: epSdkEpEventVersionTask });
     rctxt.epV2.eventVersion = epSdkEpEventVersionTask_ExecuteReturn.epObject;
+    // set custom attributes
+    epSdkEpEventVersionTask_ExecuteReturn.epObject = await this.presentEventVersionCustomAttributes({ epSdkEpEventVersionTask_ExecuteReturn });
     // migrate tags
     epSdkEvent = await this.migrateTags({ epV1Tags, epSdkEvent });
-
     CliLogger.trace(CliLogger.createLogEntry(logName, {code: ECliStatusCodes.PRESENT_EP_V2_EVENT_VERSION, details: { epSdkEpEventVersionTask_ExecuteReturn }}));
     CliRunSummary.presentEpV2EventVersion({ applicationDomainName: cliMigratedApplicationDomain.epV2ApplicationDomain.name, epSdkEpEventVersionTask_ExecuteReturn });
     this.cliMigratedEvents.push({

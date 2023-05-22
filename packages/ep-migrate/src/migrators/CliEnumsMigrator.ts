@@ -7,9 +7,12 @@ import {
   EpSdkEnumVersionTask,
   IEpSdkEnumVersionTask_ExecuteReturn,
   TEpSdkEnumValue,
+  EEpSdkTask_Action,
+  EpSdkEnumsService,
+  EpSdkEnumVersionsService,
 } from "@solace-labs/ep-sdk";
 import {
-  TopicAddressEnum,
+  TopicAddressEnum, TopicAddressEnumVersion,
 } from "@solace-labs/ep-openapi-node";
 import {
   CliEPApiContentError,
@@ -21,6 +24,8 @@ import {
   CliRunSummary,
   ICliEnumsRunContext,
   ICliEnumRunContext,
+  CliMigrateManager,
+  CliConfig,
 } from "../cli-components";
 import { 
   CliMigrator, 
@@ -66,6 +71,55 @@ export class CliEnumsMigrator extends CliMigrator {
     super(options, runMode);
   }
 
+  private async presentEnumCustomAttributes({ epSdkEnumTask_ExecuteReturn }:{
+    epSdkEnumTask_ExecuteReturn: IEpSdkEnumTask_ExecuteReturn;
+  }): Promise<TopicAddressEnum> {
+    const funcName = 'presentEnumCustomAttributes';
+    const logName = `${CliEnumsMigrator.name}.${funcName}()`;
+    // runId
+    if(epSdkEnumTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action !== EEpSdkTask_Action.CREATE) return epSdkEnumTask_ExecuteReturn.epObject;
+    /* istanbul ignore next */
+    if(epSdkEnumTask_ExecuteReturn.epObject.id === undefined) throw new CliEPApiContentError(logName, "epSdkEnumTask_ExecuteReturn.epObject.id === undefined", { topicAddressEnum: epSdkEnumTask_ExecuteReturn.epObject });    
+    const newTopicAddressEnum: TopicAddressEnum = await EpSdkEnumsService.setCustomAttributes({
+      enumId: epSdkEnumTask_ExecuteReturn.epObject.id,
+      epSdkCustomAttributes: [
+        { 
+          name: CliMigrateManager.EpV2RunIdCustomAttributeDefinition.name,
+          scope: CliMigrateManager.EpV2RunIdCustomAttributeDefinition.scope,
+          valueType: CliMigrateManager.EpV2RunIdCustomAttributeDefinition.valueType,
+          value: CliConfig.getRunId(),
+        }
+      ]
+    });
+    return newTopicAddressEnum;
+  }
+
+  private async presentEnumVersionCustomAttributes({ epSdkEnumVersionTask_ExecuteReturn }:{
+    epSdkEnumVersionTask_ExecuteReturn: IEpSdkEnumVersionTask_ExecuteReturn;
+  }): Promise<TopicAddressEnumVersion> {
+    const funcName = 'presentEnumVersionCustomAttributes';
+    const logName = `${CliEnumsMigrator.name}.${funcName}()`;
+    // runId
+    if(
+      epSdkEnumVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action !== EEpSdkTask_Action.CREATE_FIRST_VERSION &&
+      epSdkEnumVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action !== EEpSdkTask_Action.CREATE_NEW_VERSION
+    ) return epSdkEnumVersionTask_ExecuteReturn.epObject;
+    /* istanbul ignore next */
+    if(epSdkEnumVersionTask_ExecuteReturn.epObject.id === undefined) throw new CliEPApiContentError(logName, "epSdkEnumVersionTask_ExecuteReturn.epObject.id === undefined", { topicAddressEnumVersion: epSdkEnumVersionTask_ExecuteReturn.epObject });    
+    const newTopicAddressEnumVersion: TopicAddressEnumVersion = await EpSdkEnumVersionsService.setCustomAttributes({
+      enumVersionId: epSdkEnumVersionTask_ExecuteReturn.epObject.id,
+      epSdkCustomAttributes: [
+        { 
+          name: CliMigrateManager.EpV2RunIdCustomAttributeDefinition.name,
+          scope: CliMigrateManager.EpV2RunIdCustomAttributeDefinition.scope,
+          valueType: CliMigrateManager.EpV2RunIdCustomAttributeDefinition.valueType,
+          value: CliConfig.getRunId(),
+        }
+      ]
+    });
+    return newTopicAddressEnumVersion;
+  }
+
   private async migrateEnum({ epV1Enum, epV2ApplicationDomainName, epV2ApplicationDomainId }:{
     epV1Enum: EpV1Enum;
     epV2ApplicationDomainName: string;
@@ -92,7 +146,9 @@ export class CliEnumsMigrator extends CliMigrator {
     const epSdkEnumTask_ExecuteReturn: IEpSdkEnumTask_ExecuteReturn = await this.executeTask({epSdkTask: epSdkEnumTask });
     const enumObject: TopicAddressEnum = epSdkEnumTask_ExecuteReturn.epObject;
     /* istanbul ignore next */
-    if (enumObject.id === undefined) throw new CliEPApiContentError(logName,"enumObject.id === undefined", { enumObject: enumObject });
+    if(enumObject.id === undefined) throw new CliEPApiContentError(logName,"enumObject.id === undefined", { enumObject: enumObject });
+    // set custom attributes
+    epSdkEnumTask_ExecuteReturn.epObject = await this.presentEnumCustomAttributes({ epSdkEnumTask_ExecuteReturn });
     CliLogger.trace(CliLogger.createLogEntry(logName, {code: ECliStatusCodes.PRESENT_EP_V2_ENUM, details: { epSdkEnumTask_ExecuteReturn }}));
     CliRunSummary.presentEpV2Enum({ applicationDomainName: epV2ApplicationDomainName, epSdkEnumTask_ExecuteReturn });
     // present the enum version
@@ -118,6 +174,8 @@ export class CliEnumsMigrator extends CliMigrator {
       checkmode: false,
     });
     const epSdkEnumVersionTask_ExecuteReturn: IEpSdkEnumVersionTask_ExecuteReturn = await this.executeTask({ epSdkTask: epSdkEnumVersionTask });
+    // set custom attributes
+    epSdkEnumVersionTask_ExecuteReturn.epObject = await this.presentEnumVersionCustomAttributes({ epSdkEnumVersionTask_ExecuteReturn });
     CliLogger.trace(CliLogger.createLogEntry(logName, {code: ECliStatusCodes.PRESENT_EP_V2_ENUM_VERSION, details: { epSdkEnumVersionTask_ExecuteReturn }}));
     CliRunSummary.presentEpV2EnumVersion({ applicationDomainName: epV2ApplicationDomainName, epSdkEnumVersionTask_ExecuteReturn });
     this.cliMigratedEnums.push({
