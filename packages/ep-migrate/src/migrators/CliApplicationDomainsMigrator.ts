@@ -1,5 +1,5 @@
 import { 
-  ApplicationDomain, ApplicationDomainResponse, ApplicationDomainsService 
+  ApplicationDomain, 
 } from "@solace-labs/ep-openapi-node";
 import {
   EEpSdkTask_Action,
@@ -11,7 +11,6 @@ import {
   EpSdkDefaultTopicDelimitors,
   EpSdkTopicAddressLevelService,
   IEpSdkApplicationDomainTask_ExecuteReturn,
-  IEpSdkCustomAttributeDefinitionTask_ExecuteReturn,
   TEpSdkApplicationDomainTask_TopicDomainSettings,
 } from "@solace-labs/ep-sdk";
 import {

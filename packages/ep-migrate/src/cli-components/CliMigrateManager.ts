@@ -1,4 +1,8 @@
-import { EEpSdkCustomAttributeEntityTypes, EEpSdkTask_TargetState, EpSdkCustomAttributeDefinitionTask, IEpSdkCustomAttributeDefinitionTask_ExecuteReturn } from "@solace-labs/ep-sdk";
+import { 
+  EEpSdkCustomAttributeEntityTypes, 
+  EEpSdkTask_TargetState, 
+  EpSdkCustomAttributeDefinitionTask, 
+} from "@solace-labs/ep-sdk";
 import { 
   CliEnumsMigrator, 
   ICliEnumsMigratorRunReturn, 
@@ -23,7 +27,6 @@ import CliConfig, {
   ICliConfigFile 
 } from "./CliConfig";
 import { 
-  CliEPApiContentError,
   CliUsageError 
 } from "./CliError";
 import { 
@@ -149,8 +152,8 @@ export class CliMigrateManager {
   }
 
   private async presentGlobalCustomAttributeDefinitions(): Promise<void> {
-    const funcName = "presentGlobalCustomAttributeDefinitions";
-    const logName = `${CliMigrateManager.name}.${funcName}()`;
+    // const funcName = "presentGlobalCustomAttributeDefinitions";
+    // const logName = `${CliMigrateManager.name}.${funcName}()`;
     // runId
     const epSdkCustomAttributeDefinitionTask = new EpSdkCustomAttributeDefinitionTask({
       epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
@@ -165,8 +168,8 @@ export class CliMigrateManager {
   }
 
   private run_present = async(): Promise<void> => {
-    const funcName = "run_present";
-    const logName = `${CliMigrateManager.name}.${funcName}()`;
+    // const funcName = "run_present";
+    // const logName = `${CliMigrateManager.name}.${funcName}()`;
 
     const rctxt: ICliRunContext = {
       runId: this.cliMigrateManagerOptions.runId,
