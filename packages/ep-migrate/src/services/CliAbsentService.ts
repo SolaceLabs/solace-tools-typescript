@@ -163,6 +163,7 @@ class CliAbsentService {
   private isApplicationDomainEmpty(stats: ApplicationDomainStats): boolean {
     let count = 0;
     for(const [key, value] of Object.entries(stats)) {
+      key;
       count += value;
     }
     return count === 0;
@@ -556,8 +557,8 @@ class CliAbsentService {
   }
 
   public async absent_EpV2_ByRunId(runId: string): Promise<void> {
-    const funcName = "absent_EpV2_ByRunId";
-    const logName = `${CliAbsentService.name}.${funcName}()`;
+    // const funcName = "absent_EpV2_ByRunId";
+    // const logName = `${CliAbsentService.name}.${funcName}()`;
 
     const rctxt: ICliRunAbsentByRunIdContext = {
       runId

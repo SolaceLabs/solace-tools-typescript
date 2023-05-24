@@ -1717,7 +1717,7 @@ Migration Summary for run: ${cliMigrateManagerOptions.cliMigrateManagerRunState}
     } else {
       deletedEpV2ApplicationDomains = cliRunSummary_EpV2ApplicationDomainByPrefix_List.reduce((count, item) => count + Number(item.action === EEpSdkTask_Action.DELETE), 0);
     }
-    const processingEpV2ApplicationDomainIssues = cliRunSummary_EpV2ApplicationDomainIssue_List.length;;
+    const processingEpV2ApplicationDomainIssues = cliRunSummary_EpV2ApplicationDomainIssue_List.length;
   
     const processedEpV2Applications = cliRunSummary_EpV2ApplicationsProcessed_List.length;
     const deletedEpV2Applications = cliRunSummary_EpV2Application_List.length;
@@ -1778,7 +1778,7 @@ Migration Summary for run: ${cliMigrateManagerOptions.cliMigrateManagerRunState}
       cliMigrateSummary,
     }}));
 
-    let consoleOutput: string = '';
+    let consoleOutput = '';
     if(cliMigrateManagerOptions.absentRunId) {
       consoleOutput = `
       ------------------------------------------------------------------------------------------------    
