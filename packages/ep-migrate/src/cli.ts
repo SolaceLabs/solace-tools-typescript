@@ -84,11 +84,13 @@ function initialize(commandLineOptionValues: OptionValues) {
   CliLogger.initialize({ cliLoggerOptions: CliConfig.getDefaultLoggerOptions() });
   const configFile = commandLineOptionValues.configFile;
   const runState = commandLineOptionValues.runState;
+  const absentRunId = commandLineOptionValues.absentRunId;
   CliConfig.initialize({
     cliVersion: packageJson.version,
     commandLineOptionValues,
     configFile: configFile,
-    runState: runState
+    runState: runState,
+    absentRunId: absentRunId
   });
   CliLogger.initialize({ cliLoggerOptions: CliConfig.getCliLoggerOptions() });
   CliConfig.logConfig();
@@ -141,6 +143,11 @@ function getCommandLineOptionValues(): OptionValues {
     "Configuration File."
   );
 
+  const runIdOption: Option = Program.createOption(
+    "-arId, --absentRunId <value>",
+    "Run Id for runState=absent. Optional."
+  );
+
   Program.name(`npx ${packageJson.name}`)
     // .description(`${packageJson.description}`)
     .version(`${packageJson.version}`, "-v, --version")
@@ -152,13 +159,17 @@ function getCommandLineOptionValues(): OptionValues {
                             Options: ${JSON.stringify(Object.values(ECliMigrateManagerRunState))}. 
                             ${JSON.stringify(ECliMigrateManagerRunState.PRESENT)}: migrates V1 to V2. 
                             ${JSON.stringify(ECliMigrateManagerRunState.ABSENT)}: removes previously added V2 objects. 
-                              Note: Feature requires ${CliUtils.nameOf<ICliConfigFile>("migrate.epV2.applicationDomainPrefix")} to be defined. 
-                                    It removes all Application Domains starting with the prefix. 
-                                    Use with care!
+                              Note: Requires one of defined:
+                                    - In configFile: '${CliUtils.nameOf<ICliConfigFile>("migrate.epV2.applicationDomainPrefix")}={prefix}':
+                                      Removes all Application Domains starting with '{prefix}'.
+                                    - runId={runId}:
+                                      Removes all objects & versions with customm attribute '${CliMigrateManager.EpV2RunIdCustomAttributeDefinition.name}={runId}'
+                                    RunId takes precedence.
                             `,
       validateRunState,
       ECliMigrateManagerRunState.PRESENT
     )
+    .addOption(runIdOption)
     .addHelpText("after", helpSampleConfigFile())
     .parse(process.argv);
 

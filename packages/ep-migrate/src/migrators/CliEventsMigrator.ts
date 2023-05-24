@@ -249,7 +249,7 @@ export class CliEventsMigrator extends CliMigrator {
       applicationDomainId: cliMigratedApplicationDomain.epV2ApplicationDomain.id,
       eventName: epV1Event.name,
       eventObjectSettings: {
-        shared: true,
+        shared: epV1Event.shared,
       },
       epSdkTask_TransactionConfig: this.get_IEpSdkTask_TransactionConfig(),
     });
@@ -390,7 +390,6 @@ export class CliEventsMigrator extends CliMigrator {
       error: undefined
     };
     try {
-      this.createEpSdkEnumInfoMap();
       cliEventsMigratorRunReturn.cliEventsMigratorRunMigrateReturn = await this.run_migrate();
       CliLogger.debug(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.MIGRATE_EVENTS_DONE, details: { cliEventsMigratorRunMigrateReturn: cliEventsMigratorRunReturn.cliEventsMigratorRunMigrateReturn }}));
     } catch (e: any) {

@@ -11,34 +11,39 @@ import {
 } from "./CliUtils";
 
 export enum ECliRunIssueTypes {
+  EnumIssue = "EnumIssue",
   SchemaIssue = "SchemaIssue",
   EventIssue = "EventIssue",
-  ApplicationIssue = "ApplicationIssue"  
+  ApplicationIssue = "ApplicationIssue",
+  ApplicationDomainIssue = "ApplicationDomainIssue"  
 }
 export interface ICliRunIssue {
   type: ECliRunIssueTypes;
   issueId?: string;
-  epV1Id: string;
   cliRunContext?: Partial<ICliRunContext>;
   cause: any;
 }
+export interface ICliRunPresentIssue extends ICliRunIssue {
+  epV1Id: string;
+}
 
-export interface ICliRunIssueSchema extends ICliRunIssue {
+export interface ICliRunIssueSchema extends ICliRunPresentIssue {
   type: ECliRunIssueTypes.SchemaIssue;
   epV1EventSchema: EpV1EventSchema;
 }
 
-export interface ICliRunIssueEvent extends ICliRunIssue {
+export interface ICliRunIssueEvent extends ICliRunPresentIssue {
   type: ECliRunIssueTypes.EventIssue;
   epV1Event: EpV1Event;
 }
 
-export interface ICliRunIssueApplication extends ICliRunIssue {
+export interface ICliRunIssueApplication extends ICliRunPresentIssue {
   type: ECliRunIssueTypes.ApplicationIssue;
   epV1Application: EpV1Application;
 }
-
-
+export interface ICliRunIssueAbsentById extends ICliRunIssue {
+  runId: string;
+}
 const LogMe = false;
 
 class CliRunIssues {
@@ -50,7 +55,7 @@ class CliRunIssues {
     type?: ECliRunIssueTypes;
     epV1Id?: string;
   }): Array<ICliRunIssue> { 
-    if(epV1Id) return this.runIssuesLog.filter( x => x.epV1Id === epV1Id );
+    if(epV1Id) return (this.runIssuesLog as Array<ICliRunPresentIssue>).filter( x => x.epV1Id === epV1Id );
     if(type) return this.runIssuesLog.filter( x => x.type === type );
     return this.runIssuesLog; 
   }

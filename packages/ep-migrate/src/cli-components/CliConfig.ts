@@ -19,6 +19,7 @@ import {
   CliConfigInvalidConfigFileError,
   CliConfigNotInitializedError,
   CliConfigTokenError,
+  CliUsageError,
 } from "./CliError";
 import {
   CliLogger,
@@ -176,9 +177,10 @@ class CliConfig {
     }
   }
 
-  private setConfig({ configFile, runState = ECliMigrateManagerRunState.PRESENT }:{
+  private setConfig({ configFile, runState = ECliMigrateManagerRunState.PRESENT, absentRunId }:{
     configFile: string;
     runState: ECliMigrateManagerRunState;
+    absentRunId?: string;
   }): void {
     const funcName = "setConfig";
     const logName = `${CliConfig.name}.${funcName}()`;
@@ -221,6 +223,7 @@ class CliConfig {
       cliMigrateConfig: {
         appName, 
         runId,
+        absentRunId,
         cliMigrateManagerMode: ECliMigrateManagerMode.RELEASE_MODE,
         cliMigrateManagerRunState: runState,
         epV1: configFileContents.migrate.epV1,
@@ -275,8 +278,32 @@ class CliConfig {
     };  
   }
 
-  public validate = async() => {
-    const funcName = "validate";
+  public validateAbsent = async() => {
+    const funcName = "validateAbsent";
+    const logName = `${CliConfig.name}.${funcName}()`;
+
+    if(this.config.cliMigrateConfig.absentRunId !== undefined) return;
+    if(this.config.cliMigrateConfig.epV2.applicationDomainPrefix === undefined) {
+      throw new CliUsageError(
+        logName, 
+        `Run state '${this.config.cliMigrateConfig.cliMigrateManagerRunState}' requires one of defined: '--absentRunId={runId}' or '${CliUtils.nameOf<ICliConfigFile>("migrate.epV2.applicationDomainPrefix")}'`,
+        undefined
+        );
+    }
+
+
+    const environmentName = this.config.cliMigrateConfig.applications.epV2.environment.environmentName;
+    const environment: Environment | undefined = await EpSdkEnvironmentsService.getByName({ environmentName });
+    if(environment === undefined) {
+      throw new CliConfigInvalidConfigError(logName, {
+        message: 'Ep V2 environment for applications not found',
+        environmentName
+      });  
+    }
+  }
+
+  public validatePresent = async() => {
+    const funcName = "validatePresent";
     const logName = `${CliConfig.name}.${funcName}()`;
     const environmentName = this.config.cliMigrateConfig.applications.epV2.environment.environmentName;
     const environment: Environment | undefined = await EpSdkEnvironmentsService.getByName({ environmentName });
@@ -286,14 +313,14 @@ class CliConfig {
         environmentName
       });  
     }
-
   }
 
-  public initialize = ({ cliVersion, commandLineOptionValues, configFile, runState }: {
+  public initialize = ({ cliVersion, commandLineOptionValues, configFile, runState, absentRunId }: {
     cliVersion: string;
     commandLineOptionValues: OptionValues;
     configFile?: string;
     runState: ECliMigrateManagerRunState;
+    absentRunId?: string;
   }): void => {
     const funcName = "initialize";
     const logName = `${CliConfig.name}.${funcName}()`;
@@ -304,7 +331,8 @@ class CliConfig {
     if(testedConfigFile === undefined) throw new CliConfigInvalidConfigFileError(logName, this.configFile, 'cannot read config file');
     this.setConfig({
       configFile: testedConfigFile,
-      runState
+      runState,
+      absentRunId,
     });
   };
 

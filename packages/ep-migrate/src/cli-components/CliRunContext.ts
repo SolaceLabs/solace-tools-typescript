@@ -70,6 +70,40 @@ export interface ICliApplicationDomainRunAbsentContext extends Partial<ICliRunCo
   epV2ApplicationDomainPrefix: string;
 }
 
+export interface ICliRunAbsentByRunIdContext extends Partial<ICliRunContext> {
+  runId: string;
+}
+export interface ICliRunAbsentApplicationDomainsByRunIdContext extends ICliRunAbsentByRunIdContext {  
+}
+export interface ICliRunAbsentApplicationsByRunIdContext extends ICliRunAbsentByRunIdContext {  
+}
+export interface ICliRunAbsentEventsByRunIdContext extends ICliRunAbsentByRunIdContext {  
+}
+export interface ICliRunAbsentSchemasByRunIdContext extends ICliRunAbsentByRunIdContext {  
+}
+export interface ICliRunAbsentEnumsByRunIdContext extends ICliRunAbsentByRunIdContext {  
+}
+export interface ICliRunAbsentApplicationDomainByRunIdContext extends ICliRunAbsentByRunIdContext {
+  applicationDomainName: string;
+}
+export interface ICliRunAbsentApplicationByRunIdContext extends ICliRunAbsentByRunIdContext {
+  applicationName: string;
+  applicationDomainName?: string;
+}
+export interface ICliRunAbsentEventByRunIdContext extends ICliRunAbsentByRunIdContext {
+  eventName: string;
+  applicationDomainName?: string;
+}
+export interface ICliRunAbsentSchemaByRunIdContext extends ICliRunAbsentByRunIdContext {
+  schemaName: string;
+  applicationDomainName?: string;
+}
+export interface ICliRunAbsentEnumByRunIdContext extends ICliRunAbsentByRunIdContext {
+  enumName: string;
+  applicationDomainName?: string;
+}
+
+
 
 const LogMe = false;
 
