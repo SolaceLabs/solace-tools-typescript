@@ -51,7 +51,7 @@ migrate:
       # versionStrategy:
       # - version bump when existing version is found and any mods are applied to new version
       # - options: bump_patch, bump_minor
-      versionStrategy: bump_patch      
+      versionStrategy: bump_patch
       # state: options=Released, Draft 
       state: Draft
   enums:
@@ -59,7 +59,7 @@ migrate:
       applicationDomainName: 'enums'
       versions:
         initialVersion: 2.0.0
-        versionStrategy: bump_patch      
+        versionStrategy: bump_patch
         state: Released
   applicationDomains:
     epV2:
@@ -67,23 +67,26 @@ migrate:
     epV2:
       versions:
         initialVersion: 1.0.0
-        versionStrategy: bump_patch      
+        versionStrategy: bump_patch 
         state: Released
   events:
     epV2:
       versions:
         initialVersion: 1.0.0
-        versionStrategy: bump_patch      
+        versionStrategy: bump_patch
         state: Released
   applications:
     epV2:
       environment:
         # Environment must exist in Ep V2
-        name: 'epV1'
+        environmentName: 'epV1'
+        # Event Mesh must exist in Ep V2
+        eventMeshName: 'epV1EventMesh'
+        # Broker must exist in Ep V2
+        eventBrokerName: 'epV1EventBroker'
       versions:
         initialVersion: 1.0.0
-        versionStrategy: bump_patch      
+        versionStrategy: bump_patch
         state: Released
 
-  
 #############################################################

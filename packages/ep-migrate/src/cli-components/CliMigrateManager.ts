@@ -146,7 +146,7 @@ export class CliMigrateManager {
     console.log(`\n>>>>> $${logName}: TODO: absent objects based on either prefix and/or runId ...\n`);
     await CliApplicationDomainsService.absent_EpV2_PrefixedApplicationDomains(this.cliMigrateManagerOptions.epV2.applicationDomainPrefix);
 
-    await this.absentGlobalCustomAttributeDefinitions();
+    // await this.absentGlobalCustomAttributeDefinitions();
 
     CliRunContext.pop();
   }
