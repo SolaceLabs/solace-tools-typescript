@@ -80,5 +80,10 @@ jobs:
           # TEST_EP_MIGRATE
           export EP_MIGRATE_CLI_SOLACE_CLOUD_TOKEN_V1="${{ secrets.TEST_SOLACE_CLOUD_TOKEN }}"
           export EP_MIGRATE_CLI_SOLACE_CLOUD_TOKEN_V2="${{ secrets.TEST_SOLACE_CLOUD_TOKEN }}"
-          # run test
-          yarn test
+          
+          # run test: ep-migration
+          yarn test --filter=ep-migrate
+
+          # run test: ep-async-api-importer
+          yarn test --filter=ep-async-api-importer
+          
