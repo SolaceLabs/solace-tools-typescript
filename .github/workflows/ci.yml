@@ -86,4 +86,6 @@ jobs:
 
           # run test: ep-async-api-importer
           yarn test --filter=ep-async-api-importer
-          
+
+          # run test: all the remaining
+          yarn test
