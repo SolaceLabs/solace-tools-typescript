@@ -9,6 +9,7 @@ import {
   EpSdkEpEventsService, 
   EpSdkEventsResponse, 
   EpSdkSchemaVersionsService, 
+  EpSdkTopicDomainsService, 
   IEpSdkApplicationDomainTask_ExecuteReturn,
 } from "@solace-labs/ep-sdk";
 import { 
@@ -29,7 +30,10 @@ import {
   SchemasService,
   TopicAddressEnum,
   TopicAddressEnumVersion,
-  TopicAddressEnumsResponse
+  TopicAddressEnumsResponse,
+  TopicDomain,
+  TopicDomainsResponse,
+  TopicDomainsService
 } from "@solace-labs/ep-openapi-node";
 import { 
   CliEPApiContentError,
@@ -59,25 +63,51 @@ import {
 
 class CliAbsentService {
 
-  private static ApplicationDomainCache: Array<ApplicationDomain> = [];
+  private ApplicationDomainCache: Array<ApplicationDomain> = [];
+  private TopicDomainCache: Array<TopicDomain> = [];
 
+  private async populateTopicDomainCache(): Promise<void> {
+    const topicDomainsResponse: TopicDomainsResponse = await EpSdkTopicDomainsService.listAll({});
+    if(topicDomainsResponse.data !== undefined) {
+      this.TopicDomainCache = topicDomainsResponse.data;
+    } else {
+      this.TopicDomainCache = [];
+    }
+  }
+
+  private async absentTopicDomainForEnumVersionId(enumVersionId: string): Promise<void> {
+    const funcName = "absentTopicDomainForEnumVersionId";
+    const logName = `${CliAbsentService.name}.${funcName}()`;
+    for(const topicDomain of this.TopicDomainCache) {
+      /* istanbul ignore next */
+      if(topicDomain.id === undefined) throw new CliEPApiContentError(logName, "topicDomain.id === undefined", { topicDomain });
+      const found = topicDomain.addressLevels.find( x => x.enumVersionId === enumVersionId );
+      if(found) {
+        await TopicDomainsService.deleteTopicDomain({ id: topicDomain.id });
+        await this.populateTopicDomainCache();
+      }
+    }
+  }
+              
   private async populateApplicationDomainCache(): Promise<void> {
     const applicationDomainsResponse: ApplicationDomainsResponse = await EpSdkApplicationDomainsService.listAll({});
     if(applicationDomainsResponse.data !== undefined) {
-      CliAbsentService.ApplicationDomainCache = applicationDomainsResponse.data;
+      this.ApplicationDomainCache = applicationDomainsResponse.data;
+    } else {
+      this.ApplicationDomainCache = [];
     }
   }
 
   private async getApplicationDomain(applicationDomainId: string): Promise<ApplicationDomain> {
     const funcName = "getApplicationDomain";
     const logName = `${CliAbsentService.name}.${funcName}()`;
-    let found = CliAbsentService.ApplicationDomainCache.find( x => x.id === applicationDomainId );
+    let found = this.ApplicationDomainCache.find( x => x.id === applicationDomainId );
     // could be that while tool is running new application domains with objects are being created
     // try to find the application domain again
     if(found === undefined) {
       await this.populateApplicationDomainCache();
     }
-    found = CliAbsentService.ApplicationDomainCache.find( x => x.id === applicationDomainId );
+    found = this.ApplicationDomainCache.find( x => x.id === applicationDomainId );
     if(found === undefined) {
       throw new CliInternalCodeInconsistencyError(logName, {
         message: "could not find applicationDomainId in cache",
@@ -481,6 +511,9 @@ class CliAbsentService {
           if(topicAddressEnumVersion.customAttributes) {
             const found = topicAddressEnumVersion.customAttributes.find( x => x.customAttributeDefinitionName === CliMigrateManager.EpV2RunIdCustomAttributeDefinition.name && x.value === runId );
             if(found) {
+              // delete any topic domains that reference the enum version
+              await this.absentTopicDomainForEnumVersionId(topicAddressEnumVersion.id);
+              // delete enum  version
               await EnumsService.deleteEnumVersion({ id: topicAddressEnumVersion.id });
               CliRunSummary.absentEpV2EnumVersion({ runId, rctxt, topicAddressEnumVersion });
             }
@@ -532,6 +565,7 @@ class CliAbsentService {
     CliRunContext.push(rctxt);  
 
     await this.populateApplicationDomainCache();
+    await this.populateTopicDomainCache();
 
     await this.absentApplications(runId);
     await this.absentEvents(runId);
