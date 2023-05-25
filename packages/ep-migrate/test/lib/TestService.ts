@@ -46,21 +46,13 @@ export class TestService {
     for(const applicationDomainName of absentApplicationDomainNames) { await TestService.deleteApplicationDomain({ applicationDomainName }); }
   }
 
-  public static testRunIssues = () => {
+  public static testRunIssues = (expectedCount: number = 0) => {
     const cliRunIssues: Array<ICliRunIssue> = CliRunIssues.get({});
     const message = TestLogger.createLogMessage("cliRunIssues", {
       count: cliRunIssues.length,
       cliRunIssues
     });
-    
-    // NOTE: set to zero once all issues are resolved
-    // expect(cliRunIssues.length, message).to.equal(0);
-
-    // interim 
-    expect(cliRunIssues.length, message).to.equal(56);
-
-
-
+    expect(cliRunIssues.length, message).to.equal(expectedCount);
   }
   
 }
