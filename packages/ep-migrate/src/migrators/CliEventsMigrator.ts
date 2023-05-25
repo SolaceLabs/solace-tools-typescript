@@ -1,4 +1,7 @@
 import { 
+  EventVersion 
+} from "@solace-labs/ep-openapi-node";
+import { 
   EEpSdkTask_Action,
   EEpSdkTask_TargetState, 
   EpSdkEpEventTask, 
@@ -53,7 +56,6 @@ import {
   ICliMigratedEvent, 
   ICliMigratedSchema
 } from "./types";
-import { EventVersion } from "@solace-labs/ep-openapi-node";
 
 export interface ICliEventsMigrateConfig {
   epV2: {

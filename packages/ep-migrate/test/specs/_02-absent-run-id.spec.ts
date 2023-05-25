@@ -2,6 +2,12 @@ import 'mocha';
 import { expect } from 'chai';
 import path from 'path';
 import { 
+  ApplicationDomainsResponse 
+} from '@solace-labs/ep-openapi-node';
+import { 
+  EpSdkApplicationDomainsService 
+} from '@solace-labs/ep-sdk';
+import { 
   TestContext,
 } from "@internal/tools/src";
 import { 
@@ -12,15 +18,11 @@ import {
   CliConfig,
   CliError,
   CliMigrateManager,
-  CliRunIssues,
   CliRunSummary,
   ECliMigrateManagerMode,
   ECliMigrateManagerRunState,
   ICliMigrateSummaryPresent,
-  ICliRunIssue
 } from '../../src/cli-components';
-import { ApplicationDomainsResponse } from '@solace-labs/ep-openapi-node';
-import { EpSdkApplicationDomainsService } from '@solace-labs/ep-sdk';
 
 
 const scriptName: string = path.basename(__filename);
