@@ -12,10 +12,12 @@ import {
   CliConfig,
   CliError,
   CliMigrateManager,
+  CliRunIssues,
   CliRunSummary,
   ECliMigrateManagerMode,
   ECliMigrateManagerRunState,
-  ICliMigrateSummaryPresent
+  ICliMigrateSummaryPresent,
+  ICliRunIssue
 } from '../../src/cli-components';
 import { ApplicationDomainsResponse } from '@solace-labs/ep-openapi-node';
 import { EpSdkApplicationDomainsService } from '@solace-labs/ep-sdk';
@@ -31,7 +33,6 @@ let ApplicationDomainPrefix: string | undefined = undefined;
 
 const initializeGlobals = () => {
   // set test specific cli options
-  // CliConfig.getCliImporterManagerOptions().asyncApiFileList = FileList;
 }
 
 describe(`${scriptName}`, () => {
@@ -59,6 +60,7 @@ describe(`${scriptName}`, () => {
       const cliMigrateManager = new CliMigrateManager(CliConfig.getCliMigrateManagerOptions());
       await cliMigrateManager.run();
       CliMigrateSummaryPresent = CliRunSummary.createMigrateSummaryPresent(ECliMigrateManagerMode.RELEASE_MODE);
+      TestService.testRunIssues();
     } catch(e) {
       expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
       expect(false, TestLogger.createTestFailMessageWithCliError('failed', e)).to.be.true;
@@ -71,6 +73,7 @@ describe(`${scriptName}`, () => {
       CliConfig.getCliMigrateManagerOptions().absentRunId = PresentRunId;
       const cliMigrateManager = new CliMigrateManager(CliConfig.getCliMigrateManagerOptions());
       await cliMigrateManager.run();
+      TestService.testRunIssues();
     } catch(e) {
       expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
       expect(false, TestLogger.createTestFailMessageWithCliError('failed', e)).to.be.true;

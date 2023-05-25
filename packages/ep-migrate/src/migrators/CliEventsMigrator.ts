@@ -82,24 +82,6 @@ export class CliEventsMigrator extends CliMigrator {
     super(options, runMode);
   }
 
-  private createEpSdkEnumInfoMap() {
-    const funcName = 'createEpSdkEnumInfoMap';
-    const logName = `${CliEventsMigrator.name}.${funcName}()`;
-    for(const cliMigratedEnum of this.options.cliMigratedEnums) {
-      /* istanbul ignore next */
-      if (cliMigratedEnum.epV2Enum.topicAddressEnum.id === undefined) throw new CliEPApiContentError(logName,"cliMigratedEnum.epV2Enum.topicAddressEnum.id", { epV2Enum: cliMigratedEnum.epV2Enum });
-      /* istanbul ignore next */
-      if (cliMigratedEnum.epV2Enum.topicAddressEnumVersion.id === undefined) throw new CliEPApiContentError(logName,"cliMigratedEnum.epV2Enum.topicAddressEnumVersion.id", { epV2Enum: cliMigratedEnum.epV2Enum });
-      const epSdkEpEventVersionTask_EnumInfo: IEpSdkEpEventVersionTask_EnumInfo = {
-        enumName: cliMigratedEnum.epV2Enum.topicAddressEnum.name,
-        enumId: cliMigratedEnum.epV2Enum.topicAddressEnum.id,
-        applicationDomainId: cliMigratedEnum.epV2Enum.topicAddressEnum.applicationDomainId,
-        enumVersionId: cliMigratedEnum.epV2Enum.topicAddressEnumVersion.id
-      };
-      this.epSdkEnumInfoMap.set(epSdkEpEventVersionTask_EnumInfo.enumName, epSdkEpEventVersionTask_EnumInfo);
-    }
-  }
-
   private async presentEventCustomAttributes({ epSdkEpEventTask_ExecuteReturn }:{
     epSdkEpEventTask_ExecuteReturn: IEpSdkEpEventTask_ExecuteReturn;
   }): Promise<EpSdkEvent> {
