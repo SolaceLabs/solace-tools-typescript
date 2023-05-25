@@ -188,7 +188,7 @@ export class CliSchemasMigrator extends CliMigrator {
       applicationDomainId: cliMigratedApplicationDomain.epV2ApplicationDomain.id,
       schemaName: epV1EventSchema.name,
       schemaObjectSettings: {
-        shared: true,
+        shared: epV1EventSchema.shared,
         contentType: epV1EventSchema.contentType.toLowerCase()
       },
       epSdkTask_TransactionConfig: this.get_IEpSdkTask_TransactionConfig(),

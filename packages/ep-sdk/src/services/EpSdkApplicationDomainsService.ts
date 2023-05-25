@@ -127,6 +127,7 @@ export class EpSdkApplicationDomainsServiceClass extends EpSdkServiceClass {
         xContextId: xContextId,
         pageSize: pageSize,
         pageNumber: nextPage,
+        include: ["stats"]
       });
       if(applicationDomainsResponse.data === undefined || applicationDomainsResponse.data.length === 0) nextPage = undefined;
       else {

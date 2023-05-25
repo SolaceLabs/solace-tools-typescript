@@ -21,13 +21,12 @@ import {
   ICliApplicationsMigrateConfig,
 } from "../migrators";
 import { 
-  CliApplicationDomainsService 
+  CliAbsentService,
 } from "../services";
 import CliConfig, { 
-  ICliConfigFile 
 } from "./CliConfig";
 import { 
-  CliUsageError 
+  CliInternalCodeInconsistencyError,
 } from "./CliError";
 import { 
   CliLogger, 
@@ -66,6 +65,7 @@ export interface ICliMigrateManagerOptionsEpV1 {
 export interface ICliMigrateManagerOptions {
   appName: string;
   runId: string;
+  absentRunId?: string;
   cliMigrateManagerMode: ECliMigrateManagerMode;
   cliMigrateManagerRunState: ECliMigrateManagerRunState;
   epV1?: ICliMigrateManagerOptionsEpV1;
@@ -104,21 +104,33 @@ export class CliMigrateManager {
   }
 
   private async absentGlobalCustomAttributeDefinitions(): Promise<void> {
-    const epSdkCustomAttributeDefinitionTask = new EpSdkCustomAttributeDefinitionTask({
-      epSdkTask_TargetState: EEpSdkTask_TargetState.ABSENT,
-      attributeName: CliMigrateManager.EpV2RunIdCustomAttributeDefinition.name,
-      customAttributeDefinitionObjectSettings: {
-        associatedEntityTypes: CliMigrateManager.EpV2RunIdCustomAttributeDefinition.associatedEntityTypes,
-        scope: CliMigrateManager.EpV2RunIdCustomAttributeDefinition.scope,
-        valueType: CliMigrateManager.EpV2RunIdCustomAttributeDefinition.valueType,
-      },
-    });
-    await epSdkCustomAttributeDefinitionTask.execute();
+    // runId
+    // if we delete it, then no info left on run ids, skip
+    const deleteRunId = false;
+    if(deleteRunId) {
+      const epSdkCustomAttributeDefinitionTask = new EpSdkCustomAttributeDefinitionTask({
+        epSdkTask_TargetState: EEpSdkTask_TargetState.ABSENT,
+        attributeName: CliMigrateManager.EpV2RunIdCustomAttributeDefinition.name,
+        customAttributeDefinitionObjectSettings: {
+          associatedEntityTypes: CliMigrateManager.EpV2RunIdCustomAttributeDefinition.associatedEntityTypes,
+          scope: CliMigrateManager.EpV2RunIdCustomAttributeDefinition.scope,
+          valueType: CliMigrateManager.EpV2RunIdCustomAttributeDefinition.valueType,
+        },
+      });
+      await epSdkCustomAttributeDefinitionTask.execute();  
+    }
   }
 
   private run_absent = async(): Promise<void> => {
     const funcName = "run_absent";
     const logName = `${CliMigrateManager.name}.${funcName}()`;
+
+    try {
+      await CliConfig.validateAbsent();
+    } catch(e) {
+      CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.CONFIG_ERROR, details: { error: e }}));
+      throw e;
+    }
 
     const rctxt: ICliRunContext = {
       runId: this.cliMigrateManagerOptions.runId,
@@ -135,16 +147,15 @@ export class CliMigrateManager {
       epV2ApplicationDomainPrefix: this.cliMigrateManagerOptions.epV2.applicationDomainPrefix ? this.cliMigrateManagerOptions.epV2.applicationDomainPrefix : "none"
     }});
 
-    if(this.cliMigrateManagerOptions.epV2.applicationDomainPrefix === undefined) {
-      throw new CliUsageError(
-        logName, 
-        `Run state '${this.cliMigrateManagerOptions.cliMigrateManagerRunState}' currently only supported with '${CliUtils.nameOf<ICliConfigFile>("migrate.epV2.applicationDomainPrefix")}' defined.`,
-        undefined
-        );
-    }
-
-    console.log(`\n>>>>> $${logName}: TODO: absent objects based on either prefix and/or runId ...\n`);
-    await CliApplicationDomainsService.absent_EpV2_PrefixedApplicationDomains(this.cliMigrateManagerOptions.epV2.applicationDomainPrefix);
+    if(this.cliMigrateManagerOptions.absentRunId !== undefined) {
+      await CliAbsentService.absent_EpV2_ByRunId(this.cliMigrateManagerOptions.absentRunId);
+    } else if(this.cliMigrateManagerOptions.epV2.applicationDomainPrefix !== undefined) {
+      await CliAbsentService.absent_EpV2_PrefixedApplicationDomains(this.cliMigrateManagerOptions.epV2.applicationDomainPrefix);
+    } else throw new CliInternalCodeInconsistencyError(logName, {
+      message: 'one of must be defined',
+      absentRunId: `${CliUtils.nameOf<ICliMigrateManagerOptions>("absentRunId")}`,
+      applicationDomainPrefix: `${CliUtils.nameOf<ICliMigrateManagerOptions>("epV2.applicationDomainPrefix")}`
+    });
 
     await this.absentGlobalCustomAttributeDefinitions();
 
@@ -168,8 +179,15 @@ export class CliMigrateManager {
   }
 
   private run_present = async(): Promise<void> => {
-    // const funcName = "run_present";
-    // const logName = `${CliMigrateManager.name}.${funcName}()`;
+    const funcName = "run_present";
+    const logName = `${CliMigrateManager.name}.${funcName}()`;
+
+    try {
+      await CliConfig.validatePresent();
+    } catch(e) {
+      CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.CONFIG_ERROR, details: { error: e }}));
+      throw e;
+    }
 
     const rctxt: ICliRunContext = {
       runId: this.cliMigrateManagerOptions.runId,
@@ -218,12 +236,6 @@ export class CliMigrateManager {
     );
     const cliSchemasMigratorRunReturn: ICliSchemasMigratorRunReturn = await cliSchemasMigrator.run();
     if(cliSchemasMigratorRunReturn.error) throw cliSchemasMigratorRunReturn.error;
-
-
-    // const devel=true; if(devel) throw new Error(`${logName}: continue here`);
-
-
-
     // migrate events
     const cliEventsMigrator = new CliEventsMigrator({
         runId: this.cliMigrateManagerOptions.runId,
@@ -263,13 +275,6 @@ export class CliMigrateManager {
     // DEBUG
     // console.log(`\n${logName}: \nthis.cliMigrateManagerOptions=\n${JSON.stringify(this.cliMigrateManagerOptions, null, 2)}\n`);
     // process.exit(1);
-    try {
-      await CliConfig.validate();
-    } catch(e) {
-      CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.CONFIG_ERROR, details: { error: e }}));
-      throw e;
-    }
-
     try {
       switch(this.cliMigrateManagerOptions.cliMigrateManagerRunState) {
         case ECliMigrateManagerRunState.PRESENT:

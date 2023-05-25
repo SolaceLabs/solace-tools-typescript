@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 import fs from 'fs';
 import yaml from 'js-yaml';
 import path from 'path';

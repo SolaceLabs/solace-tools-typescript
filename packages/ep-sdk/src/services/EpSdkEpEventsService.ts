@@ -131,7 +131,7 @@ export class EpSdkEpEventsServiceClass extends EpSdkServiceClass {
   public listAll = async({ xContextId, applicationDomainIds, shared, sortFieldName, brokerType, attributesQuery }:{
     xContextId?: string;
     applicationDomainIds?: Array<string>;
-    shared: boolean;
+    shared?: boolean;
     brokerType?: EpSdkBrokerTypes;
     attributesQuery?: IEpSdkAttributesQuery;
     sortFieldName?: string;

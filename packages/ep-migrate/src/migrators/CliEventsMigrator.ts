@@ -1,4 +1,7 @@
 import { 
+  EventVersion 
+} from "@solace-labs/ep-openapi-node";
+import { 
   EEpSdkTask_Action,
   EEpSdkTask_TargetState, 
   EpSdkEpEventTask, 
@@ -53,7 +56,6 @@ import {
   ICliMigratedEvent, 
   ICliMigratedSchema
 } from "./types";
-import { EventVersion } from "@solace-labs/ep-openapi-node";
 
 export interface ICliEventsMigrateConfig {
   epV2: {
@@ -80,24 +82,6 @@ export class CliEventsMigrator extends CliMigrator {
 
   constructor(options: ICliEventsMigratorOptions, runMode: ECliRunContext_RunMode) {
     super(options, runMode);
-  }
-
-  private createEpSdkEnumInfoMap() {
-    const funcName = 'createEpSdkEnumInfoMap';
-    const logName = `${CliEventsMigrator.name}.${funcName}()`;
-    for(const cliMigratedEnum of this.options.cliMigratedEnums) {
-      /* istanbul ignore next */
-      if (cliMigratedEnum.epV2Enum.topicAddressEnum.id === undefined) throw new CliEPApiContentError(logName,"cliMigratedEnum.epV2Enum.topicAddressEnum.id", { epV2Enum: cliMigratedEnum.epV2Enum });
-      /* istanbul ignore next */
-      if (cliMigratedEnum.epV2Enum.topicAddressEnumVersion.id === undefined) throw new CliEPApiContentError(logName,"cliMigratedEnum.epV2Enum.topicAddressEnumVersion.id", { epV2Enum: cliMigratedEnum.epV2Enum });
-      const epSdkEpEventVersionTask_EnumInfo: IEpSdkEpEventVersionTask_EnumInfo = {
-        enumName: cliMigratedEnum.epV2Enum.topicAddressEnum.name,
-        enumId: cliMigratedEnum.epV2Enum.topicAddressEnum.id,
-        applicationDomainId: cliMigratedEnum.epV2Enum.topicAddressEnum.applicationDomainId,
-        enumVersionId: cliMigratedEnum.epV2Enum.topicAddressEnumVersion.id
-      };
-      this.epSdkEnumInfoMap.set(epSdkEpEventVersionTask_EnumInfo.enumName, epSdkEpEventVersionTask_EnumInfo);
-    }
   }
 
   private async presentEventCustomAttributes({ epSdkEpEventTask_ExecuteReturn }:{
@@ -249,7 +233,7 @@ export class CliEventsMigrator extends CliMigrator {
       applicationDomainId: cliMigratedApplicationDomain.epV2ApplicationDomain.id,
       eventName: epV1Event.name,
       eventObjectSettings: {
-        shared: true,
+        shared: epV1Event.shared,
       },
       epSdkTask_TransactionConfig: this.get_IEpSdkTask_TransactionConfig(),
     });
@@ -390,7 +374,6 @@ export class CliEventsMigrator extends CliMigrator {
       error: undefined
     };
     try {
-      this.createEpSdkEnumInfoMap();
       cliEventsMigratorRunReturn.cliEventsMigratorRunMigrateReturn = await this.run_migrate();
       CliLogger.debug(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.MIGRATE_EVENTS_DONE, details: { cliEventsMigratorRunMigrateReturn: cliEventsMigratorRunReturn.cliEventsMigratorRunMigrateReturn }}));
     } catch (e: any) {

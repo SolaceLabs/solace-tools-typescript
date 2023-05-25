@@ -7,6 +7,9 @@ import {
   TopicDomainsResponse, 
   TopicDomainsService 
 } from "@solace-labs/ep-openapi-node";
+import { CliRunIssues, ICliRunIssue } from "../../src/cli-components";
+import { TestLogger } from "./TestLogger";
+import { expect } from "chai";
 
 export class TestService {
 
@@ -41,6 +44,15 @@ export class TestService {
     for(const applicationDomainName of absentApplicationDomainNames) { await TestService.deleteApplicationDomain({ applicationDomainName }); }
     // third pass
     for(const applicationDomainName of absentApplicationDomainNames) { await TestService.deleteApplicationDomain({ applicationDomainName }); }
+  }
+
+  public static testRunIssues = (expectedCount: number = 0) => {
+    const cliRunIssues: Array<ICliRunIssue> = CliRunIssues.get({});
+    const message = TestLogger.createLogMessage("cliRunIssues", {
+      count: cliRunIssues.length,
+      cliRunIssues
+    });
+    expect(cliRunIssues.length, message).to.equal(expectedCount);
   }
   
 }

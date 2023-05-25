@@ -204,12 +204,13 @@ export class CliEnumsMigrator extends CliMigrator {
       epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
       applicationDomainName: epV2ApplicationDomainName,
       applicationDomainSettings: {
-        // description: "a new description x"
       },
       epSdkTask_TransactionConfig: this.get_IEpSdkTask_TransactionConfig(),
       checkmode: false,
     });
     const epSdkApplicationDomainTask_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn = await this.executeTask({ epSdkTask: applicationDomainsTask });
+    // set custom attributes
+    epSdkApplicationDomainTask_ExecuteReturn.epObject = await this.presentApplicationDomainRunIdCustomAttribute({ epSdkApplicationDomainTask_ExecuteReturn });
     CliLogger.trace(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.MIGRATE_ENUMS_APPLICATION_DOMAIN, message: "application domain", details: { epSdkApplicationDomainTask_ExecuteReturn }}));
     /* istanbul ignore next */
     if(epSdkApplicationDomainTask_ExecuteReturn.epObject.id === undefined) throw new CliEPApiContentError(logName, "epSdkApplicationDomainTask_ExecuteReturn.epObject.id === undefined", {
