@@ -291,27 +291,30 @@ class CliConfig {
         );
     }
 
-
-    const environmentName = this.config.cliMigrateConfig.applications.epV2.environment.environmentName;
-    const environment: Environment | undefined = await EpSdkEnvironmentsService.getByName({ environmentName });
-    if(environment === undefined) {
-      throw new CliConfigInvalidConfigError(logName, {
-        message: 'Ep V2 environment for applications not found',
-        environmentName
-      });  
+    if(this.config.cliMigrateConfig.applications.epV2.environment) {
+      const { environmentName } = this.config.cliMigrateConfig.applications.epV2.environment;
+      const environment: Environment | undefined = await EpSdkEnvironmentsService.getByName({ environmentName });
+      if(environment === undefined) {
+        throw new CliConfigInvalidConfigError(logName, {
+          message: 'Ep V2 environment for applications not found',
+          environmentName
+        });  
+      }
     }
   }
 
   public validatePresent = async() => {
     const funcName = "validatePresent";
     const logName = `${CliConfig.name}.${funcName}()`;
-    const environmentName = this.config.cliMigrateConfig.applications.epV2.environment.environmentName;
-    const environment: Environment | undefined = await EpSdkEnvironmentsService.getByName({ environmentName });
-    if(environment === undefined) {
-      throw new CliConfigInvalidConfigError(logName, {
-        message: 'Ep V2 environment for applications not found',
-        environmentName
-      });  
+    if(this.config.cliMigrateConfig.applications.epV2.environment) {
+      const { environmentName } = this.config.cliMigrateConfig.applications.epV2.environment;
+      const environment: Environment | undefined = await EpSdkEnvironmentsService.getByName({ environmentName });
+      if(environment === undefined) {
+        throw new CliConfigInvalidConfigError(logName, {
+          message: 'Ep V2 environment for applications not found',
+          environmentName
+        });  
+      }
     }
   }
 
