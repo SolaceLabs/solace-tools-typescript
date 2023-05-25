@@ -2,10 +2,8 @@ import {
   ApplicationDomain, 
 } from "@solace-labs/ep-openapi-node";
 import {
-  EEpSdkTask_Action,
   EEpSdkTask_TargetState,
   EpSdkApplicationDomainTask,
-  EpSdkApplicationDomainsService,
   EpSdkBrokerTypes,
   EpSdkCustomAttributeDefinitionTask,
   EpSdkDefaultTopicDelimitors,
@@ -23,8 +21,6 @@ import {
   CliRunSummary,
   ICliApplicationDomainRunContext,
   ICliMigrateManagerOptionsEpV1,
-  CliMigrateManager,
-  CliConfig,
 } from "../cli-components";
 import { 
   CliMigrator, 
@@ -73,26 +69,7 @@ export class CliApplicationDomainsMigrator extends CliMigrator {
   private async presentCustomAttributes({ epSdkApplicationDomainTask_ExecuteReturn }:{
     epSdkApplicationDomainTask_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn;
   }): Promise<ApplicationDomain> {
-    const funcName = 'presentCustomAttributes';
-    const logName = `${CliApplicationDomainsMigrator.name}.${funcName}()`;
-    // runId
-    if(epSdkApplicationDomainTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action !== EEpSdkTask_Action.CREATE) return epSdkApplicationDomainTask_ExecuteReturn.epObject;
-    /* istanbul ignore next */
-    if(epSdkApplicationDomainTask_ExecuteReturn.epObject.id === undefined) throw new CliEPApiContentError(logName, "epSdkApplicationDomainTask_ExecuteReturn.epObject.id === undefined", {
-      applicationDomain: epSdkApplicationDomainTask_ExecuteReturn.epObject,
-    });
-    const newApplicationDomain: ApplicationDomain = await EpSdkApplicationDomainsService.setCustomAttributes({
-      applicationDomainId: epSdkApplicationDomainTask_ExecuteReturn.epObject.id,
-      epSdkCustomAttributes: [
-        { 
-          name: CliMigrateManager.EpV2RunIdCustomAttributeDefinition.name,
-          scope: CliMigrateManager.EpV2RunIdCustomAttributeDefinition.scope,
-          valueType: CliMigrateManager.EpV2RunIdCustomAttributeDefinition.valueType,
-          value: CliConfig.getRunId(),
-        }
-      ]
-    });
-    return newApplicationDomain;
+    return this.presentApplicationDomainRunIdCustomAttribute({ epSdkApplicationDomainTask_ExecuteReturn });
   }
 
   private async presentCustomAttributeDefinitions({ applicationDomainId }:{
