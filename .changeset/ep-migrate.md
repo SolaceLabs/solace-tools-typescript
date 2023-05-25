@@ -16,3 +16,4 @@ enhancements
   - enum versions, schema versions, event versions
     - if action === CREATE_FIRST_VERSION || CREATE_NEW_VERSION
 - added absent using 'ep-migrate-run-id' custom attribute
+- create first draft of docs

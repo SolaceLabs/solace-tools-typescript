@@ -58,7 +58,7 @@ migrate:
     epV2:
       applicationDomainName: 'enums'
       versions:
-        initialVersion: 2.0.0
+        initialVersion: 1.0.0
         versionStrategy: bump_patch      
         state: Released
   applicationDomains:
