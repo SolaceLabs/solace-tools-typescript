@@ -17,14 +17,13 @@ epV2:
   token: ${EP_MIGRATE_CLI_SOLACE_CLOUD_TOKEN_V2}
 migrate:
   epV1:
-    # # NOTE: switch off for real tests
-    # applicationDomainNames:
-    #   include: 
-    #   - "EP_MIGRATE/TEST"
-    #   exclude:
-    #   - "EP_MIGRATE/exclude"
+    applicationDomainNames:
+      include: 
+      - 'Acme Rideshare'
+      - 'default'
+      - 'EP_MIGRATE/TEST'
   epV2:
-    applicationDomainPrefix: 'TEST_EP_MIGRATE/epV1/'
+    applicationDomainPrefix: 'TEST_EP_MIGRATE_NECKERT/epV1/'
     versions:
       initialVersion: 1.0.0
       versionStrategy: bump_patch
@@ -50,8 +49,8 @@ migrate:
     epV2:
       environment:
         environmentName: 'TEST_EP_MIGRATE/epV1'
-        eventMeshName: 'TEST_EP_MIGRATE/epV1'
-        eventBrokerName: 'TEST_EP_MIGRATE/epV1'
+        eventMeshName: 'TEST_EP_MIGRATE_NECKERT/epV1'
+        eventBrokerName: 'TEST_EP_MIGRATE_NECKERT/epV1'
       versions:
         initialVersion: 1.0.0
         versionStrategy: bump_patch

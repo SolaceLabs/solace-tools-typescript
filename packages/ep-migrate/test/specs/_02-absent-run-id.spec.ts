@@ -18,10 +18,7 @@ import {
   CliConfig,
   CliError,
   CliMigrateManager,
-  CliRunSummary,
-  ECliMigrateManagerMode,
   ECliMigrateManagerRunState,
-  ICliMigrateSummaryPresent,
 } from '../../src/cli-components';
 
 
@@ -29,7 +26,6 @@ const scriptName: string = path.basename(__filename);
 TestLogger.logMessage(scriptName, ">>> starting ...");
 
 
-let CliMigrateSummaryPresent: ICliMigrateSummaryPresent | undefined = undefined;
 let PresentRunId: string | undefined = undefined;
 let ApplicationDomainPrefix: string | undefined = undefined;
 
@@ -61,14 +57,13 @@ describe(`${scriptName}`, () => {
       ApplicationDomainPrefix = CliConfig.getCliConfig().cliMigrateConfig.epV2.applicationDomainPrefix;
       const cliMigrateManager = new CliMigrateManager(CliConfig.getCliMigrateManagerOptions());
       await cliMigrateManager.run();
-      CliMigrateSummaryPresent = CliRunSummary.createMigrateSummaryPresent(ECliMigrateManagerMode.RELEASE_MODE);
 
       // NOTE: set to zero once all issues are resolved
       // expect(cliRunIssues.length, message).to.equal(0);
 
       // interim 
 
-      TestService.testRunIssues(11);
+      TestService.testRunIssues(7);
 
     } catch(e) {
       expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
