@@ -1589,7 +1589,7 @@ ${absentApplicationDomainNames.map(x => `
       cliMigrateSummary,
     }}));
 
-    let consoleOutput = `
+    const consoleOutput = `
 
 ------------------------------------------------------------------------------------------------    
 Migration Summary for run: ${cliMigrateManagerOptions.cliMigrateManagerRunState}
