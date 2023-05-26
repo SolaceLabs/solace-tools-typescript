@@ -11,6 +11,7 @@ Migrate Event Portal V1 objects to Event Portal V2.
   install
   overview
   usage
+  details
   troubleshooting
 
 Resources
