@@ -119,13 +119,13 @@ export class CliApplicationsMigrator extends CliMigrator {
     const logName = `${CliApplicationsMigrator.name}.${funcName}()`;
     let eventMesh: EventMesh | undefined = undefined;
     // search list of event meshes for a match
-    let nextPage: number | undefined = 1;
-    while(eventMesh === undefined && nextPage !== undefined) {
+    let nextPage: number | null = 1;
+    while(eventMesh === undefined && nextPage !== null) {
       const eventMeshesResponse: EventMeshesResponse = await EventMeshesService.getEventMeshes({ pageNumber: nextPage, pageSize: 10, environmentId });
       if(eventMeshesResponse.data && eventMeshesResponse.data.length > 0) {
         eventMesh = eventMeshesResponse.data.find( x => x.name === eventMeshName);
       }
-      nextPage = eventMeshesResponse.meta?.pagination?.nextPage;
+      nextPage = eventMeshesResponse.meta?.pagination?.nextPage ?? null;
     }
     /* istanbul ignore next */
     if(eventMesh === undefined) throw new CliInternalCodeInconsistencyError(logName, { message: 'unable to find event mesh', environmentId, eventMeshName });

@@ -28,20 +28,11 @@ import {
   CliConfig,
   CliError,
   CliMigrateManager,
-  CliRunSummary,
-  ECliMigrateManagerMode,
   ECliMigrateManagerRunState,
-  ICliMigrateSummaryPresent
 } from '../../src/cli-components';
 
 const scriptName: string = path.basename(__filename);
 TestLogger.logMessage(scriptName, ">>> starting ...");
-
-const applicationDomainNames: string[] = ['Acme Rideshare', 'Nils Rideshare'];
-
-const environmentName: string = 'TEST_EP_MIGRATE/epV1';
-const eventMeshName: string = 'TEST_EP_MIGRATE/epV1';
-const eventBrokerName: string = 'TEST_EP_MIGRATE/epV1';
 
 const getApplications = async(prefix: string): Promise<EpSdkApplicationAndVersion[]> => {
   const applicationDomainsResponse: ApplicationDomainsResponse = await EpSdkApplicationDomainsService.listAll({});
@@ -61,13 +52,13 @@ const getEventMesh = async({ eventMeshName, environmentId }:{
   environmentId: string;
 }): Promise<EventMesh | undefined> => {
   let eventMesh: EventMesh | undefined = undefined;
-  let nextPage: number | undefined = 1;
-  while(eventMesh === undefined && nextPage !== undefined) {
+  let nextPage: number | null = 1;
+  while(eventMesh === undefined && nextPage !== null) {
     const eventMeshesResponse: EventMeshesResponse = await EventMeshesService.getEventMeshes({ pageNumber: nextPage, environmentId });
     if(eventMeshesResponse.data && eventMeshesResponse.data.length > 0) {
       eventMesh = eventMeshesResponse.data.find( x => x.name === eventMeshName);
     }
-    nextPage = eventMeshesResponse.meta?.pagination?.nextPage;
+    nextPage = eventMeshesResponse.meta?.pagination?.nextPage ?? null;
   }
   return eventMesh;
 }
@@ -86,19 +77,25 @@ const getMessagingServiceId = async({ environmentName, eventMeshName, eventBroke
 
 describe(`${scriptName}`, () => {
 
-  let messagingServiceId: string | undefined = undefined;
+  const applicationDomainNames: string[] = ['Acme Rideshare'];
+
+  const environmentName: string = 'TEST_EP_MIGRATE/epV1';
+  const eventMeshName: string = 'TEST_EP_MIGRATE/epV1';
+  const eventBrokerName: string = 'TEST_EP_MIGRATE/epV1';
+
   let applicationDomainPrefix: string | undefined = undefined;
+  let messagingServiceId: string | undefined = undefined;
 
   before(async() => {
     TestContext.newItId();
-    messagingServiceId = await getMessagingServiceId({ environmentName, eventMeshName, eventBrokerName });
     applicationDomainPrefix = CliConfig.getCliConfig().cliMigrateConfig.epV2.applicationDomainPrefix;
+    messagingServiceId = await getMessagingServiceId({ environmentName, eventMeshName, eventBrokerName });
+    CliConfig.getCliMigrateManagerOptions().applicationDomains.epV1 = { applicationDomainNames: { include: applicationDomainNames }};
     await TestService.absent_EpV2_PrefixedApplicationDomains(applicationDomainPrefix);
   });
 
   beforeEach(() => {
     TestContext.newItId();
-    CliConfig.getCliMigrateManagerOptions().applicationDomains.epV1 = { applicationDomainNames: { include: applicationDomainNames }};
     CliConfig.getCliMigrateManagerOptions().applications.epV2.environment = undefined;
   });
 
@@ -107,35 +104,22 @@ describe(`${scriptName}`, () => {
     await TestService.absent_EpV2_PrefixedApplicationDomains(applicationDomainPrefix);
   });
 
-  it(`${scriptName}: should run ep-migrate: present: application domain whitelist`, async () => {
+  it(`${scriptName}: should run ep-migrate: present: without application evironment`, async () => {
     try {
       CliConfig.getCliMigrateManagerOptions().cliMigrateManagerRunState = ECliMigrateManagerRunState.PRESENT;
-      CliConfig.getCliMigrateManagerOptions().applicationDomains.epV1.applicationDomainNames.include = [applicationDomainNames[0]];
       const cliMigrateManager = new CliMigrateManager(CliConfig.getCliMigrateManagerOptions());
       await cliMigrateManager.run();
-      const cliMigrateSummaryPresent: ICliMigrateSummaryPresent = CliRunSummary.createMigrateSummaryPresent(ECliMigrateManagerMode.RELEASE_MODE);
-      expect(cliMigrateSummaryPresent.processedEpV1ApplicationDomains, TestLogger.createLogMessage('processedEpV1ApplicationDomains', cliMigrateSummaryPresent)).to.equal(1);
+      const applications = await getApplications(applicationDomainPrefix);
+      for(const application of applications) {
+        expect(application.applicationVersion.messagingServiceIds, TestLogger.createLogMessage('applicationVersion.messagingServiceIds', application)).to.be.empty;
+      }
     } catch(e) {
       expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
       expect(false, TestLogger.createTestFailMessageWithCliError('failed', e)).to.be.true;
     }
   });
 
-  it(`${scriptName}: should run ep-migrate: present: application domain blacklist`, async () => {
-    try {
-      CliConfig.getCliMigrateManagerOptions().cliMigrateManagerRunState = ECliMigrateManagerRunState.PRESENT;
-      CliConfig.getCliMigrateManagerOptions().applicationDomains.epV1.applicationDomainNames.exclude = [applicationDomainNames[0]];
-      const cliMigrateManager = new CliMigrateManager(CliConfig.getCliMigrateManagerOptions());
-      await cliMigrateManager.run();
-      const cliMigrateSummaryPresent: ICliMigrateSummaryPresent = CliRunSummary.createMigrateSummaryPresent(ECliMigrateManagerMode.RELEASE_MODE);
-      expect(cliMigrateSummaryPresent.processedEpV1ApplicationDomains, TestLogger.createLogMessage('processedEpV1ApplicationDomains', cliMigrateSummaryPresent)).to.equal(applicationDomainNames.length - 1);
-    } catch(e) {
-      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
-      expect(false, TestLogger.createTestFailMessageWithCliError('failed', e)).to.be.true;
-    }
-  });
-
-  it(`${scriptName}: should run ep-migrate: present: application evironment`, async () => {
+  it(`${scriptName}: should run ep-migrate: present: with application evironment`, async () => {
     try {
       CliConfig.getCliMigrateManagerOptions().cliMigrateManagerRunState = ECliMigrateManagerRunState.PRESENT;
       CliConfig.getCliMigrateManagerOptions().applications.epV2.environment = { environmentName, eventMeshName, eventBrokerName };
@@ -151,5 +135,40 @@ describe(`${scriptName}`, () => {
     }
   });
 
-});
+  it(`${scriptName}: should run ep-migrate: present: invalid environment name`, async () => {
+    try {
+      CliConfig.getCliMigrateManagerOptions().cliMigrateManagerRunState = ECliMigrateManagerRunState.PRESENT;
+      CliConfig.getCliMigrateManagerOptions().applications.epV2.environment = { environmentName: 'unknown', eventMeshName, eventBrokerName };
+      const cliMigrateManager = new CliMigrateManager(CliConfig.getCliMigrateManagerOptions());
+      await cliMigrateManager.run();
+      expect(true, TestLogger.createTestFailMessage('cliMigrateManager.run() should throw an exception')).to.be.true;
+    } catch(e) {
+      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
+    }
+  });
 
+  it(`${scriptName}: should run ep-migrate: present: invalid event mesh name`, async () => {
+    try {
+      CliConfig.getCliMigrateManagerOptions().cliMigrateManagerRunState = ECliMigrateManagerRunState.PRESENT;
+      CliConfig.getCliMigrateManagerOptions().applications.epV2.environment = { environmentName, eventMeshName: 'unknown', eventBrokerName };
+      const cliMigrateManager = new CliMigrateManager(CliConfig.getCliMigrateManagerOptions());
+      await cliMigrateManager.run();
+      expect(true, TestLogger.createTestFailMessage('cliMigrateManager.run() should throw an exception')).to.be.true;
+    } catch(e) {
+      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
+    }
+  });
+
+  it(`${scriptName}: should run ep-migrate: present: invalid event broker name`, async () => {
+    try {
+      CliConfig.getCliMigrateManagerOptions().cliMigrateManagerRunState = ECliMigrateManagerRunState.PRESENT;
+      CliConfig.getCliMigrateManagerOptions().applications.epV2.environment = { environmentName, eventMeshName, eventBrokerName: 'unknown' };
+      const cliMigrateManager = new CliMigrateManager(CliConfig.getCliMigrateManagerOptions());
+      await cliMigrateManager.run();
+      expect(true, TestLogger.createTestFailMessage('cliMigrateManager.run() should throw an exception')).to.be.true;
+    } catch(e) {
+      expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
+    }
+  });
+
+});
