@@ -317,7 +317,8 @@ export class CliSchemasMigrator extends CliMigrator {
                 epV1Tags: await this.getTags({id: epV1EventSchema.id })
               });   
             } catch(e: any) {
-              CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.MIGRATE_SCHEMAS_ERROR, details: { error: e }}));
+              const error = CliErrorFactory.createCliError({ logName, error: e} );
+              CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.MIGRATE_SCHEMAS_ERROR, details: { error }}));
               // add to issues log  
               const rctxt: ICliSchemaRunContext | undefined = CliRunContext.pop() as ICliSchemaRunContext | undefined;
               const issue: ICliRunIssueSchema = {
@@ -325,7 +326,7 @@ export class CliSchemasMigrator extends CliMigrator {
                 epV1Id: epV1EventSchema.id,
                 epV1EventSchema,
                 cliRunContext: rctxt,
-                cause: e
+                cause: error
               };
               CliRunIssues.add(issue);
               CliRunSummary.processingEpV1SchemaIssue({ rctxt });

@@ -365,7 +365,8 @@ export class CliApplicationsMigrator extends CliMigrator {
             try {
               await this.migrateApplication({ cliMigratedApplicationDomain, epV1Application });   
             } catch(e: any) {
-              CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.MIGRATE_APPLICATIONS_ERROR, details: { error: e }}));
+              const error = CliErrorFactory.createCliError({ logName, error: e} );
+              CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.MIGRATE_APPLICATIONS_ERROR, details: { error }}));
               // add to issues log  
               const rctxt: ICliApplicationRunContext | undefined = CliRunContext.pop() as ICliApplicationRunContext| undefined;
               const issue: ICliRunIssueApplication = {
@@ -373,7 +374,7 @@ export class CliApplicationsMigrator extends CliMigrator {
                 epV1Id: epV1Application.id,
                 epV1Application,
                 cliRunContext: rctxt,
-                cause: e
+                cause: error
               };
               CliRunIssues.add(issue);
               CliRunSummary.processingEpV1ApplicationIssue({ rctxt });        
