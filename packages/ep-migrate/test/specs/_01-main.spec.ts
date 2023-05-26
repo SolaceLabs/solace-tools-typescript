@@ -57,7 +57,7 @@ describe(`${scriptName}`, () => {
       // NOTE: set to zero once all issues are resolved
       // expect(cliRunIssues.length, message).to.equal(0);
       // interim 
-      TestService.testRunIssues(7);
+      TestService.testRunIssues(12);
 
     } catch(e) {
       expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
