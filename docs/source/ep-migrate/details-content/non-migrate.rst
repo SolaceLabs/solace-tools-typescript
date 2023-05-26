@@ -3,10 +3,13 @@
 Known Limitations 
 =================
 
-None at the moment of writing.
-
 .. seealso::
 
   :ref:`ep-migrate-details-content-transformations`.
+
+Events
+------
+
+* EP V1 Events without a topic will not be migrated and an issue will be logged.
 
   
