@@ -166,15 +166,21 @@
           "properties": {
             "epV2": {
               "type": ["object"],
-              "required": ["environment"],
+              "required": [],
               "additionalProperties": false,
               "properties": {
                 "environment": {
                   "type": "object",
-                  "required": ["environmentName"],
+                  "required": ["environmentName", "eventMeshName", "eventBrokerName"],
                   "additionalProperties": false,
                   "properties": {
                     "environmentName": {
+                      "type": "string"
+                    },
+                    "eventMeshName": {
+                      "type": "string"
+                    },
+                    "eventBrokerName": {
                       "type": "string"
                     }
                   }

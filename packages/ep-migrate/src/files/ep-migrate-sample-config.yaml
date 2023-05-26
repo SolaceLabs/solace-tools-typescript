@@ -36,7 +36,7 @@ migrate:
   epV2:
     # applicationDomainPrefix:
     # - optional
-    # - if specified, prepends applicationDomainPrefix to all created applicationDomains 
+    # - if specified, prepends applicationDomainPrefix to all created applicationDomains
     applicationDomainPrefix: 'epV1/'
     # versions:
     # - required
@@ -51,7 +51,7 @@ migrate:
       # versionStrategy:
       # - version bump when existing version is found and any mods are applied to new version
       # - options: bump_patch, bump_minor
-      versionStrategy: bump_patch      
+      versionStrategy: bump_patch
       # state: options=Released, Draft 
       state: Draft
   enums:
@@ -59,7 +59,7 @@ migrate:
       applicationDomainName: 'enums'
       versions:
         initialVersion: 1.0.0
-        versionStrategy: bump_patch      
+        versionStrategy: bump_patch
         state: Released
   applicationDomains:
     epV2:
@@ -67,22 +67,30 @@ migrate:
     epV2:
       versions:
         initialVersion: 1.0.0
-        versionStrategy: bump_patch      
+        versionStrategy: bump_patch
         state: Released
   events:
     epV2:
       versions:
         initialVersion: 1.0.0
-        versionStrategy: bump_patch      
+        versionStrategy: bump_patch
         state: Released
   applications:
     epV2:
+      # environment:
+      # - optional
+      # - if specified, applications will be added to the specified runtime environment
+      # - this is required to see a graphical representation of the topology
       environment:
-        # Environment must exist in Ep V2
-        name: 'epV1'
+        # environment must exist in Ep V2
+        environmentName: 'epV1Migration'
+        # event mesh must exist in Ep V2
+        eventMeshName: 'epV1Migration'
+        # broker must exist in Ep V2
+        eventBrokerName: 'epV1Migration'
       versions:
         initialVersion: 1.0.0
-        versionStrategy: bump_patch      
+        versionStrategy: bump_patch
         state: Released
 
   

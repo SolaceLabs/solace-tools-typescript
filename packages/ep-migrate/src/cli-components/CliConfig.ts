@@ -46,8 +46,9 @@ import {
   ICliEventsMigrateConfig,
   ICliSchemasMigrateConfig
 } from '../migrators';
-import { EpSdkEnvironmentsService } from '@solace-labs/ep-sdk';
-import { Environment } from '@solace-labs/ep-openapi-node';
+import { EpSdkEnvironmentsService, EpSdkMessagingService } from '@solace-labs/ep-sdk';
+import { Environment, EventMesh, EventMeshesResponse, MessagingService } from '@solace-labs/ep-openapi-node';
+import { EventMeshesService } from '@solace-labs/ep-rt-openapi-node';
 
 const DEFAULT_CLI_LOGGER_LOG_LEVEL = ECliLogger_LogLevel.INFO;
 // const DEFAULT_CLI_LOGGER_LOG_FILE = `./tmp/logs/${DefaultAppName}.log`;
@@ -290,28 +291,43 @@ class CliConfig {
         undefined
         );
     }
-
-
-    const environmentName = this.config.cliMigrateConfig.applications.epV2.environment.environmentName;
-    const environment: Environment | undefined = await EpSdkEnvironmentsService.getByName({ environmentName });
-    if(environment === undefined) {
-      throw new CliConfigInvalidConfigError(logName, {
-        message: 'Ep V2 environment for applications not found',
-        environmentName
-      });  
-    }
   }
 
   public validatePresent = async() => {
     const funcName = "validatePresent";
     const logName = `${CliConfig.name}.${funcName}()`;
-    const environmentName = this.config.cliMigrateConfig.applications.epV2.environment.environmentName;
-    const environment: Environment | undefined = await EpSdkEnvironmentsService.getByName({ environmentName });
-    if(environment === undefined) {
-      throw new CliConfigInvalidConfigError(logName, {
-        message: 'Ep V2 environment for applications not found',
-        environmentName
-      });  
+    if(this.config.cliMigrateConfig.applications.epV2.environment) {
+      const { environmentName, eventMeshName, eventBrokerName } = this.config.cliMigrateConfig.applications.epV2.environment;
+      const environment: Environment | undefined = await EpSdkEnvironmentsService.getByName({ environmentName });
+      if(environment === undefined) {
+        throw new CliConfigInvalidConfigError(logName, {
+          message: 'Ep V2 environment for applications not found',
+          environmentName
+        });
+      }
+      let eventMesh: EventMesh | undefined = undefined;
+      let nextPage: number | null = 1;
+      while(eventMesh === undefined && nextPage !== null) {
+        const eventMeshesResponse: EventMeshesResponse = await EventMeshesService.getEventMeshes({ pageNumber: nextPage, environmentId: environment.id });
+        if(eventMeshesResponse.data && eventMeshesResponse.data.length > 0) {
+          eventMesh = eventMeshesResponse.data.find( x => x.name === eventMeshName && x.environmentId === environment.id );
+        }
+        nextPage = eventMeshesResponse.meta?.pagination?.nextPage ?? null;
+      }
+      if(eventMesh === undefined) {
+        throw new CliConfigInvalidConfigError(logName, {
+          message: 'Ep V2 event mesh for applications not found',
+          eventMeshName
+        });
+      }
+      const messagingServices: MessagingService[] = await EpSdkMessagingService.listAll({});
+      const messagingService = messagingServices.find( x => x.name === eventBrokerName && x.eventMeshId === eventMesh!.id);
+      if(messagingService === undefined) {
+        throw new CliConfigInvalidConfigError(logName, {
+          message: 'Ep V2 event broker for applications not found',
+          eventBrokerName
+        });
+      }
     }
   }
 

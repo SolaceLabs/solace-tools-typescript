@@ -27,34 +27,32 @@ migrate:
     applicationDomainPrefix: 'TEST_EP_MIGRATE/epV1/'
     versions:
       initialVersion: 1.0.0
-      versionStrategy: bump_patch      
+      versionStrategy: bump_patch
       state: Released
   enums:
     epV2:
-      applicationDomainName: 'enums'  
+      applicationDomainName: 'enums'
   applicationDomains:
     epV2:
   schemas:
     epV2:
       versions:
         initialVersion: 1.0.0
-        versionStrategy: bump_patch      
+        versionStrategy: bump_patch
         state: Released
   events:
     epV2:
       versions:
         initialVersion: 1.0.0
-        versionStrategy: bump_patch      
+        versionStrategy: bump_patch
         state: Released
   applications:
     epV2:
       environment:
         environmentName: 'TEST_EP_MIGRATE/epV1'
+        eventMeshName: 'TEST_EP_MIGRATE/epV1'
+        eventBrokerName: 'TEST_EP_MIGRATE/epV1'
       versions:
         initialVersion: 1.0.0
-        versionStrategy: bump_patch      
+        versionStrategy: bump_patch
         state: Released
-
-  
-
-  
