@@ -31,7 +31,8 @@ export enum EEpSdkSchemaType {
 /** @category Services */
 export enum EEpSdkSchemaContentType {
   APPLICATION_JSON = "json",
-  APPLICATION_XML = "xml"
+  APPLICATION_XML = "xml",
+  APPLICATION_PROTOBUF = "protobuf",
 }
 
 /** @category Services */
