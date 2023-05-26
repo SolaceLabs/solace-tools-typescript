@@ -9,6 +9,7 @@ import {
   EpSdkEpEventVersionTask, 
   EpSdkEpEventVersionsService, 
   EpSdkEpEventsService, 
+  EpSdkError, 
   EpSdkEvent, 
   IEpSdkEpEventTask_ExecuteReturn, 
   IEpSdkEpEventVersionTask_EnumInfo, 
@@ -33,6 +34,7 @@ import {
   CliMigrateEventReferenceEnumIssueError,
   CliMigrateManager,
   CliConfig,
+  CliError,
 } from "../cli-components";
 import { 
   CliMigrator, 
@@ -216,13 +218,19 @@ export class CliEventsMigrator extends CliMigrator {
     };
     CliRunContext.push(rctxt);
     CliRunSummary.processingEpV1Event({ eventName: epV1Event.name });
-
+    // // DEBUG
+    // if(!epV1Event.schemaId || !epV1Event.schemaVersionId) {
+    //   console.log(`>>>>> ${logName}: !epV1Event.schemaId || !epV1Event.schemaVersionId, ${JSON.stringify({
+    //     schemaId: JSON.stringify(epV1Event.schemaId),
+    //     schemaVersionId: JSON.stringify(epV1Event.schemaVersionId)
+    //   }, null, 2)}`);
+    // }
     // check if referenced schema has issues
     const schemaIssues: Array<ICliRunIssueSchema> = CliRunIssues.get({ type: ECliRunIssueTypes.SchemaIssue, epV1Id: epV1Event.schemaId }) as Array<ICliRunIssueSchema>;
     if(schemaIssues.length > 0) throw new CliMigrateReferenceIssueError(logName, schemaIssues);
     // get the referenced schema info
     const cliMigratedSchema: ICliMigratedSchema | undefined = this.options.cliMigratedSchemas.find( x => x.epV1Schema.id === epV1Event.schemaId);
-    if(cliMigratedSchema === undefined) throw new CliInternalCodeInconsistencyError(logName, { message: 'unable to find referenced schema for event', epV1Event });
+    if(cliMigratedSchema === undefined && epV1Event.schemaId) throw new CliInternalCodeInconsistencyError(logName, { message: 'unable to find referenced schema for event', epV1Event });
     // // DEBUG
     // const _epV1TopicName = epV1Event.topicName;
     // const _epV1TopicAddress: EpV1TopicAddress = epV1Event.topicAddress;
@@ -265,7 +273,7 @@ export class CliEventsMigrator extends CliMigrator {
     CliRunSummary.presentEpV2Event({ applicationDomainName: cliMigratedApplicationDomain.epV2ApplicationDomain.name, epSdkEpEventTask_ExecuteReturn });
     // present the event version
     // add all the topic address variables with enumId to the enum info map
-    const epV1TopicNodeDTOs: Array<EpV1TopicNodeDTO> | undefined = epV1Event.topicAddress.topicAddressLevels;
+    const epV1TopicNodeDTOs: Array<EpV1TopicNodeDTO> | undefined = epV1Event.topicAddress ? epV1Event.topicAddress.topicAddressLevels : undefined;
     if(epV1TopicNodeDTOs && epV1TopicNodeDTOs.length > 0) {
       for(const epV1TopicNodeDTO of epV1TopicNodeDTOs) {
         /* istanbul ignore next */
@@ -290,7 +298,7 @@ export class CliEventsMigrator extends CliMigrator {
       }
     }
     /* istanbul ignore next */
-    if(cliMigratedSchema.epV2Schema.schemaVersion.id === undefined) throw new CliEPApiContentError(logName,"cliMigratedSchema.epV2Schema.schemaVersion.id", { schemaVersion: cliMigratedSchema.epV2Schema.schemaVersion });
+    if(cliMigratedSchema && cliMigratedSchema.epV2Schema.schemaVersion.id === undefined) throw new CliEPApiContentError(logName,"cliMigratedSchema.epV2Schema.schemaVersion.id", { schemaVersion: cliMigratedSchema.epV2Schema.schemaVersion });
     const epSdkEpEventVersionTask = new EpSdkEpEventVersionTask({
       epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
       applicationDomainId: cliMigratedApplicationDomain.epV2ApplicationDomain.id,
@@ -302,7 +310,7 @@ export class CliEventsMigrator extends CliMigrator {
       enumInfoMap: this.epSdkEnumInfoMap,
       eventVersionSettings: {
         description: epV1Event.description,
-        schemaVersionId: cliMigratedSchema.epV2Schema.schemaVersion.id,
+        schemaVersionId: cliMigratedSchema ? cliMigratedSchema.epV2Schema.schemaVersion.id : undefined,
         stateId: this.get_EpSdk_StateId(this.options.cliEventsMigrateConfig.epV2.versions.state),
       },
       epSdkTask_TransactionConfig: this.get_IEpSdkTask_TransactionConfig(),
@@ -347,7 +355,8 @@ export class CliEventsMigrator extends CliMigrator {
                 epV1Tags: await this.getTags({id: epV1Event.id })
                });   
             } catch(e: any) {
-              CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.MIGRATE_EVENTS_ERROR, details: { error: e }}));
+              const error = CliErrorFactory.createCliError({ logName, error: e} );
+              CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.MIGRATE_EVENTS_ERROR, details: { error }}));
               // add to issues log  
               const rctxt: ICliEventRunContext | undefined = CliRunContext.pop() as ICliEventRunContext| undefined;
               const issue: ICliRunIssueEvent = {
@@ -355,7 +364,7 @@ export class CliEventsMigrator extends CliMigrator {
                 epV1Id: epV1Event.id,
                 epV1Event,
                 cliRunContext: rctxt,
-                cause: e
+                cause: error
               };
               CliRunIssues.add(issue);
               CliRunSummary.processingEpV1EventIssue({ rctxt });        
