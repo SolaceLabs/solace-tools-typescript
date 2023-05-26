@@ -14,3 +14,5 @@ enhancements:
   - EpSdkSchemaVersionsService.ts
   - EpSdkEventVersionsService.ts
   - EpSdkApplicationVersionsService.ts
+- EpSdkEpEventVersionTask:
+  - made schemaVersionId an optional setting, supporting events without a schema
