@@ -193,6 +193,7 @@ export interface ICliRunSummary_StartRunAbsent extends ICliRunSummary_StartRun {
 export interface ICliMigrateSummaryPresent extends ICliRunSummary_LogBase {
   type: ECliRunSummary_Type.MigrateSummaryPresent;
   logFile: string;
+  durationSecs: number;
   processedEpV1ApplicationDomains: number;
   createdEpV2ApplicationDomains: number;
   updatedEpV2ApplicationDomains: number;
@@ -217,6 +218,7 @@ export interface ICliMigrateSummaryPresent extends ICliRunSummary_LogBase {
 export interface ICliMigrateSummaryAbsent extends ICliRunSummary_LogBase {
   type: ECliRunSummary_Type.MigrateSummaryAbsent;
   logFile: string;
+  durationSecs: number;
 
   processedEpV2ApplicationDomains: number;
   deletedEpV2ApplicationDomains: number;
@@ -1467,7 +1469,7 @@ ${absentApplicationDomainNames.map(x => `
     this.presentEpV2VersionObject(ECliSummaryStatusCodes.PRESENT_EP_V2_APPLICATION_VERSION, applicationDomainName, epSdkApplicationVersionTask_ExecuteReturn);
   }
 
-  public createMigrateSummaryPresent = (cliMigrateManagerMode: ECliMigrateManagerMode): ICliMigrateSummaryPresent => {
+  public createMigrateSummaryPresent = (cliMigrateManagerMode: ECliMigrateManagerMode, durationSecs: number): ICliMigrateSummaryPresent => {
     const funcName = "createMigrateSummaryPresent";
     const logName = `${CliRunSummary.name}.${funcName}()`;
 
@@ -1553,6 +1555,7 @@ ${absentApplicationDomainNames.map(x => `
       type: ECliRunSummary_Type.MigrateSummaryPresent,
       timestamp: Date.now(),
       logFile: logFile ? logFile : "no log file.",
+      durationSecs,
       processedEpV1ApplicationDomains,
       createdEpV2ApplicationDomains,
       updatedEpV2ApplicationDomains,
@@ -1583,7 +1586,7 @@ ${absentApplicationDomainNames.map(x => `
       runMode: this.runMode,
       summaryLogList: this.getSummaryLogList(), 
     }}));
-    const cliMigrateSummary: ICliMigrateSummaryPresent = this.createMigrateSummaryPresent(cliMigrateManagerOptions.cliMigrateManagerMode);
+    const cliMigrateSummary: ICliMigrateSummaryPresent = this.createMigrateSummaryPresent(cliMigrateManagerOptions.cliMigrateManagerMode, durationSecs);
     CliLogger.info(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.MIGRATE_PRESENT_DONE, details: {
       runMode: this.runMode,
       cliMigrateSummary,
@@ -1629,7 +1632,7 @@ Migration Summary for run: ${cliMigrateManagerOptions.cliMigrateManagerRunState}
     );
   };
 
-  public createMigrateSummaryAbsent = (cliMigrateManagerMode: ECliMigrateManagerMode, absentRunId?: string): ICliMigrateSummaryAbsent => {
+  public createMigrateSummaryAbsent = (cliMigrateManagerMode: ECliMigrateManagerMode, durationSecs: number, absentRunId?: string): ICliMigrateSummaryAbsent => {
     const funcName = "createMigrateSummaryAbsent";
     const logName = `${CliRunSummary.name}.${funcName}()`;
 
@@ -1747,6 +1750,7 @@ Migration Summary for run: ${cliMigrateManagerOptions.cliMigrateManagerRunState}
       type: ECliRunSummary_Type.MigrateSummaryAbsent,
       timestamp: Date.now(),
       logFile: logFile ? logFile : "no log file.",
+      durationSecs,
       deletedEpV2ApplicationDomains,
       processedEpV2ApplicationDomains,
       processingEpV2ApplicationDomainIssues,
@@ -1774,7 +1778,7 @@ Migration Summary for run: ${cliMigrateManagerOptions.cliMigrateManagerRunState}
       runMode: this.runMode,
       summaryLogList: this.getSummaryLogList(), 
     }}));
-    const cliMigrateSummary: ICliMigrateSummaryAbsent = this.createMigrateSummaryAbsent(cliMigrateManagerOptions.cliMigrateManagerMode, cliMigrateManagerOptions.absentRunId);
+    const cliMigrateSummary: ICliMigrateSummaryAbsent = this.createMigrateSummaryAbsent(cliMigrateManagerOptions.cliMigrateManagerMode, durationSecs, cliMigrateManagerOptions.absentRunId);
     CliLogger.info(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.MIGRATE_ABSENT_DONE, details: {
       runMode: this.runMode,
       cliMigrateSummary,
