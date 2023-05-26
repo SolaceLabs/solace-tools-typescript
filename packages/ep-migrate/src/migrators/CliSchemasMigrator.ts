@@ -181,7 +181,7 @@ export class CliSchemasMigrator extends CliMigrator {
       case EventSchema.contentType.TEXT:
       case EventSchema.contentType.BINARY:
         throw new CliMigrateEpV1IncompatibilityError(logName, {
-          message: "Unable to map epV1ContentType to EpV2 Schema Type for Schema. Please remove from migration.",
+          message: "Unable to map epV1ContentType to EpV2 Schema Type for Schema. This Schema cannot be migrated.",
           epV1ContentType,
         });
       default:
@@ -204,7 +204,7 @@ export class CliSchemasMigrator extends CliMigrator {
       case EventSchema.contentType.TEXT:
       case EventSchema.contentType.BINARY:
           throw new CliMigrateEpV1IncompatibilityError(logName, {
-          message: "Unable to map epV1ContentType to EpV2 Schema Type for Schema. Please remove from migration.",
+          message: "Unable to map epV1ContentType to EpV2 Schema Type for Schema. This Schema cannot be migrated.",
           epV1ContentType,
         });
       default:
