@@ -9,7 +9,6 @@ import {
   EpSdkEpEventVersionTask, 
   EpSdkEpEventVersionsService, 
   EpSdkEpEventsService, 
-  EpSdkError, 
   EpSdkEvent, 
   IEpSdkEpEventTask_ExecuteReturn, 
   IEpSdkEpEventVersionTask_EnumInfo, 
@@ -34,7 +33,6 @@ import {
   CliMigrateEventReferenceEnumIssueError,
   CliMigrateManager,
   CliConfig,
-  CliError,
   CliMigrateEpV1IncompatibilityError,
 } from "../cli-components";
 import { 

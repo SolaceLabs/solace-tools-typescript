@@ -29,7 +29,6 @@ import {
   CliMigrateManager,
   CliConfig,
   CliUtils,
-  CliMigrateEpV1IncompatibilityError,
   CliInternalCodeInconsistencyError,
 } from "../cli-components";
 import { 

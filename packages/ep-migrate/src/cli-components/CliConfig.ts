@@ -332,7 +332,8 @@ class CliConfig {
         });
       }
       const messagingServices: MessagingService[] = await EpSdkMessagingService.listAll({});
-      const messagingService = messagingServices.find( x => x.name === eventBrokerName && x.eventMeshId === eventMesh!.id);
+      const eventMeshId = eventMesh.id;
+      const messagingService = messagingServices.find( x => x.name === eventBrokerName && x.eventMeshId === eventMeshId);
       if(messagingService === undefined) {
         throw new CliConfigInvalidConfigError(logName, {
           message: 'Ep V2 event broker for applications not found',
