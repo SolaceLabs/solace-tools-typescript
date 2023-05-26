@@ -172,7 +172,7 @@ export class CliEventsMigrator extends CliMigrator {
   } 
 
   private transformTopicElement(topicElement: string): string {
-    return topicElement.replaceAll('-', '_');
+    return topicElement.replaceAll('/^[A-Za-z_]/g', '_');
   }
 
   private transformTopicString(topicString: string): string {
