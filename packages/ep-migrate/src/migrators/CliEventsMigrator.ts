@@ -35,6 +35,7 @@ import {
   CliMigrateManager,
   CliConfig,
   CliError,
+  CliMigrateEpV1IncompatibilityError,
 } from "../cli-components";
 import { 
   CliMigrator, 
@@ -218,6 +219,10 @@ export class CliEventsMigrator extends CliMigrator {
     };
     CliRunContext.push(rctxt);
     CliRunSummary.processingEpV1Event({ eventName: epV1Event.name });
+    // don't migrate events without a topic
+    if(!epV1Event.topicAddress) throw new CliMigrateEpV1IncompatibilityError(logName, {
+      message: "cannot migrate EpV1 Event without a topic",
+    });
     // // DEBUG
     // if(!epV1Event.schemaId || !epV1Event.schemaVersionId) {
     //   console.log(`>>>>> ${logName}: !epV1Event.schemaId || !epV1Event.schemaVersionId, ${JSON.stringify({
