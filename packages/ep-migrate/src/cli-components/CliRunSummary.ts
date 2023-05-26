@@ -1578,7 +1578,7 @@ ${absentApplicationDomainNames.map(x => `
     };
   };
 
-  private processedMigrationPresent = (logName: string, cliMigrateManagerOptions: ICliMigrateManagerOptions) => {
+  private processedMigrationPresent = (logName: string, cliMigrateManagerOptions: ICliMigrateManagerOptions, durationSecs: number) => {
     CliLogger.info(CliLogger.createLogEntry(logName, {code: ECliStatusCodes.MIGRATE_PRESENT_DONE, details: {
       runMode: this.runMode,
       summaryLogList: this.getSummaryLogList(), 
@@ -1589,7 +1589,7 @@ ${absentApplicationDomainNames.map(x => `
       cliMigrateSummary,
     }}));
 
-    const consoleOutput = `
+    let consoleOutput = `
 
 ------------------------------------------------------------------------------------------------    
 Migration Summary for run: ${cliMigrateManagerOptions.cliMigrateManagerRunState}
@@ -1617,6 +1617,8 @@ Migration Summary for run: ${cliMigrateManagerOptions.cliMigrateManagerRunState}
     EpV1 Applicatin processing Issues: ${cliMigrateSummary.processingIssuesEpV1Applications}
     Created First EpV2 Application Versions: ${cliMigrateSummary.createdFirstEpV2ApplicationVersions}
     Created New EpV2 Application Versions: ${cliMigrateSummary.createdNewEpV2ApplicationVersions}
+
+  Done in ${durationSecs} seconds.
   
     `;
     this.log(
@@ -1767,7 +1769,7 @@ Migration Summary for run: ${cliMigrateManagerOptions.cliMigrateManagerRunState}
     };
   };
 
-  private processedMigrationAbsent = (logName: string, cliMigrateManagerOptions: ICliMigrateManagerOptions) => {
+  private processedMigrationAbsent = (logName: string, cliMigrateManagerOptions: ICliMigrateManagerOptions, durationSecs: number) => {
     CliLogger.info(CliLogger.createLogEntry(logName, {code: ECliStatusCodes.MIGRATE_ABSENT_DONE, details: {
       runMode: this.runMode,
       summaryLogList: this.getSummaryLogList(), 
@@ -1818,6 +1820,11 @@ Migration Summary for run: ${cliMigrateManagerOptions.cliMigrateManagerRunState}
         
       `;
     }
+    consoleOutput += `
+      
+      Done in ${durationSecs} seconds.
+
+    `;
     this.log(
       ECliSummaryStatusCodes.MIGRATE_SUMMARY_ABSENT,
       cliMigrateSummary,
@@ -2008,14 +2015,14 @@ Issues for run: ${cliMigrateManagerOptions.cliMigrateManagerRunState}
     );
   };
 
-  public processedMigration = (logName: string, cliMigrateManagerOptions: ICliMigrateManagerOptions) => {
+  public processedMigration = (logName: string, cliMigrateManagerOptions: ICliMigrateManagerOptions, durationSecs: number) => {
     switch(cliMigrateManagerOptions.cliMigrateManagerRunState) {
       case ECliMigrateManagerRunState.PRESENT:
-        this.processedMigrationPresent(logName, cliMigrateManagerOptions);
+        this.processedMigrationPresent(logName, cliMigrateManagerOptions, durationSecs);
         this.processedMigrationIssuesPresent(logName, cliMigrateManagerOptions);
         break;
       case ECliMigrateManagerRunState.ABSENT:
-        this.processedMigrationAbsent(logName, cliMigrateManagerOptions);
+        this.processedMigrationAbsent(logName, cliMigrateManagerOptions, durationSecs);
         this.processedMigrationIssuesAbsent(logName, cliMigrateManagerOptions);
         break;
       default:

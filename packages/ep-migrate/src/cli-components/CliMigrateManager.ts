@@ -81,6 +81,12 @@ export interface ICliMigrateManagerOptions {
 
 export class CliMigrateManager {
   private cliMigrateManagerOptions: ICliMigrateManagerOptions;
+  private startTimestamp: number;
+
+  private getDurationSecs(): number {
+    const endTimestamp = Date.now();
+    return (endTimestamp - this.startTimestamp) / 1000;
+  }
 
   public static EpV2RunIdCustomAttributeDefinition = {
     name: "ep-migrate-run-id",
@@ -272,6 +278,7 @@ export class CliMigrateManager {
     CliRunExecuteReturnLog.reset();
     CliRunSummary.reset();
     CliRunIssues.reset();
+    this.startTimestamp = Date.now();
     // DEBUG
     // console.log(`\n${logName}: \nthis.cliMigrateManagerOptions=\n${JSON.stringify(this.cliMigrateManagerOptions, null, 2)}\n`);
     // process.exit(1);
@@ -286,9 +293,9 @@ export class CliMigrateManager {
         default:
           CliUtils.assertNever(logName, this.cliMigrateManagerOptions.cliMigrateManagerRunState);
       }
-      CliRunSummary.processedMigration(logName, this.cliMigrateManagerOptions);
+      CliRunSummary.processedMigration(logName, this.cliMigrateManagerOptions, this.getDurationSecs());
     } catch (e) {
-      CliRunSummary.processedMigration(logName, this.cliMigrateManagerOptions);
+      CliRunSummary.processedMigration(logName, this.cliMigrateManagerOptions, this.getDurationSecs());
       CliLogger.info(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.TRANSACTION_LOG, details: { transactionLog: CliRunExecuteReturnLog.get() }}));
       throw e;
     }

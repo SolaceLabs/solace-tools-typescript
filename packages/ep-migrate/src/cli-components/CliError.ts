@@ -265,3 +265,14 @@ export class CliMigrateEventReferenceEnumIssueError extends CliError {
     this.details = details;
   }
 }
+
+export class CliMigrateEpV1IncompatibilityError extends CliError {
+  private static Name = "CliMigrateEpV1IncompatibilityError";
+  protected static DefaultDescription = "CLI Migrate EpV1 to EpV2 Incompatibility Error";
+  private details: any;
+  constructor(internalLogName: string, details: any) {
+    super(internalLogName, CliMigrateEpV1IncompatibilityError.DefaultDescription);
+    this.name = CliMigrateEpV1IncompatibilityError.Name;
+    this.details = details;
+  }
+}
