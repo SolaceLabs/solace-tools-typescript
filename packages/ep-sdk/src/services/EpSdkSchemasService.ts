@@ -25,6 +25,8 @@ export enum EEpSdkSchemaType {
   JSON_SCHEMA = "jsonSchema",
   AVRO = "avro",
   XSD = "xsd",
+  PROTOBUF = "protobuf",
+  DTD = "dtd"
 }
 /** @category Services */
 export enum EEpSdkSchemaContentType {
