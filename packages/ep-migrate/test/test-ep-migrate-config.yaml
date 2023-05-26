@@ -23,7 +23,7 @@ migrate:
       - 'default'
       - 'EP_MIGRATE/TEST'
   epV2:
-    applicationDomainPrefix: 'TEST_EP_MIGRATE_NECKERT/epV1/'
+    applicationDomainPrefix: 'TEST_EP_MIGRATE/epV1/'
     versions:
       initialVersion: 1.0.0
       versionStrategy: bump_patch
@@ -49,8 +49,8 @@ migrate:
     epV2:
       environment:
         environmentName: 'TEST_EP_MIGRATE/epV1'
-        eventMeshName: 'TEST_EP_MIGRATE_NECKERT/epV1'
-        eventBrokerName: 'TEST_EP_MIGRATE_NECKERT/epV1'
+        eventMeshName: 'TEST_EP_MIGRATE/epV1'
+        eventBrokerName: 'TEST_EP_MIGRATE/epV1'
       versions:
         initialVersion: 1.0.0
         versionStrategy: bump_patch
