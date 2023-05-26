@@ -172,18 +172,7 @@ export class CliEventsMigrator extends CliMigrator {
   } 
 
   private transformTopicElement(topicElement: string): string {
-    const funcName = 'transformTopicElement';
-    const logName = `${CliEventsMigrator.name}.${funcName}()`;
-
-    const transformed = topicElement.replaceAll('/^[A-Za-z_]$/g', '_');
-
-      console.log(`\n>>>> ${logName}: transforming: ${JSON.stringify({
-        topicElement,
-        transformed
-      }, null, 2) } `);
-
-    return transformed;
-    // return topicElement.replaceAll('/^[A-Za-z_]/g', '_');
+    return topicElement.replaceAll(/[^A-Za-z_{}]/g, '_');
   }
 
   private transformTopicString(topicString: string): string {
