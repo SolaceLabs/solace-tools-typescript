@@ -177,14 +177,13 @@ export class CliEventsMigrator extends CliMigrator {
 
     const transformed = topicElement.replaceAll('/^[A-Za-z_]$/g', '_');
 
-    if(transformed !== topicElement) {
       console.log(`\n>>>> ${logName}: transforming: ${JSON.stringify({
         topicElement,
         transformed
       }, null, 2) } `);
-    }
-   
-    return topicElement.replaceAll('/^[A-Za-z_]/g', '_');
+
+    return transformed;
+    // return topicElement.replaceAll('/^[A-Za-z_]/g', '_');
   }
 
   private transformTopicString(topicString: string): string {
