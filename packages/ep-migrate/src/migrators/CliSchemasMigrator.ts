@@ -180,10 +180,11 @@ export class CliSchemasMigrator extends CliMigrator {
         return EEpSdkSchemaType.XSD;
       case EventSchema.contentType.TEXT:
       case EventSchema.contentType.BINARY:
-        throw new CliMigrateEpV1IncompatibilityError(logName, {
-          message: "Unable to map epV1ContentType to EpV2 Schema Type for Schema. This Schema cannot be migrated.",
-          epV1ContentType,
-        });
+        return EEpSdkSchemaType.PROTOBUF;
+        // throw new CliMigrateEpV1IncompatibilityError(logName, {
+        //   message: "Unable to map epV1ContentType to EpV2 Schema Type for Schema. This Schema cannot be migrated.",
+        //   epV1ContentType,
+        // });
       default:
         CliUtils.assertNever(logName, epV1ContentType);
     }
@@ -203,10 +204,13 @@ export class CliSchemasMigrator extends CliMigrator {
         return EEpSdkSchemaContentType.APPLICATION_XML;
       case EventSchema.contentType.TEXT:
       case EventSchema.contentType.BINARY:
-          throw new CliMigrateEpV1IncompatibilityError(logName, {
-          message: "Unable to map epV1ContentType to EpV2 Schema Type for Schema. This Schema cannot be migrated.",
-          epV1ContentType,
-        });
+        return EEpSdkSchemaContentType.APPLICATION_PROTOBUF;
+      // case EventSchema.contentType.TEXT:
+      // case EventSchema.contentType.BINARY:
+      //   throw new CliMigrateEpV1IncompatibilityError(logName, {
+      //     message: "Unable to map epV1ContentType to EpV2 Schema Type for Schema. This Schema cannot be migrated.",
+      //     epV1ContentType,
+      //   });
       default:
         CliUtils.assertNever(logName, epV1ContentType);
     }
