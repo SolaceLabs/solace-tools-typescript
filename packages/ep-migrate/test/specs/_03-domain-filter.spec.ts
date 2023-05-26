@@ -49,7 +49,7 @@ describe(`${scriptName}`, () => {
       CliConfig.getCliMigrateManagerOptions().applicationDomains.epV1.applicationDomainNames.include = [applicationDomainNames[0]];
       const cliMigrateManager = new CliMigrateManager(CliConfig.getCliMigrateManagerOptions());
       await cliMigrateManager.run();
-      const cliMigrateSummaryPresent: ICliMigrateSummaryPresent = CliRunSummary.createMigrateSummaryPresent(ECliMigrateManagerMode.RELEASE_MODE);
+      const cliMigrateSummaryPresent: ICliMigrateSummaryPresent = CliRunSummary.createMigrateSummaryPresent(ECliMigrateManagerMode.RELEASE_MODE, 100);
       expect(cliMigrateSummaryPresent.processedEpV1ApplicationDomains, TestLogger.createLogMessage('processedEpV1ApplicationDomains', cliMigrateSummaryPresent)).to.equal(1);
     } catch(e) {
       expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
@@ -63,7 +63,7 @@ describe(`${scriptName}`, () => {
       CliConfig.getCliMigrateManagerOptions().applicationDomains.epV1.applicationDomainNames.exclude = [applicationDomainNames[0]];
       const cliMigrateManager = new CliMigrateManager(CliConfig.getCliMigrateManagerOptions());
       await cliMigrateManager.run();
-      const cliMigrateSummaryPresent: ICliMigrateSummaryPresent = CliRunSummary.createMigrateSummaryPresent(ECliMigrateManagerMode.RELEASE_MODE);
+      const cliMigrateSummaryPresent: ICliMigrateSummaryPresent = CliRunSummary.createMigrateSummaryPresent(ECliMigrateManagerMode.RELEASE_MODE, 100);
       expect(cliMigrateSummaryPresent.processedEpV1ApplicationDomains, TestLogger.createLogMessage('processedEpV1ApplicationDomains', cliMigrateSummaryPresent)).to.equal(applicationDomainNames.length - 1);
     } catch(e) {
       expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;

@@ -61,7 +61,7 @@ describe(`${scriptName}`, () => {
       ApplicationDomainPrefix = CliConfig.getCliConfig().cliMigrateConfig.epV2.applicationDomainPrefix;
       const cliMigrateManager = new CliMigrateManager(CliConfig.getCliMigrateManagerOptions());
       await cliMigrateManager.run();
-      CliMigrateSummaryPresent = CliRunSummary.createMigrateSummaryPresent(ECliMigrateManagerMode.RELEASE_MODE);
+      CliMigrateSummaryPresent = CliRunSummary.createMigrateSummaryPresent(ECliMigrateManagerMode.RELEASE_MODE, 100);
 
       // NOTE: set to zero once all issues are resolved
       // expect(cliRunIssues.length, message).to.equal(0);

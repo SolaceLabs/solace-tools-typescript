@@ -52,7 +52,7 @@ describe(`${scriptName}`, () => {
       CliConfig.getCliMigrateManagerOptions().cliMigrateManagerRunState = ECliMigrateManagerRunState.PRESENT;
       const cliMigrateManager = new CliMigrateManager(CliConfig.getCliMigrateManagerOptions());
       await cliMigrateManager.run();
-      CliMigrateSummaryPresent = CliRunSummary.createMigrateSummaryPresent(ECliMigrateManagerMode.RELEASE_MODE);
+      CliMigrateSummaryPresent = CliRunSummary.createMigrateSummaryPresent(ECliMigrateManagerMode.RELEASE_MODE, 100);
 
       // NOTE: set to zero once all issues are resolved
       // expect(cliRunIssues.length, message).to.equal(0);
@@ -70,7 +70,7 @@ describe(`${scriptName}`, () => {
       CliConfig.getCliMigrateManagerOptions().cliMigrateManagerRunState = ECliMigrateManagerRunState.PRESENT;
       const cliMigrateManager = new CliMigrateManager(CliConfig.getCliMigrateManagerOptions());
       await cliMigrateManager.run();
-      const cliMigrateSummaryPresent: ICliMigrateSummaryPresent = CliRunSummary.createMigrateSummaryPresent(ECliMigrateManagerMode.RELEASE_MODE);
+      const cliMigrateSummaryPresent: ICliMigrateSummaryPresent = CliRunSummary.createMigrateSummaryPresent(ECliMigrateManagerMode.RELEASE_MODE, 100);
       expect(cliMigrateSummaryPresent.createdEpV2ApplicationDomains, TestLogger.createLogMessage('createdEpV2ApplicationDomains', cliMigrateSummaryPresent)).to.equal(0);
       expect(cliMigrateSummaryPresent.updatedEpV2ApplicationDomains, TestLogger.createLogMessage('updatedEpV2ApplicationDomains', cliMigrateSummaryPresent)).to.equal(0);
       expect(cliMigrateSummaryPresent.createdNewEpV2EnumVersions, TestLogger.createLogMessage('createdNewEpV2EnumVersions', cliMigrateSummaryPresent)).to.equal(0);      
@@ -88,7 +88,7 @@ describe(`${scriptName}`, () => {
       CliConfig.getCliMigrateManagerOptions().cliMigrateManagerRunState = ECliMigrateManagerRunState.ABSENT;
       const cliMigrateManager = new CliMigrateManager(CliConfig.getCliMigrateManagerOptions());
       await cliMigrateManager.run();
-      const cliMigrateSummaryAbsent: ICliMigrateSummaryAbsent = CliRunSummary.createMigrateSummaryAbsent(ECliMigrateManagerMode.RELEASE_MODE);
+      const cliMigrateSummaryAbsent: ICliMigrateSummaryAbsent = CliRunSummary.createMigrateSummaryAbsent(ECliMigrateManagerMode.RELEASE_MODE, 100);
       expect(cliMigrateSummaryAbsent.deletedEpV2ApplicationDomains, TestLogger.createLogMessage('deletedEpV2ApplicationDomains', {
         cliMigrateSummaryAbsent,
         CliMigrateSummaryPresent
@@ -104,7 +104,7 @@ describe(`${scriptName}`, () => {
       CliConfig.getCliMigrateManagerOptions().cliMigrateManagerRunState = ECliMigrateManagerRunState.ABSENT;
       const cliMigrateManager = new CliMigrateManager(CliConfig.getCliMigrateManagerOptions());
       await cliMigrateManager.run();
-      const cliMigrateSummaryAbsent: ICliMigrateSummaryAbsent = CliRunSummary.createMigrateSummaryAbsent(ECliMigrateManagerMode.RELEASE_MODE);
+      const cliMigrateSummaryAbsent: ICliMigrateSummaryAbsent = CliRunSummary.createMigrateSummaryAbsent(ECliMigrateManagerMode.RELEASE_MODE, 100);
       expect(cliMigrateSummaryAbsent.deletedEpV2ApplicationDomains, TestLogger.createLogMessage('deletedEpV2ApplicationDomains', {
         cliMigrateSummaryAbsent,
         CliMigrateSummaryPresent
