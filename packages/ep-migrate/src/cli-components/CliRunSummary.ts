@@ -1483,6 +1483,7 @@ ${absentApplicationDomainNames.map(x => `
         });
         break;
       default:
+        /* istanbul ignore next */
         CliUtils.assertNever(logName, cliMigrateManagerMode);
     }
 
@@ -1646,6 +1647,7 @@ Migration Summary for run: ${cliMigrateManagerOptions.cliMigrateManagerRunState}
         });
         break;
       default:
+        /* istanbul ignore next */
         CliUtils.assertNever(logName, cliMigrateManagerMode);
     }
     // application domains
@@ -2030,6 +2032,7 @@ Issues for run: ${cliMigrateManagerOptions.cliMigrateManagerRunState}
         this.processedMigrationIssuesAbsent(logName, cliMigrateManagerOptions);
         break;
       default:
+        /* istanbul ignore next */
         CliUtils.assertNever(logName, cliMigrateManagerOptions.cliMigrateManagerRunState);
     }
   }

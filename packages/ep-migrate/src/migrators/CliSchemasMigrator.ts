@@ -185,6 +185,7 @@ export class CliSchemasMigrator extends CliMigrator {
         //   epV1ContentType,
         // });
       default:
+        /* istanbul ignore next */
         CliUtils.assertNever(logName, epV1ContentType);
     }
     throw new CliInternalCodeInconsistencyError(logName, "should never get here");
@@ -211,6 +212,7 @@ export class CliSchemasMigrator extends CliMigrator {
       //     epV1ContentType,
       //   });
       default:
+        /* istanbul ignore next */
         CliUtils.assertNever(logName, epV1ContentType);
     }
     throw new CliInternalCodeInconsistencyError(logName, "should never get here");  

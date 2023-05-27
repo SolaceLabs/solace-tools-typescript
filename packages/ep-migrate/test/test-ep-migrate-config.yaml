@@ -17,11 +17,14 @@ epV2:
   token: ${EP_MIGRATE_CLI_SOLACE_CLOUD_TOKEN_V2}
 migrate:
   epV1:
-    # applicationDomainNames:
-    #   include: 
-    #   - 'Acme Rideshare'
-    #   - 'default'
-    #   - 'EP_MIGRATE/TEST'
+    applicationDomainNames:
+      include: 
+      - 'Acme Rideshare'
+      - 'default'
+      - 'EP_MIGRATE/TEST'
+      - 'EP_MIGRATE-topic-domain-enum'
+      - 'EP_MIGRATE/domain/filter/1'
+      - 'EP_MIGRATE/domain/filter/2'
     # #   exclude:
     #   - "EP_MIGRATE/exclude"
   epV2:
