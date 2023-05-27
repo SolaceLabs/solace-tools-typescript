@@ -5,6 +5,7 @@ import {
   ApiError,
   ApplicationDomainResponse,
   ApplicationDomainsService,
+  CustomAttributeDefinition,
   EnumsService,
   TopicAddressEnumResponse,
   TopicAddressEnumValue,
@@ -18,6 +19,10 @@ import {
   EpSdkApplicationDomainsService,
   EpSdkEnumVersionsService,
   EpSdkStatesService,
+  TEpSdkCustomAttribute,
+  EpSdkApplicationDomainTask,
+  EEpSdkTask_TargetState,
+  EpSdkCustomAttributeDefinitionTask,
 } from "../../../src";
 
 const scriptName: string = path.basename(__filename);
@@ -37,14 +42,45 @@ const EnumValues: Array<TopicAddressEnumValue> = [
 const EnumNextVersionString = "1.0.1";
 let EnumNextVersionId: string | undefined;
 
+const VersionCustomAttribute: TEpSdkCustomAttribute = {
+  name: 'VersionCustomAttribute',
+  value: "VersionCustomAttribute",
+  valueType: CustomAttributeDefinition.valueType.STRING,
+  scope: CustomAttributeDefinition.scope.ORGANIZATION
+};
+
+const cleanTest = async() => {
+  try {
+    const epSdkApplicationDomainTask_1 = new EpSdkApplicationDomainTask({
+      epSdkTask_TargetState: EEpSdkTask_TargetState.ABSENT,
+      applicationDomainName: ApplicationDomainName,
+    });
+    await epSdkApplicationDomainTask_1.execute('contextId');
+
+    const epSdkCustomAttributeDefinitionTask_1 = new EpSdkCustomAttributeDefinitionTask({
+      epSdkTask_TargetState: EEpSdkTask_TargetState.ABSENT,
+      attributeName: VersionCustomAttribute.name,
+      customAttributeDefinitionObjectSettings: {}
+    });
+    await epSdkCustomAttributeDefinitionTask_1.execute();
+
+  } catch (e) {
+    if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+    expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+    expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
+  }
+}
+
 const initializeGlobals = () => {
   ApplicationDomainName = `${TestConfig.getAppId()}/services/${TestSpecName}`;
   EnumName = `${TestConfig.getAppId()}-services-${TestSpecId}`;
 };
 
 describe(`${scriptName}`, () => {
-  before(() => {
+  
+  before(async() => {
     initializeGlobals();
+    await cleanTest();
   });
 
   beforeEach(() => {
@@ -53,10 +89,7 @@ describe(`${scriptName}`, () => {
 
   after(async () => {
     TestContext.newItId();
-    // delete application domain
-    await EpSdkApplicationDomainsService.deleteById({
-      applicationDomainId: ApplicationDomainId,
-    });
+    await cleanTest();
   });
 
   it(`${scriptName}: should create application domain`, async () => {
@@ -90,12 +123,9 @@ describe(`${scriptName}`, () => {
         });
       EnumId = enumResponse.data.id;
     } catch (e) {
-      if (e instanceof ApiError)
-        expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
-        .to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
-        .true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 
@@ -107,41 +137,48 @@ describe(`${scriptName}`, () => {
         values: EnumValues,
         version: EnumVersionString,
       };
-      const topicAddressEnumVersion: TopicAddressEnumVersion =
-        await EpSdkEnumVersionsService.createEnumVersion({
-          enumId: EnumId,
-          topicAddressEnumVersion: create,
-          targetLifecycleStateId: EpSdkStatesService.releasedId,
-        });
+      const topicAddressEnumVersion: TopicAddressEnumVersion = await EpSdkEnumVersionsService.createEnumVersion({
+        enumId: EnumId,
+        topicAddressEnumVersion: create,
+        targetLifecycleStateId: EpSdkStatesService.releasedId,
+      });
       EnumVersionId = topicAddressEnumVersion.id;
     } catch (e) {
-      if (e instanceof ApiError)
-        expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
-        .to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
-        .true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
+    }
+  });
+
+  it(`${scriptName}: should set VersionCustomAttribute on enum version`, async () => {
+    try {
+      const topicAddressEnumVersion: TopicAddressEnumVersion = await EpSdkEnumVersionsService.setCustomAttributes({
+        enumVersionId: EnumVersionId,
+        epSdkCustomAttributes: [VersionCustomAttribute]
+      });
+      const customAttributes = topicAddressEnumVersion.customAttributes;
+      const message = TestLogger.createLogMessage("customAttributes", customAttributes);
+      expect(customAttributes, message).to.not.be.undefined;
+      // // DEBUG
+      // expect(false, message).to.be.true;
+    } catch (e) {
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 
   it(`${scriptName}: should get enum version by version`, async () => {
     try {
-      const enumVersion: TopicAddressEnumVersion =
-        await EpSdkEnumVersionsService.getVersionByVersion({
-          enumId: EnumId,
-          enumVersionString: EnumVersionString,
-        });
-      expect(
-        enumVersion.version,
-        TestLogger.createApiTestFailMessage("version mismatch")
-      ).to.eq(EnumVersionString);
+      const enumVersion: TopicAddressEnumVersion = await EpSdkEnumVersionsService.getVersionByVersion({
+        enumId: EnumId,
+        enumVersionString: EnumVersionString,
+      });
+      expect(enumVersion.version, TestLogger.createApiTestFailMessage("version mismatch")).to.eq(EnumVersionString);
     } catch (e) {
-      if (e instanceof ApiError)
-        expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e))
-        .to.be.true;
-      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be
-        .true;
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
   });
 

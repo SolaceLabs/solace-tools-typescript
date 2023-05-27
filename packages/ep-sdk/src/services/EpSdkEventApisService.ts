@@ -1,12 +1,14 @@
 import { 
   CustomAttribute,
-  CustomAttributeDefinition,
   EventApi,
   EventApiResponse,
   EventApisResponse, 
   EventApIsService, 
 } from '@solace-labs/ep-openapi-node';
-import { EEpSdkCustomAttributeEntityTypes, TEpSdkCustomAttributeList } from '../types';
+import { 
+  EEpSdkCustomAttributeEntityTypes,
+  TEpSdkCustomAttribute 
+} from '../types';
 import { 
   EpSdkApiContentError, 
   EpSdkServiceError,
@@ -14,7 +16,9 @@ import {
   EEpSdkLoggerCodes
 } from '../utils';
 import EpSdkCustomAttributesService from './EpSdkCustomAttributesService';
-import { EpSdkServiceClass } from './EpSdkService';
+import { 
+  EpSdkServiceClass 
+} from './EpSdkService';
 
 
 /** @category Services */
@@ -48,26 +52,17 @@ export class EpSdkEventApisServiceClass extends EpSdkServiceClass {
    * @param param0 
    * @returns 
    */
-  public async setCustomAttributes({ xContextId, eventApiId, epSdkCustomAttributeList, scope, applicationDomainId }:{
+  public async setCustomAttributes({ xContextId, eventApiId, epSdkCustomAttributes }:{
     xContextId?: string;
     eventApiId: string;
-    epSdkCustomAttributeList: TEpSdkCustomAttributeList;
-    scope?: CustomAttributeDefinition.scope;
-    applicationDomainId?: string;
+    epSdkCustomAttributes: Array<TEpSdkCustomAttribute>;
   }): Promise<EventApi> {
-    const eventApi: EventApi = await this.getById({
-      xContextId,
-      eventApiId: eventApiId
-    });
-    scope;
+    const eventApi: EventApi = await this.getById({ xContextId, eventApiId });
     const customAttributes: Array<CustomAttribute> = await EpSdkCustomAttributesService.createCustomAttributesWithNew({
       xContextId,
       existingCustomAttributes: eventApi.customAttributes,
-      epSdkCustomAttributeList: epSdkCustomAttributeList,
+      epSdkCustomAttributes,
       epSdkCustomAttributeEntityType: EEpSdkCustomAttributeEntityTypes.EVENT_API,
-      applicationDomainId: applicationDomainId,
-      // note: adding scope if not organization currently causes EP to return an internal server error
-      // scope: scope
     });
     return await this.updateEventApi({
       xContextId,

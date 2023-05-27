@@ -1,4 +1,5 @@
 import {
+  CustomAttribute,
   CustomAttributeDefinition,
   EnumsService,
   Pagination,
@@ -12,7 +13,8 @@ import {
   EpSdkApiContentError 
 } from "../utils";
 import { 
-  EpApiMaxPageSize, EpSdkCustomAttributeNameSourceApplicationDomainId 
+  EpApiMaxPageSize, 
+  EpSdkCustomAttributeNameSourceApplicationDomainId 
 } from '../constants';
 import { 
   EpSdkEnumTask, 
@@ -23,13 +25,68 @@ import {
   IEpSdkEnumVersionTask_ExecuteReturn,
   EEpSdk_VersionTaskStrategy,
 } from "../tasks";
+import { 
+  EpSdkVersionServiceClass 
+} from "./EpSdkVersionService";
+import { 
+  EEpSdkCustomAttributeEntityTypes,
+  TEpSdkCustomAttribute 
+} from '../types';
 import EpSdkEnumsService from "./EpSdkEnumsService";
-import { EpSdkVersionServiceClass } from "./EpSdkVersionService";
-import { EEpSdkCustomAttributeEntityTypes } from '../types';
+import EpSdkCustomAttributesService from './EpSdkCustomAttributesService';
 
 /** @category Services */
 export class EpSdkEnumVersionsServiceClass extends EpSdkVersionServiceClass {
-  private readonly CustomAttributeEntityType = EEpSdkCustomAttributeEntityTypes.ENUM_VERSION;
+
+  private async updateEnumVersion({ xContextId, update }:{
+    xContextId?: string;
+    update: TopicAddressEnumVersion;
+  }): Promise<TopicAddressEnumVersion> {
+    const funcName = 'updateEnumVersion';
+    const logName = `${EpSdkEnumVersionsServiceClass.name}.${funcName}()`;
+    /* istanbul ignore next */
+    if(update.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'update.id === undefined', { update });
+    const topicAddressEnumVersionResponse: TopicAddressEnumVersionResponse = await EnumsService.updateEnumVersion({
+      xContextId,
+      id: update.id,
+      requestBody: update
+    })
+    /* istanbul ignore next */
+    if(topicAddressEnumVersionResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'topicAddressEnumVersionResponse.data === undefined', { topicAddressEnumVersionResponse });
+    return topicAddressEnumVersionResponse.data;
+  }
+
+  /**
+   * Sets the custom attributes in the list on the Enum Version object.
+   * Creates attribute definitions / adds entity type 'enumVersion' if it doesn't exist.
+   */
+  public async setCustomAttributes({ xContextId, enumVersionId, epSdkCustomAttributes}:{
+    xContextId?: string;
+    enumVersionId: string;
+    epSdkCustomAttributes: Array<TEpSdkCustomAttribute>;
+  }): Promise<TopicAddressEnumVersion> {
+    const funcName = 'setCustomAttributes';
+    const logName = `${EpSdkEnumVersionsServiceClass.name}.${funcName}()`;
+    const topicAddressEnumVersionResponse: TopicAddressEnumVersionResponse = await EnumsService.getEnumVersion({
+      xContextId,
+      versionId: enumVersionId
+    });
+    /* istanbul ignore next */
+    if(topicAddressEnumVersionResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'topicAddressEnumVersionResponse.data === undefined', { topicAddressEnumVersionResponse });    
+    const customAttributes: Array<CustomAttribute> = await EpSdkCustomAttributesService.createCustomAttributesWithNew({
+      xContextId,
+      existingCustomAttributes: topicAddressEnumVersionResponse.data?.customAttributes,
+      epSdkCustomAttributes,
+      epSdkCustomAttributeEntityType: EEpSdkCustomAttributeEntityTypes.ENUM_VERSION,
+    });
+    return await this.updateEnumVersion({
+      xContextId,
+      update: {
+        ...topicAddressEnumVersionResponse.data,
+        customAttributes,
+      }
+    });
+  }
 
   public getVersionByVersion = async ({ xContextId, enumId, enumVersionString }: {
     xContextId?: string;
@@ -265,12 +322,16 @@ export class EpSdkEnumVersionsServiceClass extends EpSdkVersionServiceClass {
     }
     // add the source application domain id to custom attribute
     await EpSdkEnumsService.setCustomAttributes({
-      xContextId: xContextId,
-      applicationDomainId: toApplicationDomainId,
+      xContextId,
       enumId: epSdkEnumTask_ExecuteReturn.epObjectKeys.epObjectId,
-      scope: CustomAttributeDefinition.scope.APPLICATION_DOMAIN,
-      epSdkCustomAttributeList: [ 
-        { name: EpSdkCustomAttributeNameSourceApplicationDomainId, value: fromTopicAddressEnum.applicationDomainId }
+      epSdkCustomAttributes: [ 
+        { 
+          name: EpSdkCustomAttributeNameSourceApplicationDomainId, 
+          value: fromTopicAddressEnum.applicationDomainId,
+          valueType: CustomAttributeDefinition.valueType.STRING,
+          scope: CustomAttributeDefinition.scope.APPLICATION_DOMAIN,
+          applicationDomainId: toApplicationDomainId,
+        }
       ]
     });
     // create target enum version

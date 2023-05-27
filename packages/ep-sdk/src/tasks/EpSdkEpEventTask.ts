@@ -22,6 +22,8 @@ import {
 } from '../types';
 import { 
   EpSdkTask,
+} from "./EpSdkTask";
+import { 
   IEpSdkTask_Config, 
   IEpSdkTask_CreateFuncReturn, 
   IEpSdkTask_DeleteFuncReturn, 
@@ -31,7 +33,7 @@ import {
   IEpSdkTask_IsUpdateRequiredFuncReturn, 
   IEpSdkTask_Keys, 
   IEpSdkTask_UpdateFuncReturn
-} from "./EpSdkTask";
+} from "./EpSdkTaskTypes";
 
 /** @category Tasks */
 export type TEpSdkEpEventTask_Settings = Partial<Pick<EpSdkEvent, "shared" | "brokerType">>;

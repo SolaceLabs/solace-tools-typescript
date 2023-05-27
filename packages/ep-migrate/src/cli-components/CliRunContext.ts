@@ -1,8 +1,21 @@
-
-// export enum ECliChannelOperation {
-//   Publish = "publish",
-//   Subscribe = "subscribe"
-
+import {
+  EpSdkApplication,
+  EpSdkEvent,
+} from "@solace-labs/ep-sdk";
+import { 
+  ApplicationDomain,
+  ApplicationVersion,
+  EventVersion,
+  SchemaObject,
+  SchemaVersion,
+} from "@solace-labs/ep-openapi-node";
+import { 
+  EpV1Application,
+  EpV1ApplicationDomain, 
+  EpV1Event, 
+  EpV1EventSchema,
+  EpV1Tag
+} from "../epV1";
 import { ECliMigrateManagerRunState } from "./CliMigrateManager";
 
 // }
@@ -26,22 +39,78 @@ export interface ICliApplicationDomainRunContext extends Partial<ICliRunContext>
   epV1ApplicationDomainName: string;
 }
 export interface ICliSchemaRunContext extends Partial<ICliRunContext> {
-  epV2ApplicationDomainName: string;
-  schemaName: string;
+  epV1: {
+    applicationDomain: EpV1ApplicationDomain;
+    epV1EventSchema: EpV1EventSchema;
+    epV1Tags: Array<EpV1Tag>;
+  },
+  epV2: {
+    applicationDomain: ApplicationDomain;
+    schemaObject?: SchemaObject;
+    schemaVersion?: SchemaVersion;
+  }
+}
+export interface ICliEventRunContext extends Partial<ICliRunContext> {
+  epV1: {
+    applicationDomain: EpV1ApplicationDomain;
+    epV1Event: EpV1Event;
+  },
+  epV2: {
+    applicationDomain: ApplicationDomain;
+    epSdkEvent?: EpSdkEvent;
+    eventVersion?: EventVersion;
+  }
 }
 
-
-// export interface ICliEpRunContext_Application extends Partial<ICliApiRunContext> {
-//   epApplicationName: string;
-// }
-// export interface ICliEpRunContext_ApplicationVersion extends Partial<ICliEpRunContext_Application> {
-//   epLatestExistingApplicationVersion?: string;
-//   epTargetApplicationVersion: string;
-// }
+export interface ICliApplicationRunContext extends Partial<ICliRunContext> {
+  epV1: {
+    applicationDomain: EpV1ApplicationDomain;
+    epV1Application: EpV1Application;
+  },
+  epV2: {
+    applicationDomain: ApplicationDomain;
+    epSdkApplication?: EpSdkApplication;
+    applicationVersion?: ApplicationVersion;
+  }
+}
 
 export interface ICliApplicationDomainRunAbsentContext extends Partial<ICliRunContext> {
   epV2ApplicationDomainPrefix: string;
 }
+
+export interface ICliRunAbsentByRunIdContext extends Partial<ICliRunContext> {
+  runId: string;
+}
+export interface ICliRunAbsentApplicationDomainsByRunIdContext extends ICliRunAbsentByRunIdContext {  
+}
+export interface ICliRunAbsentApplicationsByRunIdContext extends ICliRunAbsentByRunIdContext {  
+}
+export interface ICliRunAbsentEventsByRunIdContext extends ICliRunAbsentByRunIdContext {  
+}
+export interface ICliRunAbsentSchemasByRunIdContext extends ICliRunAbsentByRunIdContext {  
+}
+export interface ICliRunAbsentEnumsByRunIdContext extends ICliRunAbsentByRunIdContext {  
+}
+export interface ICliRunAbsentApplicationDomainByRunIdContext extends ICliRunAbsentByRunIdContext {
+  applicationDomainName: string;
+}
+export interface ICliRunAbsentApplicationByRunIdContext extends ICliRunAbsentByRunIdContext {
+  applicationName: string;
+  applicationDomainName?: string;
+}
+export interface ICliRunAbsentEventByRunIdContext extends ICliRunAbsentByRunIdContext {
+  eventName: string;
+  applicationDomainName?: string;
+}
+export interface ICliRunAbsentSchemaByRunIdContext extends ICliRunAbsentByRunIdContext {
+  schemaName: string;
+  applicationDomainName?: string;
+}
+export interface ICliRunAbsentEnumByRunIdContext extends ICliRunAbsentByRunIdContext {
+  enumName: string;
+  applicationDomainName?: string;
+}
+
 
 
 const LogMe = false;
@@ -84,7 +153,8 @@ class CliRunContext {
   // }
 
   public get = (): ICliRunContext => {
-    return this.runContextStack[this.runContextStack.length-1];
+    // return this.runContextStack[this.runContextStack.length-1];
+    return this.runContextStack.slice(-1)[0];
   };
 
 }

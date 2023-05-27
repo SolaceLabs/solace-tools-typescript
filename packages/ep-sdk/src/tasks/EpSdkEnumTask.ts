@@ -13,6 +13,8 @@ import { EEpSdkObjectTypes } from "../types";
 import { EpSdkEnumsService } from "../services";
 import {
   EpSdkTask,
+} from "./EpSdkTask";
+import {
   IEpSdkTask_Config,
   IEpSdkTask_CreateFuncReturn,
   IEpSdkTask_DeleteFuncReturn,
@@ -22,7 +24,7 @@ import {
   IEpSdkTask_IsUpdateRequiredFuncReturn,
   IEpSdkTask_Keys,
   IEpSdkTask_UpdateFuncReturn,
-} from "./EpSdkTask";
+} from "./EpSdkTaskTypes";
 
 /** @category Tasks */
 export type TEpSdkEnumTask_Settings = Partial<Pick<TopicAddressEnum, "shared">>;

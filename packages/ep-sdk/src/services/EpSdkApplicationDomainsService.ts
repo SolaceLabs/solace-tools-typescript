@@ -15,12 +15,14 @@ import {
 import { 
   EpApiMaxPageSize 
 } from '../constants';
-import { EpSdkServiceClass } from './EpSdkService';
 import { 
-  EEpSdkCustomAttributeEntityTypes, 
-  IEpSdkAttributesQuery, 
-  TEpSdkCustomAttributeList 
+  EEpSdkCustomAttributeEntityTypes,
+  IEpSdkAttributesQuery,
+  TEpSdkCustomAttribute,
 } from '../types';
+import { 
+  EpSdkServiceClass 
+} from './EpSdkService';
 import EpSdkCustomAttributesQueryService from './EpSdkCustomAttributesQueryService';
 import EpSdkCustomAttributesService from './EpSdkCustomAttributesService';
 import EpSdkCustomAttributeDefinitionsService from './EpSdkCustomAttributeDefinitionsService';
@@ -55,17 +57,17 @@ export class EpSdkApplicationDomainsServiceClass extends EpSdkServiceClass {
    * Sets the custom attributes in the list on the application domain.
    * Creates attribute definitions / adds entity type 'applicationDomain' if it doesn't exist.
    */
-  public async setCustomAttributes({ xContextId, applicationDomainId, epSdkCustomAttributeList}:{
+  public async setCustomAttributes({ xContextId, applicationDomainId, epSdkCustomAttributes}:{
     xContextId?: string;
     applicationDomainId: string;
-    epSdkCustomAttributeList: TEpSdkCustomAttributeList;
+    epSdkCustomAttributes: Array<TEpSdkCustomAttribute>;
   }): Promise<ApplicationDomain> {
     const applicationDomain: ApplicationDomain = await this.getById({ xContextId, applicationDomainId });
     const customAttributes: Array<CustomAttribute> = await EpSdkCustomAttributesService.createCustomAttributesWithNew({
       xContextId,
       existingCustomAttributes: applicationDomain.customAttributes,
-      epSdkCustomAttributeList: epSdkCustomAttributeList,
-      epSdkCustomAttributeEntityType: EEpSdkCustomAttributeEntityTypes.APPLICATION_DOMAIN
+      epSdkCustomAttributes,
+      epSdkCustomAttributeEntityType: EEpSdkCustomAttributeEntityTypes.APPLICATION_DOMAIN,
     });
     return await this.updateApplicationDomain({xContextId, update: {
       ...applicationDomain,
@@ -77,15 +79,15 @@ export class EpSdkApplicationDomainsServiceClass extends EpSdkServiceClass {
    * Unsets the custom attributes in the list on the application domain.
    * Leaves attibute definitions as-is.
    */
-  public async unsetCustomAttributes({ xContextId, applicationDomainId, epSdkCustomAttributeList }:{
+  public async unsetCustomAttributes({ xContextId, applicationDomainId, epSdkCustomAttributes }:{
     xContextId?: string;
     applicationDomainId: string;
-    epSdkCustomAttributeList: TEpSdkCustomAttributeList;
+    epSdkCustomAttributes: Array<TEpSdkCustomAttribute>;
   }): Promise<ApplicationDomain> {
     const applicationDomain: ApplicationDomain = await this.getById({ xContextId, applicationDomainId });
-    const customAttributes: Array<CustomAttribute> = await EpSdkCustomAttributesService.createCustomAttributesExcluding({
+    const customAttributes: Array<CustomAttribute> = EpSdkCustomAttributesService.createCustomAttributesExcluding({
       existingCustomAttributes: applicationDomain.customAttributes,
-      epSdkCustomAttributeList: epSdkCustomAttributeList,
+      epSdkCustomAttributes,
     });
     return await this.updateApplicationDomain({ xContextId, update: {
       ...applicationDomain,
@@ -125,6 +127,7 @@ export class EpSdkApplicationDomainsServiceClass extends EpSdkServiceClass {
         xContextId: xContextId,
         pageSize: pageSize,
         pageNumber: nextPage,
+        include: ["stats"]
       });
       if(applicationDomainsResponse.data === undefined || applicationDomainsResponse.data.length === 0) nextPage = undefined;
       else {

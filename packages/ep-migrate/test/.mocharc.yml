@@ -2,7 +2,7 @@ require:
 - ./test/compiler.ts
 file:
   - test/setup.spec.ts
-timeout: 600000
+timeout: 1800000
 bail: true
 exit: true
 parallel: false

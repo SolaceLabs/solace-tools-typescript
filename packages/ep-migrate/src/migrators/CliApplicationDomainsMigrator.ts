@@ -1,8 +1,11 @@
+import { 
+  ApplicationDomain, 
+} from "@solace-labs/ep-openapi-node";
 import {
   EEpSdkTask_TargetState,
   EpSdkApplicationDomainTask,
-  EpSdkApplicationDomainsService,
   EpSdkBrokerTypes,
+  EpSdkCustomAttributeDefinitionTask,
   EpSdkDefaultTopicDelimitors,
   EpSdkTopicAddressLevelService,
   IEpSdkApplicationDomainTask_ExecuteReturn,
@@ -17,6 +20,7 @@ import {
   ECliRunContext_RunMode,
   CliRunSummary,
   ICliApplicationDomainRunContext,
+  ICliMigrateManagerOptionsEpV1,
 } from "../cli-components";
 import { 
   CliMigrator, 
@@ -32,10 +36,13 @@ import {
 import { 
   ICliMigratedApplicationDomain, 
 } from "./types";
-import { ICliEnumsMigratorRunMigrateReturn } from "./CliEnumsMigrator";
+import { 
+  ICliEnumsMigratorRunMigrateReturn 
+} from "./CliEnumsMigrator";
 
 
 export interface ICliApplicationDomainsMigrateConfig {
+  epV1?: ICliMigrateManagerOptionsEpV1;
   epV2: {
     // placeholder
   },
@@ -59,6 +66,29 @@ export class CliApplicationDomainsMigrator extends CliMigrator {
     super(options, runMode);
   }
 
+  private async presentCustomAttributes({ epSdkApplicationDomainTask_ExecuteReturn }:{
+    epSdkApplicationDomainTask_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn;
+  }): Promise<ApplicationDomain> {
+    return this.presentApplicationDomainRunIdCustomAttribute({ epSdkApplicationDomainTask_ExecuteReturn });
+  }
+
+  private async presentCustomAttributeDefinitions({ applicationDomainId }:{
+    applicationDomainId: string;
+  }): Promise<void> {
+    // tags
+    const epSdkCustomAttributeDefinitionTask = new EpSdkCustomAttributeDefinitionTask({
+      epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
+      attributeName: CliMigrator.EpV2TagCustomAttributeDefinition.name,
+      customAttributeDefinitionObjectSettings: {
+        associatedEntityTypes: CliMigrator.EpV2TagCustomAttributeDefinition.associatedEntityTypes,
+        scope: CliMigrator.EpV2TagCustomAttributeDefinition.scope,
+        valueType: CliMigrator.EpV2TagCustomAttributeDefinition.valueType,
+        applicationDomainId
+      },
+    });
+    await epSdkCustomAttributeDefinitionTask.execute();
+  }
+
   private async migrateApplicationDomain({ epV1ApplicationDomain }:{
     epV1ApplicationDomain: EpV1ApplicationDomain;
   }): Promise<void> {
@@ -69,14 +99,6 @@ export class CliApplicationDomainsMigrator extends CliMigrator {
     };
     CliRunContext.push(rctxt);
     CliRunSummary.processingEpV1ApplicationDomain({ applicationDomainName: epV1ApplicationDomain.name });
-
-    // console.log(`\n\n\n${logName}: epV1ApplicationDomain.topicDomain = ${JSON.stringify(epV1ApplicationDomain.topicDomain)}`);
-    // const topicAddressLevels: Array<AddressLevel> | undefined = await EpSdkTopicAddressLevelService.createTopicAddressLevels({
-    //   topicString: epV1ApplicationDomain.topicDomain,
-    //   enumApplicationDomainIds: [ this.options.cliEnumsMigratorRunMigrateReturn.epV2EnumApplicationDomainId]
-    // });
-    // console.log(`${logName}: topicAddressLevels = ${JSON.stringify(topicAddressLevels, null, 2)}\n\n\n\n`);
-
     // present epv2 application domain
     const epV2ApplicationDomainName = this.options.applicationDomainPrefix ? `${this.options.applicationDomainPrefix}${epV1ApplicationDomain.name}` : epV1ApplicationDomain.name;
     const addressLevels = await EpSdkTopicAddressLevelService.createTopicAddressLevels({
@@ -84,7 +106,7 @@ export class CliApplicationDomainsMigrator extends CliMigrator {
       enumApplicationDomainIds: [ this.options.cliEnumsMigratorRunMigrateReturn.epV2EnumApplicationDomainId ]
     });
     let topicDomainSettings: TEpSdkApplicationDomainTask_TopicDomainSettings | undefined;
-    let topicDomainEnforcementEnabled = false;
+    // let topicDomainEnforcementEnabled = false;
     if(addressLevels !== undefined) {
       topicDomainSettings = {
         brokerType: EpSdkBrokerTypes.Solace,
@@ -92,47 +114,41 @@ export class CliApplicationDomainsMigrator extends CliMigrator {
         enumApplicationDomainIds: [ this.options.cliEnumsMigratorRunMigrateReturn.epV2EnumApplicationDomainId],
         topicDelimiter: EpSdkDefaultTopicDelimitors.Solace
       };
-      topicDomainEnforcementEnabled = true;
+      //topicDomainEnforcementEnabled = true;
     }
-    const applicationDomainsTask = new EpSdkApplicationDomainTask({
+    const applicationDomainTask = new EpSdkApplicationDomainTask({
       epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
       applicationDomainName: epV2ApplicationDomainName,
       applicationDomainSettings: {
         description: epV1ApplicationDomain.description,
         uniqueTopicAddressEnforcementEnabled: epV1ApplicationDomain.enforceUniqueTopicNames,
-        topicDomainEnforcementEnabled: topicDomainEnforcementEnabled,
+        // EP V1 does not enforce it, so enabling it would fail to migrate
+        // topicDomainEnforcementEnabled: topicDomainEnforcementEnabled,
+        topicDomainEnforcementEnabled: false,
         topicDomains: topicDomainSettings ? [topicDomainSettings] : undefined,
       },
       epSdkTask_TransactionConfig: this.get_IEpSdkTask_TransactionConfig(),
       checkmode: false,
     });
-    const epSdkApplicationDomainTask_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn = await this.executeTask({ epSdkTask: applicationDomainsTask });
+    const epSdkApplicationDomainTask_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn = await this.executeTask({ epSdkTask: applicationDomainTask });
     /* istanbul ignore next */
     if(epSdkApplicationDomainTask_ExecuteReturn.epObject.id === undefined) throw new CliEPApiContentError(logName, "epSdkApplicationDomainTask_ExecuteReturn.epObject.id === undefined", {
       applicationDomainObject: epSdkApplicationDomainTask_ExecuteReturn.epObject,
-    });    
-    // // present topic domain
-    // let epSdkTopicDomainTask_ExecuteReturn: IEpSdkTopicDomainTask_ExecuteReturn | undefined = undefined;
-    // if(addressLevels !== undefined) {
-    //   const epSdkTopicDomainTask: EpSdkTopicDomainTask = new EpSdkTopicDomainTask({
-    //     epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
-    //     applicationDomainId: epSdkApplicationDomainTask_ExecuteReturn.epObject.id,
-    //     topicDomainSettings: {
-    //       brokerType: EpSdkBrokerTypes.Solace,
-    //       addressLevels
-    //     },
-    //   });
-    //   epSdkTopicDomainTask_ExecuteReturn = await this.executeTask({ epSdkTask: epSdkTopicDomainTask });  
-    // }
+    });
+    // create the custom attribute definitions
+    await this.presentCustomAttributeDefinitions({ 
+      applicationDomainId: epSdkApplicationDomainTask_ExecuteReturn.epObject.id
+    });
+    // set custom attributes
+    epSdkApplicationDomainTask_ExecuteReturn.epObject = await this.presentCustomAttributes({ epSdkApplicationDomainTask_ExecuteReturn });
+    // summary & log
     CliRunSummary.presentEpV2ApplicationDomain({ epSdkApplicationDomainTask_ExecuteReturn });
     CliLogger.trace(CliLogger.createLogEntry(logName, {code: ECliStatusCodes.PRESENT_EP_V2_APPLICATION_DOMAIN, details: { 
       epSdkApplicationDomainTask_ExecuteReturn,
-      // epSdkTopicDomainTask_ExecuteReturn
      }}));
     this.cliMigratedApplicationDomains.push({
       epV1ApplicationDomain: epV1ApplicationDomain,
-      // get the new application domain - topic domain might have been added
-      epV2ApplicationDomain: await EpSdkApplicationDomainsService.getById({ applicationDomainId: epSdkApplicationDomainTask_ExecuteReturn.epObject.id }),
+      epV2ApplicationDomain: epSdkApplicationDomainTask_ExecuteReturn.epObject,
     });
     CliRunContext.pop();
   }
@@ -146,8 +162,28 @@ export class CliApplicationDomainsMigrator extends CliMigrator {
     while (nextPage !== null) {
       const epV1ApplicationDomainsResponse: EpV1ApplicationDomainsResponse = await EpV1ApplicationDomainsService.list12({ pageNumber: nextPage, pageSize: 10 });
       if(epV1ApplicationDomainsResponse.data && epV1ApplicationDomainsResponse.data.length > 0) {
-        for(const epV1ApplicationDomain of epV1ApplicationDomainsResponse.data) {
-          await this.migrateApplicationDomain({ epV1ApplicationDomain: epV1ApplicationDomain as EpV1ApplicationDomain });          
+        for(const applicationDomain of epV1ApplicationDomainsResponse.data) {
+          const epV1ApplicationDomain: EpV1ApplicationDomain = applicationDomain as EpV1ApplicationDomain;
+          let doInclude = true;
+          if(
+            this.options.cliApplicationDomainsMigrateConfig.epV1 && 
+            this.options.cliApplicationDomainsMigrateConfig.epV1.applicationDomainNames
+          ) {
+            if(
+              this.options.cliApplicationDomainsMigrateConfig.epV1.applicationDomainNames.include && 
+              this.options.cliApplicationDomainsMigrateConfig.epV1.applicationDomainNames.include.length > 0
+            ) {
+              doInclude = this.options.cliApplicationDomainsMigrateConfig.epV1.applicationDomainNames.include.includes(epV1ApplicationDomain.name);
+            }
+            if(
+              this.options.cliApplicationDomainsMigrateConfig.epV1.applicationDomainNames.exclude && 
+              this.options.cliApplicationDomainsMigrateConfig.epV1.applicationDomainNames.exclude.length > 0 &&
+              doInclude
+            ) {
+              doInclude = !this.options.cliApplicationDomainsMigrateConfig.epV1.applicationDomainNames.exclude.includes(epV1ApplicationDomain.name);
+            }
+          }
+          if(doInclude) await this.migrateApplicationDomain({ epV1ApplicationDomain: epV1ApplicationDomain as EpV1ApplicationDomain });          
         }
       } else {
         CliRunSummary.processingEpV1ApplicationDomainsNoneFound();

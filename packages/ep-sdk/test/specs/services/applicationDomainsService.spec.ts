@@ -8,6 +8,7 @@ import {
   ApplicationDomainsResponse,
   ApplicationDomainsService,
   CustomAttribute,
+  CustomAttributeDefinition,
 } from "@solace-labs/ep-openapi-node";
 import { TestContext, TestUtils } from "@internal/tools/src";
 import { TestLogger, TestConfig, TestHelpers } from "../../lib";
@@ -33,10 +34,14 @@ let ApplicationDomainIdList: Array<string> = [];
 const CorrectAttribute: TEpSdkCustomAttribute = {
   name: `${TestSpecName}.APPS`,
   value: "ep-developer-portal",
+  valueType: CustomAttributeDefinition.valueType.STRING,
+  scope: CustomAttributeDefinition.scope.ORGANIZATION
 };
 const AnotherAttribute: TEpSdkCustomAttribute = {
   name: `${TestSpecName}.another`,
   value: "another value",
+  valueType: CustomAttributeDefinition.valueType.STRING,
+  scope: CustomAttributeDefinition.scope.ORGANIZATION
 };
 
 const CorrectAttributesQuery: IEpSdkAttributesQuery = {
@@ -105,7 +110,7 @@ describe(`${scriptName}`, () => {
     try {
       const applicationDomain: ApplicationDomain = await EpSdkApplicationDomainsService.setCustomAttributes({ 
         applicationDomainId: ApplicationDomainId,
-        epSdkCustomAttributeList: [
+        epSdkCustomAttributes: [
           CorrectAttribute,
           AnotherAttribute,
         ],
@@ -168,7 +173,7 @@ describe(`${scriptName}`, () => {
     try {
       const applicationDomain: ApplicationDomain = await EpSdkApplicationDomainsService.unsetCustomAttributes({ 
         applicationDomainId: ApplicationDomainId,
-        epSdkCustomAttributeList: [
+        epSdkCustomAttributes: [
           CorrectAttribute,
           AnotherAttribute,
         ],

@@ -8,7 +8,7 @@ module.exports = {
   },
   plugins: ['@typescript-eslint', "deprecation"],
   root: true,
-  ignorePatterns: ["test/*", "dist/*", "node_modules/*", "examples/*"],
+  ignorePatterns: ["test/*", "dist/*", "node_modules/*", "examples/*", "**/_todo*"],
   rules: {
     "deprecation/deprecation": "warn",
     "@typescript-eslint/no-explicit-any": "off",

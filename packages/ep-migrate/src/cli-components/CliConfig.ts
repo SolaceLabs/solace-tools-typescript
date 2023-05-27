@@ -3,6 +3,19 @@ import {
 } from 'commander';
 import jwt_decode from "jwt-decode";
 import { 
+  EpSdkEnvironmentsService, 
+  EpSdkMessagingService 
+} from '@solace-labs/ep-sdk';
+import { 
+  Environment, 
+  EventMesh, 
+  EventMeshesResponse, 
+  MessagingService 
+} from '@solace-labs/ep-openapi-node';
+import { 
+  EventMeshesService 
+} from '@solace-labs/ep-rt-openapi-node';
+import { 
   ValidationError, 
   Validator, 
   ValidatorResult 
@@ -15,9 +28,11 @@ import {
 import {
   CliConfigFileMissingEnvVarError,
   CliConfigFileParseError,
+  CliConfigInvalidConfigError,
   CliConfigInvalidConfigFileError,
   CliConfigNotInitializedError,
   CliConfigTokenError,
+  CliUsageError,
 } from "./CliError";
 import {
   CliLogger,
@@ -33,12 +48,15 @@ import {
 import { 
   ECliMigrateManagerMode, 
   ECliMigrateManagerRunState, 
-  ICliMigrateManagerOptions 
+  ICliMigrateManagerOptions, 
+  ICliMigrateManagerOptionsEpV1
 } from './CliMigrateManager';
 import { 
   ICliApplicationDomainsMigrateConfig,
+  ICliApplicationsMigrateConfig,
   ICliConfigEp2Versions,
   ICliEnumsMigrateConfig,
+  ICliEventsMigrateConfig,
   ICliSchemasMigrateConfig
 } from '../migrators';
 
@@ -55,13 +73,16 @@ interface ICliConfigFileEpConfig {
   token: string;
 }
 interface ICliConfigFileMigrateConfig {
+  epV1?: ICliMigrateManagerOptionsEpV1;
   epV2: {
     applicationDomainPrefix?: string;
     versions: ICliConfigEp2Versions;
-  },
+  };
   enums: ICliEnumsMigrateConfig;
   applicationDomains: ICliApplicationDomainsMigrateConfig;
   schemas: ICliSchemasMigrateConfig;
+  events: ICliEventsMigrateConfig;
+  applications: ICliApplicationsMigrateConfig;
 }
 export interface ICliConfigFile {
   logger: {
@@ -70,6 +91,7 @@ export interface ICliConfigFile {
     prettyPrint: boolean;
     log2Stdout: boolean;
     epSdkLogLevel: TCliLogger_EpSdkLogLevel;
+    logSummary2Console: boolean;
   },
   epV1: ICliConfigFileEpConfig;
   epV2: ICliConfigFileEpConfig;
@@ -111,15 +133,9 @@ class CliConfig {
   };
 
   private generatedRunId = () => {
-    const pad = (n: number, pad?: number): string => {
-      return String(n).padStart(pad ? pad : 2, "0");
-    };
+    const pad = (n: number, pad?: number): string => { return String(n).padStart(pad ? pad : 2, "0"); };
     const d = new Date();
-    return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(
-      d.getUTCDate()
-    )}-${pad(d.getUTCHours())}-${pad(d.getUTCMinutes())}-${pad(
-      d.getUTCSeconds()
-    )}-${pad(d.getUTCMilliseconds(), 3)}`;
+    return `${d.getUTCFullYear()}_${pad(d.getUTCMonth() + 1)}_${pad(d.getUTCDate())}_${pad(d.getUTCHours())}_${pad(d.getUTCMinutes())}_${pad(d.getUTCSeconds())}_${pad(d.getUTCMilliseconds(), 3)}`;
   };
 
   private expandEnvVar(configFile: string, key: string, value: string): string {
@@ -156,20 +172,27 @@ class CliConfig {
   private getOrganizationInfo(token: string): ICliOrganizationInfo {
     const funcName = "getOrganizationInfo";
     const logName = `${CliConfig.name}.${funcName}()`;
-    const decoded: any = jwt_decode(token);    
-    /* istanbul ignore next */
-    if(decoded.org === undefined) throw new CliConfigTokenError(logName, "unable to read 'org' from token");
-    /* istanbul ignore next */
-    if(decoded.sub === undefined) throw new CliConfigTokenError(logName, "unable to read 'sub' from token");
-    return {
-      name: decoded.org,
-      id: decoded.sub
+    try {
+      const decoded: any = jwt_decode(token);    
+      /* istanbul ignore next */
+      if(decoded.org === undefined) throw new CliConfigTokenError(logName, "unable to read 'org' from token");
+      /* istanbul ignore next */
+      if(decoded.sub === undefined) throw new CliConfigTokenError(logName, "unable to read 'sub' from token");
+      return {
+        name: decoded.org,
+        id: decoded.sub
+      }    
+    } catch(e) {
+      console.log(`token='${token}'`);
+      if(!(e instanceof CliConfigTokenError)) throw new CliConfigTokenError(logName, "unable to decode token");
+      throw e;
     }
   }
 
-  private setConfig({ configFile, runState = ECliMigrateManagerRunState.PRESENT }:{
+  private setConfig({ configFile, runState = ECliMigrateManagerRunState.PRESENT, absentRunId }:{
     configFile: string;
     runState: ECliMigrateManagerRunState;
+    absentRunId?: string;
   }): void {
     const funcName = "setConfig";
     const logName = `${CliConfig.name}.${funcName}()`;
@@ -195,7 +218,7 @@ class CliConfig {
         level: configFileContents.logger.logLevel as ECliLogger_LogLevel,
         prettyPrint: configFileContents.logger.prettyPrint,
         log2Stdout: configFileContents.logger.log2Stdout,
-        logSummary2Console: true,
+        logSummary2Console: configFileContents.logger.logSummary2Console,
         logFile: CliUtils.ensureDirOfFilePathExists(configFileContents.logger.logFile),
         cliLogger_EpSdkLogLevel: configFileContents.logger.epSdkLogLevel
       },
@@ -212,8 +235,10 @@ class CliConfig {
       cliMigrateConfig: {
         appName, 
         runId,
+        absentRunId,
         cliMigrateManagerMode: ECliMigrateManagerMode.RELEASE_MODE,
         cliMigrateManagerRunState: runState,
+        epV1: configFileContents.migrate.epV1,
         epV2: {
           applicationDomainPrefix: configFileContents.migrate.epV2 ? configFileContents.migrate.epV2.applicationDomainPrefix : undefined
         },
@@ -228,6 +253,7 @@ class CliConfig {
           }
         },
         applicationDomains: {
+          epV1: configFileContents.migrate.epV1,
           epV2: {}
         },
         schemas: {
@@ -240,15 +266,89 @@ class CliConfig {
             }
           }
         },
+        events: {
+          ...configFileContents.migrate.events,
+          epV2: {
+            ...configFileContents.migrate.events.epV2,
+            versions: {
+              ...configFileContents.migrate.epV2.versions,
+              ...configFileContents.migrate.events.epV2.versions,
+            }
+          }
+        },
+        applications: {
+          ...configFileContents.migrate.applications,
+          epV2: {
+            ...configFileContents.migrate.applications.epV2,
+            versions: {
+              ...configFileContents.migrate.epV2.versions,
+              ...configFileContents.migrate.applications.epV2.versions,
+            }
+          }
+        },
       }
     };  
   }
 
-  public initialize = ({ cliVersion, commandLineOptionValues, configFile, runState }: {
+  public validateAbsent = async() => {
+    const funcName = "validateAbsent";
+    const logName = `${CliConfig.name}.${funcName}()`;
+
+    if(this.config.cliMigrateConfig.absentRunId !== undefined) return;
+    if(this.config.cliMigrateConfig.epV2.applicationDomainPrefix === undefined) {
+      throw new CliUsageError(
+        logName, 
+        `Run state '${this.config.cliMigrateConfig.cliMigrateManagerRunState}' requires one of defined: '--absentRunId={runId}' or '${CliUtils.nameOf<ICliConfigFile>("migrate.epV2.applicationDomainPrefix")}'`,
+        undefined
+        );
+    }
+  }
+
+  public validatePresent = async() => {
+    const funcName = "validatePresent";
+    const logName = `${CliConfig.name}.${funcName}()`;
+    if(this.config.cliMigrateConfig.applications.epV2.environment) {
+      const { environmentName, eventMeshName, eventBrokerName } = this.config.cliMigrateConfig.applications.epV2.environment;
+      const environment: Environment | undefined = await EpSdkEnvironmentsService.getByName({ environmentName });
+      if(environment === undefined) {
+        throw new CliConfigInvalidConfigError(logName, {
+          message: 'Ep V2 environment for applications not found',
+          environmentName
+        });
+      }
+      let eventMesh: EventMesh | undefined = undefined;
+      let nextPage: number | null = 1;
+      while(eventMesh === undefined && nextPage !== null) {
+        const eventMeshesResponse: EventMeshesResponse = await EventMeshesService.getEventMeshes({ pageNumber: nextPage, environmentId: environment.id });
+        if(eventMeshesResponse.data && eventMeshesResponse.data.length > 0) {
+          eventMesh = eventMeshesResponse.data.find( x => x.name === eventMeshName && x.environmentId === environment.id );
+        }
+        nextPage = eventMeshesResponse.meta?.pagination?.nextPage ?? null;
+      }
+      if(eventMesh === undefined) {
+        throw new CliConfigInvalidConfigError(logName, {
+          message: 'Ep V2 event mesh for applications not found',
+          eventMeshName
+        });
+      }
+      const messagingServices: MessagingService[] = await EpSdkMessagingService.listAll({});
+      const eventMeshId = eventMesh.id;
+      const messagingService = messagingServices.find( x => x.name === eventBrokerName && x.eventMeshId === eventMeshId);
+      if(messagingService === undefined) {
+        throw new CliConfigInvalidConfigError(logName, {
+          message: 'Ep V2 event broker for applications not found',
+          eventBrokerName
+        });
+      }
+    }
+  }
+
+  public initialize = ({ cliVersion, commandLineOptionValues, configFile, runState, absentRunId }: {
     cliVersion: string;
     commandLineOptionValues: OptionValues;
     configFile?: string;
     runState: ECliMigrateManagerRunState;
+    absentRunId?: string;
   }): void => {
     const funcName = "initialize";
     const logName = `${CliConfig.name}.${funcName}()`;
@@ -259,10 +359,9 @@ class CliConfig {
     if(testedConfigFile === undefined) throw new CliConfigInvalidConfigFileError(logName, this.configFile, 'cannot read config file');
     this.setConfig({
       configFile: testedConfigFile,
-      runState
+      runState,
+      absentRunId,
     });
-    // perhaps more validation is needed?
-    // this.validateConfig();
   };
 
   private maskSecrets = (k: string, v: any) => {
@@ -274,7 +373,10 @@ class CliConfig {
     const funcName = "logConfig";
     const logName = `${CliConfig.name}.${funcName}()`;
     this.assertIsInitialized();
-    console.log(`\nLog file: ${this.config.cliLoggerConfig.logFile}\n`);
+    console.log('\n');
+    console.log(`Version: ${this.cliVersion}`);
+    console.log(`RunId: ${this.config.runId}`);
+    console.log(`Log file: ${this.config.cliLoggerConfig.logFile}\n`);
     CliLogger.info(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.INITIALIZED, message: "config", details: {
       cliVersion: this.cliVersion,
       commandLineOptionValues: this.commandLineOptionValues ? this.commandLineOptionValues : 'undefined',
@@ -284,8 +386,12 @@ class CliConfig {
   };
 
   public getAppName = (): string => {
-    if (this.config) return this.config.appName;
+    if(this.config) return this.config.appName;
     return DefaultAppName;
+  };
+  public getRunId = (): string => {
+    this.assertIsInitialized();
+    return this.config.runId;
   };
   public getCliConfig = (): ICliConfig => {
     this.assertIsInitialized();

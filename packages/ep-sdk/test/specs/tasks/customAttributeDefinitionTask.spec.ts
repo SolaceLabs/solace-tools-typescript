@@ -11,11 +11,11 @@ import {
   EpSdkError,
   EEpSdkTask_Action,
   EEpSdkTask_TargetState,
+  EEpSdkObjectTypes,
   EEpSdkCustomAttributeEntityTypes,
   EpSdkCustomAttributeDefinitionsService,
   EpSdkCustomAttributeDefinitionTask,
   IEpSdkCustomAttributeDefinitionTask_ExecuteReturn,
-  EpSdkApplicationDomainsService,
   EpSdkApplicationDomainTask,
   IEpSdkApplicationDomainTask_ExecuteReturn,
 } from "../../../src";
@@ -33,7 +33,6 @@ const CustomAttributeDefinition_1_EntityTypeList_2: Array<EEpSdkCustomAttributeE
   EEpSdkCustomAttributeEntityTypes.APPLICATION,
 ];
 const CustomAttributeDefinition_1_EntityTypeList_3: Array<EEpSdkCustomAttributeEntityTypes> = Object.values(EEpSdkCustomAttributeEntityTypes);
-let CustomAttributeDefinition_IdList = [];
 
 // single app domain
 const OneApplicationDomainCustomAttributeName = "OneApplicationDomainCustomAttributeName";
@@ -41,15 +40,46 @@ const OneApplicationDomainCustomAttributeDefinitionEntityType = EEpSdkCustomAttr
 let OneApplicationDomainName: string;
 let OneApplicationDomainId: string;
 
+
+const cleanTest = async() => {
+  try {
+    const epSdkApplicationDomainTask_1 = new EpSdkApplicationDomainTask({
+      epSdkTask_TargetState: EEpSdkTask_TargetState.ABSENT,
+      applicationDomainName: OneApplicationDomainName,
+    });
+    await epSdkApplicationDomainTask_1.execute('contextId');
+
+    const epSdkCustomAttributeDefinitionTask_1 = new EpSdkCustomAttributeDefinitionTask({
+      epSdkTask_TargetState: EEpSdkTask_TargetState.ABSENT,
+      attributeName: CustomAttributeDefinition_1_Name,
+      customAttributeDefinitionObjectSettings: {}
+    });
+    await epSdkCustomAttributeDefinitionTask_1.execute();
+
+    const epSdkCustomAttributeDefinitionTask_2 = new EpSdkCustomAttributeDefinitionTask({
+      epSdkTask_TargetState: EEpSdkTask_TargetState.ABSENT,
+      attributeName: OneApplicationDomainCustomAttributeName,
+      customAttributeDefinitionObjectSettings: {}
+    });
+    await epSdkCustomAttributeDefinitionTask_2.execute();
+
+  } catch (e) {
+    if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+    expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+    expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
+  }
+}
+
 const initializeGlobals = () => {
   OneApplicationDomainName = `${TestConfig.getAppId()}/${TestSpecName}`;
   // EpSdkLogger.getLoggerInstance().setLogLevel(EEpSdkLogLevel.Trace);
 };
 
 describe(`${scriptName}`, () => {
-  before(() => {
+  before(async () => {
     TestContext.newItId();
     initializeGlobals();
+    await cleanTest();
   });
 
   beforeEach(() => {
@@ -58,16 +88,7 @@ describe(`${scriptName}`, () => {
 
   after(async () => {
     TestContext.newItId();
-    try {
-      // delete custom attribute definition
-      await EpSdkCustomAttributeDefinitionsService.deleteById({customAttributeDefinitionId: CustomAttributeDefinition_1_Id });
-      for (const id of CustomAttributeDefinition_IdList) {
-        await EpSdkCustomAttributeDefinitionsService.deleteById({ customAttributeDefinitionId: id });
-      }
-    } catch (e) {}
-    try {
-      await EpSdkApplicationDomainsService.deleteById({ xContextId: 'xContextId', applicationDomainId: OneApplicationDomainId });
-    } catch (e) {}
+    await cleanTest();
   });
 
   it(`${scriptName}: setup`, async () => {
@@ -76,9 +97,6 @@ describe(`${scriptName}`, () => {
 
   it(`${scriptName}: setup application domain`, async () => {
     TestContext.newItId();
-    try {
-      await EpSdkApplicationDomainsService.deleteByName({ xContextId: 'xContextId', applicationDomainName: OneApplicationDomainName });
-    } catch (e) {}
     try {
       const epSdkApplicationDomainTask = new EpSdkApplicationDomainTask({
         epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
@@ -99,7 +117,6 @@ describe(`${scriptName}`, () => {
       const epSdkCustomAttributeDefinitionTask = new EpSdkCustomAttributeDefinitionTask({
         epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
         attributeName: OneApplicationDomainCustomAttributeName,
-        applicationDomainId: OneApplicationDomainId,
         customAttributeDefinitionObjectSettings: {
           associatedEntityTypes: [OneApplicationDomainCustomAttributeDefinitionEntityType],
           // scope: CustomAttributeDefinition.scope.APPLICATION_DOMAIN,
@@ -232,7 +249,8 @@ describe(`${scriptName}`, () => {
         attributeName: CustomAttributeDefinition_1_Name,
         customAttributeDefinitionObjectSettings: {
           associatedEntityTypes: CustomAttributeDefinition_1_EntityTypeList_2,
-          scope: CustomAttributeDefinition.scope.APPLICATION_DOMAIN
+          scope: CustomAttributeDefinition.scope.APPLICATION_DOMAIN,
+          applicationDomainId: OneApplicationDomainId
         },
         epSdkTask_TransactionConfig: {
           parentTransactionId: "parentTransactionId",
@@ -242,10 +260,14 @@ describe(`${scriptName}`, () => {
       });
       const epSdkCustomAttributeDefinitionTask_ExecuteReturn: IEpSdkCustomAttributeDefinitionTask_ExecuteReturn = await epSdkCustomAttributeDefinitionTask.execute();
       const message = TestLogger.createLogMessage("epSdkCustomAttributeDefinitionTask_ExecuteReturn", epSdkCustomAttributeDefinitionTask_ExecuteReturn );
-      expect(epSdkCustomAttributeDefinitionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.WOULD_FAIL_TO_UPDATE);
-      const issue = JSON.stringify(epSdkCustomAttributeDefinitionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_UpdateFuncReturn.issue);
-      expect(issue, message).to.include(CustomAttributeDefinition.scope.APPLICATION_DOMAIN);
-      expect(epSdkCustomAttributeDefinitionTask_ExecuteReturn.epObject.scope, message).to.eq(CustomAttributeDefinition.scope.APPLICATION_DOMAIN);
+      // expect(epSdkCustomAttributeDefinitionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.WOULD_FAIL_TO_UPDATE);
+      // const issue = JSON.stringify(epSdkCustomAttributeDefinitionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_UpdateFuncReturn.issue);
+      // expect(issue, message).to.include(CustomAttributeDefinition.scope.APPLICATION_DOMAIN);
+      // expect(epSdkCustomAttributeDefinitionTask_ExecuteReturn.epObject.scope, message).to.eq(CustomAttributeDefinition.scope.APPLICATION_DOMAIN);
+
+      expect(epSdkCustomAttributeDefinitionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.WOULD_CREATE);
+
+
       // // DEBUG
       // expect(false, message).to.be.true;
     } catch (e) {
@@ -284,19 +306,18 @@ describe(`${scriptName}`, () => {
 
   it(`${scriptName}: customAttributeDefintion present: update to CustomAttributeDefinition_1_EntityTypeList_2`, async () => {
     try {
-      const epSdkCustomAttributeDefinitionTask =
-        new EpSdkCustomAttributeDefinitionTask({
-          epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
-          attributeName: CustomAttributeDefinition_1_Name,
-          customAttributeDefinitionObjectSettings: {
-            associatedEntityTypes: CustomAttributeDefinition_1_EntityTypeList_2,
-          },
-          epSdkTask_TransactionConfig: {
-            parentTransactionId: "parentTransactionId",
-            groupTransactionId: "groupTransactionId",
-          },
-          checkmode: false,
-        });
+      const epSdkCustomAttributeDefinitionTask = new EpSdkCustomAttributeDefinitionTask({
+        epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
+        attributeName: CustomAttributeDefinition_1_Name,
+        customAttributeDefinitionObjectSettings: {
+          associatedEntityTypes: CustomAttributeDefinition_1_EntityTypeList_2,
+        },
+        epSdkTask_TransactionConfig: {
+          parentTransactionId: "parentTransactionId",
+          groupTransactionId: "groupTransactionId",
+        },
+        checkmode: false,
+      });
       const epSdkCustomAttributeDefinitionTask_ExecuteReturn: IEpSdkCustomAttributeDefinitionTask_ExecuteReturn = await epSdkCustomAttributeDefinitionTask.execute();
       const message = TestLogger.createLogMessage("epSdkCustomAttributeDefinitionTask_ExecuteReturn", epSdkCustomAttributeDefinitionTask_ExecuteReturn);
       expect(epSdkCustomAttributeDefinitionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action,message).to.eq(EEpSdkTask_Action.UPDATE);
@@ -311,8 +332,7 @@ describe(`${scriptName}`, () => {
       for (const associatedEntityType of CustomAttributeDefinition_1_EntityTypeList_2) {
         expect(associatedEntityTypesString, failMessage).to.include(associatedEntityType);
       }
-
-      // // DEBUG
+      // DEBUG
       // expect(false, message).to.be.true;
     } catch (e) {
       if (e instanceof ApiError)

@@ -1,31 +1,38 @@
 import {
   CustomAttribute,
-  CustomAttributeDefinition,
   SchemaObject,
   SchemaResponse,
   SchemasResponse,
   SchemasService,
 } from "@solace-labs/ep-openapi-node";
-import { EEpSdkCustomAttributeEntityTypes, TEpSdkCustomAttributeList } from "../types";
+import { 
+  EEpSdkCustomAttributeEntityTypes,
+  TEpSdkCustomAttribute 
+} from "../types";
 import {
   EpSdkApiContentError,
   EpSdkServiceError,
   EpSdkLogger,
   EEpSdkLoggerCodes,
 } from "../utils";
+import { 
+  EpSdkServiceClass 
+} from "./EpSdkService";
 import EpSdkCustomAttributesService from "./EpSdkCustomAttributesService";
-import { EpSdkServiceClass } from "./EpSdkService";
 
 /** @category Services */
 export enum EEpSdkSchemaType {
   JSON_SCHEMA = "jsonSchema",
   AVRO = "avro",
   XSD = "xsd",
+  PROTOBUF = "protobuf",
+  DTD = "dtd"
 }
 /** @category Services */
 export enum EEpSdkSchemaContentType {
   APPLICATION_JSON = "json",
-  APPLICATION_XML = "xml"
+  APPLICATION_XML = "xml",
+  APPLICATION_PROTOBUF = "protobuf",
 }
 
 /** @category Services */
@@ -57,26 +64,17 @@ export class EpSdkSchemasServiceClass extends EpSdkServiceClass {
    * Sets the custom attributes in the list on the event api product.
    * Creates attribute definitions / adds entity type 'eventApiProduct' if it doesn't exist.
    */
-  public async setCustomAttributes({ xContextId, schemaId, epSdkCustomAttributeList, scope, applicationDomainId }:{
+  public async setCustomAttributes({ xContextId, schemaId, epSdkCustomAttributes }:{
     xContextId?: string;
     schemaId: string;
-    epSdkCustomAttributeList: TEpSdkCustomAttributeList;
-    applicationDomainId?: string;
-    scope?: CustomAttributeDefinition.scope;
+    epSdkCustomAttributes: Array<TEpSdkCustomAttribute>;
   }): Promise<SchemaObject> {
-    const schemaObject: SchemaObject = await this.getById({
-      xContextId,
-      schemaId: schemaId,
-    });
-    scope;
+    const schemaObject: SchemaObject = await this.getById({ xContextId, schemaId });
     const customAttributes: Array<CustomAttribute> = await EpSdkCustomAttributesService.createCustomAttributesWithNew({
       xContextId,
       existingCustomAttributes: schemaObject.customAttributes,
-      epSdkCustomAttributeList: epSdkCustomAttributeList,
+      epSdkCustomAttributes,
       epSdkCustomAttributeEntityType: EEpSdkCustomAttributeEntityTypes.SCHEMA_OBJECT,
-      applicationDomainId: applicationDomainId,
-      // note: adding scope if not organization currently causes EP to return an internal server error
-      // scope: scope
     });
     return await this.updateSchema({
       xContextId,

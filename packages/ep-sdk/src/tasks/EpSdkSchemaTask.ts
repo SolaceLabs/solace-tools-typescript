@@ -14,9 +14,13 @@ import {
   EEpSdkSchemaContentType,
   EEpSdkSchemaType,
 } from "../services";
-import { EEpSdkObjectTypes } from "../types";
+import { 
+  EEpSdkObjectTypes 
+} from "../types";
 import {
   EpSdkTask,
+} from "./EpSdkTask";
+import {
   IEpSdkTask_Config,
   IEpSdkTask_CreateFuncReturn,
   IEpSdkTask_DeleteFuncReturn,
@@ -26,7 +30,7 @@ import {
   IEpSdkTask_IsUpdateRequiredFuncReturn,
   IEpSdkTask_Keys,
   IEpSdkTask_UpdateFuncReturn,
-} from "./EpSdkTask";
+} from "./EpSdkTaskTypes";
 
 type TEpSdkSchemaTask_Settings = Partial<
   Pick<SchemaObject, "shared" | "contentType" | "schemaType">

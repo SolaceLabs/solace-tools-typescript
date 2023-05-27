@@ -10,7 +10,10 @@ import {
   EpSdkLogger,
   EEpSdkLoggerCodes,
 } from "../utils";
-import { EEpSdkObjectTypes } from "../types";
+import { 
+  EEpSdkObjectTypes, 
+  TEpSdkEnumValue 
+} from "../types";
 import { EpSdkEnumVersionsService } from "../services";
 import {
   IEpSdkTask_CreateFuncReturn,
@@ -19,7 +22,7 @@ import {
   IEpSdkTask_IsUpdateRequiredFuncReturn,
   IEpSdkTask_Keys,
   IEpSdkTask_UpdateFuncReturn,
-} from "./EpSdkTask";
+} from "./EpSdkTaskTypes";
 import {
   EEpSdk_VersionTaskStrategy,
   EpSdkVersionTask,
@@ -36,7 +39,7 @@ export interface IEpSdkEnumVersionTask_Config extends IEpSdkVersionTask_Config {
   applicationDomainId: string;
   enumId: string;
   enumVersionSettings: TEpSdkEnumVersionTask_Settings;
-  enumValues: Array<string>;
+  enumValues: Array<string> | Array<TEpSdkEnumValue>;
 }
 /** @category Tasks */
 export interface IEpSdkEnumVersionTask_Keys extends IEpSdkTask_Keys {
@@ -75,13 +78,21 @@ export class EpSdkEnumVersionTask extends EpSdkVersionTask {
   private getTaskConfig(): IEpSdkEnumVersionTask_Config {
     return this.epSdkTask_Config as IEpSdkEnumVersionTask_Config;
   }
-  private createEnumValueList(valueList: Array<string>): Array<TopicAddressEnumValue> {
+  private createEnumValueList(valueList: Array<string> | Array<TEpSdkEnumValue>): Array<TopicAddressEnumValue> {
     const enumValueList: Array<TopicAddressEnumValue> = [];
-    valueList.forEach((value: string) => {
-      const enumValue: TopicAddressEnumValue = {
-        label: value,
-        value: value,
-      };
+    valueList.forEach((value: string | TEpSdkEnumValue) => {
+      let enumValue: TopicAddressEnumValue;
+      if(typeof value === "string") {
+        enumValue = {
+          label: value,
+          value: value,
+        };  
+      } else {
+        enumValue = {
+          label: value.label,
+          value: value.value,
+        };  
+      }
       enumValueList.push(enumValue);
     });
     return enumValueList;

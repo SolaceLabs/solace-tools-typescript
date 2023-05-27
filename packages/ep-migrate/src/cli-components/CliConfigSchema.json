@@ -46,9 +46,40 @@
     },
     "migrate": {
       "type": "object",
-      "required": ["epV2"],
+      "required": [
+        "epV2",
+        "enums",
+        "applicationDomains",
+        "schemas",
+        "events",
+        "applications"
+      ],
       "additionalProperties": false,
       "properties": {
+        "epV1": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "properties": {
+            "applicationDomainNames": {
+              "type": ["object", "null"],
+              "additionalProperties": false,
+              "properties": {
+                "include": {
+                  "type": ["array", "null"],
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "exclude": {
+                  "type": ["array", "null"],
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
         "epV2": {
           "type": ["object"],
           "required": ["versions"],
@@ -104,6 +135,56 @@
               "required": [],
               "additionalProperties": false,
               "properties": {
+                "versions": {
+                  "$ref": "#/definitions/epV2Versions"
+                }
+              }
+            }
+          }
+        },
+        "events": {
+          "type": "object",
+          "required": ["epV2"],
+          "additionalProperties": false,
+          "properties": {
+            "epV2": {
+              "type": ["object", "null"],
+              "required": [],
+              "additionalProperties": false,
+              "properties": {
+                "versions": {
+                  "$ref": "#/definitions/epV2Versions"
+                }
+              }
+            }
+          }
+        },
+        "applications": {
+          "type": "object",
+          "required": ["epV2"],
+          "additionalProperties": false,
+          "properties": {
+            "epV2": {
+              "type": ["object"],
+              "required": [],
+              "additionalProperties": false,
+              "properties": {
+                "environment": {
+                  "type": "object",
+                  "required": ["environmentName", "eventMeshName", "eventBrokerName"],
+                  "additionalProperties": false,
+                  "properties": {
+                    "environmentName": {
+                      "type": "string"
+                    },
+                    "eventMeshName": {
+                      "type": "string"
+                    },
+                    "eventBrokerName": {
+                      "type": "string"
+                    }
+                  }
+                },
                 "versions": {
                   "$ref": "#/definitions/epV2Versions"
                 }

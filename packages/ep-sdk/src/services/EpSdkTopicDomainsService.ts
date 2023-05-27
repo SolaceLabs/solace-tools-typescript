@@ -17,7 +17,7 @@ export class EpSdkTopicDomainsServiceClass extends EpSdkServiceClass {
 
   public listAll = async({ applicationDomainId, pageSize = EpApiMaxPageSize, xContextId }:{
     xContextId?: string;
-    applicationDomainId: string;
+    applicationDomainId?: string;
     pageSize?: number; /** for testing */
   }): Promise<TopicDomainsResponse> => {
     const funcName = 'listAll';

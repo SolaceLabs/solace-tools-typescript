@@ -26,7 +26,7 @@ import {
   IEpSdkTask_IsUpdateRequiredFuncReturn,
   IEpSdkTask_Keys,
   IEpSdkTask_UpdateFuncReturn,
-} from "./EpSdkTask";
+} from "./EpSdkTaskTypes";
 import {
   EEpSdk_VersionTaskStrategy,
   EpSdkVersionTask,
@@ -37,7 +37,7 @@ import {
 /** @category Tasks */
 export type TEpSdkEpEventVersionTask_Settings_DeliveryDescriptor = Pick<DeliveryDescriptor,"brokerType">;
 /** @category Tasks */
-export type TEpSdkEpEventVersionTask_Settings = Required<Pick<EventVersion, "stateId" | "schemaVersionId">> & Pick<EventVersion, "description" | "displayName" > & TEpSdkEpEventVersionTask_Settings_DeliveryDescriptor;
+export type TEpSdkEpEventVersionTask_Settings = Required<Pick<EventVersion, "stateId">> & Pick<EventVersion, "description" | "displayName" | "schemaVersionId"> & TEpSdkEpEventVersionTask_Settings_DeliveryDescriptor;
 type TEpSdkEpEventVersionTask_CompareObject = Partial<TEpSdkEpEventVersionTask_Settings> & Pick<EventVersion, "deliveryDescriptor"> & Partial<Pick<EventVersion, "version">>;
 
 /** @category Tasks */
@@ -314,28 +314,17 @@ export class EpSdkEpEventVersionTask extends EpSdkVersionTask {
     const funcName = "createFunc";
     const logName = `${EpSdkEpEventVersionTask.name}.${funcName}()`;
 
-    EpSdkLogger.trace(
-      EpSdkLogger.createLogEntry(logName, {
-        code: EEpSdkLoggerCodes.TASK_EXECUTE_START_CREATE,
-        module: this.constructor.name,
-      })
-    );
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_START_CREATE, module: this.constructor.name }));
 
     const create: EventVersion = {
       ...this.createObjectSettings(),
       eventId: this.getTaskConfig().eventId,
       version: this.versionString,
     };
-    EpSdkLogger.trace(
-      EpSdkLogger.createLogEntry(logName, {
-        code: EEpSdkLoggerCodes.TASK_EXECUTE_CREATE,
-        module: this.constructor.name,
-        details: {
-          epSdkEpEventVersionTask_Config: this.getTaskConfig(),
-          create: create,
-        },
-      })
-    );
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, {code: EEpSdkLoggerCodes.TASK_EXECUTE_CREATE, module: this.constructor.name, details: {
+      epSdkEpEventVersionTask_Config: this.getTaskConfig(),
+      create: create,
+    }}));
 
     if (this.isCheckmode()) {
       return {
@@ -356,17 +345,11 @@ export class EpSdkEpEventVersionTask extends EpSdkVersionTask {
       targetLifecycleStateId: this.getTaskConfig().eventVersionSettings.stateId,
     });
 
-    EpSdkLogger.trace(
-      EpSdkLogger.createLogEntry(logName, {
-        code: EEpSdkLoggerCodes.TASK_EXECUTE_CREATE,
-        module: this.constructor.name,
-        details: {
-          epSdkApplicationDomainTask_Config: this.getTaskConfig(),
-          create: create,
-          eventVersion: eventVersion,
-        },
-      })
-    );
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_CREATE, module: this.constructor.name, details: {
+      epSdkApplicationDomainTask_Config: this.getTaskConfig(),
+      create: create,
+      eventVersion: eventVersion,
+    }}));
 
     return {
       epSdkTask_Action: this.getCreateFuncAction(),

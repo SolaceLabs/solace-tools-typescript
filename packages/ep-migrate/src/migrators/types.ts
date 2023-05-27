@@ -7,12 +7,18 @@ import {
   SchemaObject, 
   SchemaVersion,
   TopicAddressEnum,
-  TopicAddressEnumVersion
+  TopicAddressEnumVersion,
+  Event as EpEvent,
+  EventVersion,
+  Application,
+  ApplicationVersion
 } from "@solace-labs/ep-openapi-node";
 import { 
   EpV1ApplicationDomain, 
   EpV1Enum, 
-  EpV1EventSchema 
+  EpV1EventSchema,
+  EpV1Event,
+  EpV1Application
 } from "../epV1";
 
 export enum ECliMigrate_TargetVersionStrategies {
@@ -49,5 +55,21 @@ export interface ICliMigratedSchema {
   epV2Schema: {
     schemaObject: SchemaObject;
     schemaVersion: SchemaVersion;
+  }
+}
+
+export interface ICliMigratedEvent {
+  epV1Event: EpV1Event;
+  epV2Event: {
+    eventObject: EpEvent;
+    eventVersion: EventVersion;
+  }
+}
+
+export interface ICliMigratedApplication {
+  epV1Application: EpV1Application;
+  epV2Application: {
+    applicationObject: Application;
+    applicationVersion: ApplicationVersion;
   }
 }

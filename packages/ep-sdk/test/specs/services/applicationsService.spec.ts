@@ -8,15 +8,22 @@ import {
   Application,
   ApplicationResponse,
   ApplicationsService,
+  CustomAttributeDefinition,
 } from "@solace-labs/ep-openapi-node";
-import { TestContext, TestUtils } from "@internal/tools/src";
-import { TestLogger, TestConfig, TestHelpers } from "../../lib";
+import { 
+  TestContext, 
+  TestUtils 
+} from "@internal/tools/src";
+import { 
+  TestLogger, 
+  TestConfig, 
+  TestHelpers 
+} from "../../lib";
 import {
   EpSdkError,
   EpSdkServiceError,
   EpSdkApplicationsService,
-  TEpSdkCustomAttributeList,
-  EpSdkApplicationDomainsService,
+  TEpSdkCustomAttribute,
 } from "../../../src";
 
 const scriptName: string = path.basename(__filename);
@@ -28,24 +35,32 @@ let ApplicationDomainId: string | undefined;
 let ApplicationName: string;
 let ApplicationId: string | undefined;
 
-const ApplicationCustomAttributeList: TEpSdkCustomAttributeList = [
+const ApplicationCustomAttributeList: Array<TEpSdkCustomAttribute> = [
   {
     name: "applicationAttribute_1",
     value: "applicationAttribute_1 value",
+    valueType: CustomAttributeDefinition.valueType.STRING,
+    scope: CustomAttributeDefinition.scope.ORGANIZATION
   },
   {
     name: "applicationAttribute_2",
     value: "applicationAttribute_2 value",
+    valueType: CustomAttributeDefinition.valueType.STRING,
+    scope: CustomAttributeDefinition.scope.ORGANIZATION
   },
 ];
-const ApplicationAdditionalCustomAttributeList: TEpSdkCustomAttributeList = [
+const ApplicationAdditionalCustomAttributeList: Array<TEpSdkCustomAttribute> = [
   {
     name: "applicationAttribute_3",
     value: "applicationAttribute_3 value",
+    valueType: CustomAttributeDefinition.valueType.STRING,
+    scope: CustomAttributeDefinition.scope.ORGANIZATION
   },
   {
     name: "applicationAttribute_4",
     value: "applicationAttribute_4 value",
+    valueType: CustomAttributeDefinition.valueType.STRING,
+    scope: CustomAttributeDefinition.scope.ORGANIZATION
   },
 ];
 
@@ -234,7 +249,7 @@ describe(`${scriptName}`, () => {
       const application: Application =
         await EpSdkApplicationsService.setCustomAttributes({
           applicationId: ApplicationId,
-          epSdkCustomAttributeList: ApplicationCustomAttributeList,
+          epSdkCustomAttributes: ApplicationCustomAttributeList,
         });
       expect(application.customAttributes).to.not.be.undefined;
       if (application.customAttributes === undefined)
@@ -263,7 +278,7 @@ describe(`${scriptName}`, () => {
       const application: Application =
         await EpSdkApplicationsService.setCustomAttributes({
           applicationId: ApplicationId,
-          epSdkCustomAttributeList: ApplicationCustomAttributeList,
+          epSdkCustomAttributes: ApplicationCustomAttributeList,
         });
       expect(application.customAttributes).to.not.be.undefined;
       if (application.customAttributes === undefined)
@@ -292,7 +307,7 @@ describe(`${scriptName}`, () => {
       const application: Application =
         await EpSdkApplicationsService.setCustomAttributes({
           applicationId: ApplicationId,
-          epSdkCustomAttributeList: ApplicationAdditionalCustomAttributeList,
+          epSdkCustomAttributes: ApplicationAdditionalCustomAttributeList,
         });
       expect(application.customAttributes).to.not.be.undefined;
       if (application.customAttributes === undefined)
@@ -335,7 +350,7 @@ describe(`${scriptName}`, () => {
       const application: Application =
         await EpSdkApplicationsService.unsetCustomAttributes({
           applicationId: ApplicationId,
-          epSdkCustomAttributeList: ApplicationAdditionalCustomAttributeList,
+          epSdkCustomAttributes: ApplicationAdditionalCustomAttributeList,
         });
       expect(application.customAttributes).to.not.be.undefined;
       if (application.customAttributes === undefined)

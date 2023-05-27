@@ -1,0 +1,16 @@
+export enum ECustomAttributeEntityTypes {
+  APPLICATION_DOMAIN = "applicationDomain",
+  ENUM = "enum",
+  ENUM_VERSION = "enumVersion",
+  APPLICATION = "application",
+  APPLICATION_VERSION = "applicationVersion",
+  SCHEMA_OBJECT = "schema",
+  SCHEMA_VERSION = "schemaVersion",
+  EVENT = "event",
+  EVENT_VERSION = "eventVersion",
+  EVENT_API = "eventApi",
+  EVENT_API_VERSION = "eventApiVersion",
+  EVENT_API_PRODUCT = "eventApiProduct",
+  EVENT_API_PRODUCT_VERSION = "eventApiProductVersion",
+  // consumer?, 
+}

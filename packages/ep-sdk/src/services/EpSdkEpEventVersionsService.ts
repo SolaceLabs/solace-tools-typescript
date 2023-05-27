@@ -12,7 +12,8 @@ import {
   Pagination,
   EventResponse,
   StateChangeRequestResponse,
-  CustomAttributeDefinition
+  CustomAttributeDefinition,
+  CustomAttribute
 } from '@solace-labs/ep-openapi-node';
 import { 
   EpSdkApiContentError, 
@@ -20,10 +21,12 @@ import {
   EpSdkUtils
 } from "../utils";
 import { 
-  EpSdkPagination 
+  EEpSdkCustomAttributeEntityTypes,
+  EpSdkPagination, TEpSdkCustomAttribute 
 } from "../types";
 import { 
-  EpApiMaxPageSize, EpSdkCustomAttributeNameSourceApplicationDomainId 
+  EpApiMaxPageSize, 
+  EpSdkCustomAttributeNameSourceApplicationDomainId 
 } from '../constants';
 import { 
   EpSdkEpEventTask, 
@@ -38,6 +41,7 @@ import EpSdkEpEventsService from "./EpSdkEpEventsService";
 import { EpSdkVersionServiceClass } from "./EpSdkVersionService";
 import EpSdkSchemaVersionsService from "./EpSdkSchemaVersionsService";
 import EpSdkEnumVersionsService from "./EpSdkEnumVersionsService";
+import EpSdkCustomAttributesService from './EpSdkCustomAttributesService';
 
 /** @category Services */
 export type EpSdkEpEvent = Required<Pick<EpEvent, "applicationDomainId" | "id" | "name">> & Omit<EpEvent, "applicationDomainId" | "id" | "name">;
@@ -68,6 +72,56 @@ export type EpSdkEpEventAndVersionResponse = EpSdkEpEventAndVersion & {
 
 /** @category Services */
 export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
+
+  private async updateEventVersion({ xContextId, update }:{
+    xContextId?: string;
+    update: EventVersion;
+  }): Promise<EventVersion> {
+    const funcName = 'updateEventVersion';
+    const logName = `${EpSdkEpEventVersionsServiceClass.name}.${funcName}()`;
+    /* istanbul ignore next */
+    if(update.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'update.id === undefined', { update });
+    const eventVersionResponse: EventVersionResponse = await EventsService.updateEventVersion({
+      xContextId,
+      id: update.id,
+      requestBody: update
+    })
+    /* istanbul ignore next */
+    if(eventVersionResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'eventVersionResponse.data === undefined', { eventVersionResponse });
+    return eventVersionResponse.data;
+  }
+
+  /**
+   * Sets the custom attributes in the list on the Event Version object.
+   * Creates attribute definitions / adds entity type 'eventVersion' if it doesn't exist.
+   */
+  public async setCustomAttributes({ xContextId, eventVersionId, epSdkCustomAttributes}:{
+    xContextId?: string;
+    eventVersionId: string;
+    epSdkCustomAttributes: Array<TEpSdkCustomAttribute>;
+  }): Promise<EventVersion> {
+    const funcName = 'setCustomAttributes';
+    const logName = `${EpSdkEpEventVersionsServiceClass.name}.${funcName}()`;
+    const eventVersionResponse: EventVersionResponse = await EventsService.getEventVersion({
+      xContextId,
+      id: eventVersionId,
+    })
+    /* istanbul ignore next */
+    if(eventVersionResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'eventVersionResponse.data === undefined', { eventVersionResponse });    
+    const customAttributes: Array<CustomAttribute> = await EpSdkCustomAttributesService.createCustomAttributesWithNew({
+      xContextId,
+      existingCustomAttributes: eventVersionResponse.data?.customAttributes,
+      epSdkCustomAttributes,
+      epSdkCustomAttributeEntityType: EEpSdkCustomAttributeEntityTypes.EVENT_VERSION,
+    });
+    return await this.updateEventVersion({
+      xContextId,
+      update: {
+        ...eventVersionResponse.data,
+        customAttributes,
+      }
+    });
+  }
 
   public getObjectAndVersionForEventId = async({ xContextId,eventId, stateIds, versionString }:{
     xContextId?: string;
@@ -455,13 +509,17 @@ export class EpSdkEpEventVersionsServiceClass extends EpSdkVersionServiceClass {
     // add the source application domain id to custom attribute
     await EpSdkEpEventsService.setCustomAttributes({
       xContextId: xContextId,
-      applicationDomainId: toApplicationDomainId,
       eventId: epSdkEpEventTask_ExecuteReturn.epObjectKeys.epObjectId,
-      scope: CustomAttributeDefinition.scope.APPLICATION_DOMAIN,
-      epSdkCustomAttributeList: [ 
-        { name: EpSdkCustomAttributeNameSourceApplicationDomainId, value: fromEvent.applicationDomainId }
+      epSdkCustomAttributes: [ 
+        { 
+          name: EpSdkCustomAttributeNameSourceApplicationDomainId, 
+          value: fromEvent.applicationDomainId,
+          scope: CustomAttributeDefinition.scope.APPLICATION_DOMAIN,
+          valueType: CustomAttributeDefinition.valueType.STRING,
+          applicationDomainId: toApplicationDomainId,
+        }
       ]
-    });        
+    });
     // create target event version
     const epSdkEpEventVersionTask = new EpSdkEpEventVersionTask({
       epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,

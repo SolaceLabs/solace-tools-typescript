@@ -1,3 +1,7 @@
+import { 
+  ApplicationDomain,
+  CustomAttributeDefinition 
+} from "@solace-labs/ep-openapi-node";
 import {
   EEpSdk_VersionTaskStrategy,
   EpSdkTask,
@@ -5,14 +9,28 @@ import {
   IEpSdkTask_TransactionConfig,
   EpSdkStatesService,
   EEpSdkStateDTONames,
+  EEpSdkCustomAttributeEntityTypes,
+  TEpSdkCustomAttribute,
+  IEpSdkApplicationDomainTask_ExecuteReturn,
+  EEpSdkTask_Action,
+  EpSdkApplicationDomainsService,
 } from "@solace-labs/ep-sdk";
 import {
+  CliConfig,
+  CliEPApiContentError,
   CliInternalCodeInconsistencyError,
+  CliMigrateManager,
   CliRunExecuteReturnLog,
   CliUtils,
   ECliRunContext_RunMode,
 } from "../cli-components";
-import { ECliMigrate_TargetStates, ECliMigrate_TargetVersionStrategies } from "./types";
+import { 
+  ECliMigrate_TargetStates, 
+  ECliMigrate_TargetVersionStrategies 
+} from "./types";
+import { 
+  EpV1Tag 
+} from "../epV1";
 
 
 export interface ICliMigratorOptions {
@@ -28,113 +46,64 @@ export abstract class CliMigrator {
   protected transactionId: string;
   protected runMode: ECliRunContext_RunMode;
  
+  protected static EpV2TagCustomAttributeDefinition = {
+    name: "tags",
+    scope: CustomAttributeDefinition.scope.APPLICATION_DOMAIN,
+    valueType: CustomAttributeDefinition.valueType.STRING,
+    associatedEntityTypes: [ 
+      EEpSdkCustomAttributeEntityTypes.APPLICATION_DOMAIN,
+      EEpSdkCustomAttributeEntityTypes.APPLICATION,
+      EEpSdkCustomAttributeEntityTypes.SCHEMA_OBJECT,
+      EEpSdkCustomAttributeEntityTypes.EVENT
+    ],
+  }
+  
+  protected transformEpV1TagNames2EpV2CustomAttributeValue(epV1Tags: Array<EpV1Tag>): string {
+    return epV1Tags.map( x => x.name).join(' - ').replaceAll(',','').trim();
+  }
+  protected transformEpV1Tags2EpSdkCustomAttribute({ epV1Tags, applicationDomainId }:{
+    epV1Tags: Array<EpV1Tag>;
+    applicationDomainId: string;
+  }): TEpSdkCustomAttribute {
+    return {
+      name: CliMigrator.EpV2TagCustomAttributeDefinition.name,
+      value: this.transformEpV1TagNames2EpV2CustomAttributeValue(epV1Tags),
+      scope: CliMigrator.EpV2TagCustomAttributeDefinition.scope,
+      valueType: CliMigrator.EpV2TagCustomAttributeDefinition.valueType,
+      applicationDomainId,
+    };
+  }
+
   constructor(options: ICliMigratorOptions, runMode: ECliRunContext_RunMode) {
     this.options = options;
     this.transactionId = CliUtils.getUUID();
     this.runMode = runMode;
   }
 
-
-
-  // /* istanbul ignore next */
-  // protected async getApplicationDomainName(applicationDomainId: string): Promise<string> {
-  //   const applicationDomainName: string | undefined = this.applicationDomainCache.get(applicationDomainId);
-  //   if(applicationDomainName) return applicationDomainName;
-  //   const applicationDomain = await EpSdkApplicationDomainsService.getById({ applicationDomainId });
-  //   this.applicationDomainCache.set(applicationDomainId, applicationDomain.name);
-  //   return applicationDomain.name;
-  // }
-
-  // /* istanbul ignore next */
-  // protected getSourceApplicationDomainId({ epObjectCustomAttributes }:{
-  //   epObjectCustomAttributes?: Array<CustomAttribute>;
-  // }): string | undefined {
-  //   if(epObjectCustomAttributes === undefined) return undefined;
-  //   const sourceApplicationDomainIdAttribute = epObjectCustomAttributes.find( (x) => { return x.customAttributeDefinitionName === EpSdkCustomAttributeNameSourceApplicationDomainId; });
-  //   if(sourceApplicationDomainIdAttribute === undefined) return undefined;
-  //   const sourceApplicationDomainId = sourceApplicationDomainIdAttribute.value;
-  //   return sourceApplicationDomainId;
-  // }
-
-  // /* istanbul ignore next */
-  // protected async getSourceApplicationDomainName({ epObjectCustomAttributes }:{
-  //   epObjectCustomAttributes?: Array<CustomAttribute>;
-  // }): Promise<string | undefined> {
-  //   const applicationDomainId = this.getSourceApplicationDomainId({ epObjectCustomAttributes });
-  //   if(applicationDomainId === undefined) return undefined;
-  //   return await this.getApplicationDomainName(applicationDomainId);
-  // }
-
-  // protected get_pub_sub_event_version_ids = async ({applicationDomainId, epAsyncApiDocument }: {
-  //   applicationDomainId: string;
-  //   epAsyncApiDocument: EpAsyncApiDocument;
-  // }): Promise<ICliPubSubEventVersionIds> => {
-  //   const funcName = "get_pub_sub_event_version_ids";
-  //   const logName = `${CliImporter.name}.${funcName}()`;
-
-  //   const publishEventVersionIdList: Array<string> = [];
-  //   const subscribeEventVersionIdList: Array<string> = [];
-
-  //   const channelDocumentMap = epAsyncApiDocument.getEpAsyncApiChannelDocumentMap();
-  //   for(const [key, epAsyncApiChannelDocument] of channelDocumentMap) {
-  //     key;
-  //     const epEventName: string = epAsyncApiChannelDocument.getEpEventName();
-  //     const epAsynApiChannelPublishOperation = epAsyncApiChannelDocument.getEpAsyncApiChannelPublishOperation();
-  //     if(epAsynApiChannelPublishOperation) {
-  //       const epAsyncApiMessageDocument = epAsynApiChannelPublishOperation.getEpAsyncApiMessageDocument();
-  //       const eventApplicationDomainId = await this.getAssetApplicationDomainId({
-  //         assetApplicationDomainId: applicationDomainId,
-  //         overrideAssetApplicationDomainName: epAsyncApiMessageDocument.getMessageEpApplicationDomainName()
-  //       });
-  //       // console.log(`${logName}: ************************************`);
-  //       // const log = {
-  //       //   runMode: this.runMode,
-  //       //   eventApplicationDomainId,
-  //       //   epEventName,
-  //       // }
-  //       // console.log(`${logName}: log=${JSON.stringify(log, null, 2)}`);
-  //       // console.log(`${logName}: ************************************`);
-  //       const eventVersion: EventVersion | undefined = await EpSdkEpEventVersionsService.getLatestVersionForEventName({
-  //         eventName: epEventName,
-  //         applicationDomainId: eventApplicationDomainId,
-  //       });
-  //       if (eventVersion === undefined) throw new CliImporterError(logName, "eventVersion === undefined", {
-  //         eventName: epEventName,
-  //         applicationDomainId: eventApplicationDomainId,
-  //       });
-  //       /* istanbul ignore next */
-  //       if (eventVersion.id === undefined) throw new CliEPApiContentError(logName, "eventVersion.id === undefined", {
-  //         eventVersion: eventVersion,
-  //       });
-  //       publishEventVersionIdList.push(eventVersion.id);
-  //     }
-  //     const epAsynApiChannelSubscribeOperation = epAsyncApiChannelDocument.getEpAsyncApiChannelSubscribeOperation();
-  //     if(epAsynApiChannelSubscribeOperation) {
-  //       const epAsyncApiMessageDocument = epAsynApiChannelSubscribeOperation.getEpAsyncApiMessageDocument();
-  //       const eventApplicationDomainId = await this.getAssetApplicationDomainId({
-  //         assetApplicationDomainId: applicationDomainId,
-  //         overrideAssetApplicationDomainName: epAsyncApiMessageDocument.getMessageEpApplicationDomainName()
-  //       });
-  //       const eventVersion: EventVersion | undefined = await EpSdkEpEventVersionsService.getLatestVersionForEventName({
-  //         eventName: epEventName,
-  //         applicationDomainId: eventApplicationDomainId,
-  //       });
-  //       if (eventVersion === undefined) throw new CliImporterError(logName, "eventVersion === undefined", {
-  //         eventName: epEventName,
-  //         applicationDomainId: eventApplicationDomainId,
-  //       });
-  //       /* istanbul ignore next */
-  //       if (eventVersion.id === undefined) throw new CliEPApiContentError(logName, "eventVersion.id === undefined", {
-  //         eventVersion: eventVersion,
-  //       });
-  //       subscribeEventVersionIdList.push(eventVersion.id);
-  //     }
-  //   }
-  //   return {
-  //     publishEventVersionIdList: publishEventVersionIdList,
-  //     subscribeEventVersionIdList: subscribeEventVersionIdList,
-  //   };
-  // }
+  protected async presentApplicationDomainRunIdCustomAttribute({ epSdkApplicationDomainTask_ExecuteReturn }:{
+    epSdkApplicationDomainTask_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn;
+  }): Promise<ApplicationDomain> {
+    const funcName = 'presentApplicationDomainRunIdCustomAttribute';
+    const logName = `${CliMigrator.name}.${funcName}()`;
+    // runId
+    if(epSdkApplicationDomainTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action !== EEpSdkTask_Action.CREATE) return epSdkApplicationDomainTask_ExecuteReturn.epObject;
+    /* istanbul ignore next */
+    if(epSdkApplicationDomainTask_ExecuteReturn.epObject.id === undefined) throw new CliEPApiContentError(logName, "epSdkApplicationDomainTask_ExecuteReturn.epObject.id === undefined", {
+      applicationDomain: epSdkApplicationDomainTask_ExecuteReturn.epObject,
+    });
+    const newApplicationDomain: ApplicationDomain = await EpSdkApplicationDomainsService.setCustomAttributes({
+      applicationDomainId: epSdkApplicationDomainTask_ExecuteReturn.epObject.id,
+      epSdkCustomAttributes: [
+        { 
+          name: CliMigrateManager.EpV2RunIdCustomAttributeDefinition.name,
+          scope: CliMigrateManager.EpV2RunIdCustomAttributeDefinition.scope,
+          valueType: CliMigrateManager.EpV2RunIdCustomAttributeDefinition.valueType,
+          value: CliConfig.getRunId(),
+        }
+      ]
+    });
+    return newApplicationDomain;
+  }
 
   protected get_EpSdk_StateId(cliMigrate_TargetState: ECliMigrate_TargetStates): string {
     return EpSdkStatesService.getEpStateIdByName({ epSdkStateDTOName: cliMigrate_TargetState as unknown as EEpSdkStateDTONames });

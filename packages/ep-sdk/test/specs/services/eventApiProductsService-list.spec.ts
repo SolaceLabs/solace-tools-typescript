@@ -12,6 +12,7 @@ import {
   EventApiProduct,
   CustomAttribute,
   EventApiProductsResponse,
+  CustomAttributeDefinition,
 } from "@solace-labs/ep-openapi-node";
 import {
   EpSdkError,
@@ -42,10 +43,14 @@ let EventApiProductIdList: Array<string> = [];
 const PublishDestinationsAttribute: TEpSdkCustomAttribute = {
   name: `${TestSpecName}.PUB_DEST`,
   value: "ep-developer-portal",
+  valueType: CustomAttributeDefinition.valueType.STRING,
+  scope: CustomAttributeDefinition.scope.ORGANIZATION
 };
 const AnotherAttribute: TEpSdkCustomAttribute = {
   name: `${TestSpecName}.another`,
   value: "another value",
+  valueType: CustomAttributeDefinition.valueType.STRING,
+  scope: CustomAttributeDefinition.scope.ORGANIZATION
 };
 
 const EmptyPublishDestinationAttributesQuery: IEpSdkAttributesQuery = {
@@ -118,7 +123,7 @@ describe(`${scriptName}`, () => {
         if (i % 3 === 0) {
           const eventApiProduct: EventApiProduct = await EpSdkEventApiProductsService.setCustomAttributes({
             eventApiProductId: eventApiProductResponse.data.id,
-            epSdkCustomAttributeList: [
+            epSdkCustomAttributes: [
               PublishDestinationsAttribute,
               AnotherAttribute,
             ],
@@ -132,7 +137,7 @@ describe(`${scriptName}`, () => {
         } else if (i % 3 === 1) {
           const eventApiProduct: EventApiProduct = await EpSdkEventApiProductsService.setCustomAttributes({
             eventApiProductId: eventApiProductResponse.data.id,
-            epSdkCustomAttributeList: [AnotherAttribute],
+            epSdkCustomAttributes: [AnotherAttribute],
           });
         } else {
           // no attributes
