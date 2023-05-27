@@ -1,5 +1,29 @@
 # @solace-labs/ep-sdk
 
+## 0.61.0
+
+### Minor Changes
+
+- 6df469c1: enhancements:
+
+  - added optional labels for enums to enumVersionTask
+  - EpSdkCustomAttributeDefinitionTask:
+    - added applicationDomain scoped custom attribute defintions feature
+      - Note: updating custom attribute definition when applicationDomain scoped does not work, throw error. see source code for more info.
+  - added scope custom attributes to each service class
+  - added method setCustomAttributes to version service classes:
+    - EpSdkEnumVersionsService.ts
+    - EpSdkSchemaVersionsService.ts
+    - EpSdkEventVersionsService.ts
+    - EpSdkApplicationVersionsService.ts
+  - EpSdkEpEventVersionTask:
+    - made schemaVersionId an optional setting, supporting events without a schema
+
+### Patch Changes
+
+- Updated dependencies [12f4520f]
+  - @solace-labs/ep-openapi-node@2.53.1
+
 ## 0.60.0
 
 ### Minor Changes
