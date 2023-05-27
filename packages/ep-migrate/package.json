@@ -38,7 +38,7 @@
     "test": "yarn build:test && . ./test/source.env.sh && nyc mocha --config test/.mocharc.yml test/**/**.spec.ts && unset_source_env",
     "test:x": "yarn build:test && . ./test/source.env.sh && mocha --config test/.mocharc.yml test/**/**.x-spec.ts && unset_source_env",
     "dev:watch": "yarn build --watch",
-    "lint": "eslint .",
+    "lint": "eslint . --max-warnings=0",
     "lint:deprecated": "yarn lint | grep deprecated",
     "start:dev": "ts-node src/cli.ts",
     "start": "yarn build && node dist/cli.js"

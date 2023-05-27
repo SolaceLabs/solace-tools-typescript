@@ -291,6 +291,7 @@ export class CliMigrateManager {
           await this.run_absent();
           break;
         default:
+          /* istanbul ignore next */
           CliUtils.assertNever(logName, this.cliMigrateManagerOptions.cliMigrateManagerRunState);
       }
       CliRunSummary.processedMigration(logName, this.cliMigrateManagerOptions, this.getDurationSecs());

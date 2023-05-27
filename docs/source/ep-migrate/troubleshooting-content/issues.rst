@@ -1,7 +1,7 @@
 .. _ep-migrate-troubleshooting-content-troubleshooting:
 
-Issues
-======
+Investigating Issues
+====================
 
 If the CLI reports issues, you can find the details in the log file.
 

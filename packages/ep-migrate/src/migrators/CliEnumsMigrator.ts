@@ -12,6 +12,7 @@ import {
   EpSdkEnumVersionsService,
 } from "@solace-labs/ep-sdk";
 import {
+  ApplicationDomain,
   TopicAddressEnum, TopicAddressEnumVersion,
 } from "@solace-labs/ep-openapi-node";
 import {
@@ -26,6 +27,9 @@ import {
   ICliEnumRunContext,
   CliMigrateManager,
   CliConfig,
+  ECliRunIssueTypes,
+  CliRunIssues,
+  ICliRunIssueEnum,
 } from "../cli-components";
 import { 
   CliMigrator, 
@@ -120,23 +124,28 @@ export class CliEnumsMigrator extends CliMigrator {
     return newTopicAddressEnumVersion;
   }
 
-  private async migrateEnum({ epV1Enum, epV2ApplicationDomainName, epV2ApplicationDomainId }:{
+  private async migrateEnum({ epV1Enum, epV2ApplicationDomain }:{
     epV1Enum: EpV1Enum;
-    epV2ApplicationDomainName: string;
-    epV2ApplicationDomainId: string;
+    epV2ApplicationDomain: ApplicationDomain;
   }): Promise<void> {
     const funcName = 'migrateEnum';
     const logName = `${CliEnumsMigrator.name}.${funcName}()`;
+    /* istanbul ignore next */
+    if(epV2ApplicationDomain.id === undefined) throw new CliEPApiContentError(logName, "epV2ApplicationDomain.id === undefined", { epV2ApplicationDomain });
     const rctxt: ICliEnumRunContext = {
-      epV2ApplicationDomainName,
-      enumName: epV1Enum.name
+      epV1: {
+        epV1Enum,
+      },
+      epV2: {
+        applicationDomain: epV2ApplicationDomain,        
+      }
     };
     CliRunContext.push(rctxt);
     CliRunSummary.processingEpV1Enum({ enumName: epV1Enum.name });
     // present enum
     const epSdkEnumTask = new EpSdkEnumTask({
       epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
-      applicationDomainId: epV2ApplicationDomainId,
+      applicationDomainId: epV2ApplicationDomain.id,
       enumName: epV1Enum.name,
       enumObjectSettings: {
         shared: true,
@@ -150,7 +159,7 @@ export class CliEnumsMigrator extends CliMigrator {
     // set custom attributes
     epSdkEnumTask_ExecuteReturn.epObject = await this.presentEnumCustomAttributes({ epSdkEnumTask_ExecuteReturn });
     CliLogger.trace(CliLogger.createLogEntry(logName, {code: ECliStatusCodes.PRESENT_EP_V2_ENUM, details: { epSdkEnumTask_ExecuteReturn }}));
-    CliRunSummary.presentEpV2Enum({ applicationDomainName: epV2ApplicationDomainName, epSdkEnumTask_ExecuteReturn });
+    CliRunSummary.presentEpV2Enum({ applicationDomainName: epV2ApplicationDomain.name, epSdkEnumTask_ExecuteReturn });
     // present the enum version
     const enumValues: Array<TEpSdkEnumValue> = epV1Enum.values.map( (epV1Enum: EpV1EnumValue): TEpSdkEnumValue => { 
       if(epV1Enum.value === undefined) throw new CliEPApiContentError(logName,"epV1Enum.value === undefined", { epV1Enum });
@@ -161,7 +170,7 @@ export class CliEnumsMigrator extends CliMigrator {
     });
     const epSdkEnumVersionTask = new EpSdkEnumVersionTask({
       epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
-      applicationDomainId: epV2ApplicationDomainId,
+      applicationDomainId: epV2ApplicationDomain.id,
       enumId: enumObject.id,
       versionString: this.options.cliEnumsMigrateConfig.epV2.versions.initialVersion,
       versionStrategy: this.get_EEpSdk_VersionTaskStrategy(this.options.cliEnumsMigrateConfig.epV2.versions.versionStrategy),
@@ -177,7 +186,7 @@ export class CliEnumsMigrator extends CliMigrator {
     // set custom attributes
     epSdkEnumVersionTask_ExecuteReturn.epObject = await this.presentEnumVersionCustomAttributes({ epSdkEnumVersionTask_ExecuteReturn });
     CliLogger.trace(CliLogger.createLogEntry(logName, {code: ECliStatusCodes.PRESENT_EP_V2_ENUM_VERSION, details: { epSdkEnumVersionTask_ExecuteReturn }}));
-    CliRunSummary.presentEpV2EnumVersion({ applicationDomainName: epV2ApplicationDomainName, epSdkEnumVersionTask_ExecuteReturn });
+    CliRunSummary.presentEpV2EnumVersion({ applicationDomainName: epV2ApplicationDomain.name, epSdkEnumVersionTask_ExecuteReturn });
     this.cliMigratedEnums.push({
       epV1Enum: epV1Enum,
       epV2Enum: {
@@ -223,8 +232,28 @@ export class CliEnumsMigrator extends CliMigrator {
     while (nextPage !== null) {
       const epV1EnumsResponse: EpV1EnumsResponse = await EpV1EnumsService.list8({ pageNumber: nextPage, pageSize: 100 });
       if(epV1EnumsResponse.data && epV1EnumsResponse.data.length > 0) {
-        for(const epV1Enum of epV1EnumsResponse.data) {
-          await this.migrateEnum({ epV1Enum: epV1Enum as EpV1Enum, epV2ApplicationDomainId: epSdkApplicationDomainTask_ExecuteReturn.epObject.id, epV2ApplicationDomainName });
+        for(const epEnum of epV1EnumsResponse.data) {
+          const epV1Enum: EpV1Enum = epEnum as EpV1Enum;
+          try {
+            await this.migrateEnum({ 
+              epV1Enum: epV1Enum as EpV1Enum,
+              epV2ApplicationDomain: epSdkApplicationDomainTask_ExecuteReturn.epObject
+            });
+          } catch(e: any) {
+            const error = CliErrorFactory.createCliError({ logName, error: e} );
+            CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.MIGRATE_ENUMS_ERROR, details: { error }}));
+            // add to issues log  
+            const rctxt: ICliEnumRunContext | undefined = CliRunContext.pop() as ICliEnumRunContext | undefined;
+            const issue: ICliRunIssueEnum = {
+              type: ECliRunIssueTypes.EnumIssue,
+              epV1Id: epV1Enum.id,
+              epV1Enum,
+              cliRunContext: rctxt,
+              cause: error
+            };
+            CliRunIssues.add(issue);
+            CliRunSummary.processingEpV1EnumIssue({ rctxt });
+          }
         }
       } else {
         CliRunSummary.processingEpV1EnumsNoneFound();

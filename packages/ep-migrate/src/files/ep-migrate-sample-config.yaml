@@ -15,7 +15,10 @@ logger:
   logFile: ./logs/ep-migrate.log
   # prettyPrint:
   # - options: true, false
-  # - pretty print JSON in all logs (console/log file)
+  # - true: 
+  #   pretty print JSON in all logs (console/log file)
+  # - false:
+  #   each log entry is on 1 line 
   prettyPrint: true
   # log2Stdout:
   # - options: true, false
@@ -33,6 +36,21 @@ epV2:
   apiUrl: https://api.solace.cloud
   token: ${EP_MIGRATE_CLI_SOLACE_CLOUD_TOKEN_V2}
 migrate:
+  epV1:
+    # applicationDomainNames:
+    # - include:
+    #   list of application domain names included in the migration
+    # - exclude:
+    #   list of application domain names excluded from the migration
+    # Note:
+    #  The CLI will NOT pull through any referenced objects/versions that are not part of a selected 
+    #  Application Domain. An missing reference issue will be created during the run.
+    applicationDomainNames:
+      include: 
+      - "My Domain One"
+      - "My Domain Two"
+      exclude:
+      - "My Domain Three"
   epV2:
     # applicationDomainPrefix:
     # - optional
