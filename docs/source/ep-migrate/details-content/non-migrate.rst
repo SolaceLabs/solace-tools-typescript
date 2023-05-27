@@ -7,6 +7,12 @@ Known Limitations
 
   :ref:`ep-migrate-details-content-transformations`.
 
+Enums
+------
+
+* EP V1 Enums with duplicate labels will not be migrated and an issue will be logged.
+
+  
 Events
 ------
 
