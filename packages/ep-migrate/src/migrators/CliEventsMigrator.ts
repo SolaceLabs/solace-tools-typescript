@@ -289,6 +289,7 @@ export class CliEventsMigrator extends CliMigrator {
             // check if referenced enum has issues
             const ennumIssues: Array<ICliRunIssueEnum> = CliRunIssues.get({ type: ECliRunIssueTypes.EnumIssue, epV1Id: epV1TopicNodeDTO.enumId }) as Array<ICliRunIssueEnum>;
             if(ennumIssues.length > 0) throw new CliMigrateReferenceIssueError(logName, ennumIssues);
+            /* istanbul ignore next */
             else throw new CliMigrateEventReferenceEnumIssueError(logName, { message: "enumId not found in cliMigratedEnums", epV1TopicNodeDTO, cliMigratedEnums: this.options.cliMigratedEnums });     
           }
           /* istanbul ignore next */
