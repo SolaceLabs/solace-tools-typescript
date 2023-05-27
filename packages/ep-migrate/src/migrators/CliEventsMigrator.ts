@@ -34,6 +34,7 @@ import {
   CliMigrateManager,
   CliConfig,
   CliMigrateEpV1IncompatibilityError,
+  ICliRunIssueEnum,
 } from "../cli-components";
 import { 
   CliMigrator, 
@@ -284,7 +285,12 @@ export class CliEventsMigrator extends CliMigrator {
         if(epV1TopicNodeDTO.enumId && !this.epSdkEnumInfoMap.get(epV1TopicNodeDTO.name)) {
           // find the EpV2 record
           const cliMigratedEnum: ICliMigratedEnum | undefined = this.options.cliMigratedEnums.find( cliMigratedEnum => cliMigratedEnum.epV1Enum.id === epV1TopicNodeDTO.enumId );
-          if(cliMigratedEnum === undefined) throw new CliMigrateEventReferenceEnumIssueError(logName, { message: "enumId not found in cliMigratedEnums", epV1TopicNodeDTO, cliMigratedEnums: this.options.cliMigratedEnums });
+          if(cliMigratedEnum === undefined) {
+            // check if referenced enum has issues
+            const ennumIssues: Array<ICliRunIssueEnum> = CliRunIssues.get({ type: ECliRunIssueTypes.EnumIssue, epV1Id: epV1TopicNodeDTO.enumId }) as Array<ICliRunIssueEnum>;
+            if(ennumIssues.length > 0) throw new CliMigrateReferenceIssueError(logName, ennumIssues);
+            else throw new CliMigrateEventReferenceEnumIssueError(logName, { message: "enumId not found in cliMigratedEnums", epV1TopicNodeDTO, cliMigratedEnums: this.options.cliMigratedEnums });     
+          }
           /* istanbul ignore next */
           if (cliMigratedEnum.epV2Enum.topicAddressEnum.id === undefined) throw new CliEPApiContentError(logName,"cliMigratedEnum.epV2Enum.topicAddressEnum.id", { epV2Enum: cliMigratedEnum.epV2Enum });
           /* istanbul ignore next */

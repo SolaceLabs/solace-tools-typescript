@@ -1,2 +1,2 @@
 // Note: changing test data could result in a different number
-export const ExpectedNumberOfIssues = 4;
+export const ExpectedNumberOfIssues = 5;

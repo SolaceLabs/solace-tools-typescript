@@ -331,7 +331,6 @@ export class CliSchemasMigrator extends CliMigrator {
               };
               CliRunIssues.add(issue);
               CliRunSummary.processingEpV1SchemaIssue({ rctxt });
-              CliRunContext.pop();
             }
           }
         } else {

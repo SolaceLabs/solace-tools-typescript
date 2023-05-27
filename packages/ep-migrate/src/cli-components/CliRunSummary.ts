@@ -35,6 +35,7 @@ import {
 import { 
   ECliRunContext_RunMode, 
   ICliApplicationRunContext, 
+  ICliEnumRunContext, 
   ICliEventRunContext, 
   ICliRunAbsentApplicationByRunIdContext, 
   ICliRunAbsentApplicationDomainByRunIdContext, 
@@ -56,6 +57,7 @@ import CliRunIssues, {
   ECliRunIssueTypes, 
   ICliRunIssueAbsentById, 
   ICliRunIssueApplication, 
+  ICliRunIssueEnum, 
   ICliRunIssueEvent, 
   ICliRunIssueSchema 
 } from "./CliRunIssues";
@@ -81,6 +83,7 @@ export enum ECliRunSummary_Type {
   ProcessingEpV1EnumsDone = "ProcessingEpV1EnumsDone",
   ProcessingEpV1EnumsNoneFound = "ProcessingEpV1EnumsNoneFound",
   ProcessingEpV1Enum = "ProcessingEpV1Enum",
+  ProcessingEpV1EnumIssue = "ProcessingEpV1EnumIssue",
   ProcessingEpV2EnumsByIdAbsentStart = "ProcessingEpV2EnumsByIdAbsentStart",
   ProcessingEpV2EnumsByIdAbsentDone = "ProcessingEpV2EnumsByIdAbsentDone",
   ProcessingEpV2EnumsByIdAbsentNoneFound = "ProcessingEpV2EnumsByIdAbsentNoneFound",
@@ -247,6 +250,7 @@ export interface ICliMigrateSummaryAbsent extends ICliRunSummary_LogBase {
 export interface ICliMigrateSummaryIssuesPresent extends ICliRunSummary_LogBase {
   type: ECliRunSummary_Type.MigrateSummaryIssues;
   logFile: string;
+  cliRunEnumIssues: Array<ICliRunIssueEnum>;
   cliRunSchemaIssues: Array<ICliRunIssueSchema>;
   cliRunEventIssues: Array<ICliRunIssueEvent>;
   cliRunApplicationIssues: Array<ICliRunIssueApplication>;
@@ -272,7 +276,7 @@ export interface ICliRunSummary_EpV1_ApplicatonDomain extends ICliRunSummary_EpV
   applicationDomainName: string;
 }
 export interface ICliRunSummary_EpV1_Enum extends ICliRunSummary_EpV1_Object {
-  type: ECliRunSummary_Type.ProcessingEpV1Enum;
+  type: ECliRunSummary_Type.ProcessingEpV1Enum | ECliRunSummary_Type.ProcessingEpV1EnumIssue;
   epV1ObjectType: ECliEpV1Object_Types.EpV1Enum;
   enumName: string;
 }
@@ -1106,6 +1110,21 @@ ${absentApplicationDomainNames.map(x => `
       schemaName: rctxt ? rctxt.epV1.epV1EventSchema.name : 'undefined'
     }
     this.log(ECliSummaryStatusCodes.PROCESSING_EP_V1_SCHEMA_ISSUE, cliRunSummary_EpV1_Schema, consoleOutput);
+  }
+
+  public processingEpV1EnumIssue = ({ rctxt }:{
+    rctxt?: ICliEnumRunContext;
+  }) => {
+    const consoleOutput = `
+      Issue migrating enum. See log for details.
+`;
+    const cliRunSummary_EpV1_Enum: ICliRunSummary_EpV1_Enum = {
+      runMode: this.runMode,
+      type: ECliRunSummary_Type.ProcessingEpV1EnumIssue,
+      epV1ObjectType: ECliEpV1Object_Types.EpV1Enum,
+      enumName: rctxt ? rctxt.epV1.epV1Enum.name : 'undefined'
+    }
+    this.log(ECliSummaryStatusCodes.PROCESSING_EP_V1_ENUM_ISSUE, cliRunSummary_EpV1_Enum, consoleOutput);
   }
 
   public presentEpV2Schema = ({ applicationDomainName, epSdkSchemaTask_ExecuteReturn }: {
@@ -1951,6 +1970,7 @@ Issues for run: ${cliMigrateManagerOptions.cliMigrateManagerRunState}
       type: ECliRunSummary_Type.MigrateSummaryIssues,
       timestamp: Date.now(),
       logFile: logFile ? logFile : "no log file.",
+      cliRunEnumIssues: CliRunIssues.get({ type: ECliRunIssueTypes.EnumIssue }) as Array<ICliRunIssueEnum>,
       cliRunSchemaIssues: CliRunIssues.get({ type: ECliRunIssueTypes.SchemaIssue }) as Array<ICliRunIssueSchema>,
       cliRunEventIssues: CliRunIssues.get({ type: ECliRunIssueTypes.EventIssue }) as Array<ICliRunIssueEvent>,
       cliRunApplicationIssues: CliRunIssues.get({ type: ECliRunIssueTypes.ApplicationIssue }) as Array<ICliRunIssueApplication>,
@@ -1964,6 +1984,10 @@ Issues for run: ${cliMigrateManagerOptions.cliMigrateManagerRunState}
     }}));
     const cliMigrateSummary: ICliMigrateSummaryIssuesPresent = this.createMigrateSummaryIssuesPresent();
 
+    const consoleOutputEnumIssues = cliMigrateSummary.cliRunEnumIssues.map((enumIssue) => {
+      const cliRunContextEnum = enumIssue.cliRunContext as ICliEnumRunContext;
+      return `EpV1: Enum: ${cliRunContextEnum.epV1.epV1Enum.name} (issueId: ${enumIssue.issueId})`
+    });
     const consoleOutputSchemaIssues = cliMigrateSummary.cliRunSchemaIssues.map((schemaIssue) => {
       const cliRunContextSchema = schemaIssue.cliRunContext as ICliSchemaRunContext;
       return `EpV1: Application Domain: ${cliRunContextSchema.epV1.applicationDomain.name}, Schema: ${cliRunContextSchema.epV1.epV1EventSchema.name} (issueId: ${schemaIssue.issueId})`
@@ -1990,6 +2014,13 @@ Issues for run: ${cliMigrateManagerOptions.cliMigrateManagerRunState}
     Issues for run: ${cliMigrateManagerOptions.cliMigrateManagerRunState}
     
       Log file: ${cliMigrateSummary.logFile}  
+      `;      
+    }
+    if(consoleOutputEnumIssues.length > 0) {
+      consoleOutput += `
+      EpV1 Migrate Enum Issues: 
+        ${consoleOutputEnumIssues.map(x => `
+          - ${x}` ).join('')}  
       `;      
     }
     if(consoleOutputSchemaIssues.length > 0) {

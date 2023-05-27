@@ -8,15 +8,20 @@ import {
   EventVersion,
   SchemaObject,
   SchemaVersion,
+  TopicAddressEnum,
+  TopicAddressEnumVersion,
 } from "@solace-labs/ep-openapi-node";
 import { 
   EpV1Application,
   EpV1ApplicationDomain, 
+  EpV1Enum, 
   EpV1Event, 
   EpV1EventSchema,
   EpV1Tag
 } from "../epV1";
-import { ECliMigrateManagerRunState } from "./CliMigrateManager";
+import { 
+  ECliMigrateManagerRunState 
+} from "./CliMigrateManager";
 
 // }
 export enum ECliRunContext_RunMode {
@@ -32,8 +37,15 @@ export interface ICliRunContext {
 export interface ICliEnumsRunContext extends Partial<ICliRunContext> {
   epV2ApplicationDomainName: string;
 }
-export interface ICliEnumRunContext extends ICliEnumsRunContext {
-  enumName: string;
+export interface ICliEnumRunContext extends Partial<ICliRunContext> {
+  epV1: {
+    epV1Enum: EpV1Enum;
+  },
+  epV2: {
+    applicationDomain: ApplicationDomain;
+    topicAddressEnum?: TopicAddressEnum;
+    topicAddressEnumVersion?: TopicAddressEnumVersion;
+  }
 }
 export interface ICliApplicationDomainRunContext extends Partial<ICliRunContext> {
   epV1ApplicationDomainName: string;
