@@ -160,7 +160,7 @@ export class CliApplicationDomainsMigrator extends CliMigrator {
     // get all the application domains and walk the list
     let nextPage: number | null = 1;
     while (nextPage !== null) {
-      const epV1ApplicationDomainsResponse: EpV1ApplicationDomainsResponse = await EpV1ApplicationDomainsService.list12({ pageNumber: nextPage, pageSize: 10 });
+      const epV1ApplicationDomainsResponse: EpV1ApplicationDomainsResponse = await EpV1ApplicationDomainsService.list12({ pageNumber: nextPage, pageSize: 100 });
       if(epV1ApplicationDomainsResponse.data && epV1ApplicationDomainsResponse.data.length > 0) {
         for(const applicationDomain of epV1ApplicationDomainsResponse.data) {
           const epV1ApplicationDomain: EpV1ApplicationDomain = applicationDomain as EpV1ApplicationDomain;
@@ -186,12 +186,14 @@ export class CliApplicationDomainsMigrator extends CliMigrator {
           if(doInclude) await this.migrateApplicationDomain({ epV1ApplicationDomain: epV1ApplicationDomain as EpV1ApplicationDomain });          
         }
       } else {
+        /* istanbul ignore next */
         CliRunSummary.processingEpV1ApplicationDomainsNoneFound();
       }
       if(epV1ApplicationDomainsResponse.meta) {
         const apiMeta = epV1ApplicationDomainsResponse.meta as EpV1ApiMeta;
         nextPage = apiMeta.pagination.nextPage;
       } else {
+        /* istanbul ignore next */
         nextPage = null;
       }
     }
@@ -213,6 +215,7 @@ export class CliApplicationDomainsMigrator extends CliMigrator {
     };
     try {
       cliApplicationDomainsMigratorRunReturn.cliApplicationDomainsMigratorRunMigrateReturn = await this.run_migrate();
+      /* istanbul ignore next */
       CliLogger.debug(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.MIGRATE_APPLICATION_DOMAINS_DONE, details: { cliApplicationDomainsMigratorRunMigrateReturn: cliApplicationDomainsMigratorRunReturn.cliApplicationDomainsMigratorRunMigrateReturn }}));
     } catch (e: any) {
       cliApplicationDomainsMigratorRunReturn.error = CliErrorFactory.createCliError({logName: logName, error: e });

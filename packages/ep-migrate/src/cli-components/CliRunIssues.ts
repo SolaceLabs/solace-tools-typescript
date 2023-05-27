@@ -1,5 +1,6 @@
 import { 
   EpV1Application,
+  EpV1Enum,
   EpV1Event,
   EpV1EventSchema 
 } from "../epV1";
@@ -25,6 +26,11 @@ export interface ICliRunIssue {
 }
 export interface ICliRunPresentIssue extends ICliRunIssue {
   epV1Id: string;
+}
+
+export interface ICliRunIssueEnum extends ICliRunPresentIssue {
+  type: ECliRunIssueTypes.EnumIssue;
+  epV1Enum: EpV1Enum;
 }
 
 export interface ICliRunIssueSchema extends ICliRunPresentIssue {

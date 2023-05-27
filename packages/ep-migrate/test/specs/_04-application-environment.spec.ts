@@ -77,7 +77,7 @@ const getMessagingServiceId = async({ environmentName, eventMeshName, eventBroke
 
 describe(`${scriptName}`, () => {
 
-  const applicationDomainNames: string[] = ['Acme Rideshare'];
+  const applicationDomainNames: string[] = ['EP_MIGRATE/TEST'];
 
   const environmentName: string = 'TEST_EP_MIGRATE/epV1';
   const eventMeshName: string = 'TEST_EP_MIGRATE/epV1';
