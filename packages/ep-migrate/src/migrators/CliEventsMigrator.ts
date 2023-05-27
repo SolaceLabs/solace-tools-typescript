@@ -57,7 +57,7 @@ import {
   ICliMigratedApplicationDomain, 
   ICliMigratedEnum, 
   ICliMigratedEvent, 
-  ICliMigratedSchema
+  ICliMigratedSchema,
 } from "./types";
 
 export interface ICliEventsMigrateConfig {
