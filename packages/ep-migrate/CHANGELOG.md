@@ -1,5 +1,23 @@
 # @solace-labs/ep-migrate
 
+## 0.4.0
+
+### Minor Changes
+
+- cba97754: bug fixes & enhancements
+
+  **enums**
+
+  - added error handling to create enum issue
+
+  **events**
+
+  - added enum issue as the cause for event issue
+
+  **test**
+
+  - reduced test time: selected domains only
+
 ## 0.3.0
 
 ### Minor Changes
