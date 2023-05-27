@@ -1,7 +1,7 @@
 .. _ep-migrate-overview-content-undo:
 
 
-Undo a migration
+Undo a Migration
 ================
 
 The CLI supports two modes for deleting all migrated objects from EP V2.
@@ -13,7 +13,7 @@ If an `applicationDomainPrefix` was configured for the migration, the CLI will d
 
 
 By `runId`
----------
+----------
 
 The CLI also allows you to undo the migration for a specific `runId`.
 
