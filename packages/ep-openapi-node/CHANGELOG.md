@@ -1,5 +1,11 @@
 # @solace-labs/ep-openapi-node
 
+## 2.53.1
+
+### Patch Changes
+
+- 12f4520f: added tests for custom attribute definitions
+
 ## 2.53.0
 
 ### Minor Changes
