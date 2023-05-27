@@ -17,7 +17,6 @@ epV2:
   token: ${EP_MIGRATE_CLI_SOLACE_CLOUD_TOKEN_V2}
 migrate:
   epV1:
-    # # NOTE: switch off for real tests
     # applicationDomainNames:
     #   include: 
     #   - 'Acme Rideshare'

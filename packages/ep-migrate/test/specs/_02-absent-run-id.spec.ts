@@ -23,6 +23,7 @@ import {
   ECliMigrateManagerRunState,
   ICliMigrateSummaryPresent,
 } from '../../src/cli-components';
+import { ExpectedNumberOfIssues } from './constants';
 
 
 const scriptName: string = path.basename(__filename);
@@ -62,14 +63,7 @@ describe(`${scriptName}`, () => {
       const cliMigrateManager = new CliMigrateManager(CliConfig.getCliMigrateManagerOptions());
       await cliMigrateManager.run();
       CliMigrateSummaryPresent = CliRunSummary.createMigrateSummaryPresent(ECliMigrateManagerMode.RELEASE_MODE, 100);
-
-      // NOTE: set to zero once all issues are resolved
-      // expect(cliRunIssues.length, message).to.equal(0);
-
-      // interim 
-
-      TestService.testRunIssues(11);
-
+      TestService.testRunIssues(ExpectedNumberOfIssues);
     } catch(e) {
       expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
       expect(false, TestLogger.createTestFailMessageWithCliError('failed', e)).to.be.true;
@@ -82,7 +76,7 @@ describe(`${scriptName}`, () => {
       CliConfig.getCliMigrateManagerOptions().absentRunId = PresentRunId;
       const cliMigrateManager = new CliMigrateManager(CliConfig.getCliMigrateManagerOptions());
       await cliMigrateManager.run();
-      TestService.testRunIssues();
+      TestService.testRunIssues(0);
     } catch(e) {
       expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
       expect(false, TestLogger.createTestFailMessageWithCliError('failed', e)).to.be.true;

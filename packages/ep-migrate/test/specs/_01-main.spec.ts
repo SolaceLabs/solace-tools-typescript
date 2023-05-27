@@ -18,11 +18,11 @@ import {
   ICliMigrateSummaryAbsent,
   ICliMigrateSummaryPresent
 } from '../../src/cli-components';
+import { ExpectedNumberOfIssues } from './constants';
 
 
 const scriptName: string = path.basename(__filename);
 TestLogger.logMessage(scriptName, ">>> starting ...");
-
 
 let CliMigrateSummaryPresent: ICliMigrateSummaryPresent | undefined = undefined;
 
@@ -53,12 +53,7 @@ describe(`${scriptName}`, () => {
       const cliMigrateManager = new CliMigrateManager(CliConfig.getCliMigrateManagerOptions());
       await cliMigrateManager.run();
       CliMigrateSummaryPresent = CliRunSummary.createMigrateSummaryPresent(ECliMigrateManagerMode.RELEASE_MODE, 100);
-
-      // NOTE: set to zero once all issues are resolved
-      // expect(cliRunIssues.length, message).to.equal(0);
-      // interim 
-      TestService.testRunIssues(11);
-
+      TestService.testRunIssues(ExpectedNumberOfIssues);
     } catch(e) {
       expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
       expect(false, TestLogger.createTestFailMessageWithCliError('failed', e)).to.be.true;
@@ -76,7 +71,8 @@ describe(`${scriptName}`, () => {
       expect(cliMigrateSummaryPresent.createdNewEpV2EnumVersions, TestLogger.createLogMessage('createdNewEpV2EnumVersions', cliMigrateSummaryPresent)).to.equal(0);      
       expect(cliMigrateSummaryPresent.createdFirstEpV2EnumVersions, TestLogger.createLogMessage('createdFirstEpV2EnumVersions', cliMigrateSummaryPresent)).to.equal(0);      
       expect(cliMigrateSummaryPresent.createdNewEpV2SchemaVersions, TestLogger.createLogMessage('createdNewEpV2SchemaVersions', cliMigrateSummaryPresent)).to.equal(0);      
-      expect(cliMigrateSummaryPresent.createdFirstEpV2SchemaVersions, TestLogger.createLogMessage('createdFirstEpV2SchemaVersions', cliMigrateSummaryPresent)).to.equal(0);      
+      expect(cliMigrateSummaryPresent.createdFirstEpV2SchemaVersions, TestLogger.createLogMessage('createdFirstEpV2SchemaVersions', cliMigrateSummaryPresent)).to.equal(0);
+      TestService.testRunIssues(ExpectedNumberOfIssues);  
     } catch(e) {
       expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
       expect(false, TestLogger.createTestFailMessageWithCliError('failed', e)).to.be.true;
@@ -93,6 +89,7 @@ describe(`${scriptName}`, () => {
         cliMigrateSummaryAbsent,
         CliMigrateSummaryPresent
       })).to.equal(CliMigrateSummaryPresent.createdEpV2ApplicationDomains + CliMigrateSummaryPresent.createdEpV2EnumApplicationDomains);
+      TestService.testRunIssues(0);
     } catch(e) {
       expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
       expect(false, TestLogger.createTestFailMessageWithCliError('failed', e)).to.be.true;
@@ -109,6 +106,7 @@ describe(`${scriptName}`, () => {
         cliMigrateSummaryAbsent,
         CliMigrateSummaryPresent
       })).to.equal(0);
+      TestService.testRunIssues(0);
     } catch(e) {
       expect(e instanceof CliError, TestLogger.createNotCliErrorMesssage(e.message)).to.be.true;
       expect(false, TestLogger.createTestFailMessageWithCliError('failed', e)).to.be.true;
