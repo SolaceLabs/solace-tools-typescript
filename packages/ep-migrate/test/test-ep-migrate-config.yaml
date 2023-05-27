@@ -17,11 +17,12 @@ epV2:
   token: ${EP_MIGRATE_CLI_SOLACE_CLOUD_TOKEN_V2}
 migrate:
   epV1:
-    # # NOTE: switch off for real tests
     # applicationDomainNames:
     #   include: 
-    #   - "EP_MIGRATE/TEST"
-    #   exclude:
+    #   - 'Acme Rideshare'
+    #   - 'default'
+    #   - 'EP_MIGRATE/TEST'
+    # #   exclude:
     #   - "EP_MIGRATE/exclude"
   epV2:
     applicationDomainPrefix: 'TEST_EP_MIGRATE/epV1/'

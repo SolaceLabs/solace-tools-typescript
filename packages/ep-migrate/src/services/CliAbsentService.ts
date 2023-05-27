@@ -37,6 +37,7 @@ import {
 } from "@solace-labs/ep-openapi-node";
 import { 
   CliEPApiContentError,
+  CliErrorFactory,
   CliInternalCodeInconsistencyError, 
   CliLogger, 
   CliMigrateManager, 
@@ -212,17 +213,15 @@ class CliAbsentService {
         CliRunSummary.processingEpV2ApplicationDomainAbsentDone({ runId, rctxt });
 
       } catch(e: any) {
-        CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.ABSENT_BY_ID_APPLICATION_DOMAINS_ERROR, details: { error: e }}));
+        const error = CliErrorFactory.createCliError({ logName, error: e} );        
+        CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.ABSENT_BY_ID_APPLICATION_DOMAINS_ERROR, details: { error }}));
         // add to issues log  
         const rctxt: ICliRunAbsentApplicationDomainByRunIdContext | undefined = CliRunContext.pop() as ICliRunAbsentApplicationDomainByRunIdContext | undefined;
         const issue: ICliRunIssueAbsentById = {
           type: ECliRunIssueTypes.ApplicationDomainIssue,
           runId,
           cliRunContext: rctxt,
-          cause: {
-            message: e.message,
-            error: e
-          }
+          cause: error
         };
         CliRunIssues.add(issue);
         CliRunSummary.processingEpV2ApplicationDomainAbsentIssue({ issue });    
@@ -292,17 +291,15 @@ class CliAbsentService {
         CliRunSummary.processingEpV2ApplicationAbsentDone({ runId, rctxt });
 
       } catch(e: any) {
-        CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.ABSENT_BY_ID_APPLICATIONS_ERROR, details: { error: e }}));
+        const error = CliErrorFactory.createCliError({ logName, error: e} );
+        CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.ABSENT_BY_ID_APPLICATIONS_ERROR, details: { error }}));
         // add to issues log  
         const rctxt: ICliRunAbsentApplicationByRunIdContext | undefined = CliRunContext.pop() as ICliRunAbsentApplicationByRunIdContext | undefined;
         const issue: ICliRunIssueAbsentById = {
           type: ECliRunIssueTypes.ApplicationIssue,
           runId,
           cliRunContext: rctxt,
-          cause: {
-            message: e.message,
-            error: e
-          }
+          cause: error
         };
         CliRunIssues.add(issue);
         CliRunSummary.processingEpV2ApplicationAbsentIssue({ issue });    
@@ -372,17 +369,15 @@ class CliAbsentService {
         CliRunSummary.processingEpV2EventAbsentDone({ runId, rctxt });
 
       } catch(e: any) {
-        CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.ABSENT_BY_ID_EVENTS_ERROR, details: { error: e }}));
+        const error = CliErrorFactory.createCliError({ logName, error: e} );
+        CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.ABSENT_BY_ID_EVENTS_ERROR, details: { error }}));
         // add to issues log  
         const rctxt: ICliRunAbsentEventByRunIdContext | undefined = CliRunContext.pop() as ICliRunAbsentEventByRunIdContext | undefined;
         const issue: ICliRunIssueAbsentById = {
           type: ECliRunIssueTypes.EventIssue,
           runId,
           cliRunContext: rctxt,
-          cause: {
-            message: e.message,
-            error: e
-          }
+          cause: error
         };
         CliRunIssues.add(issue);
         CliRunSummary.processingEpV2EventAbsentIssue({ issue });    
@@ -452,17 +447,15 @@ class CliAbsentService {
         CliRunSummary.processingEpV2SchemaAbsentDone({ runId, rctxt });
 
       } catch(e: any) {
-        CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.ABSENT_BY_ID_SCHEMAS_ERROR, details: { error: e }}));
+        const error = CliErrorFactory.createCliError({ logName, error: e} );
+        CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.ABSENT_BY_ID_SCHEMAS_ERROR, details: { error }}));
         // add to issues log  
         const rctxt: ICliRunAbsentSchemaByRunIdContext | undefined = CliRunContext.pop() as ICliRunAbsentSchemaByRunIdContext | undefined;
         const issue: ICliRunIssueAbsentById = {
           type: ECliRunIssueTypes.SchemaIssue,
           runId,
           cliRunContext: rctxt,
-          cause: {
-            message: e.message,
-            error: e
-          }
+          cause: error
         };
         CliRunIssues.add(issue);
         CliRunSummary.processingEpV2SchemaAbsentIssue({ issue });    
@@ -535,17 +528,15 @@ class CliAbsentService {
         CliRunSummary.processingEpV2EnumAbsentDone({ runId, rctxt });
 
       } catch(e: any) {
-        CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.ABSENT_BY_ID_EVENTS_ERROR, details: { error: e }}));
+        const error = CliErrorFactory.createCliError({ logName, error: e} );
+        CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.ABSENT_BY_ID_EVENTS_ERROR, details: { error }}));
         // add to issues log  
         const rctxt: ICliRunAbsentEnumByRunIdContext | undefined = CliRunContext.pop() as ICliRunAbsentEnumByRunIdContext | undefined;
         const issue: ICliRunIssueAbsentById = {
           type: ECliRunIssueTypes.EnumIssue,
           runId,
           cliRunContext: rctxt,
-          cause: {
-            message: e.message,
-            error: e
-          }
+          cause: error
         };
         CliRunIssues.add(issue);
         CliRunSummary.processingEpV2EnumAbsentIssue({ issue });    

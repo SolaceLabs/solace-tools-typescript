@@ -7,6 +7,8 @@ import {
   EpSdkSchemasService,
   EEpSdkTask_Action,
   EpSdkSchemaVersionsService,
+  EEpSdkSchemaContentType,
+  EEpSdkSchemaType,
 } from "@solace-labs/ep-sdk";
 import {
   SchemaObject, SchemaVersion,
@@ -26,6 +28,8 @@ import {
   CliEPMigrateTagsError,
   CliMigrateManager,
   CliConfig,
+  CliUtils,
+  CliInternalCodeInconsistencyError,
 } from "../cli-components";
 import { 
   CliMigrator, 
@@ -47,6 +51,7 @@ import {
   ICliMigratedApplicationDomain, 
   ICliMigratedSchema
 } from "./types";
+import { EventSchema } from "@solace-labs/ep-v1-openapi-node";
 
 
 export interface ICliSchemasMigrateConfig {
@@ -160,6 +165,58 @@ export class CliSchemasMigrator extends CliMigrator {
     }
   } 
 
+  private transformEpV2SchemaType({ epV1ContentType }:{
+    epV1ContentType: EventSchema.contentType;
+  }): EEpSdkSchemaType {
+    const funcName = 'transformEpV2SchemaType';
+    const logName = `${CliSchemasMigrator.name}.${funcName}()`;
+    switch(epV1ContentType) {
+      case EventSchema.contentType.JSON:
+        return EEpSdkSchemaType.JSON_SCHEMA;
+      case EventSchema.contentType.AVRO:
+        return EEpSdkSchemaType.AVRO;
+      case EventSchema.contentType.XML:
+        return EEpSdkSchemaType.XSD;
+      case EventSchema.contentType.TEXT:
+      case EventSchema.contentType.BINARY:
+        return EEpSdkSchemaType.PROTOBUF;
+        // throw new CliMigrateEpV1IncompatibilityError(logName, {
+        //   message: "Unable to map epV1ContentType to EpV2 Schema Type for Schema. This Schema cannot be migrated.",
+        //   epV1ContentType,
+        // });
+      default:
+        CliUtils.assertNever(logName, epV1ContentType);
+    }
+    throw new CliInternalCodeInconsistencyError(logName, "should never get here");
+  }
+
+  private transformEpV2ContentType({ epV1ContentType }:{
+    epV1ContentType: EventSchema.contentType;
+  }): EEpSdkSchemaContentType {
+    const funcName = 'transformEpV2ContentType';
+    const logName = `${CliSchemasMigrator.name}.${funcName}()`;
+    switch(epV1ContentType) {
+      case EventSchema.contentType.JSON:
+      case EventSchema.contentType.AVRO:
+        return EEpSdkSchemaContentType.APPLICATION_JSON;
+      case EventSchema.contentType.XML:
+        return EEpSdkSchemaContentType.APPLICATION_XML;
+      case EventSchema.contentType.TEXT:
+      case EventSchema.contentType.BINARY:
+        return EEpSdkSchemaContentType.APPLICATION_PROTOBUF;
+      // case EventSchema.contentType.TEXT:
+      // case EventSchema.contentType.BINARY:
+      //   throw new CliMigrateEpV1IncompatibilityError(logName, {
+      //     message: "Unable to map epV1ContentType to EpV2 Schema Type for Schema. This Schema cannot be migrated.",
+      //     epV1ContentType,
+      //   });
+      default:
+        CliUtils.assertNever(logName, epV1ContentType);
+    }
+    throw new CliInternalCodeInconsistencyError(logName, "should never get here");  
+  }
+
+
   private async migrateSchema({ cliMigratedApplicationDomain, epV1EventSchema, epV1Tags }:{
     cliMigratedApplicationDomain: ICliMigratedApplicationDomain;
     epV1EventSchema: EpV1EventSchema;
@@ -189,7 +246,8 @@ export class CliSchemasMigrator extends CliMigrator {
       schemaName: epV1EventSchema.name,
       schemaObjectSettings: {
         shared: epV1EventSchema.shared,
-        contentType: epV1EventSchema.contentType.toLowerCase()
+        schemaType: this.transformEpV2SchemaType({ epV1ContentType: epV1EventSchema.contentType}),
+        contentType: this.transformEpV2ContentType({ epV1ContentType: epV1EventSchema.contentType}),
       },
       epSdkTask_TransactionConfig: this.get_IEpSdkTask_TransactionConfig(),
     });
@@ -258,7 +316,8 @@ export class CliSchemasMigrator extends CliMigrator {
                 epV1Tags: await this.getTags({id: epV1EventSchema.id })
               });   
             } catch(e: any) {
-              CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.MIGRATE_SCHEMAS_ERROR, details: { error: e }}));
+              const error = CliErrorFactory.createCliError({ logName, error: e} );
+              CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.MIGRATE_SCHEMAS_ERROR, details: { error }}));
               // add to issues log  
               const rctxt: ICliSchemaRunContext | undefined = CliRunContext.pop() as ICliSchemaRunContext | undefined;
               const issue: ICliRunIssueSchema = {
@@ -266,7 +325,7 @@ export class CliSchemasMigrator extends CliMigrator {
                 epV1Id: epV1EventSchema.id,
                 epV1EventSchema,
                 cliRunContext: rctxt,
-                cause: e
+                cause: error
               };
               CliRunIssues.add(issue);
               CliRunSummary.processingEpV1SchemaIssue({ rctxt });

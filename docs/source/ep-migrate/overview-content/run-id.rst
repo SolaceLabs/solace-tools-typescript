@@ -7,7 +7,7 @@ The CLI leave a `breadcrumb` in each created object/version in EP V2 in the form
 
   - `ep-migrate-run-id={runId}`
 
-A new `runId` is generated for every run, is based on the formatted timestamp:
+A new `runId` is generated for every run and is based on the formatted timestamp:
 
   - `YYYY_MM_DD_HH_MM_SS_MMM`, e.g. `2023_05_25_10_26_40_290`
 

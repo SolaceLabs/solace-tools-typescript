@@ -4,6 +4,7 @@ import {
 import { 
   EEpSdkTask_Action,
   EEpSdkTask_TargetState, 
+  EpSdkBrokerTypes, 
   EpSdkEpEventTask, 
   EpSdkEpEventVersionTask, 
   EpSdkEpEventVersionsService, 
@@ -32,6 +33,7 @@ import {
   CliMigrateEventReferenceEnumIssueError,
   CliMigrateManager,
   CliConfig,
+  CliMigrateEpV1IncompatibilityError,
 } from "../cli-components";
 import { 
   CliMigrator, 
@@ -79,6 +81,8 @@ export class CliEventsMigrator extends CliMigrator {
   protected options: ICliEventsMigratorOptions;
   private epSdkEnumInfoMap: Map<string, IEpSdkEpEventVersionTask_EnumInfo> = new Map<string, IEpSdkEpEventVersionTask_EnumInfo>();
   private cliMigratedEvents: Array<ICliMigratedEvent> = [];
+  private epV2TopicDelimiter = '/';
+
 
   constructor(options: ICliEventsMigratorOptions, runMode: ECliRunContext_RunMode) {
     super(options, runMode);
@@ -172,11 +176,24 @@ export class CliEventsMigrator extends CliMigrator {
   } 
 
   private transformTopicElement(topicElement: string): string {
-    return topicElement.replaceAll('-', '_');
+    return topicElement.replaceAll(/[^A-Za-z_0-9{}]/g, '_');
   }
 
-  private transformTopicString(topicString: string): string {
-    return this.transformTopicElement(topicString);
+  private transformTopicString({ epV1TopicName, epV1TopicNodeDTOs }:{
+    epV1TopicNodeDTOs?: Array<EpV1TopicNodeDTO>;
+    epV1TopicName: string
+  }): string {
+    if(epV1TopicNodeDTOs && epV1TopicNodeDTOs.length > 0) {
+      let epV2TopicString = "";
+      for(const epV1TopicNodeDTO of epV1TopicNodeDTOs) {
+        if(epV1TopicNodeDTO.name) {
+          if(epV2TopicString !== "") epV2TopicString += this.epV2TopicDelimiter;
+          epV2TopicString += `${this.transformTopicElement(epV1TopicNodeDTO.name)}`;
+        }
+      }
+      return epV2TopicString;
+    }
+    return this.transformTopicElement(epV1TopicName);
   }
 
   private async migrateEvent({ cliMigratedApplicationDomain, epV1Event, epV1Tags }:{
@@ -200,13 +217,23 @@ export class CliEventsMigrator extends CliMigrator {
     };
     CliRunContext.push(rctxt);
     CliRunSummary.processingEpV1Event({ eventName: epV1Event.name });
-
+    // don't migrate events without a topic
+    if(!epV1Event.topicAddress) throw new CliMigrateEpV1IncompatibilityError(logName, {
+      message: "cannot migrate EpV1 Event without a topic",
+    });
+    // // DEBUG
+    // if(!epV1Event.schemaId || !epV1Event.schemaVersionId) {
+    //   console.log(`>>>>> ${logName}: !epV1Event.schemaId || !epV1Event.schemaVersionId, ${JSON.stringify({
+    //     schemaId: JSON.stringify(epV1Event.schemaId),
+    //     schemaVersionId: JSON.stringify(epV1Event.schemaVersionId)
+    //   }, null, 2)}`);
+    // }
     // check if referenced schema has issues
     const schemaIssues: Array<ICliRunIssueSchema> = CliRunIssues.get({ type: ECliRunIssueTypes.SchemaIssue, epV1Id: epV1Event.schemaId }) as Array<ICliRunIssueSchema>;
     if(schemaIssues.length > 0) throw new CliMigrateReferenceIssueError(logName, schemaIssues);
     // get the referenced schema info
     const cliMigratedSchema: ICliMigratedSchema | undefined = this.options.cliMigratedSchemas.find( x => x.epV1Schema.id === epV1Event.schemaId);
-    if(cliMigratedSchema === undefined) throw new CliInternalCodeInconsistencyError(logName, { message: 'unable to find referenced schema for event', epV1Event });
+    if(cliMigratedSchema === undefined && epV1Event.schemaId) throw new CliInternalCodeInconsistencyError(logName, { message: 'unable to find referenced schema for event', epV1Event });
     // // DEBUG
     // const _epV1TopicName = epV1Event.topicName;
     // const _epV1TopicAddress: EpV1TopicAddress = epV1Event.topicAddress;
@@ -234,6 +261,7 @@ export class CliEventsMigrator extends CliMigrator {
       eventName: epV1Event.name,
       eventObjectSettings: {
         shared: epV1Event.shared,
+        brokerType: epV1Event.brokerType as unknown as EpSdkBrokerTypes,
       },
       epSdkTask_TransactionConfig: this.get_IEpSdkTask_TransactionConfig(),
     });
@@ -248,7 +276,7 @@ export class CliEventsMigrator extends CliMigrator {
     CliRunSummary.presentEpV2Event({ applicationDomainName: cliMigratedApplicationDomain.epV2ApplicationDomain.name, epSdkEpEventTask_ExecuteReturn });
     // present the event version
     // add all the topic address variables with enumId to the enum info map
-    const epV1TopicNodeDTOs: Array<EpV1TopicNodeDTO> | undefined = epV1Event.topicAddress.topicAddressLevels;
+    const epV1TopicNodeDTOs: Array<EpV1TopicNodeDTO> | undefined = epV1Event.topicAddress ? epV1Event.topicAddress.topicAddressLevels : undefined;
     if(epV1TopicNodeDTOs && epV1TopicNodeDTOs.length > 0) {
       for(const epV1TopicNodeDTO of epV1TopicNodeDTOs) {
         /* istanbul ignore next */
@@ -272,22 +300,20 @@ export class CliEventsMigrator extends CliMigrator {
         }
       }
     }
-    // transform topic string
-    const topicString = this.transformTopicString(epV1Event.topicName);
     /* istanbul ignore next */
-    if(cliMigratedSchema.epV2Schema.schemaVersion.id === undefined) throw new CliEPApiContentError(logName,"cliMigratedSchema.epV2Schema.schemaVersion.id", { schemaVersion: cliMigratedSchema.epV2Schema.schemaVersion });
+    if(cliMigratedSchema && cliMigratedSchema.epV2Schema.schemaVersion.id === undefined) throw new CliEPApiContentError(logName,"cliMigratedSchema.epV2Schema.schemaVersion.id", { schemaVersion: cliMigratedSchema.epV2Schema.schemaVersion });
     const epSdkEpEventVersionTask = new EpSdkEpEventVersionTask({
       epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
       applicationDomainId: cliMigratedApplicationDomain.epV2ApplicationDomain.id,
       eventId: epSdkEvent.id,
       versionString: this.options.cliEventsMigrateConfig.epV2.versions.initialVersion,
       versionStrategy: this.get_EEpSdk_VersionTaskStrategy(this.options.cliEventsMigrateConfig.epV2.versions.versionStrategy),
-      topicString,
-      topicDelimiter: '/',
+      topicString: this.transformTopicString({ epV1TopicName: epV1Event.topicName, epV1TopicNodeDTOs } ),
+      topicDelimiter: this.epV2TopicDelimiter,
       enumInfoMap: this.epSdkEnumInfoMap,
       eventVersionSettings: {
         description: epV1Event.description,
-        schemaVersionId: cliMigratedSchema.epV2Schema.schemaVersion.id,
+        schemaVersionId: cliMigratedSchema ? cliMigratedSchema.epV2Schema.schemaVersion.id : undefined,
         stateId: this.get_EpSdk_StateId(this.options.cliEventsMigrateConfig.epV2.versions.state),
       },
       epSdkTask_TransactionConfig: this.get_IEpSdkTask_TransactionConfig(),
@@ -332,7 +358,8 @@ export class CliEventsMigrator extends CliMigrator {
                 epV1Tags: await this.getTags({id: epV1Event.id })
                });   
             } catch(e: any) {
-              CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.MIGRATE_EVENTS_ERROR, details: { error: e }}));
+              const error = CliErrorFactory.createCliError({ logName, error: e} );
+              CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.MIGRATE_EVENTS_ERROR, details: { error }}));
               // add to issues log  
               const rctxt: ICliEventRunContext | undefined = CliRunContext.pop() as ICliEventRunContext| undefined;
               const issue: ICliRunIssueEvent = {
@@ -340,7 +367,7 @@ export class CliEventsMigrator extends CliMigrator {
                 epV1Id: epV1Event.id,
                 epV1Event,
                 cliRunContext: rctxt,
-                cause: e
+                cause: error
               };
               CliRunIssues.add(issue);
               CliRunSummary.processingEpV1EventIssue({ rctxt });        

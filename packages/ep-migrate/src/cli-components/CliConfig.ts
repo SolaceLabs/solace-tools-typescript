@@ -3,6 +3,19 @@ import {
 } from 'commander';
 import jwt_decode from "jwt-decode";
 import { 
+  EpSdkEnvironmentsService, 
+  EpSdkMessagingService 
+} from '@solace-labs/ep-sdk';
+import { 
+  Environment, 
+  EventMesh, 
+  EventMeshesResponse, 
+  MessagingService 
+} from '@solace-labs/ep-openapi-node';
+import { 
+  EventMeshesService 
+} from '@solace-labs/ep-rt-openapi-node';
+import { 
   ValidationError, 
   Validator, 
   ValidatorResult 
@@ -46,9 +59,6 @@ import {
   ICliEventsMigrateConfig,
   ICliSchemasMigrateConfig
 } from '../migrators';
-import { EpSdkEnvironmentsService, EpSdkMessagingService } from '@solace-labs/ep-sdk';
-import { Environment, EventMesh, EventMeshesResponse, MessagingService } from '@solace-labs/ep-openapi-node';
-import { EventMeshesService } from '@solace-labs/ep-rt-openapi-node';
 
 const DEFAULT_CLI_LOGGER_LOG_LEVEL = ECliLogger_LogLevel.INFO;
 // const DEFAULT_CLI_LOGGER_LOG_FILE = `./tmp/logs/${DefaultAppName}.log`;
@@ -81,6 +91,7 @@ export interface ICliConfigFile {
     prettyPrint: boolean;
     log2Stdout: boolean;
     epSdkLogLevel: TCliLogger_EpSdkLogLevel;
+    logSummary2Console: boolean;
   },
   epV1: ICliConfigFileEpConfig;
   epV2: ICliConfigFileEpConfig;
@@ -207,7 +218,7 @@ class CliConfig {
         level: configFileContents.logger.logLevel as ECliLogger_LogLevel,
         prettyPrint: configFileContents.logger.prettyPrint,
         log2Stdout: configFileContents.logger.log2Stdout,
-        logSummary2Console: true,
+        logSummary2Console: configFileContents.logger.logSummary2Console,
         logFile: CliUtils.ensureDirOfFilePathExists(configFileContents.logger.logFile),
         cliLogger_EpSdkLogLevel: configFileContents.logger.epSdkLogLevel
       },
@@ -321,7 +332,8 @@ class CliConfig {
         });
       }
       const messagingServices: MessagingService[] = await EpSdkMessagingService.listAll({});
-      const messagingService = messagingServices.find( x => x.name === eventBrokerName && x.eventMeshId === eventMesh!.id);
+      const eventMeshId = eventMesh.id;
+      const messagingService = messagingServices.find( x => x.name === eventBrokerName && x.eventMeshId === eventMeshId);
       if(messagingService === undefined) {
         throw new CliConfigInvalidConfigError(logName, {
           message: 'Ep V2 event broker for applications not found',
