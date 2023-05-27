@@ -64,7 +64,11 @@
 <li class="toctree-l4"><a class="reference internal" href="#configuration-file">Configuration File</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#run-test-migration">Run Test Migration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#run-test-migration">Run Test Migration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#fixing-issues-during-tests">Fixing Issues during Tests</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#undo-test-migration">Undo Test Migration</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#run-migration">Run Migration</a></li>
 </ul>
 </li>
@@ -149,15 +153,43 @@ and rename it to <cite>ep-migrate-config.yaml</cite>.</p>
 </pre></div>
 </div>
 </div></blockquote>
+<p>For a test run it is also recommended to use the following <cite>logger</cite> settings, as they help with issue investigation and readability of the log file:</p>
+<blockquote>
+<div><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">logger</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">logSummary2Console</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">logLevel</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">info</span>
+<span class="w">  </span><span class="nt">prettyPrint</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</pre></div>
+</div>
+</div></blockquote>
 <p>Run the test migration:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ep-migrate
 </pre></div>
 </div>
 <p>Inspect the console output for details and any issues.</p>
 <p>The details of the run are logged into the configured log file, for example <cite>./logs/ep-migrate.log</cite>.</p>
+<div class="section" id="fixing-issues-during-tests">
+<h2>Fixing Issues during Tests<a class="headerlink" href="#fixing-issues-during-tests" title="Permalink to this heading"></a></h2>
+<p>At the end of the migration run, the encountered issues are logged to the console with their <cite>issueId</cite>.</p>
+<p>To see the details of each issue:</p>
+<ul class="simple">
+<li><p>copy the <cite>issueId</cite></p></li>
+<li><p>search for the <cite>issueId</cite> in the log file</p></li>
+</ul>
+<p>Once you have resolved any issues, e.g. by adjusting an object in EP V1, you can run the CLI again without the need to undo the migration first.
+The CLI works in an idempotent manner and will only update objects/versions that have changed, hence saving time.</p>
+</div>
+<div class="section" id="undo-test-migration">
+<h2>Undo Test Migration<a class="headerlink" href="#undo-test-migration" title="Permalink to this heading"></a></h2>
 <p>If the migration was successful and you want to remove the create objects/versions from EP V2 again, run:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ep-migrate<span class="w"> </span>-rs<span class="w"> </span>absent
 </pre></div>
+</div>
+<p>This will delete all Application Domains starting with the <cite>applicationDomainPrefix</cite>.</p>
+<p>If instead you only want to undo the migration for a specific <cite>runId</cite>, run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ep-migrate<span class="w"> </span>-rs<span class="w"> </span>absent<span class="w"> </span>-absentRunId<span class="w"> </span><span class="o">{</span>the-run-id<span class="o">}</span>
+</pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="run-migration">
@@ -177,6 +209,10 @@ and rename it to <cite>ep-migrate-config.yaml</cite>.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ep-migrate
 </pre></div>
 </div>
+<p>If you want to undo the migration, you now must use the <cite>runId</cite> from the previous run, for example:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ep-migrate<span class="w"> </span>-rs<span class="w"> </span>absent<span class="w"> </span>-absentRunId<span class="w"> </span><span class="o">{</span>the-run-id<span class="o">}</span>
+</pre></div>
+</div>
 </div>
 
 
@@ -191,7 +227,7 @@ and rename it to <cite>ep-migrate-config.yaml</cite>.</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, Solace Corporation, Ricardo Gomez-Ulmke, &lt;ricardo.gomez-ulmke@solace.com&gt;.
-      <span class="lastupdated">Last updated on 27 May 2023 at 07:23.
+      <span class="lastupdated">Last updated on 27 May 2023 at 14:32.
       </span></p>
   </div>
 
