@@ -1,5 +1,20 @@
 # @solace-labs/ep-migrate
 
+## 0.5.0
+
+### Minor Changes
+
+- 1f13ddee: issues for application domains
+
+  - added error catch and create issue for application domains
+  - Epv2 application domain topic domains must only include variables with associated enums
+    - create issue with cause if enum not found
+
+### Patch Changes
+
+- Updated dependencies [1f13ddee]
+  - @solace-labs/ep-sdk@0.61.1
+
 ## 0.4.0
 
 ### Minor Changes
