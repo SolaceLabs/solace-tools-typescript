@@ -1,5 +1,16 @@
 # @solace-labs/ep-sdk
 
+## 0.61.1
+
+### Patch Changes
+
+- 1f13ddee: fixes
+
+  - EpSdkApplicationDomainTask
+
+    - create():
+      - if an error creating a configured topic domain occurrs the Application Domain is deleted again and the error re-thrown
+
 ## 0.61.0
 
 ### Minor Changes
