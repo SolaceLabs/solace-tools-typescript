@@ -23,9 +23,8 @@ export class EpSdkTopicAddressLevelServiceClass extends EpSdkServiceClass {
         });
         if(topicAddressEnumVersion !== undefined) return topicAddressEnumVersion.id;    
       }
-    } else {
-      return undefined;
     }
+    return undefined;
   }
 
   /**
