@@ -182,14 +182,16 @@ export class CliEventsMigrator extends CliMigrator {
 
   private transformTopicString({ epV1TopicName, epV1TopicNodeDTOs }:{
     epV1TopicNodeDTOs?: Array<EpV1TopicNodeDTO>;
-    epV1TopicName: string
+    epV1TopicName: string;
   }): string {
     if(epV1TopicNodeDTOs && epV1TopicNodeDTOs.length > 0) {
       let epV2TopicString = "";
       for(const epV1TopicNodeDTO of epV1TopicNodeDTOs) {
         if(epV1TopicNodeDTO.name) {
           if(epV2TopicString !== "") epV2TopicString += this.epV2TopicDelimiter;
-          epV2TopicString += `${this.transformTopicElement(epV1TopicNodeDTO.name)}`;
+          if(epV1TopicNodeDTO.topicNodeType === "variable") {
+            epV2TopicString += `{${this.transformTopicElement(epV1TopicNodeDTO.name)}}`;  
+          } else epV2TopicString += this.transformTopicElement(epV1TopicNodeDTO.name);
         }
       }
       return epV2TopicString;
@@ -309,13 +311,20 @@ export class CliEventsMigrator extends CliMigrator {
     }
     /* istanbul ignore next */
     if(cliMigratedSchema && cliMigratedSchema.epV2Schema.schemaVersion.id === undefined) throw new CliEPApiContentError(logName,"cliMigratedSchema.epV2Schema.schemaVersion.id", { schemaVersion: cliMigratedSchema.epV2Schema.schemaVersion });
+    const transformedTopicString = this.transformTopicString({ epV1TopicName: epV1Event.topicName, epV1TopicNodeDTOs });
+    // DEBUG
+    // console.log(`\n\n>>>${logName}: ${JSON.stringify({
+    //   epV1TopicName: epV1Event.topicName,
+    //   epV1TopicNodeDTOs,
+    //   transformedTopicString
+    // }, null, 2)}\n\n`);
     const epSdkEpEventVersionTask = new EpSdkEpEventVersionTask({
       epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
       applicationDomainId: cliMigratedApplicationDomain.epV2ApplicationDomain.id,
       eventId: epSdkEvent.id,
       versionString: this.options.cliEventsMigrateConfig.epV2.versions.initialVersion,
       versionStrategy: this.get_EEpSdk_VersionTaskStrategy(this.options.cliEventsMigrateConfig.epV2.versions.versionStrategy),
-      topicString: this.transformTopicString({ epV1TopicName: epV1Event.topicName, epV1TopicNodeDTOs } ),
+      topicString: transformedTopicString,
       topicDelimiter: this.epV2TopicDelimiter,
       enumInfoMap: this.epSdkEnumInfoMap,
       eventVersionSettings: {
