@@ -25,6 +25,8 @@ migrate:
       - 'EP_MIGRATE-topic-domain-enum'
       - 'EP_MIGRATE/domain/filter/1'
       - 'EP_MIGRATE/domain/filter/2'
+      - 'EP_MIGRATE/fail/topicDomain/NonExistentEnum'
+      - 'EP_MIGRATE/fail/topicDomain/EnumWithIssue'
     # #   exclude:
     #   - "EP_MIGRATE/exclude"
   epV2:

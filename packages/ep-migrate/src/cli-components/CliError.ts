@@ -276,3 +276,14 @@ export class CliMigrateEpV1IncompatibilityError extends CliError {
     this.details = details;
   }
 }
+
+export class CliMigrateTopicDomainAddressLevelEnumVersionReferenceIssueError extends CliError {
+  private static Name = "CliMigrateTopicDomainAddressLevelEnumVersionReferenceIssueError";
+  protected static DefaultDescription = "CLI Migrate Topic Domain Address Level Enum Version Reference Error";
+  private details: any;
+  constructor(internalLogName: string, details: any) {
+    super(internalLogName, CliMigrateTopicDomainAddressLevelEnumVersionReferenceIssueError.DefaultDescription);
+    this.name = CliMigrateTopicDomainAddressLevelEnumVersionReferenceIssueError.Name;
+    this.details = details;
+  }
+}

@@ -79,6 +79,7 @@ export enum ECliSummaryStatusCodes {
   PROCESSING_EP_V1_APPLICATION_DOMAINS_DONE = "PROCESSING_EP_V1_APPLICATION_DOMAINS_DONE",
   PROCESSING_EP_V1_APPLICATION_DOMAINS_NONE_FOUND = "PROCESSING_EP_V1_APPLICATION_DOMAINS_NONE_FOUND",
   PROCESSING_EP_V1_APPLICATION_DOMAIN = "PROCESSING_EP_V1_APPLICATION_DOMAIN",
+  PROCESSING_EP_V1_APPLICATION_DOMAiN_ISSUE = "PROCESSING_EP_V1_APPLICATION_DOMAiN_ISSUE",
   
   PROCESSING_EP_V2_APPLICATION_DOMAINS_ABSENT = "PROCESSING_EP_V2_APPLICATION_DOMAINS_ABSENT",
   PROCESSING_EP_V2_APPLICATION_DOMAINS_ABSENT_DONE = "PROCESSING_EP_V2_APPLICATION_DOMAINS_ABSENT_DONE",
@@ -376,23 +377,13 @@ export class CliLogger {
     // CliLogger.L.summary(CliLogger.createSummaryLogEntry(cliRunSummary));
     if (useCliLogger) {
       if (code.toLowerCase().includes("error") || code.toLowerCase().includes("issue")) {
-        CliLogger.L.error(
-          CliLogger.createLogEntry(CliConfig.getAppName(), {
-            code: code,
-            details: {
-              summary: cliRunSummary_LogBase,
-            },
-          })
-        );
+        CliLogger.L.error(CliLogger.createLogEntry(CliConfig.getAppName(), { code: code, details: {
+          summary: cliRunSummary_LogBase,
+        }}));
       } else {
-        CliLogger.L.info(
-          CliLogger.createLogEntry(CliConfig.getAppName(), {
-            code: code,
-            details: {
-              summary: cliRunSummary_LogBase,
-            },
-          })
-        );
+        CliLogger.L.info(CliLogger.createLogEntry(CliConfig.getAppName(), { code: code, details: {
+          summary: cliRunSummary_LogBase,
+        }}));
       }
     }
   };

@@ -1,4 +1,5 @@
 import { 
+  AddressLevel,
   ApplicationDomain, 
 } from "@solace-labs/ep-openapi-node";
 import {
@@ -21,6 +22,12 @@ import {
   CliRunSummary,
   ICliApplicationDomainRunContext,
   ICliMigrateManagerOptionsEpV1,
+  ICliRunIssueApplicationDomain,
+  ECliRunIssueTypes,
+  CliRunIssues,
+  ICliRunIssueEnum,
+  CliMigrateReferenceIssueError,
+  CliMigrateTopicDomainAddressLevelEnumVersionReferenceIssueError,
 } from "../cli-components";
 import { 
   CliMigrator, 
@@ -94,13 +101,18 @@ export class CliApplicationDomainsMigrator extends CliMigrator {
   }): Promise<void> {
     const funcName = 'migrateApplicationDomain';
     const logName = `${CliApplicationDomainsMigrator.name}.${funcName}()`;
+    const epV2ApplicationDomainName = this.options.applicationDomainPrefix ? `${this.options.applicationDomainPrefix}${epV1ApplicationDomain.name}` : epV1ApplicationDomain.name;
     const rctxt: ICliApplicationDomainRunContext = {
-      epV1ApplicationDomainName: epV1ApplicationDomain.name,
+      epV1: {
+        applicationDomain: epV1ApplicationDomain
+      },
+      epV2: {
+        applicationDomainName: epV2ApplicationDomainName
+      }
     };
     CliRunContext.push(rctxt);
     CliRunSummary.processingEpV1ApplicationDomain({ applicationDomainName: epV1ApplicationDomain.name });
     // present epv2 application domain
-    const epV2ApplicationDomainName = this.options.applicationDomainPrefix ? `${this.options.applicationDomainPrefix}${epV1ApplicationDomain.name}` : epV1ApplicationDomain.name;
     const addressLevels = await EpSdkTopicAddressLevelService.createTopicAddressLevels({
       topicString: epV1ApplicationDomain.topicDomain,
       enumApplicationDomainIds: [ this.options.cliEnumsMigratorRunMigrateReturn.epV2EnumApplicationDomainId ]
@@ -108,13 +120,61 @@ export class CliApplicationDomainsMigrator extends CliMigrator {
     let topicDomainSettings: TEpSdkApplicationDomainTask_TopicDomainSettings | undefined;
     // let topicDomainEnforcementEnabled = false;
     if(addressLevels !== undefined) {
-      topicDomainSettings = {
-        brokerType: EpSdkBrokerTypes.Solace,
-        topicString: epV1ApplicationDomain.topicDomain,
-        enumApplicationDomainIds: [ this.options.cliEnumsMigratorRunMigrateReturn.epV2EnumApplicationDomainId],
-        topicDelimiter: EpSdkDefaultTopicDelimitors.Solace
-      };
-      //topicDomainEnforcementEnabled = true;
+      let setTopicDomainSettings = true;
+      // check if addressLevels contain variables AND an enum is defined
+      for(const addressLevel of addressLevels) {
+        if(addressLevel.addressLevelType === AddressLevel.addressLevelType.VARIABLE && addressLevel.enumVersionId === undefined) {
+          setTopicDomainSettings = false;
+          // find the issue for epV1 enum by name
+          const allEnumIssues: Array<ICliRunIssueEnum> = CliRunIssues.get({ type: ECliRunIssueTypes.EnumIssue }) as Array<ICliRunIssueEnum>;
+          const enumIssue: ICliRunIssueEnum | undefined = allEnumIssues.find( x => x.epV1Enum.name === addressLevel.name );
+          if(enumIssue) {
+            // log the issue, but continue
+            const error = new CliMigrateReferenceIssueError(logName, [enumIssue]);
+            CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.MIGRATE_APPLICATION_DOMAINS_ERROR, details: { error }}));
+            // add to issues log  
+            const rctxt: ICliApplicationDomainRunContext | undefined = CliRunContext.get() as ICliApplicationDomainRunContext | undefined;
+            const issue: ICliRunIssueApplicationDomain = {
+              type: ECliRunIssueTypes.ApplicationDomainIssue,
+              epV1Id: epV1ApplicationDomain.id,
+              epV1ApplicationDomain,
+              cliRunContext: rctxt,
+              cause: error
+            };
+            CliRunIssues.add(issue);
+            CliRunSummary.processingEpV1ApplicationDomainIssue({ rctxt });
+          } else {
+            // log the issue, but continue
+            // could not find an issue, most likely enum is missing altogether
+            const error = new CliMigrateTopicDomainAddressLevelEnumVersionReferenceIssueError(logName, {
+              message: 'missing EpV1 topicDomain enum',
+              addressLevel
+            });
+            CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.MIGRATE_APPLICATION_DOMAINS_ERROR, details: { error }}));
+            // add to issues log  
+            const rctxt: ICliApplicationDomainRunContext | undefined = CliRunContext.get() as ICliApplicationDomainRunContext | undefined;
+            const issue: ICliRunIssueApplicationDomain = {
+              type: ECliRunIssueTypes.ApplicationDomainIssue,
+              epV1Id: epV1ApplicationDomain.id,
+              epV1ApplicationDomain,
+              cliRunContext: rctxt,
+              cause: error
+            };
+            CliRunIssues.add(issue);
+            CliRunSummary.processingEpV1ApplicationDomainIssue({ rctxt });
+          }
+        }
+      }
+      if(setTopicDomainSettings) {
+        // create the topic domain settings for the task
+        topicDomainSettings = {
+          brokerType: EpSdkBrokerTypes.Solace,
+          topicString: epV1ApplicationDomain.topicDomain,
+          enumApplicationDomainIds: [ this.options.cliEnumsMigratorRunMigrateReturn.epV2EnumApplicationDomainId ],
+          topicDelimiter: EpSdkDefaultTopicDelimitors.Solace
+        };
+        //topicDomainEnforcementEnabled = true;
+      }
     }
     const applicationDomainTask = new EpSdkApplicationDomainTask({
       epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
@@ -154,6 +214,8 @@ export class CliApplicationDomainsMigrator extends CliMigrator {
   }
 
   private async run_migrate(): Promise<ICliApplicationDomainsMigratorRunMigrateReturn> {
+    const funcName = 'run_migrate';
+    const logName = `${CliApplicationDomainsMigrator.name}.${funcName}()`;
 
     CliRunSummary.processingEpV1ApplicationDomains();
 
@@ -183,7 +245,25 @@ export class CliApplicationDomainsMigrator extends CliMigrator {
               doInclude = !this.options.cliApplicationDomainsMigrateConfig.epV1.applicationDomainNames.exclude.includes(epV1ApplicationDomain.name);
             }
           }
-          if(doInclude) await this.migrateApplicationDomain({ epV1ApplicationDomain: epV1ApplicationDomain as EpV1ApplicationDomain });          
+          if(doInclude) {
+            try {
+              await this.migrateApplicationDomain({ epV1ApplicationDomain: epV1ApplicationDomain as EpV1ApplicationDomain });          
+            } catch(e: any) {
+              const error = CliErrorFactory.createCliError({ logName, error: e} );
+              CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.MIGRATE_APPLICATION_DOMAINS_ERROR, details: { error }}));
+              // add to issues log  
+              const rctxt: ICliApplicationDomainRunContext | undefined = CliRunContext.pop() as ICliApplicationDomainRunContext | undefined;
+              const issue: ICliRunIssueApplicationDomain = {
+                type: ECliRunIssueTypes.ApplicationDomainIssue,
+                epV1Id: epV1ApplicationDomain.id,
+                epV1ApplicationDomain,
+                cliRunContext: rctxt,
+                cause: error
+              };
+              CliRunIssues.add(issue);
+              CliRunSummary.processingEpV1ApplicationDomainIssue({ rctxt });
+            }
+          }
         }
       } else {
         /* istanbul ignore next */
