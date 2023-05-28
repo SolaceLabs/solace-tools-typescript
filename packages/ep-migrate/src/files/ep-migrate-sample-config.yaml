@@ -71,7 +71,10 @@ migrate:
       # - version bump when existing version is found and any mods are applied to new version
       # - options: bump_patch, bump_minor
       versionStrategy: bump_patch
-      # state: options=Released, Draft 
+      # state: options=Released, Draft
+      #   Note: You can change the state on a per object basis.
+      #   Bear in mind, that any version referencing a Draft version cannot be set to Released.
+      #   Example: Enums are set to Draft, Events are set to Released. Migrating any Event referencing an Enum will result in an issue logged.
       state: Draft
   enums:
     epV2:
