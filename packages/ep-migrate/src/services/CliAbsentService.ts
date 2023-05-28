@@ -178,12 +178,12 @@ class CliAbsentService {
       runId
     };
     CliRunContext.push(rctxt);  
-    CliRunSummary.processingEpV2ApplicationsAbsentStart({ runId });
+    CliRunSummary.processingEpV2ApplicationDomainsAbsentStart({ runId });
 
     // get a fresh list of all application domains
     const applicationDomainsResponse: ApplicationDomainsResponse = await EpSdkApplicationDomainsService.listAll({});
     if(applicationDomainsResponse.data === undefined || applicationDomainsResponse.data.length === 0) {
-      CliRunSummary.processingEpV2ApplicationsAbsentNoneFound({ runId });
+      CliRunSummary.processingEpV2ApplicationDomainsAbsentNoneFound({ runId });
       CliRunContext.pop();
       return;
     }
@@ -205,13 +205,11 @@ class CliAbsentService {
           if(found) {
             if(this.isApplicationDomainEmpty(applicationDomain.stats)) {
               await ApplicationDomainsService.deleteApplicationDomain({ id: applicationDomain.id });
-              CliRunSummary.absentEpV2ApplicationByRunId({ runId, rctxt, applicationDomain });
+              CliRunSummary.absentEpV2ApplicationDomainByRunId({ runId, rctxt, applicationDomain });
             }
           }
         }
-
         CliRunSummary.processingEpV2ApplicationDomainAbsentDone({ runId, rctxt });
-
       } catch(e: any) {
         const error = CliErrorFactory.createCliError({ logName, error: e} );        
         CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.ABSENT_BY_ID_APPLICATION_DOMAINS_ERROR, details: { error }}));
@@ -287,9 +285,7 @@ class CliAbsentService {
             }
           }
         }
-
         CliRunSummary.processingEpV2ApplicationAbsentDone({ runId, rctxt });
-
       } catch(e: any) {
         const error = CliErrorFactory.createCliError({ logName, error: e} );
         CliLogger.error(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.ABSENT_BY_ID_APPLICATIONS_ERROR, details: { error }}));

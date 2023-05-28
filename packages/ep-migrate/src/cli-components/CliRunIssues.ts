@@ -1,5 +1,6 @@
 import { 
   EpV1Application,
+  EpV1ApplicationDomain,
   EpV1Enum,
   EpV1Event,
   EpV1EventSchema 
@@ -47,6 +48,12 @@ export interface ICliRunIssueApplication extends ICliRunPresentIssue {
   type: ECliRunIssueTypes.ApplicationIssue;
   epV1Application: EpV1Application;
 }
+
+export interface ICliRunIssueApplicationDomain extends ICliRunPresentIssue {
+  type: ECliRunIssueTypes.ApplicationDomainIssue;
+  epV1ApplicationDomain: EpV1ApplicationDomain;
+}
+
 export interface ICliRunIssueAbsentById extends ICliRunIssue {
   runId: string;
 }
