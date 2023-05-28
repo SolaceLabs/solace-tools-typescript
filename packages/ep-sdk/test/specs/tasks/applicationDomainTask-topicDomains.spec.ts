@@ -3,7 +3,12 @@ import { expect } from "chai";
 import path from "path";
 import { TestContext, TestUtils } from "@internal/tools/src";
 import { TestLogger, TestConfig } from "../../lib";
-import { AddressLevel, ApiError, EnumsService, TopicAddressEnumResponse } from "@solace-labs/ep-openapi-node";
+import { 
+  ApiError, 
+  ApplicationDomain, 
+  EnumsService, 
+  TopicAddressEnumResponse 
+} from "@solace-labs/ep-openapi-node";
 import {
   EpSdkError,
   EpSdkApplicationDomainsService,
@@ -16,6 +21,7 @@ import {
   EEpSdk_VersionTaskStrategy,
   EpSdkStatesService,
   IEpSdkEnumVersionTask_ExecuteReturn,
+  EpSdkEpApiError,
 } from "../../../src";
 
 const scriptName: string = path.basename(__filename);
@@ -33,6 +39,7 @@ let EnumVersionId: string | undefined;
 
 const TopicDomainString_Simple = "one/two";
 const TopicDomainString_Enum_1 = "base/{EnumName}";
+const TopicDomainString_NoEnum = "base/{NonExistentEnumName}";
 
 const initializeGlobals = () => {
   ApplicationDomainName = `${TestConfig.getAppId()}/tasks/${TestSpecName}`;
@@ -272,6 +279,43 @@ describe(`${scriptName}`, () => {
       if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
       expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
       expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
+    }
+  });
+
+  it(`${scriptName}: application domain: present: should fail with no enum found`, async () => {
+    try {
+      const epSdkApplicationDomainTask = new EpSdkApplicationDomainTask({
+        epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
+        applicationDomainName: ApplicationDomainName,
+        applicationDomainSettings: {
+          uniqueTopicAddressEnforcementEnabled: true,
+          topicDomainEnforcementEnabled: true,
+          topicDomains: [
+            {
+              brokerType: EpSdkBrokerTypes.Solace,
+              topicString: TopicDomainString_Simple,
+            },
+            {
+              brokerType: EpSdkBrokerTypes.Solace,
+              topicString: TopicDomainString_NoEnum,
+            }
+          ]
+        }
+      });
+      const epSdkApplicationDomainTask_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn = await epSdkApplicationDomainTask.execute('contextId');
+      expect(false, 'should never get here').to.be.true;
+    } catch (e) {
+      if(e instanceof EpSdkEpApiError) {
+        const epSdkEpApiError = e as EpSdkEpApiError;
+        expect(JSON.stringify(epSdkEpApiError), TestLogger.createEpSdkTestFailMessage('wrong message', epSdkEpApiError)).to.include("Topic domains must not contain unbounded variable address levels");
+        const applicationDomain: ApplicationDomain | undefined = await EpSdkApplicationDomainsService.getByName({ applicationDomainName: ApplicationDomainName });
+        const message = TestLogger.createLogMessage("applicationDomain", applicationDomain);
+        expect(applicationDomain, message).to.be.undefined;
+      } else {
+        if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;  
+      }
     }
   });
 

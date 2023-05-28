@@ -48,7 +48,13 @@ export interface ICliEnumRunContext extends Partial<ICliRunContext> {
   }
 }
 export interface ICliApplicationDomainRunContext extends Partial<ICliRunContext> {
-  epV1ApplicationDomainName: string;
+  epV1: {
+    applicationDomain: EpV1ApplicationDomain;
+  },
+  epV2: {
+    applicationDomainName: string;
+    applicationDomain?: ApplicationDomain;
+  }
 }
 export interface ICliSchemaRunContext extends Partial<ICliRunContext> {
   epV1: {

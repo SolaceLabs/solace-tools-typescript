@@ -112,26 +112,54 @@ const initializeGlobals = () => {
   EventApiProductName = `${TestConfig.getAppId()}-eap-${TestSpecName}`;
 };
 
+const cleanTest = async() => {
+  console.log('\t>>> cleanTest() ...');
+  const applicationDomainNameList = getApplicationDomainNameList();
+  for (const applicationDomainName of applicationDomainNameList) {
+    try { 
+      await EpSdkApplicationDomainsService.deleteByName({ applicationDomainName }); 
+    } catch (e) {
+      if(e instanceof EpSdkServiceError) {
+        // nothing, expected
+      } else {
+        if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;  
+      }
+    }
+  }
+  try { 
+    await EpSdkApplicationDomainsService.deleteByName({ applicationDomainName: ApplicationDomainName }); 
+  } catch(e) {
+    if(e instanceof EpSdkServiceError) {
+      // nothing, expected
+    } else {
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;  
+    }
+  }
+  try {
+    const customAttributeList = CustomAttributeList.concat(AdditionalCustomAttributeList);
+    await EpSdkEventApiProductsService.removeAssociatedEntityTypeFromCustomAttributeDefinitions({
+      customAttributeNames: customAttributeList.map((x) => { return x.name; }),
+    });  
+  } catch(e) {
+    if(e instanceof EpSdkServiceError) {
+      // nothing, expected
+    } else {
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;  
+    }
+  }
+}
+
 describe(`${scriptName}`, () => {
   before(async () => {
     initializeGlobals();
-    // create all application domains
     TestContext.newItId();
-    const applicationDomainNameList = getApplicationDomainNameList();
-    for (const applicationDomainName of applicationDomainNameList) {
-      const applicationDomainResponse: ApplicationDomainResponse = await ApplicationDomainsService.createApplicationDomain({
-        requestBody: {
-          name: applicationDomainName,
-        },
-      });
-      ApplicationDomainIdList.push(applicationDomainResponse.data.id);
-    }
-    const applicationDomainResponse: ApplicationDomainResponse = await ApplicationDomainsService.createApplicationDomain({
-      requestBody: {
-        name: ApplicationDomainName,
-      },
-    });
-    ApplicationDomainId = applicationDomainResponse.data.id;
+    await cleanTest();
   });
 
   beforeEach(() => {
@@ -140,17 +168,31 @@ describe(`${scriptName}`, () => {
 
   after(async () => {
     TestContext.newItId();
-    // delete all application domains
-    for (const applicationDomainId of ApplicationDomainIdList) {
-      await EpSdkApplicationDomainsService.deleteById({ applicationDomainId });
+    await cleanTest();
+  });
+
+  it(`${scriptName}: should create all application domains for the test`, async () => {
+    try {
+      const applicationDomainNameList = getApplicationDomainNameList();
+      for (const applicationDomainName of applicationDomainNameList) {
+        const applicationDomainResponse: ApplicationDomainResponse = await ApplicationDomainsService.createApplicationDomain({
+          requestBody: {
+            name: applicationDomainName,
+          },
+        });
+        ApplicationDomainIdList.push(applicationDomainResponse.data.id);
+      }
+      const applicationDomainResponse: ApplicationDomainResponse = await ApplicationDomainsService.createApplicationDomain({
+        requestBody: {
+          name: ApplicationDomainName,
+        },
+      });
+      ApplicationDomainId = applicationDomainResponse.data.id;  
+    } catch (e) {
+      if (e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage("failed")).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage("failed", e)).to.be.true;
     }
-    await EpSdkApplicationDomainsService.deleteById({ applicationDomainId: ApplicationDomainId });
-    // remove all attribute definitions
-    const customAttributeList = CustomAttributeList.concat(AdditionalCustomAttributeList);
-    const xvoid: void = await EpSdkEventApiProductsService.removeAssociatedEntityTypeFromCustomAttributeDefinitions({
-      customAttributeNames: customAttributeList.map((x) => { return x.name; }),
-    }
-  );
   });
 
   it(`${scriptName}: should get all messaging services`, async () => {

@@ -464,11 +464,21 @@ export class EpSdkApplicationDomainTask extends EpSdkTask {
     const applicationDomainId = applicationDomainResponse.data.id;
     const applicationDomain = applicationDomainResponse.data;
     // topic domains
-    const createdTopicDomains: Array<TopicDomain> = await this.createTopicDomains({ applicationDomainId });
-    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_CREATE, module: this.constructor.name, details: {
-      epSdkApplicationDomainTask_Config: this.getTaskConfig(),
-      applicationDomain,
-    }}));
+    let createdTopicDomains: Array<TopicDomain> | undefined = undefined;
+    try {
+      createdTopicDomains = await this.createTopicDomains({ applicationDomainId });
+      EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_CREATE, module: this.constructor.name, details: {
+        epSdkApplicationDomainTask_Config: this.getTaskConfig(),
+        applicationDomain,
+      }}));  
+    } catch(e: any) {
+      // delete application domain again and re-throw error
+      await ApplicationDomainsService.deleteApplicationDomain({ 
+        xContextId: this.xContextId,
+        id: applicationDomainResponse.data.id
+      });
+      throw e;
+    }
     return {
       epSdkTask_Action: this.getCreateFuncAction(),
       epObject: applicationDomain,
