@@ -12,6 +12,16 @@ Enums
 
 * EP V1 Enums with duplicate labels will not be migrated and an issue will be logged.
 
+Application Domains
+-------------------
+
+Topic Domains
++++++++++++++
+
+* EP V1 Topic Domains that contain a variable which is not an Enum will not be migrated and an issue will be logged.
+* EP V1 Topic Domains that contain a variable which references an Enum with a migration issue will not be migrated and an issue with the root cause will be logged.
+
+The Application Domain will still be migrated.
   
 Events
 ------
