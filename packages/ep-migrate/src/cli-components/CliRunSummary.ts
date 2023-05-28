@@ -1,3 +1,4 @@
+import { Spinner } from "cli-spinner";
 import { 
   Application, 
   ApplicationDomain, 
@@ -23,7 +24,9 @@ import {
   IEpSdkApplicationVersionTask_ExecuteReturn,
   EpSdkEvent,
 } from "@solace-labs/ep-sdk";
-import CliConfig, { ICliOrganizationInfo } from "./CliConfig";
+import CliConfig, { 
+  ICliOrganizationInfo 
+} from "./CliConfig";
 import { 
   CliError, 
 } from "./CliError";
@@ -394,8 +397,12 @@ export interface ICliRunSummary_Task_VersionObject extends ICliRunSummary_Task {
 class CliRunSummary {
   private summaryLogList: Array<ICliRunSummary_LogBase> = [];
   private runMode: ECliRunContext_RunMode;
+  private spinner: Spinner | undefined = undefined;
 
-  public reset() { this.summaryLogList = []; }
+  public reset() { 
+    this.summaryLogList = []; 
+    if(this.spinner) this.spinner.stop();
+  }
 
   public getSummaryLogList(): Array<ICliRunSummary_LogBase> { return this.summaryLogList; }
 
@@ -457,7 +464,10 @@ class CliRunSummary {
 
   private startRun = () => {
     if(!CliConfig.getCliLoggerOptions().logSummary2Console) {
-      console.log(`TODO: start the spinner here ...`);
+      this.spinner = new Spinner('Processing ... %s');
+      this.spinner.setSpinnerString('|/-\\');
+      this.spinner.setSpinnerDelay(200);
+      this.spinner.start();
     }
   }
 
@@ -1716,6 +1726,7 @@ Migration Summary for run: ${cliMigrateManagerOptions.cliMigrateManagerRunState}
       consoleOutput,
       true
     );
+    if(this.spinner) this.spinner.stop();
   };
 
   public createMigrateSummaryAbsent = (cliMigrateManagerMode: ECliMigrateManagerMode, durationSecs: number, absentRunId?: string): ICliMigrateSummaryAbsent => {
@@ -1922,6 +1933,7 @@ Migration Summary for run: ${cliMigrateManagerOptions.cliMigrateManagerRunState}
       consoleOutput,
       true
     );
+    if(this.spinner) this.spinner.stop();
   };
 
   public createMigrateSummaryIssuesAbsent = (): ICliMigrateSummaryIssuesAbsent => {

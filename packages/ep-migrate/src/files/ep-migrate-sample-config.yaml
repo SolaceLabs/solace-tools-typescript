@@ -42,6 +42,7 @@ migrate:
     #   list of application domain names included in the migration
     # - exclude:
     #   list of application domain names excluded from the migration
+    # If the resulting list is empty, the CLI will migrate all application domains.
     # Note:
     #  The CLI will NOT pull through any referenced objects/versions that are not part of a selected 
     #  Application Domain. An missing reference issue will be created during the run.
