@@ -126,7 +126,7 @@ jobs:
       - name: Run ep-migrate
         run: |
 
-          npm install @solace-labs/ep-migrate 
+          npm install @solace-labs/ep-migrate -g
 
           ep-migrate -v
 
