@@ -32,7 +32,7 @@ env:
   EP_MIGRATE_CLI_SOLACE_CLOUD_TOKEN_V1: ${{ inputs.sourceEpV1Token }}
   EP_MIGRATE_CLI_SOLACE_CLOUD_TOKEN_V2: ${{ secrets.TEST_SOLACE_CLOUD_TOKEN }}
   EP_MIGRATE_CLI_V2_APPLICATION_DOMAIN_PREFIX: ${{ inputs.targetEpV2ApplicationDomainPrefix }}
-  EP_MIGRATE_CLI_LOGS_DIR: "./logs"
+  EP_MIGRATE_CLI_LOGS_DIR: "logs"
 
 jobs:
   ep_migrate:
