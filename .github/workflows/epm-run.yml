@@ -100,6 +100,16 @@ jobs:
               token: ${EP_MIGRATE_CLI_SOLACE_CLOUD_TOKEN_V2}
             migrate:
               epV1:
+                applicationDomainNames:
+                  include: 
+                    # - 'Acme Rideshare'
+                    # - 'default'
+                    - 'EP_MIGRATE/TEST'
+                    # - 'EP_MIGRATE-topic-domain-enum'
+                    # - 'EP_MIGRATE/domain/filter/1'
+                    # - 'EP_MIGRATE/domain/filter/2'
+                    # - 'EP_MIGRATE/fail/topicDomain/NonExistentEnum'
+                    # - 'EP_MIGRATE/fail/topicDomain/EnumWithIssue'
               epV2:
                 applicationDomainPrefix: ${EP_MIGRATE_CLI_V2_APPLICATION_DOMAIN_PREFIX}
                 versions:
@@ -128,7 +138,7 @@ jobs:
 
           npm install @solace-labs/ep-migrate -g
 
-          ep-migrate -v
+          ep-migrate
 
 
   # build:
