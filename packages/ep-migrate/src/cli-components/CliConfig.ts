@@ -1,3 +1,4 @@
+import v8 from 'node:v8';
 import { 
   OptionValues 
 } from 'commander';
@@ -248,7 +249,6 @@ class CliConfig {
             ...configFileContents.migrate.enums.epV2,
             versions: {
               ...configFileContents.migrate.epV2.versions,
-              ...configFileContents.migrate.enums.epV2.versions,
             }
           }
         },
@@ -262,7 +262,6 @@ class CliConfig {
             ...configFileContents.migrate.schemas.epV2,
             versions: {
               ...configFileContents.migrate.epV2.versions,
-              ...configFileContents.migrate.schemas.epV2.versions,
             }
           }
         },
@@ -272,7 +271,6 @@ class CliConfig {
             ...configFileContents.migrate.events.epV2,
             versions: {
               ...configFileContents.migrate.epV2.versions,
-              ...configFileContents.migrate.events.epV2.versions,
             }
           }
         },
@@ -282,12 +280,37 @@ class CliConfig {
             ...configFileContents.migrate.applications.epV2,
             versions: {
               ...configFileContents.migrate.epV2.versions,
-              ...configFileContents.migrate.applications.epV2.versions,
             }
           }
         },
       }
-    };  
+    };
+    // merge optional versions config
+    if(configFileContents.migrate.enums && configFileContents.migrate.enums.epV2 && configFileContents.migrate.enums.epV2.versions) {
+      this.config.cliMigrateConfig.enums.epV2.versions = {
+        ...configFileContents.migrate.epV2.versions,
+        ...configFileContents.migrate.enums.epV2.versions,
+      };
+    }
+    if(configFileContents.migrate.schemas && configFileContents.migrate.schemas.epV2 && configFileContents.migrate.schemas.epV2.versions) {
+      this.config.cliMigrateConfig.schemas.epV2.versions = {
+        ...configFileContents.migrate.epV2.versions,
+        ...configFileContents.migrate.schemas.epV2.versions,
+      };
+    }
+    if(configFileContents.migrate.events && configFileContents.migrate.events.epV2 && configFileContents.migrate.events.epV2.versions) {
+      this.config.cliMigrateConfig.events.epV2.versions = {
+        ...configFileContents.migrate.epV2.versions,
+        ...configFileContents.migrate.events.epV2.versions,
+      };
+    }
+    if(configFileContents.migrate.applications && configFileContents.migrate.applications.epV2 && configFileContents.migrate.applications.epV2.versions) {
+      this.config.cliMigrateConfig.applications.epV2.versions = {
+        ...configFileContents.migrate.epV2.versions,
+        ...configFileContents.migrate.applications.epV2.versions,
+      };
+    }
+
   }
 
   public validateAbsent = async() => {
@@ -380,7 +403,15 @@ class CliConfig {
     CliLogger.info(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.INITIALIZED, message: "config", details: {
       cliVersion: this.cliVersion,
       commandLineOptionValues: this.commandLineOptionValues ? this.commandLineOptionValues : 'undefined',
-      // environment: this.envVarValues,
+      nodeInfo: {
+        version: process.version,
+        arch: process.arch,
+        platform: process.platform,
+        argv: process.argv,
+        v8: {
+          heapStatistics: v8.getHeapStatistics()
+        }
+      },
       config: JSON.parse(JSON.stringify(this.config, this.maskSecrets))
     }}));
   };
