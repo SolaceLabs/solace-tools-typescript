@@ -120,14 +120,30 @@ jobs:
               enums:
                 epV2:
                   applicationDomainName: 'enums'
+                  versions:
+                    initialVersion: 1.0.0
+                    versionStrategy: bump_patch      
+                    state: Released
               applicationDomains:
                 epV2:
               schemas:
                 epV2:
+                  versions:
+                    initialVersion: 1.0.0
+                    versionStrategy: bump_patch      
+                    state: Released
               events:
                 epV2:
+                  versions:
+                    initialVersion: 1.0.0
+                    versionStrategy: bump_patch      
+                    state: Released
               applications:
                 epV2:
+                  versions:
+                    initialVersion: 1.0.0
+                    versionStrategy: bump_patch      
+                    state: Released
                   environment:
                     environmentName: 'TEST_EP_MIGRATE/epV1'
                     eventMeshName: 'TEST_EP_MIGRATE/epV1'
