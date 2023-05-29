@@ -143,6 +143,7 @@ jobs:
 
       - name: Archive logs
         # if: ${{ (failure() && !cancelled()) || (always() && (github.event_name=='workflow_dispatch' || env.DEBUG_FLAG=='true') ) }}
+        if: always()
         uses: actions/upload-artifact@v3
         with:
           name: epm-run-logs
