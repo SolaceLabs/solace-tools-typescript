@@ -39,12 +39,11 @@ jobs:
     # timeout-minutes: 15
     runs-on: ubuntu-20.04
     steps:
-      - name: Log Inputs
-        run: |
-          echo "EP_MIGRATE_CLI_SOLACE_CLOUD_TOKEN_V1: $EP_MIGRATE_CLI_SOLACE_CLOUD_TOKEN_V1"
-          echo "EP_MIGRATE_CLI_SOLACE_CLOUD_TOKEN_V2: $EP_MIGRATE_CLI_SOLACE_CLOUD_TOKEN_V2"
-          echo "EP_MIGRATE_CLI_V2_APPLICATION_DOMAIN_PREFIX: $EP_MIGRATE_CLI_V2_APPLICATION_DOMAIN_PREFIX"
-          exit 1
+      # - name: Log Inputs
+      #   run: |
+      #     # echo "EP_MIGRATE_CLI_SOLACE_CLOUD_TOKEN_V1: $EP_MIGRATE_CLI_SOLACE_CLOUD_TOKEN_V1"
+      #     echo "EP_MIGRATE_CLI_SOLACE_CLOUD_TOKEN_V2: $EP_MIGRATE_CLI_SOLACE_CLOUD_TOKEN_V2"
+      #     echo "EP_MIGRATE_CLI_V2_APPLICATION_DOMAIN_PREFIX: $EP_MIGRATE_CLI_V2_APPLICATION_DOMAIN_PREFIX"
 
       - name: Check Auth
         if: github.event_name == 'workflow_dispatch' && (github.actor != 'ricardojosegomezulmke' || github.actor != 'nilseckert')
