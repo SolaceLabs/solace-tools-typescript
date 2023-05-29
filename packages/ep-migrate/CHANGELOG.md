@@ -1,5 +1,19 @@
 # @solace-labs/ep-migrate
 
+## 0.5.1
+
+### Patch Changes
+
+- 1c39560ad: bug fixes and enhancements
+
+  **bug fixes:**
+
+  - config: fixed bug applying optional `versions` for enums, events, schemas, applications
+
+  **enhancements:**
+
+  - config: added node info
+
 ## 0.5.0
 
 ### Minor Changes
