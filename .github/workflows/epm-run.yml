@@ -11,6 +11,12 @@ on:
         description: 'Ep V2 application domain prefix for solace-iot-team'
         required: true
         type: string
+
+TODO: versionState: Draft, Released
+TODO: capture console output in ep-migrate-console.log
+
+TODO: present or absent
+
       # logLevel:
       #   description: 'log level'
       #   required: true
