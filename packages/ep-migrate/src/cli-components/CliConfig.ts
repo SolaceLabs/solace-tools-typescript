@@ -1,3 +1,5 @@
+// import v8 from "node:v8";
+const v8 = require('node:v8');
 import { 
   OptionValues 
 } from 'commander';
@@ -402,7 +404,15 @@ class CliConfig {
     CliLogger.info(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.INITIALIZED, message: "config", details: {
       cliVersion: this.cliVersion,
       commandLineOptionValues: this.commandLineOptionValues ? this.commandLineOptionValues : 'undefined',
-      // environment: this.envVarValues,
+      nodeInfo: {
+        version: process.version,
+        arch: process.arch,
+        platform: process.platform,
+        argv: process.argv,
+        v8: {
+          heapStatistics: v8.getHeapStatistics()
+        }
+      },
       config: JSON.parse(JSON.stringify(this.config, this.maskSecrets))
     }}));
   };
