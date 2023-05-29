@@ -7,6 +7,10 @@ on:
         description: 'Source Ep V1 token'
         required: true
         type: string
+      targetEpV2ApplicationDomainPrefix:
+        description: 'Ep V2 application domain prefix for solace-iot-team'
+        required: true
+        type: string
       # logLevel:
       #   description: 'log level'
       #   required: true
@@ -16,14 +20,18 @@ on:
       #   - info
       #   - warning
       #   - debug
-      tags:
-        description: 'Test scenario tags'
-        required: false
-        type: boolean
-      environment:
-        description: 'Environment to run tests against'
-        type: environment
-        required: true
+      # tags:
+      #   description: 'Test scenario tags'
+      #   required: false
+      #   type: boolean
+      # environment:
+      #   description: 'Environment to run tests against'
+      #   type: environment
+      #   required: true
+env:
+  EP_MIGRATE_CLI_SOLACE_CLOUD_TOKEN_V1: ${{ inputs.sourceEpV1Token }}
+  EP_MIGRATE_CLI_SOLACE_CLOUD_TOKEN_V2: ${{ secrets.TEST_SOLACE_CLOUD_TOKEN }}
+  EP_MIGRATE_CLI_V2_APPLICATION_DOMAIN_PREFIX: ${{ inputs.targetEpV2ApplicationDomainPrefix }}
 
 jobs:
   ep_migrate:
@@ -31,6 +39,13 @@ jobs:
     # timeout-minutes: 15
     runs-on: ubuntu-20.04
     steps:
+      - name: Log Inputs
+        run: |
+          echo "EP_MIGRATE_CLI_SOLACE_CLOUD_TOKEN_V1: $EP_MIGRATE_CLI_SOLACE_CLOUD_TOKEN_V1"
+          echo "EP_MIGRATE_CLI_SOLACE_CLOUD_TOKEN_V2: $EP_MIGRATE_CLI_SOLACE_CLOUD_TOKEN_V2"
+          echo "EP_MIGRATE_CLI_V2_APPLICATION_DOMAIN_PREFIX: $EP_MIGRATE_CLI_V2_APPLICATION_DOMAIN_PREFIX"
+          exit 1
+
       - name: Check Auth
         if: github.event_name == 'workflow_dispatch' && (github.actor != 'ricardojosegomezulmke' || github.actor != 'nilseckert')
         run: |
@@ -45,6 +60,16 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 2
+
+      - name: Setup Python Environment
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.8
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r docs/devel/docs.requirements.txt
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v3
