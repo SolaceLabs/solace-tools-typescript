@@ -29,3 +29,10 @@ In this case, the issue with the Event is caused by the issue of the referenced 
 
 The log file will show the root cause of the Event issue to be an issue in the referenced schema.
 
+.. note::
+
+  If you don't have access to the console log you can find the issues in the log file:
+
+  Search for `code: "MIGRATE_ISSUES"` to find the full issues log.
+
+  
