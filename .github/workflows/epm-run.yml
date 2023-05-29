@@ -101,6 +101,10 @@ jobs:
               token: ${EP_MIGRATE_CLI_SOLACE_CLOUD_TOKEN_V2}
             migrate:
               epV1:
+
+
+              TODO: remove after testing
+
                 applicationDomainNames:
                   include: 
                     # - 'Acme Rideshare'
@@ -120,6 +124,8 @@ jobs:
               enums:
                 epV2:
                   applicationDomainName: 'enums'
+    
+                  TODO: remove after fix
                   versions:
                     initialVersion: 1.0.0
                     versionStrategy: bump_patch      
@@ -128,18 +134,21 @@ jobs:
                 epV2:
               schemas:
                 epV2:
+                  TODO: remove after fix
                   versions:
                     initialVersion: 1.0.0
                     versionStrategy: bump_patch      
                     state: Released
               events:
                 epV2:
+                  TODO: remove after fix
                   versions:
                     initialVersion: 1.0.0
                     versionStrategy: bump_patch      
                     state: Released
               applications:
                 epV2:
+                  TODO: remove after fix
                   versions:
                     initialVersion: 1.0.0
                     versionStrategy: bump_patch      
