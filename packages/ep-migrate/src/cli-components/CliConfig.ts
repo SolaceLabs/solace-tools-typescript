@@ -1,5 +1,4 @@
-// import v8 from "node:v8";
-const v8 = require('node:v8');
+import v8 from 'node:v8';
 import { 
   OptionValues 
 } from 'commander';
