@@ -1,5 +1,21 @@
 # @solace-labs/ep-migrate
 
+## 0.6.0
+
+### Minor Changes
+
+- d10bf3ece: re-work of issue logging
+
+  - codes:
+
+    - MIGRATE_SUMMARY_LOG
+    - MIGRATE_SUMMARY_STATS
+    - MIGRATE_ISSUE
+      - logs each issue separately
+      - avoids string size limit when logging entire array
+
+  - removed runMode from log entries
+
 ## 0.5.1
 
 ### Patch Changes
