@@ -27,5 +27,11 @@ Events
 ------
 
 * EP V1 Events without a topic will not be migrated and an issue will be logged.
+* EP V1 Event with a duplicate topic address will not be migrated and an issue will be logged.
 
-  
+Applications
+------------
+
+* EP V1 Applications which reference an Event that has not been migrated will not be migrated and an issue with the root cause (the event issue) will be logged.
+
+    

@@ -33,6 +33,9 @@ The log file will show the root cause of the Event issue to be an issue in the r
 
   If you don't have access to the console log you can find the issues in the log file:
 
-  Search for `code: "MIGRATE_ISSUES"` to find the full issues log.
+  Summary: Search for `MIGRATE_SUMMARY_STATS`.
+
+  Each issue: Search for `MIGRATE_ISSUE`.
+
 
   
