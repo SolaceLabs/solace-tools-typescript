@@ -396,7 +396,7 @@ export interface ICliRunSummary_Task_VersionObject extends ICliRunSummary_Task {
 // }
 class CliRunSummary {
   private summaryLogList: Array<ICliRunSummary_LogBase> = [];
-  private runMode: ECliRunContext_RunMode;
+  // private runMode: ECliRunContext_RunMode;
   private spinner: Spinner | undefined = undefined;
 
   public reset() { 
@@ -420,7 +420,7 @@ class CliRunSummary {
   private addRun = (cliRunSummary_Base: ICliRunSummary_Base): ICliRunSummary_Base => {
     return {
       ...cliRunSummary_Base,
-      runMode: this.runMode,
+      // runMode: this.runMode,
     };
   };
 
@@ -474,7 +474,7 @@ class CliRunSummary {
   public startRunAbsent = ({ cliRunSummary_StartRun }: {
     cliRunSummary_StartRun: Required<ICliRunSummary_StartRunAbsent>;
   }): void => {
-    this.runMode = cliRunSummary_StartRun.runMode;
+    // this.runMode = cliRunSummary_StartRun.runMode;
     const consoleOutput = `
 ------------------------------------------------------------------------------------------------    
 Start Run: ${cliRunSummary_StartRun.runState}
@@ -489,7 +489,7 @@ Start Run: ${cliRunSummary_StartRun.runState}
   public startRunPresent = ({ cliRunSummary_StartRun }: {
     cliRunSummary_StartRun: Required<ICliRunSummary_StartRunPresent>;
   }): void => {
-    this.runMode = cliRunSummary_StartRun.runMode;
+    // this.runMode = cliRunSummary_StartRun.runMode;
     const consoleOutput = `
 ------------------------------------------------------------------------------------------------    
 Start Run: ${cliRunSummary_StartRun.runState}
@@ -529,7 +529,7 @@ Start Run: ${cliRunSummary_StartRun.runState}
     Processing V1 Application Domain '${applicationDomainName}' ...  
 `;
     const cliRunSummary_EpV1_ApplicatonDomain: ICliRunSummary_EpV1_ApplicationDomain = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.ProcessingEpV1ApplicationDomain,
       epV1ObjectType: ECliEpV1Object_Types.EpV1ApplicationDomain,
       applicationDomainName,
@@ -546,7 +546,7 @@ ${absentApplicationDomainNames.map(x => `
       - ${x}` ).join('')}
 `;
     const cliRunSummary_EpV2_ApplicationDomainsAbsent: ICliRunSummary_EpV2_ApplicationDomainsAbsent = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.ProcessingEpV2ApplicationDomainsAbsent,
       absentApplicationDomainNames,
     }
@@ -561,7 +561,7 @@ ${absentApplicationDomainNames.map(x => `
   Processing V2 Applications for deletion (runId=${runId}) ...
 `;
     const ICliRunSummary_EpV2_AbsentByIdStart: ICliRunSummary_EpV2_AbsentByIdStart = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.ProcessingEpV2ApplicationsByIdAbsentStart,
       runId,
     }
@@ -575,7 +575,7 @@ ${absentApplicationDomainNames.map(x => `
   Processing V2 Application Domains for deletion (runId=${runId}) ...
 `;
     const ICliRunSummary_EpV2_AbsentByIdStart: ICliRunSummary_EpV2_AbsentByIdStart = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.ProcessingEpV2ApplicationDomainsByIdAbsentStart,
       runId,
     }
@@ -589,7 +589,7 @@ ${absentApplicationDomainNames.map(x => `
     None found.
 `;
     const cliRunSummary_EpV2_AbsentByIdNoneFound: ICliRunSummary_EpV2_AbsentByIdNoneFound = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.ProcessingEpV2ApplicationsByIdAbsentNoneFound,
       runId,
     }
@@ -603,7 +603,7 @@ ${absentApplicationDomainNames.map(x => `
     None found.
 `;
     const cliRunSummary_EpV2_AbsentByIdNoneFound: ICliRunSummary_EpV2_AbsentByIdNoneFound = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.ProcessingEpV2ApplicationDomainsByIdAbsentNoneFound,
       runId,
     }
@@ -618,7 +618,7 @@ ${absentApplicationDomainNames.map(x => `
 
   `;
     const ICliRunSummary_EpV2_AbsentByIdDone: ICliRunSummary_EpV2_AbsentByIdDone = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.ProcessingEpV2ApplicationsByIdAbsentDone,
       runId,
     }
@@ -633,7 +633,7 @@ ${absentApplicationDomainNames.map(x => `
 
   `;
     const ICliRunSummary_EpV2_AbsentByIdDone: ICliRunSummary_EpV2_AbsentByIdDone = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.ProcessingEpV2ApplicationDomainsByIdAbsentDone,
       runId,
     }
@@ -648,7 +648,7 @@ ${absentApplicationDomainNames.map(x => `
     Processing Application '${rctxt.applicationName}' in '${rctxt.applicationDomainName}' ...
 `;
     const cliRunSummary_EpV2_AbsentById: ICliRunSummary_EpV2_AbsentById = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.ProcessingAbsentEpV2Application,
       runId,
       rctxt
@@ -664,7 +664,7 @@ ${absentApplicationDomainNames.map(x => `
     Processing Application Domain '${rctxt.applicationDomainName}' ...
 `;
     const cliRunSummary_EpV2_AbsentById: ICliRunSummary_EpV2_AbsentById = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.ProcessingAbsentEpV2ApplicationDomain,
       runId,
       rctxt
@@ -680,7 +680,7 @@ ${absentApplicationDomainNames.map(x => `
       Done.
 `;
     const cliRunSummary_EpV2_AbsentById: ICliRunSummary_EpV2_AbsentById = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.AbsentEpV2ApplicationDone,
       runId,
       rctxt
@@ -696,7 +696,7 @@ ${absentApplicationDomainNames.map(x => `
       Done.
 `;
     const cliRunSummary_EpV2_AbsentById: ICliRunSummary_EpV2_AbsentById = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.AbsentEpV2ApplicationDomainDone,
       runId,
       rctxt
@@ -711,7 +711,7 @@ ${absentApplicationDomainNames.map(x => `
       Issue deleting application. See log for details.
 `;
     const cliRunSummary_EpV2_AbsentByIdIssue: ICliRunSummary_EpV2_AbsentByIdIssue = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.AbsentEpV2ApplicationIssue,
       runId: issue.runId,
       issue
@@ -726,7 +726,7 @@ ${absentApplicationDomainNames.map(x => `
       Issue deleting application domain. See log for details.
 `;
     const cliRunSummary_EpV2_AbsentByIdIssue: ICliRunSummary_EpV2_AbsentByIdIssue = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.AbsentEpV2ApplicationDomainIssue,
       runId: issue.runId,
       issue
@@ -741,7 +741,7 @@ ${absentApplicationDomainNames.map(x => `
   Processing V2 Events for deletion (runId=${runId}) ...
 `;
     const ICliRunSummary_EpV2_AbsentByIdStart: ICliRunSummary_EpV2_AbsentByIdStart = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.ProcessingEpV2EventsByIdAbsentStart,
       runId,
     }
@@ -755,7 +755,7 @@ ${absentApplicationDomainNames.map(x => `
     None found.
 `;
     const cliRunSummary_EpV2_AbsentByIdNoneFound: ICliRunSummary_EpV2_AbsentByIdNoneFound = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.ProcessingEpV2EventsByIdAbsentNoneFound,
       runId,
     }
@@ -769,7 +769,7 @@ ${absentApplicationDomainNames.map(x => `
     None found.
 `;
     const cliRunSummary_EpV2_AbsentByIdNoneFound: ICliRunSummary_EpV2_AbsentByIdNoneFound = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.ProcessingEpV2SchemasByIdAbsentNoneFound,
       runId,
     }
@@ -783,7 +783,7 @@ ${absentApplicationDomainNames.map(x => `
     None found.
 `;
     const cliRunSummary_EpV2_AbsentByIdNoneFound: ICliRunSummary_EpV2_AbsentByIdNoneFound = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.ProcessingEpV2EnumsByIdAbsentNoneFound,
       runId,
     }
@@ -798,7 +798,7 @@ ${absentApplicationDomainNames.map(x => `
 
     `;
     const ICliRunSummary_EpV2_AbsentByIdDone: ICliRunSummary_EpV2_AbsentByIdDone = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.ProcessingEpV2EventsByIdAbsentDone,
       runId,
     }
@@ -813,7 +813,7 @@ ${absentApplicationDomainNames.map(x => `
 
     `;
     const ICliRunSummary_EpV2_AbsentByIdDone: ICliRunSummary_EpV2_AbsentByIdDone = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.ProcessingEpV2SchemasByIdAbsentDone,
       runId,
     }
@@ -828,7 +828,7 @@ ${absentApplicationDomainNames.map(x => `
 
     `;
     const ICliRunSummary_EpV2_AbsentByIdDone: ICliRunSummary_EpV2_AbsentByIdDone = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.ProcessingEpV2EnumsByIdAbsentDone,
       runId,
     }
@@ -843,7 +843,7 @@ ${absentApplicationDomainNames.map(x => `
     Processing Event '${rctxt.eventName}' in '${rctxt.applicationDomainName}' ...
 `;
     const cliRunSummary_EpV2_AbsentById: ICliRunSummary_EpV2_AbsentById = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.ProcessingAbsentEpV2Event,
       runId,
       rctxt
@@ -860,7 +860,7 @@ ${absentApplicationDomainNames.map(x => `
       Deleting Event Version '${eventVersion.version}'...
 `;
     const cliRunSummary_EpV2_AbsentById: ICliRunSummary_EpV2_AbsentById = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.AbsentEpV2EventVersion,
       runId,
       rctxt
@@ -877,7 +877,7 @@ ${absentApplicationDomainNames.map(x => `
       Deleting Application Version '${applicationVersion.version}'.
 `;
     const cliRunSummary_EpV2_AbsentById: ICliRunSummary_EpV2_AbsentById = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.AbsentEpV2ApplicationVersion,
       runId,
       rctxt
@@ -894,7 +894,7 @@ ${absentApplicationDomainNames.map(x => `
       Deleting Event '${event.name}'...
 `;
     const cliRunSummary_EpV2_AbsentById: ICliRunSummary_EpV2_AbsentById = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.AbsentEpV2Event,
       runId,
       rctxt
@@ -911,7 +911,7 @@ ${absentApplicationDomainNames.map(x => `
       Deleting Application '${application.name}'...
 `;
     const cliRunSummary_EpV2_AbsentById: ICliRunSummary_EpV2_AbsentById = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.AbsentEpV2Application,
       runId,
       rctxt
@@ -927,7 +927,7 @@ ${absentApplicationDomainNames.map(x => `
       Done.
 `;
     const cliRunSummary_EpV2_AbsentById: ICliRunSummary_EpV2_AbsentById = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.AbsentEpV2EventDone,
       runId,
       rctxt
@@ -942,27 +942,13 @@ ${absentApplicationDomainNames.map(x => `
       Issue deleting event. See log for details.
 `;
     const cliRunSummary_EpV2_AbsentByIdIssue: ICliRunSummary_EpV2_AbsentByIdIssue = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.AbsentEpV2EventIssue,
       runId: issue.runId,
       issue
     }
     this.log(ECliSummaryStatusCodes.ABSENT_EP_V2_EVENT_ISSUE, cliRunSummary_EpV2_AbsentByIdIssue, consoleOutput);
   }
-
-//   public processingEpV2ApplicationDomainsAbsentNoneFound = ({ runId }:{
-//     runId: string;
-//   }) => {
-//     const consoleOutput = `
-//     None found.
-// `;
-//     const cliRunSummary_EpV2_AbsentByIdNoneFound: ICliRunSummary_EpV2_AbsentByIdNoneFound = {
-//       runMode: this.runMode,
-//       type: ECliRunSummary_Type.ProcessingEpV2ApplicationDomainsByIdAbsentNoneFound,
-//       runId,
-//     }
-//     this.log(ECliSummaryStatusCodes.PROCESSING_EP_V2_APPLICATION_DOMAINS_ABSENT_BY_ID_NONE_FOUND, cliRunSummary_EpV2_AbsentByIdNoneFound , consoleOutput);
-//   }
 
   public processingEpV2ApplicationDomainsByPrefixAbsentNoneFound = () => {
     const consoleOutput = `
@@ -1002,7 +988,7 @@ ${absentApplicationDomainNames.map(x => `
       Deleting Application Domain '${applicationDomain.name}'...
 `;
     const cliRunSummary_EpV2_AbsentById: ICliRunSummary_EpV2_AbsentById = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.AbsentEpV2ApplicationDomain,
       runId,
       rctxt
@@ -1019,7 +1005,7 @@ ${absentApplicationDomainNames.map(x => `
       Deleting Application Domain '${applicationDomain.name}'...
 `;
     const cliRunSummary_EpV2_AbsentById: ICliRunSummary_EpV2_AbsentById = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.AbsentEpV2ApplicationDomain,
       runId,
       rctxt
@@ -1085,7 +1071,7 @@ ${absentApplicationDomainNames.map(x => `
     Processing V1 Enum '${enumName}' ...  
 `;
     const cliRunSummary_EpV1_Enum: ICliRunSummary_EpV1_Enum = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.ProcessingEpV1Enum,
       epV1ObjectType: ECliEpV1Object_Types.EpV1Enum,
       enumName,
@@ -1145,7 +1131,7 @@ ${absentApplicationDomainNames.map(x => `
     Processing V1 Schema '${schemaName}' ...  
 `;
     const cliRunSummary_EpV1_Schema: ICliRunSummary_EpV1_Schema = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.ProcessingEpV1Schema,
       epV1ObjectType: ECliEpV1Object_Types.EpV1Schema,
       schemaName,
@@ -1159,7 +1145,7 @@ ${absentApplicationDomainNames.map(x => `
       Issue migrating schema. See log for details.
 `;
     const cliRunSummary_EpV1_Schema: ICliRunSummary_EpV1_Schema = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.ProcessingEpV1SchemaIssue,
       epV1ObjectType: ECliEpV1Object_Types.EpV1Schema,
       schemaName: rctxt ? rctxt.epV1.epV1EventSchema.name : 'undefined'
@@ -1174,7 +1160,7 @@ ${absentApplicationDomainNames.map(x => `
       Issue migrating application domain. See log for details.
 `;
     const cliRunSummary_EpV1_ApplicationDomain: ICliRunSummary_EpV1_ApplicationDomain = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.ProcessingEpV1ApplicationDomainIssue,
       epV1ObjectType: ECliEpV1Object_Types.EpV1ApplicationDomain,
       applicationDomainName: JSON.stringify(rctxt?.epV1.applicationDomain.name)
@@ -1189,7 +1175,7 @@ ${absentApplicationDomainNames.map(x => `
       Issue migrating enum. See log for details.
 `;
     const cliRunSummary_EpV1_Enum: ICliRunSummary_EpV1_Enum = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.ProcessingEpV1EnumIssue,
       epV1ObjectType: ECliEpV1Object_Types.EpV1Enum,
       enumName: rctxt ? rctxt.epV1.epV1Enum.name : 'undefined'
@@ -1228,7 +1214,7 @@ ${absentApplicationDomainNames.map(x => `
   Processing V2 Schemas for deletion (runId=${runId}) ...
 `;
     const ICliRunSummary_EpV2_AbsentByIdStart: ICliRunSummary_EpV2_AbsentByIdStart = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.ProcessingEpV2SchemasByIdAbsentStart,
       runId,
     }
@@ -1242,7 +1228,7 @@ ${absentApplicationDomainNames.map(x => `
   Processing V2 Enums for deletion (runId=${runId}) ...
 `;
     const ICliRunSummary_EpV2_AbsentByIdStart: ICliRunSummary_EpV2_AbsentByIdStart = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.ProcessingEpV2EnumsByIdAbsentStart,
       runId,
     }
@@ -1257,7 +1243,7 @@ ${absentApplicationDomainNames.map(x => `
     Processing Schema '${rctxt.schemaName}' in '${rctxt.applicationDomainName}' ...
 `;
     const cliRunSummary_EpV2_AbsentById: ICliRunSummary_EpV2_AbsentById = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.ProcessingAbsentEpV2Schema,
       runId,
       rctxt
@@ -1273,7 +1259,7 @@ ${absentApplicationDomainNames.map(x => `
     Processing Enum '${rctxt.enumName}' in '${rctxt.applicationDomainName}' ...
 `;
     const cliRunSummary_EpV2_AbsentById: ICliRunSummary_EpV2_AbsentById = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.ProcessingAbsentEpV2Enum,
       runId,
       rctxt
@@ -1290,7 +1276,7 @@ ${absentApplicationDomainNames.map(x => `
       Deleting Schema Version '${schemaVersion.version}'.
 `;
     const cliRunSummary_EpV2_AbsentById: ICliRunSummary_EpV2_AbsentById = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.AbsentEpV2SchemaVersion,
       runId,
       rctxt
@@ -1307,7 +1293,7 @@ ${absentApplicationDomainNames.map(x => `
       Deleting Enum Version '${topicAddressEnumVersion.version}'.
 `;
     const cliRunSummary_EpV2_AbsentById: ICliRunSummary_EpV2_AbsentById = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.AbsentEpV2EnumVersion,
       runId,
       rctxt
@@ -1324,7 +1310,7 @@ ${absentApplicationDomainNames.map(x => `
       Deleting Schema '${schemaObject.name}'...
 `;
     const cliRunSummary_EpV2_AbsentById: ICliRunSummary_EpV2_AbsentById = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.AbsentEpV2Schema,
       runId,
       rctxt
@@ -1341,7 +1327,7 @@ ${absentApplicationDomainNames.map(x => `
       Deleting Enum '${topicAddressEnum.name}'...
 `;
     const cliRunSummary_EpV2_AbsentById: ICliRunSummary_EpV2_AbsentById = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.AbsentEpV2Enum,
       runId,
       rctxt
@@ -1357,7 +1343,7 @@ ${absentApplicationDomainNames.map(x => `
       Done.
 `;
     const cliRunSummary_EpV2_AbsentById: ICliRunSummary_EpV2_AbsentById = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.AbsentEpV2SchemaDone,
       runId,
       rctxt
@@ -1373,7 +1359,7 @@ ${absentApplicationDomainNames.map(x => `
       Done.
 `;
     const cliRunSummary_EpV2_AbsentById: ICliRunSummary_EpV2_AbsentById = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.AbsentEpV2EnumDone,
       runId,
       rctxt
@@ -1388,7 +1374,7 @@ ${absentApplicationDomainNames.map(x => `
       Issue deleting schema. See log for details.
 `;
     const cliRunSummary_EpV2_AbsentByIdIssue: ICliRunSummary_EpV2_AbsentByIdIssue = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.AbsentEpV2SchemaIssue,
       runId: issue.runId,
       issue
@@ -1403,7 +1389,7 @@ ${absentApplicationDomainNames.map(x => `
       Issue deleting enum. See log for details.
 `;
     const cliRunSummary_EpV2_AbsentByIdIssue: ICliRunSummary_EpV2_AbsentByIdIssue = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.AbsentEpV2EnumIssue,
       runId: issue.runId,
       issue
@@ -1439,7 +1425,7 @@ ${absentApplicationDomainNames.map(x => `
     Processing V1 Event '${eventName}' ...  
 `;
     const cliRunSummary_EpV1_Event: ICliRunSummary_EpV1_Event = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.ProcessingEpV1Event,
       epV1ObjectType: ECliEpV1Object_Types.EpV1Event,
       eventName,
@@ -1453,7 +1439,7 @@ ${absentApplicationDomainNames.map(x => `
       Issue migrating event. See log for details.
 `;
     const cliRunSummary_EpV1_Event: ICliRunSummary_EpV1_Event = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.ProcessingEpV1EventIssue,
       epV1ObjectType: ECliEpV1Object_Types.EpV1Event,
       eventName: rctxt ? rctxt.epV1.epV1Event.name : 'undefined'
@@ -1513,7 +1499,7 @@ ${absentApplicationDomainNames.map(x => `
     Processing V1 Application '${applicationName}' ...  
 `;
     const cliRunSummary_EpV1_Application: ICliRunSummary_EpV1_Application = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.ProcessingEpV1Application,
       epV1ObjectType: ECliEpV1Object_Types.EpV1Application,
       applicationName,
@@ -1527,7 +1513,7 @@ ${absentApplicationDomainNames.map(x => `
       Issue migrating application. See log for details.
 `;
     const cliRunSummary_EpV1_Application: ICliRunSummary_EpV1_Application = {
-      runMode: this.runMode,
+      // runMode: this.runMode,
       type: ECliRunSummary_Type.ProcessingEpV1ApplicationIssue,
       epV1ObjectType: ECliEpV1Object_Types.EpV1Application,
       applicationName: rctxt ? rctxt.epV1.epV1Application.name : 'undefined'
@@ -1676,13 +1662,13 @@ ${absentApplicationDomainNames.map(x => `
   };
 
   private processedMigrationPresent = (logName: string, cliMigrateManagerOptions: ICliMigrateManagerOptions, durationSecs: number) => {
-    CliLogger.info(CliLogger.createLogEntry(logName, {code: ECliStatusCodes.MIGRATE_PRESENT_DONE, details: {
-      runMode: this.runMode,
+    CliLogger.info(CliLogger.createLogEntry(logName, {code: ECliStatusCodes.MIGRATE_SUMMARY_LOG, details: {
+      // runMode: this.runMode,
       summaryLogList: this.getSummaryLogList(), 
     }}));
     const cliMigrateSummary: ICliMigrateSummaryPresent = this.createMigrateSummaryPresent(cliMigrateManagerOptions.cliMigrateManagerMode, durationSecs);
-    CliLogger.info(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.MIGRATE_PRESENT_DONE, details: {
-      runMode: this.runMode,
+    CliLogger.info(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.MIGRATE_SUMMARY_STATS, details: {
+      // runMode: this.runMode,
       cliMigrateSummary,
     }}));
 
@@ -1872,13 +1858,13 @@ Migration Summary for run: ${cliMigrateManagerOptions.cliMigrateManagerRunState}
   };
 
   private processedMigrationAbsent = (logName: string, cliMigrateManagerOptions: ICliMigrateManagerOptions, durationSecs: number) => {
-    CliLogger.info(CliLogger.createLogEntry(logName, {code: ECliStatusCodes.MIGRATE_ABSENT_DONE, details: {
-      runMode: this.runMode,
+    CliLogger.info(CliLogger.createLogEntry(logName, {code: ECliStatusCodes.MIGRATE_SUMMARY_LOG, details: {
+      // runMode: this.runMode,
       summaryLogList: this.getSummaryLogList(), 
     }}));
     const cliMigrateSummary: ICliMigrateSummaryAbsent = this.createMigrateSummaryAbsent(cliMigrateManagerOptions.cliMigrateManagerMode, durationSecs, cliMigrateManagerOptions.absentRunId);
-    CliLogger.info(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.MIGRATE_ABSENT_DONE, details: {
-      runMode: this.runMode,
+    CliLogger.info(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.MIGRATE_SUMMARY_STATS, details: {
+      // runMode: this.runMode,
       cliMigrateSummary,
     }}));
 
@@ -1951,10 +1937,11 @@ Migration Summary for run: ${cliMigrateManagerOptions.cliMigrateManagerRunState}
   };
 
   private processedMigrationIssuesAbsent = (logName: string, cliMigrateManagerOptions: ICliMigrateManagerOptions) => {
-    CliLogger.warn(CliLogger.createLogEntry(logName, {code: ECliStatusCodes.MIGRATE_ISSUES, details: {
-      runMode: this.runMode,
-      issues: CliRunIssues.get({}),
-    }}));
+    // log each issue
+    const issues = CliRunIssues.get({});
+    for(const issue of issues) {
+      CliLogger.warn(CliLogger.createLogEntry(logName, {code: ECliStatusCodes.MIGRATE_ISSUE, details: { issue }}));  
+    }
     const cliMigrateSummary: ICliMigrateSummaryIssuesAbsent = this.createMigrateSummaryIssuesAbsent();
 
     const consoleOutputEnumIssues = cliMigrateSummary.cliRunEnumIssues.map((enumIssue) => {
@@ -2057,10 +2044,11 @@ Issues for run: ${cliMigrateManagerOptions.cliMigrateManagerRunState}
   };
 
   private processedMigrationIssuesPresent = (logName: string, cliMigrateManagerOptions: ICliMigrateManagerOptions) => {
-    CliLogger.warn(CliLogger.createLogEntry(logName, {code: ECliStatusCodes.MIGRATE_ISSUES, details: {
-      runMode: this.runMode,
-      issues: CliRunIssues.get({}),
-    }}));
+    // log each issue
+    const issues = CliRunIssues.get({});
+    for(const issue of issues) {
+      CliLogger.warn(CliLogger.createLogEntry(logName, {code: ECliStatusCodes.MIGRATE_ISSUE, details: { issue }}));  
+    }
     const cliMigrateSummary: ICliMigrateSummaryIssuesPresent = this.createMigrateSummaryIssuesPresent();
 
     const consoleOutputEnumIssues = cliMigrateSummary.cliRunEnumIssues.map((enumIssue) => {
