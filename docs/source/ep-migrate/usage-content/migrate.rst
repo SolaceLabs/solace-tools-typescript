@@ -6,7 +6,7 @@ Preparing the Migration
 Tokens
 ------
 
-You can migrate from / to different EP accounts. This is controlled through
+You can migrate from / to different EP accounts. This is controlled through:
 
   - the EP V1 api base url and the the EP V1 token
   - the EP V2 api base url and the the EP V2 token

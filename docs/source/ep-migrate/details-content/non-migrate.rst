@@ -22,7 +22,28 @@ Topic Domains
 * EP V1 Topic Domains that contain a variable which references an Enum with a migration issue will not be migrated and an issue with the root cause will be logged.
 
 The Application Domain will still be migrated.
-  
+
+Schemas
+-------
+
+**EP V1 XML Schemas:**
+
+It may happen that EP V1 XML Schemas fail EP V2 XML validation. In this case, fix the EP V1 schema and run the migration again.
+
+For example, EP V1 XML Schema start with the version:
+
+.. code-block:: xml
+
+    <?xml version="1.0" encoding="utf-16"?>
+    <xs:schema xmlns="urn:exchangevoucherissued.bunnings.com.au" xmlns:ns1="http://schemas.microsoft.com/BizTalk/2003/system-properties" xmlns:b="http://schemas.microsoft.com/BizTalk/2003" xmlns:ns0="http://bunnings.com.au/integration/common/properties" elementFormDefault="qualified" targetNamespace="urn:exchangevoucherissued.bunnings.com.au" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    ....
+
+Fix:
+  * remove first line: <?xml version="1.0" encoding="utf-16"?>
+  * save
+
+
+
 Events
 ------
 
