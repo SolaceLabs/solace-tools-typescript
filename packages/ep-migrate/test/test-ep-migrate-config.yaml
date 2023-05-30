@@ -27,6 +27,8 @@ migrate:
       - 'EP_MIGRATE/domain/filter/2'
       - 'EP_MIGRATE/fail/topicDomain/NonExistentEnum'
       - 'EP_MIGRATE/fail/topicDomain/EnumWithIssue'
+      # no new test case:
+      # - 'EP_MIGRATE/TEST/SCHEMAS'
     # #   exclude:
     #   - "EP_MIGRATE/exclude"
   epV2:
