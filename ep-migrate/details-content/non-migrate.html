@@ -64,6 +64,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#enums">Enums</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#application-domains">Application Domains</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#events">Events</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#applications">Applications</a></li>
 </ul>
 </li>
 </ul>
@@ -131,6 +132,13 @@
 <h2>Events<a class="headerlink" href="#events" title="Permalink to this heading"></a></h2>
 <ul class="simple">
 <li><p>EP V1 Events without a topic will not be migrated and an issue will be logged.</p></li>
+<li><p>EP V1 Event with a duplicate topic address will not be migrated and an issue will be logged.</p></li>
+</ul>
+</div>
+<div class="section" id="applications">
+<h2>Applications<a class="headerlink" href="#applications" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><p>EP V1 Applications which reference an Event that has not been migrated will not be migrated and an issue with the root cause (the event issue) will be logged.</p></li>
 </ul>
 </div>
 </div>
@@ -147,7 +155,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, Solace Corporation, Ricardo Gomez-Ulmke, &lt;ricardo.gomez-ulmke@solace.com&gt;.
-      <span class="lastupdated">Last updated on 29 May 2023 at 09:34.
+      <span class="lastupdated">Last updated on 30 May 2023 at 08:27.
       </span></p>
   </div>
 
