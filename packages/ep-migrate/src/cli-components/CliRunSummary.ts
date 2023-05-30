@@ -1553,9 +1553,10 @@ ${absentApplicationDomainNames.map(x => `
 
     switch (cliMigrateManagerMode) {
       case ECliMigrateManagerMode.RELEASE_MODE:
-        cliRunSummary_LogBase_Filtered_List = cliRunSummary_LogBase_List.filter((cliRunSummary_LogBase: ICliRunSummary_LogBase) => {
-          return ( cliRunSummary_LogBase.runMode === ECliRunContext_RunMode.RELEASE );
-        });
+        cliRunSummary_LogBase_Filtered_List = cliRunSummary_LogBase_List;
+        // cliRunSummary_LogBase_Filtered_List = cliRunSummary_LogBase_List.filter((cliRunSummary_LogBase: ICliRunSummary_LogBase) => {
+        //   return ( cliRunSummary_LogBase.runMode === ECliRunContext_RunMode.RELEASE );
+        // });
         break;
       default:
         /* istanbul ignore next */
@@ -1724,9 +1725,10 @@ Migration Summary for run: ${cliMigrateManagerOptions.cliMigrateManagerRunState}
 
     switch (cliMigrateManagerMode) {
       case ECliMigrateManagerMode.RELEASE_MODE:
-        cliRunSummary_LogBase_Filtered_List = cliRunSummary_LogBase_List.filter((cliRunSummary_LogBase: ICliRunSummary_LogBase) => {
-          return ( cliRunSummary_LogBase.runMode === ECliRunContext_RunMode.RELEASE );
-        });
+        cliRunSummary_LogBase_Filtered_List = cliRunSummary_LogBase_List;
+        // cliRunSummary_LogBase_Filtered_List = cliRunSummary_LogBase_List.filter((cliRunSummary_LogBase: ICliRunSummary_LogBase) => {
+        //   return ( cliRunSummary_LogBase.runMode === ECliRunContext_RunMode.RELEASE );
+        // });
         break;
       default:
         /* istanbul ignore next */
