@@ -69,7 +69,7 @@ export class EpSdkEnumVersionsServiceClass extends EpSdkVersionServiceClass {
     const logName = `${EpSdkEnumVersionsServiceClass.name}.${funcName}()`;
     const topicAddressEnumVersionResponse: TopicAddressEnumVersionResponse = await EnumsService.getEnumVersion({
       xContextId,
-      versionId: enumVersionId
+      id: enumVersionId
     });
     /* istanbul ignore next */
     if(topicAddressEnumVersionResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'topicAddressEnumVersionResponse.data === undefined', { topicAddressEnumVersionResponse });    
@@ -280,7 +280,7 @@ export class EpSdkEnumVersionsServiceClass extends EpSdkVersionServiceClass {
     // get the source enum version
     const fromTopicAddressEnumVersionResponse: TopicAddressEnumVersionResponse = await EnumsService.getEnumVersion({
       xContextId,
-      versionId: enumVersionId,
+      id: enumVersionId,
     });
     /* istanbul ignore next */
     if(fromTopicAddressEnumVersionResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'fromTopicAddressEnumVersionResponse.data === undefined', {
