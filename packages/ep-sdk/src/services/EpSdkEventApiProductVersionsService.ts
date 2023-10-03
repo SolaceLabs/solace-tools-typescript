@@ -7,7 +7,6 @@ import {
   EventApiProductVersion,
   Pagination,
   EventApiProductResponse,
-  MessagingService,
   SolaceMessagingService,
 } from '@solace-labs/ep-openapi-node';
 import { 
@@ -41,7 +40,7 @@ export type EpSdkEventApiProductVersionList = Array<EpSdkEventApiProductVersion>
 export type EpSdkEventApiProductAndVersion = {
   eventApiProduct: EpSdkEventApiProduct;
   eventApiProductVersion: EpSdkEventApiProductVersion;
-  messagingServices?: Array<MessagingService>;
+  messagingServices?: Array<SolaceMessagingService>;
 }
 /** @category Services */
 export type EpSdkEventApiProductAndVersionList = Array<EpSdkEventApiProductAndVersion>;
@@ -364,7 +363,7 @@ export class EpSdkEventApiProductVersionsServiceClass extends EpSdkVersionServic
     }
     if (eventApiProductVersion === undefined) return undefined;
     // get all messaging services for the version
-    let messagingServiceList: Array<MessagingService> | undefined = undefined;
+    let messagingServiceList: Array<SolaceMessagingService> | undefined = undefined;
     if(eventApiProductVersion.solaceMessagingServices && eventApiProductVersion.solaceMessagingServices.length > 0) {
       const idList: Array<string> = eventApiProductVersion.solaceMessagingServices.map( (solaceMessagingService: SolaceMessagingService) => {
         /* istanbul ignore next */
