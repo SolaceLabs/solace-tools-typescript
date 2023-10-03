@@ -126,15 +126,18 @@ export class EpSdkEpEventVersionTask extends EpSdkVersionTask {
         type = AddressLevel.addressLevelType.VARIABLE;
         enumVersionId = await this.getEnumVersionId(topicLevel);
       }
-      addressLevels.push({
+      const addressLevel : AddressLevel = {
         name: topicLevel,
         addressLevelType: type,
-        enumVersionId: enumVersionId,
-      });
+      };
+      if (enumVersionId){
+        addressLevel.enumVersionId = enumVersionId;
+      }
+      addressLevels.push(addressLevel);
     }
     return addressLevels;
   };
-  private createObjectSettings(): Partial<EventVersion> {
+  private createObjectSettings(dd?: DeliveryDescriptor): Partial<EventVersion> {
     const settings: TEpSdkEpEventVersionTask_Settings = {
       ...this.Default_TEpSdkEpEventVersionTask_Settings,
       ...this.getTaskConfig().eventVersionSettings,
@@ -145,16 +148,20 @@ export class EpSdkEpEventVersionTask extends EpSdkVersionTask {
     const brokerType = this.getTaskConfig().eventVersionSettings.brokerType
       ? this.getTaskConfig().eventVersionSettings.brokerType
       : this.Default_TEpSdkEpEventVersionTask_Settings.brokerType;
-    return {
-      ...settings,
-      deliveryDescriptor: {
-        brokerType: brokerType,
-        address: {
-          addressLevels: this.topicAddressLevelList,
-          addressType: Address.addressType.TOPIC,
+      const obj: Partial<EventVersion> = {
+        ...settings,
+        deliveryDescriptor: {
+          brokerType: brokerType,
+          address: {
+            addressLevels: this.topicAddressLevelList,
+            addressType: Address.addressType.TOPIC,
+            id: dd?.address?.id,
+            type: dd?.address?.type,
+          },
         },
-      },
-    };
+      };
+
+    return obj;
   }
 
   protected async initializeTask(): Promise<void> {
@@ -287,7 +294,7 @@ export class EpSdkEpEventVersionTask extends EpSdkVersionTask {
       schemaVersionId: existingObject.schemaVersionId,
       deliveryDescriptor: existingObject.deliveryDescriptor,
     };
-    const requestedCompareObject: TEpSdkEpEventVersionTask_CompareObject = this.createObjectSettings();
+    const requestedCompareObject: TEpSdkEpEventVersionTask_CompareObject = this.createObjectSettings(existingObject.deliveryDescriptor);
     if (this.versionStrategy === EEpSdk_VersionTaskStrategy.EXACT_VERSION) {
       existingCompareObject.version = epSdkEpEventVersionTask_GetFuncReturn.epObject.version;
       requestedCompareObject.version = this.versionString;
