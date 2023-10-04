@@ -70,8 +70,8 @@
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="associateGatewayMessagingServiceToEapVersion.associateGatewayMessagingServiceToEapVersion-1">associate<wbr/>Gateway<wbr/>Messaging<wbr/>Service<wbr/>To<wbr/>Eap<wbr/>Version<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span><br/><span>    </span>eventApiProductVersionId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>requestBody<span class="tsd-signature-symbol">: </span><a href="../types/Event_Portal_OpenAPI_Node.GatewayMessagingService.html" class="tsd-signature-type" data-tsd-kind="Type alias">GatewayMessagingService</a><span class="tsd-signature-symbol">; </span><br/><span>    </span>xContextId<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Event_Portal_OpenAPI_Node.CancelablePromise.html" class="tsd-signature-type" data-tsd-kind="Class">CancelablePromise</a><span class="tsd-signature-symbol">&lt;</span><a href="../types/Event_Portal_OpenAPI_Node.GatewayMessagingServiceResponse.html" class="tsd-signature-type" data-tsd-kind="Type alias">GatewayMessagingServiceResponse</a><span class="tsd-signature-symbol">&gt;</span><a href="#associateGatewayMessagingServiceToEapVersion.associateGatewayMessagingServiceToEapVersion-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography"><p>(Beta) Create an association between a gateway messaging service and an Event API Product version
-Use this API to associate an Event API Product version and gateway messaging service.</p>
+<div class="tsd-comment tsd-typography"><p>(Beta) Create an Association Between a Gateway Messaging Service and an Event API Product Version
+Use this API to associate an Event API Product version and gateway messaging service.<br><br><a href="https://api.solace.dev/cloud/reference/authentication">Token Permissions</a>: [ <code>event_api_product:update:*</code> ]</p>
 
 <h3>Returns</h3><p>GatewayMessagingServiceResponse Associated GatewayMessagingService to Event API Product version.</p>
 
@@ -89,7 +89,7 @@ Use this API to associate an Event API Product version and gateway messaging ser
 </div></li>
 <li class="tsd-parameter">
 <h5>request<wbr/>Body<span class="tsd-signature-symbol">: </span><a href="../types/Event_Portal_OpenAPI_Node.GatewayMessagingService.html" class="tsd-signature-type" data-tsd-kind="Type alias">GatewayMessagingService</a></h5>
-<div class="tsd-comment tsd-typography"><p>Gateway messaging service Id and supported Protocols *</p>
+<div class="tsd-comment tsd-typography"><p>Gateway messaging service Id and supported Protocols. *</p>
 </div></li>
 <li class="tsd-parameter">
 <h5><code class="tsd-tag ts-flagOptional">Optional</code> x<wbr/>Context<wbr/>Id<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span></h5>
@@ -97,16 +97,16 @@ Use this API to associate an Event API Product version and gateway messaging ser
 </div></li></ul></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="Event_Portal_OpenAPI_Node.CancelablePromise.html" class="tsd-signature-type" data-tsd-kind="Class">CancelablePromise</a><span class="tsd-signature-symbol">&lt;</span><a href="../types/Event_Portal_OpenAPI_Node.GatewayMessagingServiceResponse.html" class="tsd-signature-type" data-tsd-kind="Type alias">GatewayMessagingServiceResponse</a><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ep-openapi-node/generated-src/services/EventApiProductsService.ts:878</li></ul></aside></li></ul></section>
+<li>Defined in packages/ep-openapi-node/generated-src/services/EventApiProductsService.ts:916</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="createEventApiProduct" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>create<wbr/>Event<wbr/>Api<wbr/>Product</span><a href="#createEventApiProduct" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="createEventApiProduct.createEventApiProduct-1">create<wbr/>Event<wbr/>Api<wbr/>Product<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span><br/><span>    </span>requestBody<span class="tsd-signature-symbol">: </span><a href="../types/Event_Portal_OpenAPI_Node.EventApiProduct-1.html" class="tsd-signature-type" data-tsd-kind="Type alias">EventApiProduct</a><span class="tsd-signature-symbol">; </span><br/><span>    </span>xContextId<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Event_Portal_OpenAPI_Node.CancelablePromise.html" class="tsd-signature-type" data-tsd-kind="Class">CancelablePromise</a><span class="tsd-signature-symbol">&lt;</span><a href="../types/Event_Portal_OpenAPI_Node.EventApiProductResponse.html" class="tsd-signature-type" data-tsd-kind="Type alias">EventApiProductResponse</a><span class="tsd-signature-symbol">&gt;</span><a href="#createEventApiProduct.createEventApiProduct-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography"><p>Creates an event API product
-Use this API to create an event API product.</p>
+<div class="tsd-comment tsd-typography"><p>Create an Event API Product
+Use this API to create an Event API Product.<br><br><a href="https://api.solace.dev/cloud/reference/authentication">Token Permissions</a>: [ <code>event_api_product:create:*</code> ]</p>
 
-<h3>Returns</h3><p>EventApiProductResponse Created an event API product. The newly saved event API product is returned in the response body.</p>
+<h3>Returns</h3><p>EventApiProductResponse Created an Event API Product. The newly saved Event API Product is returned in the response body.</p>
 
 <h3>Throws</h3><p>ApiError</p>
 </div>
@@ -118,7 +118,7 @@ Use this API to create an event API product.</p>
 <ul class="tsd-parameters">
 <li class="tsd-parameter">
 <h5>request<wbr/>Body<span class="tsd-signature-symbol">: </span><a href="../types/Event_Portal_OpenAPI_Node.EventApiProduct-1.html" class="tsd-signature-type" data-tsd-kind="Type alias">EventApiProduct</a></h5>
-<div class="tsd-comment tsd-typography"><p>The event API product *</p>
+<div class="tsd-comment tsd-typography"><p>The Event API Product. *</p>
 </div></li>
 <li class="tsd-parameter">
 <h5><code class="tsd-tag ts-flagOptional">Optional</code> x<wbr/>Context<wbr/>Id<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span></h5>
@@ -132,8 +132,8 @@ Use this API to create an event API product.</p>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="createEventApiProductVersion.createEventApiProductVersion-1">create<wbr/>Event<wbr/>Api<wbr/>Product<wbr/>Version<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span><br/><span>    </span>requestBody<span class="tsd-signature-symbol">: </span><a href="../types/Event_Portal_OpenAPI_Node.EventApiProductVersion-1.html" class="tsd-signature-type" data-tsd-kind="Type alias">EventApiProductVersion</a><span class="tsd-signature-symbol">; </span><br/><span>    </span>xContextId<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Event_Portal_OpenAPI_Node.CancelablePromise.html" class="tsd-signature-type" data-tsd-kind="Class">CancelablePromise</a><span class="tsd-signature-symbol">&lt;</span><a href="../types/Event_Portal_OpenAPI_Node.EventApiProductVersionResponse.html" class="tsd-signature-type" data-tsd-kind="Type alias">EventApiProductVersionResponse</a><span class="tsd-signature-symbol">&gt;</span><a href="#createEventApiProductVersion.createEventApiProductVersion-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography"><p>(Beta) Create an Event API Product version
-Use this API to create an Event API Product version.</p>
+<div class="tsd-comment tsd-typography"><p>(Beta) Create an Event API Product Version
+Use this API to create an Event API Product version.<br><br><a href="https://api.solace.dev/cloud/reference/authentication">Token Permissions</a>: [ <code>event_api_product:update:*</code> ]</p>
 
 <h3>Returns</h3><p>EventApiProductVersionResponse Created an Event API Product version. Returns the newly saved Event API Product version in the response body.</p>
 
@@ -147,7 +147,7 @@ Use this API to create an Event API Product version.</p>
 <ul class="tsd-parameters">
 <li class="tsd-parameter">
 <h5>request<wbr/>Body<span class="tsd-signature-symbol">: </span><a href="../types/Event_Portal_OpenAPI_Node.EventApiProductVersion-1.html" class="tsd-signature-type" data-tsd-kind="Type alias">EventApiProductVersion</a></h5>
-<div class="tsd-comment tsd-typography"><p>Event API Product version *</p>
+<div class="tsd-comment tsd-typography"><p>Event API Product version. *</p>
 </div></li>
 <li class="tsd-parameter">
 <h5><code class="tsd-tag ts-flagOptional">Optional</code> x<wbr/>Context<wbr/>Id<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span></h5>
@@ -155,14 +155,14 @@ Use this API to create an Event API Product version.</p>
 </div></li></ul></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="Event_Portal_OpenAPI_Node.CancelablePromise.html" class="tsd-signature-type" data-tsd-kind="Class">CancelablePromise</a><span class="tsd-signature-symbol">&lt;</span><a href="../types/Event_Portal_OpenAPI_Node.EventApiProductVersionResponse.html" class="tsd-signature-type" data-tsd-kind="Type alias">EventApiProductVersionResponse</a><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ep-openapi-node/generated-src/services/EventApiProductsService.ts:626</li></ul></aside></li></ul></section>
+<li>Defined in packages/ep-openapi-node/generated-src/services/EventApiProductsService.ts:335</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="createEventApiProductVersionForEventApiProduct" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>create<wbr/>Event<wbr/>Api<wbr/>Product<wbr/>Version<wbr/>For<wbr/>Event<wbr/>Api<wbr/>Product</span><a href="#createEventApiProductVersionForEventApiProduct" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="createEventApiProductVersionForEventApiProduct.createEventApiProductVersionForEventApiProduct-1">create<wbr/>Event<wbr/>Api<wbr/>Product<wbr/>Version<wbr/>For<wbr/>Event<wbr/>Api<wbr/>Product<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span><br/><span>    </span>eventApiProductId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>requestBody<span class="tsd-signature-symbol">: </span><a href="../types/Event_Portal_OpenAPI_Node.EventApiProductVersion-1.html" class="tsd-signature-type" data-tsd-kind="Type alias">EventApiProductVersion</a><span class="tsd-signature-symbol">; </span><br/><span>    </span>xContextId<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Event_Portal_OpenAPI_Node.CancelablePromise.html" class="tsd-signature-type" data-tsd-kind="Class">CancelablePromise</a><span class="tsd-signature-symbol">&lt;</span><a href="../types/Event_Portal_OpenAPI_Node.EventApiProductVersionResponse.html" class="tsd-signature-type" data-tsd-kind="Type alias">EventApiProductVersionResponse</a><span class="tsd-signature-symbol">&gt;</span><a href="#createEventApiProductVersionForEventApiProduct.createEventApiProductVersionForEventApiProduct-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography">
-<h3>Deprecated</h3><p>Create an Event API Product version
+<h3>Deprecated</h3><p>Create an Event API Product Version
 *Deprecation Date: 2022-11-01<br>Removal Date: 2023-12-01<br>Reason: Replaced by <a href="/cloud/reference/createeventapiproductversion">another endpoint.</a><br><br>*Use this API to create an Event API Product version.</p>
 
 <h3>Returns</h3><p>EventApiProductVersionResponse Created an Event API Product version. Returns the newly saved Event API Product version in the response body.</p>
@@ -177,11 +177,11 @@ Use this API to create an Event API Product version.</p>
 <ul class="tsd-parameters">
 <li class="tsd-parameter">
 <h5>event<wbr/>Api<wbr/>Product<wbr/>Id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
-<div class="tsd-comment tsd-typography"><p>The ID of the parent Event API Product *</p>
+<div class="tsd-comment tsd-typography"><p>The ID of the parent Event API Product. *</p>
 </div></li>
 <li class="tsd-parameter">
 <h5>request<wbr/>Body<span class="tsd-signature-symbol">: </span><a href="../types/Event_Portal_OpenAPI_Node.EventApiProductVersion-1.html" class="tsd-signature-type" data-tsd-kind="Type alias">EventApiProductVersion</a></h5>
-<div class="tsd-comment tsd-typography"><p>Event API Product version *</p>
+<div class="tsd-comment tsd-typography"><p>Event API Product version. *</p>
 </div></li>
 <li class="tsd-parameter">
 <h5><code class="tsd-tag ts-flagOptional">Optional</code> x<wbr/>Context<wbr/>Id<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span></h5>
@@ -189,14 +189,14 @@ Use this API to create an Event API Product version.</p>
 </div></li></ul></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="Event_Portal_OpenAPI_Node.CancelablePromise.html" class="tsd-signature-type" data-tsd-kind="Class">CancelablePromise</a><span class="tsd-signature-symbol">&lt;</span><a href="../types/Event_Portal_OpenAPI_Node.EventApiProductVersionResponse.html" class="tsd-signature-type" data-tsd-kind="Type alias">EventApiProductVersionResponse</a><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ep-openapi-node/generated-src/services/EventApiProductsService.ts:323</li></ul></aside></li></ul></section>
+<li>Defined in packages/ep-openapi-node/generated-src/services/EventApiProductsService.ts:653</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="deleteEventApiProduct" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>delete<wbr/>Event<wbr/>Api<wbr/>Product</span><a href="#deleteEventApiProduct" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="deleteEventApiProduct.deleteEventApiProduct-1">delete<wbr/>Event<wbr/>Api<wbr/>Product<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span><br/><span>    </span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>xContextId<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Event_Portal_OpenAPI_Node.CancelablePromise.html" class="tsd-signature-type" data-tsd-kind="Class">CancelablePromise</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><a href="#deleteEventApiProduct.deleteEventApiProduct-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography"><p>Delete an Event API Product
-Use this API to delete an Event API Product.</p>
+Use this API to delete an Event API Product.<br><br><a href="https://api.solace.dev/cloud/reference/authentication">Token Permissions</a>: [ <code>event_api_product:delete:*</code> ]</p>
 
 <h3>Returns</h3><p>void</p>
 
@@ -224,8 +224,8 @@ Use this API to delete an Event API Product.</p>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="deleteEventApiProductVersion.deleteEventApiProductVersion-1">delete<wbr/>Event<wbr/>Api<wbr/>Product<wbr/>Version<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span><br/><span>    </span>versionId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>xContextId<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Event_Portal_OpenAPI_Node.CancelablePromise.html" class="tsd-signature-type" data-tsd-kind="Class">CancelablePromise</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><a href="#deleteEventApiProductVersion.deleteEventApiProductVersion-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography"><p>(Beta) Delete an Event API Product version by ID
-Use this API to delete an Event API Product version by ID.</p>
+<div class="tsd-comment tsd-typography"><p>(Beta) Delete an Event API Product Version by ID
+Use this API to delete an Event API Product version by ID.<br><br><a href="https://api.solace.dev/cloud/reference/authentication">Token Permissions</a>: [ <code>event_api_product:update:*</code> ]</p>
 
 <h3>Returns</h3><p>void</p>
 
@@ -239,7 +239,7 @@ Use this API to delete an Event API Product version by ID.</p>
 <ul class="tsd-parameters">
 <li class="tsd-parameter">
 <h5>version<wbr/>Id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
-<div class="tsd-comment tsd-typography"><p>The ID of the Event API Product version *</p>
+<div class="tsd-comment tsd-typography"><p>The ID of the Event API Product version. *</p>
 </div></li>
 <li class="tsd-parameter">
 <h5><code class="tsd-tag ts-flagOptional">Optional</code> x<wbr/>Context<wbr/>Id<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span></h5>
@@ -247,14 +247,14 @@ Use this API to delete an Event API Product version by ID.</p>
 </div></li></ul></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="Event_Portal_OpenAPI_Node.CancelablePromise.html" class="tsd-signature-type" data-tsd-kind="Class">CancelablePromise</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ep-openapi-node/generated-src/services/EventApiProductsService.ts:711</li></ul></aside></li></ul></section>
+<li>Defined in packages/ep-openapi-node/generated-src/services/EventApiProductsService.ts:420</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="deleteEventApiProductVersionForEventApiProduct" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>delete<wbr/>Event<wbr/>Api<wbr/>Product<wbr/>Version<wbr/>For<wbr/>Event<wbr/>Api<wbr/>Product</span><a href="#deleteEventApiProductVersionForEventApiProduct" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="deleteEventApiProductVersionForEventApiProduct.deleteEventApiProductVersionForEventApiProduct-1">delete<wbr/>Event<wbr/>Api<wbr/>Product<wbr/>Version<wbr/>For<wbr/>Event<wbr/>Api<wbr/>Product<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span><br/><span>    </span>eventApiProductId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>xContextId<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Event_Portal_OpenAPI_Node.CancelablePromise.html" class="tsd-signature-type" data-tsd-kind="Class">CancelablePromise</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><a href="#deleteEventApiProductVersionForEventApiProduct.deleteEventApiProductVersionForEventApiProduct-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography">
-<h3>Deprecated</h3><p>Delete an Event API Product version
+<h3>Deprecated</h3><p>Delete an Event API Product Version
 *Deprecation Date: 2022-11-01<br>Removal Date: 2023-12-01<br>Reason: Replaced by <a href="/cloud/reference/deleteeventapiproductversion">another endpoint.</a><br><br>*Use this API to delete an Event API Product version.</p>
 
 <h3>Returns</h3><p>void</p>
@@ -269,11 +269,11 @@ Use this API to delete an Event API Product version by ID.</p>
 <ul class="tsd-parameters">
 <li class="tsd-parameter">
 <h5>event<wbr/>Api<wbr/>Product<wbr/>Id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
-<div class="tsd-comment tsd-typography"><p>The ID of the parent Event API Product *</p>
+<div class="tsd-comment tsd-typography"><p>The ID of the parent Event API Product. *</p>
 </div></li>
 <li class="tsd-parameter">
 <h5>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
-<div class="tsd-comment tsd-typography"><p>The ID of the Event API Product version *</p>
+<div class="tsd-comment tsd-typography"><p>The ID of the Event API Product version. *</p>
 </div></li>
 <li class="tsd-parameter">
 <h5><code class="tsd-tag ts-flagOptional">Optional</code> x<wbr/>Context<wbr/>Id<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span></h5>
@@ -281,14 +281,14 @@ Use this API to delete an Event API Product version by ID.</p>
 </div></li></ul></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="Event_Portal_OpenAPI_Node.CancelablePromise.html" class="tsd-signature-type" data-tsd-kind="Class">CancelablePromise</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ep-openapi-node/generated-src/services/EventApiProductsService.ts:410</li></ul></aside></li></ul></section>
+<li>Defined in packages/ep-openapi-node/generated-src/services/EventApiProductsService.ts:778</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="disassociateGatewayMessagingServiceFromEventApiProductVersionById" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>disassociate<wbr/>Gateway<wbr/>Messaging<wbr/>Service<wbr/>From<wbr/>Event<wbr/>Api<wbr/>Product<wbr/>Version<wbr/>By<wbr/>Id</span><a href="#disassociateGatewayMessagingServiceFromEventApiProductVersionById" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="disassociateGatewayMessagingServiceFromEventApiProductVersionById.disassociateGatewayMessagingServiceFromEventApiProductVersionById-1">disassociate<wbr/>Gateway<wbr/>Messaging<wbr/>Service<wbr/>From<wbr/>Event<wbr/>Api<wbr/>Product<wbr/>Version<wbr/>By<wbr/>Id<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span><br/><span>    </span>memAssociationId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>xContextId<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Event_Portal_OpenAPI_Node.CancelablePromise.html" class="tsd-signature-type" data-tsd-kind="Class">CancelablePromise</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><a href="#disassociateGatewayMessagingServiceFromEventApiProductVersionById.disassociateGatewayMessagingServiceFromEventApiProductVersionById-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography"><p>(Beta) Delete an association between a gateway messaging service and an Event API Product version by association ID
-Use this API to disassociate an Event API Product version and gateway messaging service by association ID.</p>
+<div class="tsd-comment tsd-typography"><p>(Beta) Delete an Association Between a Gateway Messaging Service and an Event API Product Version by Association ID
+Use this API to disassociate an Event API Product version and gateway messaging service by association ID.<br><br><a href="https://api.solace.dev/cloud/reference/authentication">Token Permissions</a>: [ <code>event_api_product:update:*</code> ]</p>
 
 <h3>Returns</h3><p>void</p>
 
@@ -302,7 +302,7 @@ Use this API to disassociate an Event API Product version and gateway messaging 
 <ul class="tsd-parameters">
 <li class="tsd-parameter">
 <h5>mem<wbr/>Association<wbr/>Id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
-<div class="tsd-comment tsd-typography"><p>The association ID to perform the disassociation for *</p>
+<div class="tsd-comment tsd-typography"><p>The association ID to perform the disassociation for. *</p>
 </div></li>
 <li class="tsd-parameter">
 <h5><code class="tsd-tag ts-flagOptional">Optional</code> x<wbr/>Context<wbr/>Id<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span></h5>
@@ -310,14 +310,14 @@ Use this API to disassociate an Event API Product version and gateway messaging 
 </div></li></ul></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="Event_Portal_OpenAPI_Node.CancelablePromise.html" class="tsd-signature-type" data-tsd-kind="Class">CancelablePromise</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ep-openapi-node/generated-src/services/EventApiProductsService.ts:963</li></ul></aside></li></ul></section>
+<li>Defined in packages/ep-openapi-node/generated-src/services/EventApiProductsService.ts:696</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="disassociateGatewayMessagingServiceToEapVersion" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>disassociate<wbr/>Gateway<wbr/>Messaging<wbr/>Service<wbr/>To<wbr/>Eap<wbr/>Version</span><a href="#disassociateGatewayMessagingServiceToEapVersion" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="disassociateGatewayMessagingServiceToEapVersion.disassociateGatewayMessagingServiceToEapVersion-1">disassociate<wbr/>Gateway<wbr/>Messaging<wbr/>Service<wbr/>To<wbr/>Eap<wbr/>Version<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span><br/><span>    </span>eventApiProductVersionId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>memAssociationId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>xContextId<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Event_Portal_OpenAPI_Node.CancelablePromise.html" class="tsd-signature-type" data-tsd-kind="Class">CancelablePromise</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><a href="#disassociateGatewayMessagingServiceToEapVersion.disassociateGatewayMessagingServiceToEapVersion-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography"><p>(Beta) Delete an association between a gateway messaging service and an Event API Product version
-Use this API to disassociate an Event API Product version and gateway messaging service.</p>
+<div class="tsd-comment tsd-typography"><p>(Beta) Delete an Association Between a Gateway Messaging Service and an Event API Product Version
+Use this API to disassociate an Event API Product version and gateway messaging service.<br><br><a href="https://api.solace.dev/cloud/reference/authentication">Token Permissions</a>: [ <code>event_api_product:update:*</code> ]</p>
 
 <h3>Returns</h3><p>void</p>
 
@@ -343,14 +343,14 @@ Use this API to disassociate an Event API Product version and gateway messaging 
 </div></li></ul></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="Event_Portal_OpenAPI_Node.CancelablePromise.html" class="tsd-signature-type" data-tsd-kind="Class">CancelablePromise</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ep-openapi-node/generated-src/services/EventApiProductsService.ts:921</li></ul></aside></li></ul></section>
+<li>Defined in packages/ep-openapi-node/generated-src/services/EventApiProductsService.ts:959</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="getEventApiProduct" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>get<wbr/>Event<wbr/>Api<wbr/>Product</span><a href="#getEventApiProduct" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="getEventApiProduct.getEventApiProduct-1">get<wbr/>Event<wbr/>Api<wbr/>Product<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span><br/><span>    </span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>xContextId<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Event_Portal_OpenAPI_Node.CancelablePromise.html" class="tsd-signature-type" data-tsd-kind="Class">CancelablePromise</a><span class="tsd-signature-symbol">&lt;</span><a href="../types/Event_Portal_OpenAPI_Node.EventApiProductResponse.html" class="tsd-signature-type" data-tsd-kind="Type alias">EventApiProductResponse</a><span class="tsd-signature-symbol">&gt;</span><a href="#getEventApiProduct.getEventApiProduct-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography"><p>Get an Event API Product
-Use this API to get a single Event API Product by its ID.</p>
+Use this API to get a single Event API Product by its ID.<br><br><a href="https://api.solace.dev/cloud/reference/authentication">Token Permissions</a>: [ <code>event_api_product:get:*</code> ]</p>
 
 <h3>Returns</h3><p>EventApiProductResponse The Event API Product.</p>
 
@@ -378,8 +378,8 @@ Use this API to get a single Event API Product by its ID.</p>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="getEventApiProductVersion.getEventApiProductVersion-1">get<wbr/>Event<wbr/>Api<wbr/>Product<wbr/>Version<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span><br/><span>    </span>clientAppId<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>include<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>versionId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>xContextId<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Event_Portal_OpenAPI_Node.CancelablePromise.html" class="tsd-signature-type" data-tsd-kind="Class">CancelablePromise</a><span class="tsd-signature-symbol">&lt;</span><a href="../types/Event_Portal_OpenAPI_Node.EventApiProductVersionResponse.html" class="tsd-signature-type" data-tsd-kind="Type alias">EventApiProductVersionResponse</a><span class="tsd-signature-symbol">&gt;</span><a href="#getEventApiProductVersion.getEventApiProductVersion-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography"><p>(Beta) Get an Event API Product version
-Use this API to get a single Event API Product version by its ID.</p>
+<div class="tsd-comment tsd-typography"><p>(Beta) Get an Event API Product Version
+Use this API to get a single Event API Product version by its ID.<br><br><a href="https://api.solace.dev/cloud/reference/authentication">Token Permissions</a>: [ <code>event_api_product:get:*</code> ]</p>
 
 <h3>Returns</h3><p>EventApiProductVersionResponse The Event API Product version.</p>
 
@@ -409,14 +409,14 @@ Use this API to get a single Event API Product version by its ID.</p>
 </div></li></ul></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="Event_Portal_OpenAPI_Node.CancelablePromise.html" class="tsd-signature-type" data-tsd-kind="Class">CancelablePromise</a><span class="tsd-signature-symbol">&lt;</span><a href="../types/Event_Portal_OpenAPI_Node.EventApiProductVersionResponse.html" class="tsd-signature-type" data-tsd-kind="Type alias">EventApiProductVersionResponse</a><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ep-openapi-node/generated-src/services/EventApiProductsService.ts:663</li></ul></aside></li></ul></section>
+<li>Defined in packages/ep-openapi-node/generated-src/services/EventApiProductsService.ts:372</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="getEventApiProductVersionForEventApiProduct" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>get<wbr/>Event<wbr/>Api<wbr/>Product<wbr/>Version<wbr/>For<wbr/>Event<wbr/>Api<wbr/>Product</span><a href="#getEventApiProductVersionForEventApiProduct" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="getEventApiProductVersionForEventApiProduct.getEventApiProductVersionForEventApiProduct-1">get<wbr/>Event<wbr/>Api<wbr/>Product<wbr/>Version<wbr/>For<wbr/>Event<wbr/>Api<wbr/>Product<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span><br/><span>    </span>eventApiProductId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>xContextId<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Event_Portal_OpenAPI_Node.CancelablePromise.html" class="tsd-signature-type" data-tsd-kind="Class">CancelablePromise</a><span class="tsd-signature-symbol">&lt;</span><a href="../types/Event_Portal_OpenAPI_Node.EventApiProductVersionResponse.html" class="tsd-signature-type" data-tsd-kind="Type alias">EventApiProductVersionResponse</a><span class="tsd-signature-symbol">&gt;</span><a href="#getEventApiProductVersionForEventApiProduct.getEventApiProductVersionForEventApiProduct-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography">
-<h3>Deprecated</h3><p>Get an Event API Product version
+<h3>Deprecated</h3><p>Get an Event API Product Version
 *Deprecation Date: 2022-11-01<br>Removal Date: 2023-12-01<br>Reason: Replaced by <a href="/cloud/reference/geteventapiproductversion">another endpoint.</a><br><br>*Use this API to get a single Event API Product version using the parent ID and the version&#39;s ID.</p>
 
 <h3>Returns</h3><p>EventApiProductVersionResponse The Event API Product version.</p>
@@ -443,14 +443,14 @@ Use this API to get a single Event API Product version by its ID.</p>
 </div></li></ul></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="Event_Portal_OpenAPI_Node.CancelablePromise.html" class="tsd-signature-type" data-tsd-kind="Class">CancelablePromise</a><span class="tsd-signature-symbol">&lt;</span><a href="../types/Event_Portal_OpenAPI_Node.EventApiProductVersionResponse.html" class="tsd-signature-type" data-tsd-kind="Type alias">EventApiProductVersionResponse</a><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ep-openapi-node/generated-src/services/EventApiProductsService.ts:367</li></ul></aside></li></ul></section>
+<li>Defined in packages/ep-openapi-node/generated-src/services/EventApiProductsService.ts:735</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="getEventApiProductVersions" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>get<wbr/>Event<wbr/>Api<wbr/>Product<wbr/>Versions</span><a href="#getEventApiProductVersions" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="getEventApiProductVersions.getEventApiProductVersions-1">get<wbr/>Event<wbr/>Api<wbr/>Product<wbr/>Versions<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span><br/><span>    </span>clientAppId<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>customAttributes<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>eventApiProductIds<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>ids<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>include<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>latest<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>messagingServiceId<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>pageNumber<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>pageSize<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>shared<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>stateId<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>xContextId<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Event_Portal_OpenAPI_Node.CancelablePromise.html" class="tsd-signature-type" data-tsd-kind="Class">CancelablePromise</a><span class="tsd-signature-symbol">&lt;</span><a href="../types/Event_Portal_OpenAPI_Node.EventApiProductVersionsResponse.html" class="tsd-signature-type" data-tsd-kind="Type alias">EventApiProductVersionsResponse</a><span class="tsd-signature-symbol">&gt;</span><a href="#getEventApiProductVersions.getEventApiProductVersions-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography"><p>(Beta) Get a list of Event API Product versions
-Use this API to get a list of Event API Product versions that match the given parameters.</p>
+<div class="tsd-comment tsd-typography"><p>(Beta) Get a List of Event API Product Versions
+Use this API to get a list of Event API Product versions that match the given parameters.<br><br><a href="https://api.solace.dev/cloud/reference/authentication">Token Permissions</a>: [ <code>event_designer:access</code> ]</p>
 
 <h3>Returns</h3><p>EventApiProductVersionsResponse Get a list of Event API Product versions.</p>
 
@@ -512,14 +512,14 @@ Use this API to get a list of Event API Product versions that match the given pa
 </div></li></ul></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="Event_Portal_OpenAPI_Node.CancelablePromise.html" class="tsd-signature-type" data-tsd-kind="Class">CancelablePromise</a><span class="tsd-signature-symbol">&lt;</span><a href="../types/Event_Portal_OpenAPI_Node.EventApiProductVersionsResponse.html" class="tsd-signature-type" data-tsd-kind="Type alias">EventApiProductVersionsResponse</a><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ep-openapi-node/generated-src/services/EventApiProductsService.ts:548</li></ul></aside></li></ul></section>
+<li>Defined in packages/ep-openapi-node/generated-src/services/EventApiProductsService.ts:257</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="getEventApiProductVersionsForEventApiProduct" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>get<wbr/>Event<wbr/>Api<wbr/>Product<wbr/>Versions<wbr/>For<wbr/>Event<wbr/>Api<wbr/>Product</span><a href="#getEventApiProductVersionsForEventApiProduct" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="getEventApiProductVersionsForEventApiProduct.getEventApiProductVersionsForEventApiProduct-1">get<wbr/>Event<wbr/>Api<wbr/>Product<wbr/>Versions<wbr/>For<wbr/>Event<wbr/>Api<wbr/>Product<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span><br/><span>    </span>customAttributes<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>displayName<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>eventApiProductId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>id<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>ids<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>stateId<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>version<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>xContextId<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Event_Portal_OpenAPI_Node.CancelablePromise.html" class="tsd-signature-type" data-tsd-kind="Class">CancelablePromise</a><span class="tsd-signature-symbol">&lt;</span><a href="../types/Event_Portal_OpenAPI_Node.EventApiProductVersionsResponse.html" class="tsd-signature-type" data-tsd-kind="Type alias">EventApiProductVersionsResponse</a><span class="tsd-signature-symbol">&gt;</span><a href="#getEventApiProductVersionsForEventApiProduct.getEventApiProductVersionsForEventApiProduct-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography">
-<h3>Deprecated</h3><p>Get a list of Event API Product versions
+<h3>Deprecated</h3><p>Get a List of Event API Product Versions
 *Deprecation Date: 2022-11-01<br>Removal Date: 2023-12-01<br>Reason: Replaced by <a href="/cloud/reference/geteventapiproductversions">another endpoint.</a><br><br>*Use this API to get a list of Event API Product versions under a particular Event API Product matching the given parameters.</p>
 
 <h3>Returns</h3><p>EventApiProductVersionsResponse Get a list of Event API Product versions.</p>
@@ -566,16 +566,16 @@ Use this API to get a list of Event API Product versions that match the given pa
 </div></li></ul></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="Event_Portal_OpenAPI_Node.CancelablePromise.html" class="tsd-signature-type" data-tsd-kind="Class">CancelablePromise</a><span class="tsd-signature-symbol">&lt;</span><a href="../types/Event_Portal_OpenAPI_Node.EventApiProductVersionsResponse.html" class="tsd-signature-type" data-tsd-kind="Type alias">EventApiProductVersionsResponse</a><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ep-openapi-node/generated-src/services/EventApiProductsService.ts:258</li></ul></aside></li></ul></section>
+<li>Defined in packages/ep-openapi-node/generated-src/services/EventApiProductsService.ts:588</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="getEventApiProducts" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>get<wbr/>Event<wbr/>Api<wbr/>Products</span><a href="#getEventApiProducts" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="getEventApiProducts.getEventApiProducts-1">get<wbr/>Event<wbr/>Api<wbr/>Products<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span><br/><span>    </span>applicationDomainId<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>applicationDomainIds<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>brokerType<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>customAttributes<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>ids<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>name<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>pageNumber<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>pageSize<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>shared<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>sort<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>xContextId<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Event_Portal_OpenAPI_Node.CancelablePromise.html" class="tsd-signature-type" data-tsd-kind="Class">CancelablePromise</a><span class="tsd-signature-symbol">&lt;</span><a href="../types/Event_Portal_OpenAPI_Node.EventApiProductsResponse.html" class="tsd-signature-type" data-tsd-kind="Type alias">EventApiProductsResponse</a><span class="tsd-signature-symbol">&gt;</span><a href="#getEventApiProducts.getEventApiProducts-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography"><p>Retrieves a list of event API products
-Use this API to retrieve a list of event API products that match the given parameters.</p>
+<div class="tsd-comment tsd-typography"><p>Get a List of Event API Products
+Use this API to get a list of Event API Products that match the given parameters.<br><br><a href="https://api.solace.dev/cloud/reference/authentication">Token Permissions</a>: [ <code>event_designer:access</code> ]</p>
 
-<h3>Returns</h3><p>EventApiProductsResponse The list of event API products and the accompanying metadata.</p>
+<h3>Returns</h3><p>EventApiProductsResponse The list of Event API Products and the accompanying metadata.</p>
 
 <h3>Throws</h3><p>ApiError</p>
 </div>
@@ -587,27 +587,27 @@ Use this API to retrieve a list of event API products that match the given param
 <ul class="tsd-parameters">
 <li class="tsd-parameter">
 <h5><code class="tsd-tag ts-flagOptional">Optional</code> application<wbr/>Domain<wbr/>Id<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span></h5>
-<div class="tsd-comment tsd-typography"><p>Match only event API products in the given application domain. *</p>
+<div class="tsd-comment tsd-typography"><p>Match only Event API Products in the given application domain. *</p>
 </div></li>
 <li class="tsd-parameter">
 <h5><code class="tsd-tag ts-flagOptional">Optional</code> application<wbr/>Domain<wbr/>Ids<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
-<div class="tsd-comment tsd-typography"><p>Match only event API products in the given application domains. *</p>
+<div class="tsd-comment tsd-typography"><p>Match only Event API Products in the given application domains. *</p>
 </div></li>
 <li class="tsd-parameter">
 <h5><code class="tsd-tag ts-flagOptional">Optional</code> broker<wbr/>Type<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span></h5>
-<div class="tsd-comment tsd-typography"><p>Match only event API products with the given broken type. *</p>
+<div class="tsd-comment tsd-typography"><p>Match only Event API Products with the given broken type. *</p>
 </div></li>
 <li class="tsd-parameter">
 <h5><code class="tsd-tag ts-flagOptional">Optional</code> custom<wbr/>Attributes<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span></h5>
-<div class="tsd-comment tsd-typography"><p>Returns the entities that match the custom attribute filter.<br>To filter by custom attribute name and value, use the format: <code>customAttributes=&lt;custom-attribute-name&gt;==&lt;custom-attribute-value&gt;</code>. <br>To filter by custom attribute name, use the format: <code>customAttributes=&lt;custom-attribute-name&gt;</code>. <br>The filter supports the <code>AND</code> operator for multiple custom attribute definitions (not multiple values for a given definition). Use <code>;</code> (<code>semicolon</code>) to separate multiple queries with <code>AND</code> operation. <br>Note: the filter only supports custom attribute values containing characters in <code>[a-zA-Z0-9_\-\. ]</code>. *</p>
+<div class="tsd-comment tsd-typography"><p>Returns the entities that match the custom attribute filter.<br>To filter by custom attribute name and value, use the format: <code>customAttributes=&lt;custom-attribute-name&gt;==&lt;custom-attribute-value&gt;</code>. <br>To filter by custom attribute name, use the format: <code>customAttributes=&lt;custom-attribute-name&gt;</code>. <br>The filter supports the <code>AND</code> operator for multiple custom attribute definitions (not multiple values for a given definition). Use <code>;</code> (<code>semicolon</code>) to separate multiple queries with <code>AND</code> operation. <br>Note: the filter supports custom attribute values containing only the characters <code>[a-zA-Z0-9_\-\. ]</code>. *</p>
 </div></li>
 <li class="tsd-parameter">
 <h5><code class="tsd-tag ts-flagOptional">Optional</code> ids<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
-<div class="tsd-comment tsd-typography"><p>Match only event API products with the given IDs separated by commas. *</p>
+<div class="tsd-comment tsd-typography"><p>Match only Event API Products with the given IDs separated by commas. *</p>
 </div></li>
 <li class="tsd-parameter">
 <h5><code class="tsd-tag ts-flagOptional">Optional</code> name<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span></h5>
-<div class="tsd-comment tsd-typography"><p>Name of the event API product to match on. *</p>
+<div class="tsd-comment tsd-typography"><p>Name of the Event API Product to match on. *</p>
 </div></li>
 <li class="tsd-parameter">
 <h5><code class="tsd-tag ts-flagOptional">Optional</code> page<wbr/>Number<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span></h5>
@@ -615,11 +615,11 @@ Use this API to retrieve a list of event API products that match the given param
 </div></li>
 <li class="tsd-parameter">
 <h5><code class="tsd-tag ts-flagOptional">Optional</code> page<wbr/>Size<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span></h5>
-<div class="tsd-comment tsd-typography"><p>The number of event API products to get per page. *</p>
+<div class="tsd-comment tsd-typography"><p>The number of Event API Products to get per page. *</p>
 </div></li>
 <li class="tsd-parameter">
 <h5><code class="tsd-tag ts-flagOptional">Optional</code> shared<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span></h5>
-<div class="tsd-comment tsd-typography"><p>Match only with shared or unshared event API products. *</p>
+<div class="tsd-comment tsd-typography"><p>Match only with shared or unshared Event API Products. *</p>
 </div></li>
 <li class="tsd-parameter">
 <h5><code class="tsd-tag ts-flagOptional">Optional</code> sort<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span></h5>
@@ -637,8 +637,8 @@ Use this API to retrieve a list of event API products that match the given param
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="publishEventApiProductVersion.publishEventApiProductVersion-1">publish<wbr/>Event<wbr/>Api<wbr/>Product<wbr/>Version<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span><br/><span>    </span>requestBody<span class="tsd-signature-symbol">?: </span><a href="../types/Event_Portal_OpenAPI_Node.EventApiProductVersion-1.html" class="tsd-signature-type" data-tsd-kind="Type alias">EventApiProductVersion</a><span class="tsd-signature-symbol">; </span><br/><span>    </span>versionId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>xContextId<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Event_Portal_OpenAPI_Node.CancelablePromise.html" class="tsd-signature-type" data-tsd-kind="Class">CancelablePromise</a><span class="tsd-signature-symbol">&lt;</span><a href="../types/Event_Portal_OpenAPI_Node.StateChangeRequestResponse.html" class="tsd-signature-type" data-tsd-kind="Type alias">StateChangeRequestResponse</a><span class="tsd-signature-symbol">&gt;</span><a href="#publishEventApiProductVersion.publishEventApiProductVersion-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography"><p>Update an Event API Product version to be published
-Use this API to publish Event API Product version. Cannot unset once it is published</p>
+<div class="tsd-comment tsd-typography"><p>Update an Event API Product Version To Be Published
+Use this API to publish Event API Product version. Cannot unset once it is published.<br><br><a href="https://api.solace.dev/cloud/reference/authentication">Token Permissions</a>: [ <code>event_api_product:update_state:*</code> ]</p>
 
 <h3>Returns</h3><p>StateChangeRequestResponse Updated the state of the Event API Product version to Published.</p>
 
@@ -664,14 +664,14 @@ Use this API to publish Event API Product version. Cannot unset once it is publi
 </div></li></ul></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="Event_Portal_OpenAPI_Node.CancelablePromise.html" class="tsd-signature-type" data-tsd-kind="Class">CancelablePromise</a><span class="tsd-signature-symbol">&lt;</span><a href="../types/Event_Portal_OpenAPI_Node.StateChangeRequestResponse.html" class="tsd-signature-type" data-tsd-kind="Type alias">StateChangeRequestResponse</a><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ep-openapi-node/generated-src/services/EventApiProductsService.ts:835</li></ul></aside></li></ul></section>
+<li>Defined in packages/ep-openapi-node/generated-src/services/EventApiProductsService.ts:544</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="updateEventApiProduct" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>update<wbr/>Event<wbr/>Api<wbr/>Product</span><a href="#updateEventApiProduct" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="updateEventApiProduct.updateEventApiProduct-1">update<wbr/>Event<wbr/>Api<wbr/>Product<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span><br/><span>    </span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>requestBody<span class="tsd-signature-symbol">: </span><a href="../types/Event_Portal_OpenAPI_Node.EventApiProduct-1.html" class="tsd-signature-type" data-tsd-kind="Type alias">EventApiProduct</a><span class="tsd-signature-symbol">; </span><br/><span>    </span>xContextId<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Event_Portal_OpenAPI_Node.CancelablePromise.html" class="tsd-signature-type" data-tsd-kind="Class">CancelablePromise</a><span class="tsd-signature-symbol">&lt;</span><a href="../types/Event_Portal_OpenAPI_Node.EventApiProductResponse.html" class="tsd-signature-type" data-tsd-kind="Type alias">EventApiProductResponse</a><span class="tsd-signature-symbol">&gt;</span><a href="#updateEventApiProduct.updateEventApiProduct-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography"><p>Update an Event API Product
-Use this API to update an Event API Product. You only need to specify the fields that need to be updated.</p>
+Use this API to update an Event API Product. You only need to specify the fields that need to be updated.<br><br><a href="https://api.solace.dev/cloud/reference/authentication">Token Permissions</a>: [ <code>event_api_product:update:*</code> ]</p>
 
 <h3>Returns</h3><p>EventApiProductResponse The updated Event API Product.</p>
 
@@ -689,7 +689,7 @@ Use this API to update an Event API Product. You only need to specify the fields
 </div></li>
 <li class="tsd-parameter">
 <h5>request<wbr/>Body<span class="tsd-signature-symbol">: </span><a href="../types/Event_Portal_OpenAPI_Node.EventApiProduct-1.html" class="tsd-signature-type" data-tsd-kind="Type alias">EventApiProduct</a></h5>
-<div class="tsd-comment tsd-typography"><p>The Event API Product *</p>
+<div class="tsd-comment tsd-typography"><p>The Event API Product. *</p>
 </div></li>
 <li class="tsd-parameter">
 <h5><code class="tsd-tag ts-flagOptional">Optional</code> x<wbr/>Context<wbr/>Id<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span></h5>
@@ -703,8 +703,8 @@ Use this API to update an Event API Product. You only need to specify the fields
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="updateEventApiProductVersion.updateEventApiProductVersion-1">update<wbr/>Event<wbr/>Api<wbr/>Product<wbr/>Version<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span><br/><span>    </span>requestBody<span class="tsd-signature-symbol">: </span><a href="../types/Event_Portal_OpenAPI_Node.EventApiProductVersion-1.html" class="tsd-signature-type" data-tsd-kind="Type alias">EventApiProductVersion</a><span class="tsd-signature-symbol">; </span><br/><span>    </span>versionId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>xContextId<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Event_Portal_OpenAPI_Node.CancelablePromise.html" class="tsd-signature-type" data-tsd-kind="Class">CancelablePromise</a><span class="tsd-signature-symbol">&lt;</span><a href="../types/Event_Portal_OpenAPI_Node.EventApiProductVersionResponse.html" class="tsd-signature-type" data-tsd-kind="Type alias">EventApiProductVersionResponse</a><span class="tsd-signature-symbol">&gt;</span><a href="#updateEventApiProductVersion.updateEventApiProductVersion-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography"><p>(Beta) Update an Event API Product version by version ID
-Use this API to update an Event API Product version. You only need to specify the fields that need to be updated.</p>
+<div class="tsd-comment tsd-typography"><p>(Beta) Update an Event API Product Version by Version ID
+Use this API to update an Event API Product version. You only need to specify the fields that need to be updated.<br><br><a href="https://api.solace.dev/cloud/reference/authentication">Token Permissions</a>: [ <code>event_api_product:update:*</code> ]</p>
 
 <h3>Returns</h3><p>EventApiProductVersionResponse The updated Event API Product version.</p>
 
@@ -730,14 +730,14 @@ Use this API to update an Event API Product version. You only need to specify th
 </div></li></ul></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="Event_Portal_OpenAPI_Node.CancelablePromise.html" class="tsd-signature-type" data-tsd-kind="Class">CancelablePromise</a><span class="tsd-signature-symbol">&lt;</span><a href="../types/Event_Portal_OpenAPI_Node.EventApiProductVersionResponse.html" class="tsd-signature-type" data-tsd-kind="Type alias">EventApiProductVersionResponse</a><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ep-openapi-node/generated-src/services/EventApiProductsService.ts:749</li></ul></aside></li></ul></section>
+<li>Defined in packages/ep-openapi-node/generated-src/services/EventApiProductsService.ts:458</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="updateEventApiProductVersionForEventApiProduct" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>update<wbr/>Event<wbr/>Api<wbr/>Product<wbr/>Version<wbr/>For<wbr/>Event<wbr/>Api<wbr/>Product</span><a href="#updateEventApiProductVersionForEventApiProduct" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="updateEventApiProductVersionForEventApiProduct.updateEventApiProductVersionForEventApiProduct-1">update<wbr/>Event<wbr/>Api<wbr/>Product<wbr/>Version<wbr/>For<wbr/>Event<wbr/>Api<wbr/>Product<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span><br/><span>    </span>eventApiProductId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>requestBody<span class="tsd-signature-symbol">: </span><a href="../types/Event_Portal_OpenAPI_Node.EventApiProductVersion-1.html" class="tsd-signature-type" data-tsd-kind="Type alias">EventApiProductVersion</a><span class="tsd-signature-symbol">; </span><br/><span>    </span>xContextId<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Event_Portal_OpenAPI_Node.CancelablePromise.html" class="tsd-signature-type" data-tsd-kind="Class">CancelablePromise</a><span class="tsd-signature-symbol">&lt;</span><a href="../types/Event_Portal_OpenAPI_Node.EventApiProductVersionResponse.html" class="tsd-signature-type" data-tsd-kind="Type alias">EventApiProductVersionResponse</a><span class="tsd-signature-symbol">&gt;</span><a href="#updateEventApiProductVersionForEventApiProduct.updateEventApiProductVersionForEventApiProduct-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography">
-<h3>Deprecated</h3><p>Update an Event API Product version
+<h3>Deprecated</h3><p>Update an Event API Product Version
 *Deprecation Date: 2022-11-01<br>Removal Date: 2023-12-01<br>Reason: Replaced by <a href="/cloud/reference/updateeventapiproductversion">another endpoint.</a><br><br>*Use this API to update an Event API Product version. You only need to specify the fields that need to be updated.</p>
 
 <h3>Returns</h3><p>EventApiProductVersionResponse The updated Event API Product version.</p>
@@ -768,14 +768,14 @@ Use this API to update an Event API Product version. You only need to specify th
 </div></li></ul></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="Event_Portal_OpenAPI_Node.CancelablePromise.html" class="tsd-signature-type" data-tsd-kind="Class">CancelablePromise</a><span class="tsd-signature-symbol">&lt;</span><a href="../types/Event_Portal_OpenAPI_Node.EventApiProductVersionResponse.html" class="tsd-signature-type" data-tsd-kind="Type alias">EventApiProductVersionResponse</a><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ep-openapi-node/generated-src/services/EventApiProductsService.ts:453</li></ul></aside></li></ul></section>
+<li>Defined in packages/ep-openapi-node/generated-src/services/EventApiProductsService.ts:821</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="updateEventApiProductVersionState" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>update<wbr/>Event<wbr/>Api<wbr/>Product<wbr/>Version<wbr/>State</span><a href="#updateEventApiProductVersionState" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="updateEventApiProductVersionState.updateEventApiProductVersionState-1">update<wbr/>Event<wbr/>Api<wbr/>Product<wbr/>Version<wbr/>State<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span><br/><span>    </span>requestBody<span class="tsd-signature-symbol">: </span><a href="../types/Event_Portal_OpenAPI_Node.EventApiProductVersion-1.html" class="tsd-signature-type" data-tsd-kind="Type alias">EventApiProductVersion</a><span class="tsd-signature-symbol">; </span><br/><span>    </span>versionId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>xContextId<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Event_Portal_OpenAPI_Node.CancelablePromise.html" class="tsd-signature-type" data-tsd-kind="Class">CancelablePromise</a><span class="tsd-signature-symbol">&lt;</span><a href="../types/Event_Portal_OpenAPI_Node.StateChangeRequestResponse.html" class="tsd-signature-type" data-tsd-kind="Type alias">StateChangeRequestResponse</a><span class="tsd-signature-symbol">&gt;</span><a href="#updateEventApiProductVersionState.updateEventApiProductVersionState-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography"><p>Update the state of an Event API Product version by ID
-Use this API to update the state of an Event API Product version. You only need to specify the state ID field with the desired state ID.</p>
+<div class="tsd-comment tsd-typography"><p>Update the State of an Event API Product Version by ID
+Use this API to update the state of an Event API Product version. You only need to specify the state ID field with the desired state ID.<br><br><a href="https://api.solace.dev/cloud/reference/authentication">Token Permissions</a>: [ <code>event_api_product:update_state:*</code> ]</p>
 
 <h3>Returns</h3><p>StateChangeRequestResponse The updated state of the Event API Product version.</p>
 
@@ -801,14 +801,14 @@ Use this API to update the state of an Event API Product version. You only need 
 </div></li></ul></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="Event_Portal_OpenAPI_Node.CancelablePromise.html" class="tsd-signature-type" data-tsd-kind="Class">CancelablePromise</a><span class="tsd-signature-symbol">&lt;</span><a href="../types/Event_Portal_OpenAPI_Node.StateChangeRequestResponse.html" class="tsd-signature-type" data-tsd-kind="Type alias">StateChangeRequestResponse</a><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ep-openapi-node/generated-src/services/EventApiProductsService.ts:792</li></ul></aside></li></ul></section>
+<li>Defined in packages/ep-openapi-node/generated-src/services/EventApiProductsService.ts:501</li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="updateEventApiProductVersionStateForEventApiProduct" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>update<wbr/>Event<wbr/>Api<wbr/>Product<wbr/>Version<wbr/>State<wbr/>For<wbr/>Event<wbr/>Api<wbr/>Product</span><a href="#updateEventApiProductVersionStateForEventApiProduct" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="updateEventApiProductVersionStateForEventApiProduct.updateEventApiProductVersionStateForEventApiProduct-1">update<wbr/>Event<wbr/>Api<wbr/>Product<wbr/>Version<wbr/>State<wbr/>For<wbr/>Event<wbr/>Api<wbr/>Product<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span><br/><span>    </span>eventApiProductId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>requestBody<span class="tsd-signature-symbol">: </span><a href="../types/Event_Portal_OpenAPI_Node.EventApiProductVersion-1.html" class="tsd-signature-type" data-tsd-kind="Type alias">EventApiProductVersion</a><span class="tsd-signature-symbol">; </span><br/><span>    </span>xContextId<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Event_Portal_OpenAPI_Node.CancelablePromise.html" class="tsd-signature-type" data-tsd-kind="Class">CancelablePromise</a><span class="tsd-signature-symbol">&lt;</span><a href="../types/Event_Portal_OpenAPI_Node.VersionedObjectStateChangeRequest.html" class="tsd-signature-type" data-tsd-kind="Type alias">VersionedObjectStateChangeRequest</a><span class="tsd-signature-symbol">&gt;</span><a href="#updateEventApiProductVersionStateForEventApiProduct.updateEventApiProductVersionStateForEventApiProduct-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography">
-<h3>Deprecated</h3><p>Update the state of an Event API Product version
+<h3>Deprecated</h3><p>Update the State of an Event API Product Version
 *Deprecation Date: 2022-11-01<br>Removal Date: 2023-12-01<br>Reason: Replaced by <a href="/cloud/reference/updateeventapiproductversionstate">another endpoint.</a><br><br>*Use this API to update the state of an Event API Product version. You only need to specify the state ID field with the desired state ID.</p>
 
 <h3>Returns</h3><p>VersionedObjectStateChangeRequest The updated state of the Event API Product version.</p>
@@ -839,7 +839,7 @@ Use this API to update the state of an Event API Product version. You only need 
 </div></li></ul></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="Event_Portal_OpenAPI_Node.CancelablePromise.html" class="tsd-signature-type" data-tsd-kind="Class">CancelablePromise</a><span class="tsd-signature-symbol">&lt;</span><a href="../types/Event_Portal_OpenAPI_Node.VersionedObjectStateChangeRequest.html" class="tsd-signature-type" data-tsd-kind="Type alias">VersionedObjectStateChangeRequest</a><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in packages/ep-openapi-node/generated-src/services/EventApiProductsService.ts:501</li></ul></aside></li></ul></section></section></div>
+<li>Defined in packages/ep-openapi-node/generated-src/services/EventApiProductsService.ts:869</li></ul></aside></li></ul></section></section></div>
 <div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 <div class="tsd-navigation settings">
 <details class="tsd-index-accordion"><summary class="tsd-accordion-summary">
@@ -868,36 +868,27 @@ Use this API to update the state of an Event API Product version. You only need 
 <li class="tsd-kind-namespace tsd-parent-kind-module"><a href="../modules/Event_Portal_APIM_OpenAPI_Node.GuaranteedMessagingInformation.html">Guaranteed<wbr/>Messaging<wbr/>Information</a></li>
 <li class="tsd-kind-namespace tsd-parent-kind-module"><a href="../modules/Event_Portal_APIM_OpenAPI_Node.SolaceClassOfServicePolicy.html">Solace<wbr/>Class<wbr/>Of<wbr/>Service<wbr/>Policy</a></li>
 <li class="tsd-kind-namespace tsd-parent-kind-module"><a href="../modules/Event_Portal_APIM_OpenAPI_Node.Webhook.html">Webhook</a></li></ul></li>
-<li class="tsd-kind-module"><a href="../modules/Event_Portal_AsyncAPI.html">Event <wbr/>Portal <wbr/>AsyncAPI -<wbr/> v0.57.1</a></li>
-<li class="current tsd-kind-module"><a href="../modules/Event_Portal_OpenAPI_Node.html">Event <wbr/>Portal <wbr/>OpenAPI <wbr/>Node -<wbr/> v2.53.1</a>
+<li class="tsd-kind-module"><a href="../modules/Event_Portal_AsyncAPI.html">Event <wbr/>Portal <wbr/>AsyncAPI -<wbr/> v0.58.0</a></li>
+<li class="current tsd-kind-module"><a href="../modules/Event_Portal_OpenAPI_Node.html">Event <wbr/>Portal <wbr/>OpenAPI <wbr/>Node -<wbr/> v2.54.0</a>
 <ul>
 <li class="tsd-kind-namespace tsd-parent-kind-module"><a href="../modules/Event_Portal_OpenAPI_Node.Address.html">Address</a></li>
 <li class="tsd-kind-namespace tsd-parent-kind-module"><a href="../modules/Event_Portal_OpenAPI_Node.AddressLevel.html">Address<wbr/>Level</a></li>
 <li class="tsd-kind-namespace tsd-parent-kind-module"><a href="../modules/Event_Portal_OpenAPI_Node.Application.html">Application</a></li>
-<li class="tsd-kind-namespace tsd-parent-kind-module"><a href="../modules/Event_Portal_OpenAPI_Node.AuditCommandDTO.html">Audit<wbr/>CommandDTO</a></li>
 <li class="tsd-kind-namespace tsd-parent-kind-module"><a href="../modules/Event_Portal_OpenAPI_Node.AuditImportDTO.html">Audit<wbr/>ImportDTO</a></li>
-<li class="tsd-kind-namespace tsd-parent-kind-module"><a href="../modules/Event_Portal_OpenAPI_Node.AuditImportJobMetadata.html">Audit<wbr/>Import<wbr/>Job<wbr/>Metadata</a></li>
 <li class="tsd-kind-namespace tsd-parent-kind-module"><a href="../modules/Event_Portal_OpenAPI_Node.Configuration.html">Configuration</a></li>
 <li class="tsd-kind-namespace tsd-parent-kind-module"><a href="../modules/Event_Portal_OpenAPI_Node.CustomAttributeDefinition.html">Custom<wbr/>Attribute<wbr/>Definition</a></li>
-<li class="tsd-kind-namespace tsd-parent-kind-module"><a href="../modules/Event_Portal_OpenAPI_Node.CustomAttributeFrontEndDTO.html">Custom<wbr/>Attribute<wbr/>Front<wbr/>EndDTO</a></li>
 <li class="tsd-kind-namespace tsd-parent-kind-module"><a href="../modules/Event_Portal_OpenAPI_Node.DeliveryDescriptor.html">Delivery<wbr/>Descriptor</a></li>
 <li class="tsd-kind-namespace tsd-parent-kind-module"><a href="../modules/Event_Portal_OpenAPI_Node.DesignerMappingDTO.html">Designer<wbr/>MappingDTO</a></li>
 <li class="tsd-kind-namespace tsd-parent-kind-module"><a href="../modules/Event_Portal_OpenAPI_Node.EventApi.html">Event<wbr/>Api</a></li>
 <li class="tsd-kind-namespace tsd-parent-kind-module"><a href="../modules/Event_Portal_OpenAPI_Node.EventApiProduct.html">Event<wbr/>Api<wbr/>Product</a></li>
 <li class="tsd-kind-namespace tsd-parent-kind-module"><a href="../modules/Event_Portal_OpenAPI_Node.EventApiProductRegistration.html">Event<wbr/>Api<wbr/>Product<wbr/>Registration</a></li>
 <li class="tsd-kind-namespace tsd-parent-kind-module"><a href="../modules/Event_Portal_OpenAPI_Node.EventApiProductVersion.html">Event<wbr/>Api<wbr/>Product<wbr/>Version</a></li>
-<li class="tsd-kind-namespace tsd-parent-kind-module"><a href="../modules/Event_Portal_OpenAPI_Node.EventMesh.html">Event<wbr/>Mesh</a></li>
 <li class="tsd-kind-namespace tsd-parent-kind-module"><a href="../modules/Event_Portal_OpenAPI_Node.EventVersion.html">Event<wbr/>Version</a></li>
-<li class="tsd-kind-namespace tsd-parent-kind-module"><a href="../modules/Event_Portal_OpenAPI_Node.EventVersionFrontend.html">Event<wbr/>Version<wbr/>Frontend</a></li>
-<li class="tsd-kind-namespace tsd-parent-kind-module"><a href="../modules/Event_Portal_OpenAPI_Node.JobAdministrationDTO.html">Job<wbr/>AdministrationDTO</a></li>
-<li class="tsd-kind-namespace tsd-parent-kind-module"><a href="../modules/Event_Portal_OpenAPI_Node.JobBO.html">JobBO</a></li>
 <li class="tsd-kind-namespace tsd-parent-kind-module"><a href="../modules/Event_Portal_OpenAPI_Node.JobDTO.html">JobDTO</a></li>
-<li class="tsd-kind-namespace tsd-parent-kind-module"><a href="../modules/Event_Portal_OpenAPI_Node.MessagingServiceRemoveAssociation.html">Messaging<wbr/>Service<wbr/>Remove<wbr/>Association</a></li>
-<li class="tsd-kind-namespace tsd-parent-kind-module"><a href="../modules/Event_Portal_OpenAPI_Node.OrgDTO.html">OrgDTO</a></li>
+<li class="tsd-kind-namespace tsd-parent-kind-module"><a href="../modules/Event_Portal_OpenAPI_Node.OperationDTO.html">OperationDTO</a></li>
 <li class="tsd-kind-namespace tsd-parent-kind-module"><a href="../modules/Event_Portal_OpenAPI_Node.RuntimeMappingDTO.html">Runtime<wbr/>MappingDTO</a></li>
 <li class="tsd-kind-namespace tsd-parent-kind-module"><a href="../modules/Event_Portal_OpenAPI_Node.SolaceClassOfServicePolicy.html">Solace<wbr/>Class<wbr/>Of<wbr/>Service<wbr/>Policy</a></li>
-<li class="tsd-kind-namespace tsd-parent-kind-module"><a href="../modules/Event_Portal_OpenAPI_Node.SuggestedAddressLevelDTO.html">Suggested<wbr/>Address<wbr/>LevelDTO</a></li>
-<li class="tsd-kind-namespace tsd-parent-kind-module"><a href="../modules/Event_Portal_OpenAPI_Node.SuggestionApiInputDTO.html">Suggestion<wbr/>Api<wbr/>InputDTO</a></li></ul></li>
+<li class="tsd-kind-namespace tsd-parent-kind-module"><a href="../modules/Event_Portal_OpenAPI_Node.TargetEntitiesRequestDTO.html">Target<wbr/>Entities<wbr/>RequestDTO</a></li></ul></li>
 <li class="tsd-kind-module"><a href="../modules/Event_Portal_Runtime_OpenAPI_Node.html">Event <wbr/>Portal <wbr/>Runtime <wbr/>OpenAPI <wbr/>Node -<wbr/> v1.0.1</a>
 <ul>
 <li class="tsd-kind-namespace tsd-parent-kind-module"><a href="../modules/Event_Portal_Runtime_OpenAPI_Node.Address.html">Address</a></li>
@@ -927,7 +918,7 @@ Use this API to update the state of an Event API Product version. You only need 
 <li class="tsd-kind-namespace tsd-parent-kind-module"><a href="../modules/Event_Portal_Runtime_OpenAPI_Node.SolaceClassOfServicePolicy.html">Solace<wbr/>Class<wbr/>Of<wbr/>Service<wbr/>Policy</a></li>
 <li class="tsd-kind-namespace tsd-parent-kind-module"><a href="../modules/Event_Portal_Runtime_OpenAPI_Node.SuggestedAddressLevelDTO.html">Suggested<wbr/>Address<wbr/>LevelDTO</a></li>
 <li class="tsd-kind-namespace tsd-parent-kind-module"><a href="../modules/Event_Portal_Runtime_OpenAPI_Node.SuggestionApiInputDTO.html">Suggestion<wbr/>Api<wbr/>InputDTO</a></li></ul></li>
-<li class="tsd-kind-module"><a href="../modules/Event_Portal_SDK.html">Event <wbr/>Portal SDK -<wbr/> v0.61.1</a></li>
+<li class="tsd-kind-module"><a href="../modules/Event_Portal_SDK.html">Event <wbr/>Portal SDK -<wbr/> v0.62.0</a></li>
 <li class="tsd-kind-module"><a href="../modules/Event_Portal_V1_OpenAPI_Node.html">Event <wbr/>Portal <wbr/>V1 <wbr/>OpenAPI <wbr/>Node -<wbr/> v0.1.4</a>
 <ul>
 <li class="tsd-kind-namespace tsd-parent-kind-module"><a href="../modules/Event_Portal_V1_OpenAPI_Node.Application.html">Application</a></li>

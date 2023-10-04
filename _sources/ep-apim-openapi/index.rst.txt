@@ -20,4 +20,3 @@ Resources
 
 
 .. _Solace API References:
-  https://openapi-v2.solace.cloud/cloud/reference
