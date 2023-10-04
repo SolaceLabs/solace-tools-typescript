@@ -12,6 +12,7 @@ A set of libaries to interact with various components in the Solace Platform.
 - [Async API SDK](./packages/ep-asyncapi)
 - [Event Portal SDK](./packages/ep-sdk)
 - [Event Portal Async API Importer CLI](./packages/ep-async-api-importer)
+- [Event Portal 1.0 to 2.0 migration tool](./packages/ep-migrate)
 
 ## Documentation
 
