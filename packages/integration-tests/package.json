@@ -13,10 +13,10 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@solace-labs/ep-asyncapi": "0.57.1",
-    "@solace-labs/ep-openapi-node": "^2.53.1",
+    "@solace-labs/ep-asyncapi": "0.58.0",
+    "@solace-labs/ep-openapi-node": "^2.54.0",
     "@solace-labs/ep-rt-openapi-node": "^1.0.1",
-    "@solace-labs/ep-sdk": "0.61.1",
+    "@solace-labs/ep-sdk": "0.62.0",
     "libxmljs2-xsd": "^0.30.1"
   }
 }

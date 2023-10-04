@@ -61,7 +61,7 @@
     "@internal/tools": "*",
     "@rsql/builder": "^1.5.2",
     "@rsql/emitter": "^1.5.2",
-    "@solace-labs/ep-asyncapi": "^0.57.1",
+    "@solace-labs/ep-asyncapi": "^0.58.0",
     "openapi-typescript-codegen": "^0.19.0"
   }
 }
