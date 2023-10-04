@@ -4,7 +4,7 @@ Generated Typescript Open API Client for [Solace Event Portal](https://solace.co
 
 ---
 
-**Event Portal OpenAPI Version: 2.0.15**
+**Event Portal OpenAPI Version: 2.0.23**
 
 ---
 

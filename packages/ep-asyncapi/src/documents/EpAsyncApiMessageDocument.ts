@@ -52,16 +52,16 @@ export class EpAsyncApiMessageDocument {
 
     let contentTypeString: string | undefined = this.asyncApiMessage.contentType();
     if (!contentTypeString) contentTypeString = this.epAsyncApiDocument.getDefaultContentType();
-    if (contentTypeString === undefined) throw new EpAsyncApiMessageError(logName, this.constructor.name, {
-      issue: EpAsyncApiMessageDocument.ContentTypeIssue,
-      apiTitle: this.epAsyncApiDocument.getTitle(),
-      apiChannel: this.epAsyncApiChannelDocument?.getAsyncApiChannelKey(),
-      apiMessage: this.getMessageName(),
-      apiMessageContent: this.asyncApiMessage,
-    });
+    // if (contentTypeString === undefined) throw new EpAsyncApiMessageError(logName, this.constructor.name, {
+    //   issue: EpAsyncApiMessageDocument.ContentTypeIssue,
+    //   apiTitle: this.epAsyncApiDocument.getTitle(),
+    //   apiChannel: this.epAsyncApiChannelDocument?.getAsyncApiChannelKey(),
+    //   apiMessage: this.getMessageName(),
+    //   apiMessageContent: this.asyncApiMessage,
+    // });
     // hardcode to application/json
     // nonsense, cater for EP not setting content type correctly
-    if (contentTypeString.includes('avro')) return E_EpAsyncApiContentTypes.APPLICATION_JSON;
+    if (contentTypeString?.includes('avro')) return E_EpAsyncApiContentTypes.APPLICATION_JSON;
     return E_EpAsyncApiContentTypes.APPLICATION_JSON;
   }
 
