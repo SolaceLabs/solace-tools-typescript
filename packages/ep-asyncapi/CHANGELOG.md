@@ -1,5 +1,16 @@
 # @solace-labs/ep-asyncapi
 
+## 0.58.0
+
+### Minor Changes
+
+- 68ff44ed7: Update the EP OpenAPI version and fix the version ID issue
+
+### Patch Changes
+
+- Updated dependencies [68ff44ed7]
+  - @solace-labs/ep-openapi-node@2.54.0
+
 ## 0.57.1
 
 ### Patch Changes
