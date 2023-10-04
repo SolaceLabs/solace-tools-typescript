@@ -8,3 +8,4 @@ yarn-error.log
 _todo*
 references
 generated.openapi-spec.json
+venv

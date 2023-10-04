@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Check Auth
-        if: github.event_name == 'workflow_dispatch' && github.actor != 'ricardojosegomezulmke'
+        if: github.event_name == 'workflow_dispatch'
         run: |
           echo "not authorized"
           echo "{IS_AUTHORIZED}={false}" >> $GITHUB_OUTPUT

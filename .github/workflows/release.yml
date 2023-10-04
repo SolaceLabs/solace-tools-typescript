@@ -19,7 +19,7 @@ jobs:
 
     steps:
       - name: Check Auth
-        if: github.event_name == 'workflow_dispatch' && github.actor != 'ricardojosegomezulmke'
+        if: github.event_name == 'workflow_dispatch'
         run: |
           echo "not authorized"
           echo '::set-output name=IS_AUTHORIZED::false'

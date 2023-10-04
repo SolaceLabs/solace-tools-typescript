@@ -18,7 +18,7 @@
 # -- Project information -----------------------------------------------------
 
 project = 'Solace Tools'
-copyright = '2023, Solace Corporation, Ricardo Gomez-Ulmke, <ricardo.gomez-ulmke@solace.com>'
+copyright = '2023, Solace Corporation'
 author = 'Ricardo Gomez-Ulmke'
 
 # The full version, including alpha/beta/rc tags
