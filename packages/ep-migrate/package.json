@@ -1,6 +1,6 @@
 {
   "name": "@solace-labs/ep-migrate",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Migration Tool for Solace Event Portal V1 to V2",
   "bin": {
     "ep-migrate": "./dist/cli.js"
@@ -65,7 +65,7 @@
     "eslint-plugin-deprecation": "^1.3.3"
   },
   "dependencies": {
-    "@solace-labs/ep-sdk": "^0.61.1",
+    "@solace-labs/ep-sdk": "^0.62.0",
     "@solace-labs/ep-v1-openapi-node": "^0.1.4",
     "chalk": "^4.1.2",
     "clear": "^0.1.0",

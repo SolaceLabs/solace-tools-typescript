@@ -1,6 +1,6 @@
 {
   "name": "@solace-labs/ep-sdk",
-  "version": "0.61.1",
+  "version": "0.62.0",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "description": "Solace Event Portal SDK",
@@ -65,7 +65,7 @@
     "pino": "^8.8.0"
   },
   "dependencies": {
-    "@solace-labs/ep-openapi-node": "^2.53.1",
+    "@solace-labs/ep-openapi-node": "^2.54.0",
     "@solace-labs/ep-rt-openapi-node": "^1.0.1",
     "js-yaml": "^4.1.0",
     "jsonschema": "^1.4.1",

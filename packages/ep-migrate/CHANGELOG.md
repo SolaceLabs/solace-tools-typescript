@@ -1,5 +1,12 @@
 # @solace-labs/ep-migrate
 
+## 0.6.1
+
+### Patch Changes
+
+- Updated dependencies [68ff44ed7]
+  - @solace-labs/ep-sdk@0.62.0
+
 ## 0.6.0
 
 ### Minor Changes

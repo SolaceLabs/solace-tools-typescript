@@ -1,5 +1,11 @@
 # @solace-labs/ep-openapi-node
 
+## 2.54.0
+
+### Minor Changes
+
+- 68ff44ed7: Update the EP OpenAPI version and fix the version ID issue
+
 ## 2.53.1
 
 ### Patch Changes
