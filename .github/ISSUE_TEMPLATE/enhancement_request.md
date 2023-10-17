@@ -1,10 +1,9 @@
 ---
 name: Enhancement Request
-about: Let us know what idea you have
+about: Create an Enhancement Request
 title: ''
-labels: ''
+labels: enhancement
 assignees: ''
-
 ---
 
 **Describe the enhancement**
