@@ -40,7 +40,7 @@ git clone https://github.com/solacecommunity/<github-repo>
 Make your changes on a new git branch in your fork of the repository.
 
 ```sh
-git checkout -b my-fix-branch master
+git checkout -b my-fix-branch main
 ```
 
 #### Step 3: Commit
@@ -60,7 +60,7 @@ repository.
 
 ```sh
 $ git fetch upstream
-$ git rebase upstream/master
+$ git rebase upstream/main
 ```
 
 If you have not set the upstream, do so as follows:
@@ -69,7 +69,7 @@ If you have not set the upstream, do so as follows:
 $ git remote add upstream https://github.com/solacecommunity/<github-repo>
 ```
 
-If you have already pushed your fork, then do not rebase. Instead merge any changes from master that are not already part of your branch.
+If you have already pushed your fork, then do not rebase. Instead merge any changes from main that are not already part of your branch.
 
 #### Step 5: Push
 
@@ -81,7 +81,7 @@ git push origin my-fix-branch
 
 #### Step 6: Pull Request
 
-In GitHub, send a pull request to `<github-repo>:master`.
+In GitHub, send a pull request to `<github-repo>:main`.
 
 When fixing an existing issue, use the [commit message keywords](https://help.github.com/articles/closing-issues-via-commit-messages/) to close the associated GitHub issue.
 
