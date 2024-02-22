@@ -21,7 +21,7 @@ const main = async (): Promise<void> => {
   );
   EpSdkLogger.initialize({ epSdkLoggerInstance: epSdkConsoleLogger });
 
-  const cloudToken: string | undefined = process.env["SOLACE_CLOUD_TOKEN"];
+  const cloudToken: string | undefined = "SOLACE_CLOUD_TOKEN";
   if (!cloudToken) throw new Error(`SOLACE_CLOUD_TOKEN env var missing`);    
 
   // Initialize EP CLient
