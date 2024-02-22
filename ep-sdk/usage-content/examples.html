@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Examples &mdash; Solace Tools r0.0.2 documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/contentui.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/contentui.css" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -103,15 +105,43 @@
 <div class="section" id="example-create-delete-application-domain-using-a-task">
 <h2>Example: Create/Delete Application Domain using a Task<a class="headerlink" href="#example-create-delete-application-domain-using-a-task" title="Permalink to this heading"></a></h2>
 <div class="highlight-typescript notranslate"><div class="highlight"><pre><span></span><span class="k">import</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">EpSdkClient</span><span class="p">,</span>
 <span class="w">  </span><span class="nx">EEpSdkTask_TargetState</span><span class="p">,</span>
 <span class="w">  </span><span class="nx">EpSdkApplicationDomainTask</span><span class="p">,</span>
 <span class="w">  </span><span class="nx">IEpSdkApplicationDomainTask_ExecuteReturn</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">EpSdkLogger</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">EpSdkConsoleLogger</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">EEpSdkLogLevel</span><span class="p">,</span>
 <span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@solace-labs/ep-sdk&quot;</span><span class="p">;</span>
+
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">OpenAPI</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="nx">EpOpenApi</span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@solace-labs/ep-openapi-node&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">OpenAPI</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="nx">EpRtOpenApi</span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@solace-labs/ep-rt-openapi-node&quot;</span><span class="p">;</span>
 
 <span class="kd">const</span><span class="w"> </span><span class="nx">main</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="o">:</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="ow">void</span><span class="o">&gt;</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">ApplicationDomainName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;foo&quot;</span><span class="p">;</span>
 
-<span class="w">  </span><span class="c1">// ensure application domain exists</span>
+<span class="w">  </span><span class="c1">// Initialize EP Logger</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">epSdkConsoleLogger</span><span class="o">:</span><span class="w"> </span><span class="kt">EpSdkConsoleLogger</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">EpSdkConsoleLogger</span><span class="p">(</span>
+<span class="w">    </span><span class="s2">&quot;example-app-id&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">EEpSdkLogLevel</span><span class="p">.</span><span class="nx">Silent</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="w">  </span><span class="nx">EpSdkLogger</span><span class="p">.</span><span class="nx">initialize</span><span class="p">({</span><span class="w"> </span><span class="nx">epSdkLoggerInstance</span><span class="o">:</span><span class="w"> </span><span class="kt">epSdkConsoleLogger</span><span class="w"> </span><span class="p">});</span>
+
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">cloudToken</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">undefined</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;SOLACE_CLOUD_TOKEN&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">cloudToken</span><span class="p">)</span><span class="w"> </span><span class="k">throw</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="ne">Error</span><span class="p">(</span><span class="sb">`SOLACE_CLOUD_TOKEN env var missing`</span><span class="p">);</span><span class="w">    </span>
+
+<span class="w">  </span><span class="c1">// Initialize EP CLient</span>
+<span class="w">  </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">EpSdkClient</span><span class="p">.</span><span class="nx">initialize</span><span class="p">({</span>
+<span class="w">      </span><span class="nx">globalEpOpenAPI</span><span class="o">:</span><span class="w"> </span><span class="kt">EpOpenApi</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">globalEpRtOpenAPI</span><span class="o">:</span><span class="w"> </span><span class="kt">EpRtOpenApi</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">token</span><span class="o">:</span><span class="w"> </span><span class="kt">cloudToken</span>
+<span class="w">    </span><span class="p">});</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="nx">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">throw</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="ne">Error</span><span class="p">(</span><span class="sb">`initializing ep client: </span><span class="si">${</span><span class="nx">e</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// Define Application Domain Task to create application domain</span>
 <span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">epSdkApplicationDomainTaskPresent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">EpSdkApplicationDomainTask</span><span class="p">({</span>
 <span class="w">    </span><span class="nx">epSdkTask_TargetState</span><span class="o">:</span><span class="w"> </span><span class="kt">EEpSdkTask_TargetState.PRESENT</span><span class="p">,</span>
 <span class="w">    </span><span class="nx">applicationDomainName</span><span class="o">:</span><span class="w"> </span><span class="kt">ApplicationDomainName</span><span class="p">,</span>
@@ -119,22 +149,30 @@
 <span class="w">      </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;my app domain&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">  </span><span class="p">});</span>
+
+<span class="w">  </span><span class="c1">// Execute Application Domain Task</span>
 <span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">epSdkApplicationDomainTask_ExecuteReturn_Present</span><span class="o">:</span><span class="w"> </span><span class="kt">IEpSdkApplicationDomainTask_ExecuteReturn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">epSdkApplicationDomainTaskPresent</span><span class="p">.</span><span class="nx">execute</span><span class="p">(</span><span class="s1">&#39;my-context-id&#39;</span><span class="p">);</span>
-<span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`epSdkApplicationDomainTask_ExecuteReturn_Present.epSdkTask_TransactionLogData = </span><span class="si">${</span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="w"> </span><span class="nx">epSdkApplicationDomainTask_ExecuteReturn_Present</span><span class="p">.</span><span class="nx">epSdkTask_TransactionLogData</span><span class="p">,</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="mf">2</span><span class="p">)</span><span class="si">}</span><span class="sb">.`</span><span class="p">);</span>
 
 <span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">applicationDomainId</span><span class="w"> </span><span class="o">=</span>
 <span class="w">    </span><span class="nx">epSdkApplicationDomainTask_ExecuteReturn_Present</span><span class="p">.</span><span class="nx">epObject</span><span class="p">.</span><span class="nx">id</span><span class="p">;</span>
 <span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span>
-<span class="w">    </span><span class="sb">`application domain exists, applicationDomainId = </span><span class="si">${</span><span class="nx">applicationDomainId</span><span class="si">}</span><span class="sb">.`</span>
+<span class="w">    </span><span class="sb">`application domain name: </span><span class="si">${</span><span class="nx">ApplicationDomainName</span><span class="si">}</span><span class="sb">\napplicationDomainId: </span><span class="si">${</span><span class="nx">applicationDomainId</span><span class="si">}</span><span class="sb">.`</span>
 <span class="w">  </span><span class="p">);</span>
 
-<span class="w">  </span><span class="c1">// ensure application domain does not exist</span>
+<span class="w">  </span><span class="c1">// Define Application Domain Task to delete application domain</span>
 <span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">epSdkApplicationDomainTaskAbsent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">EpSdkApplicationDomainTask</span><span class="p">({</span>
 <span class="w">    </span><span class="nx">epSdkTask_TargetState</span><span class="o">:</span><span class="w"> </span><span class="kt">EEpSdkTask_TargetState.ABSENT</span><span class="p">,</span>
 <span class="w">    </span><span class="nx">applicationDomainName</span><span class="o">:</span><span class="w"> </span><span class="kt">ApplicationDomainName</span><span class="p">,</span>
 <span class="w">  </span><span class="p">});</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="c1">// Execute Application Domain Task</span>
 <span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">epSdkApplicationDomainTask_ExecuteReturn_Absent</span><span class="o">:</span><span class="w"> </span><span class="kt">IEpSdkApplicationDomainTask_ExecuteReturn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">epSdkApplicationDomainTaskAbsent</span><span class="p">.</span><span class="nx">execute</span><span class="p">(</span><span class="s1">&#39;my-context-id&#39;</span><span class="p">);</span>
-<span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`epSdkApplicationDomainTask_ExecuteReturn_Absent.epSdkTask_TransactionLogData = </span><span class="si">${</span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">epSdkApplicationDomainTask_ExecuteReturn_Absent</span><span class="p">.</span><span class="nx">epSdkTask_TransactionLogData</span><span class="p">,</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="mf">2</span><span class="w"> </span><span class="p">)</span><span class="si">}</span><span class="sb">.`</span><span class="p">);</span>
+<span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span>
+<span class="w">    </span><span class="sb">`application domain name deleted: </span><span class="si">${</span><span class="nx">ApplicationDomainName</span><span class="si">}</span><span class="sb">\napplicationDomainId: </span><span class="si">${</span><span class="nx">epSdkApplicationDomainTask_ExecuteReturn_Absent</span><span class="p">.</span><span class="nx">epObject</span><span class="p">.</span><span class="nx">id</span><span class="si">}</span><span class="sb">.`</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="c1">// Transactional Data for the executed task</span>
+<span class="w">  </span><span class="c1">// console.log(`epSdkApplicationDomainTask_ExecuteReturn_Absent.epSdkTask_TransactionLogData = ${JSON.stringify(epSdkApplicationDomainTask_ExecuteReturn_Absent.epSdkTask_TransactionLogData, null, 2 )}.`);</span>
 <span class="p">};</span>
 
 <span class="nx">main</span><span class="p">();</span>
@@ -155,7 +193,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, Solace Corporation.
-      <span class="lastupdated">Last updated on 04 Oct 2023 at 19:34.
+      <span class="lastupdated">Last updated on 22 Feb 2024 at 23:25.
       </span></p>
   </div>
 
