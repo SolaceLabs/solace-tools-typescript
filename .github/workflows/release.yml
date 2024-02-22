@@ -66,12 +66,10 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Make Docs
-        if: steps.changesets.outputs.published == 'true'
         run: |
           ./docs/make.sh
 
       - name: Publish Docs
-        if: steps.changesets.outputs.published == 'true'
         run: |
           git fetch origin gh-pages
           git worktree add gh-pages gh-pages
@@ -84,6 +82,3 @@ jobs:
           git commit --allow-empty -F ../generated.txt
           # git push -f -u origin gh-pages
           git push -u origin gh-pages
-
-###
-# The End.
