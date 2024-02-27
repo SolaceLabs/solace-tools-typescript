@@ -9,7 +9,6 @@ import {
   EventApIsService
 } from "@solace-labs/ep-openapi-node";
 import { 
-  EEpSdkSchemaContentType,
   EEpSdkSchemaType,
   EEpSdkTask_TargetState, 
   EpSdkEpEventTask, 
@@ -83,7 +82,6 @@ describe(`${scriptName}`, () => {
         schemaName: SchemaName,
         schemaObjectSettings: {
           shared: true,
-          contentType: EEpSdkSchemaContentType.APPLICATION_XML,
           schemaType: EEpSdkSchemaType.XSD
         },
       });
