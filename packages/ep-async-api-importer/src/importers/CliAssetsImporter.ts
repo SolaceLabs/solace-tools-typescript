@@ -353,7 +353,6 @@ export abstract class CliAssetsImporter extends CliImporter {
       applicationDomainId: schemaApplicationDomainId,
       schemaName: epAsyncApiMessageDocument.getPayloadSchemaName(),
       schemaObjectSettings: {
-        contentType: CliAsyncApiDocumentService.map_MessageDocumentContentType_To_EpSchemaContentType(epAsyncApiMessageDocument.getContentType()),
         schemaType: CliAsyncApiDocumentService.map_MessageDocumentSchemaFormatType_To_EpSchemaFormatType(epAsyncApiMessageDocument.getSchemaFormatType()),
         shared: epAsyncApiMessageDocument.getPayloadSchemaEpIsShared(this.cliImporterOptions.cliImport_DefaultSharedFlag),
       },
