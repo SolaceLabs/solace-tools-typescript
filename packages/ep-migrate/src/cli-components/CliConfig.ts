@@ -11,7 +11,7 @@ import {
   Environment, 
   EventMesh, 
   EventMeshesResponse, 
-  MessagingService 
+  MessagingService
 } from '@solace-labs/ep-openapi-node';
 import { 
   EventMeshesService 

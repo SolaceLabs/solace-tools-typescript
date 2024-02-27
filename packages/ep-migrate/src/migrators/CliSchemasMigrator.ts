@@ -7,7 +7,6 @@ import {
   EpSdkSchemasService,
   EEpSdkTask_Action,
   EpSdkSchemaVersionsService,
-  EEpSdkSchemaContentType,
   EEpSdkSchemaType,
 } from "@solace-labs/ep-sdk";
 import {
@@ -191,34 +190,6 @@ export class CliSchemasMigrator extends CliMigrator {
     throw new CliInternalCodeInconsistencyError(logName, "should never get here");
   }
 
-  private transformEpV2ContentType({ epV1ContentType }:{
-    epV1ContentType: EventSchema.contentType;
-  }): EEpSdkSchemaContentType {
-    const funcName = 'transformEpV2ContentType';
-    const logName = `${CliSchemasMigrator.name}.${funcName}()`;
-    switch(epV1ContentType) {
-      case EventSchema.contentType.JSON:
-      case EventSchema.contentType.AVRO:
-        return EEpSdkSchemaContentType.APPLICATION_JSON;
-      case EventSchema.contentType.XML:
-        return EEpSdkSchemaContentType.APPLICATION_XML;
-      case EventSchema.contentType.TEXT:
-      case EventSchema.contentType.BINARY:
-        return EEpSdkSchemaContentType.APPLICATION_PROTOBUF;
-      // case EventSchema.contentType.TEXT:
-      // case EventSchema.contentType.BINARY:
-      //   throw new CliMigrateEpV1IncompatibilityError(logName, {
-      //     message: "Unable to map epV1ContentType to EpV2 Schema Type for Schema. This Schema cannot be migrated.",
-      //     epV1ContentType,
-      //   });
-      default:
-        /* istanbul ignore next */
-        CliUtils.assertNever(logName, epV1ContentType);
-    }
-    throw new CliInternalCodeInconsistencyError(logName, "should never get here");  
-  }
-
-
   private async migrateSchema({ cliMigratedApplicationDomain, epV1EventSchema, epV1Tags }:{
     cliMigratedApplicationDomain: ICliMigratedApplicationDomain;
     epV1EventSchema: EpV1EventSchema;
@@ -249,7 +220,6 @@ export class CliSchemasMigrator extends CliMigrator {
       schemaObjectSettings: {
         shared: epV1EventSchema.shared,
         schemaType: this.transformEpV2SchemaType({ epV1ContentType: epV1EventSchema.contentType}),
-        contentType: this.transformEpV2ContentType({ epV1ContentType: epV1EventSchema.contentType}),
       },
       epSdkTask_TransactionConfig: this.get_IEpSdkTask_TransactionConfig(),
     });
