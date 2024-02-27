@@ -11,7 +11,6 @@ import {
 } from "../utils";
 import {
   EpSdkSchemasService,
-  EEpSdkSchemaContentType,
   EEpSdkSchemaType,
 } from "../services";
 import { 
@@ -33,7 +32,7 @@ import {
 } from "./EpSdkTaskTypes";
 
 type TEpSdkSchemaTask_Settings = Partial<
-  Pick<SchemaObject, "shared" | "contentType" | "schemaType">
+  Pick<SchemaObject, "shared" | "schemaType">
 >;
 type TEpSdkSchemaTask_CompareObject = TEpSdkSchemaTask_Settings;
 
@@ -85,7 +84,6 @@ export class EpSdkSchemaTask extends EpSdkTask {
   private readonly Default_TEpSdkSchemaTask_Settings: Required<TEpSdkSchemaTask_Settings> =
     {
       shared: true,
-      contentType: EEpSdkSchemaContentType.APPLICATION_JSON,
       schemaType: EEpSdkSchemaType.JSON_SCHEMA,
     };
   private getTaskConfig(): IEpSdkSchemaTask_Config {
@@ -209,7 +207,6 @@ export class EpSdkSchemaTask extends EpSdkTask {
     const existingObject: SchemaObject = epSdkSchemaTask_GetFuncReturn.epObject;
     const existingCompareObject: TEpSdkSchemaTask_CompareObject = {
       shared: existingObject.shared,
-      contentType: existingObject.contentType,
       schemaType: existingObject.schemaType,
     };
     const requestedCompareObject: TEpSdkSchemaTask_CompareObject =
