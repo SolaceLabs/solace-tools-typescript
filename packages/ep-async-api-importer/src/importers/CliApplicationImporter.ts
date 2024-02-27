@@ -35,7 +35,6 @@ import {
   ECliRunSummary_Type,
   ICliGenerateApiOutputRunContext,
   CliUtils,
-  CliAsyncApiSpecFeatureNotSupportedError,
   ICliApiRunContext,
   CliRunExecuteReturnLog,
   CliImporterTestRunAssetsInconsistencyError,

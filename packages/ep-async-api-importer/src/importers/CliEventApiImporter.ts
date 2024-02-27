@@ -24,7 +24,6 @@ import {
   IEpSdkEventApiVersionTask_ExecuteReturn,
 } from "@solace-labs/ep-sdk";
 import {
-  CliAsyncApiSpecFeatureNotSupportedError,
   CliEPApiContentError,
   CliErrorFactory,
   CliImporterTestRunAssetsInconsistencyError,
