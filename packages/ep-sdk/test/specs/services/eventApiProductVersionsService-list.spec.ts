@@ -14,7 +14,7 @@ import {
   EventApiProductVersion,
   SolaceClassOfServicePolicy,
   Plan,
-  MessagingService,
+  SolaceMessagingService,
   CustomAttributeDefinition,
 } from "@solace-labs/ep-openapi-node";
 import {
@@ -48,9 +48,10 @@ const getApplicationDomainNameList = (): Array<string> => {
 };
 let ApplicationDomainIdList: Array<string> = [];
 
-let MessagingServiceList: Array<MessagingService> = [];
-const MessagingServiceId = "14p394d5c0i";
-let TheMessagingService: MessagingService | undefined = undefined;
+let MessagingServiceList: Array<SolaceMessagingService> = [];
+// TODO - fix this - need to create mem and message service on the fly
+const MessagingServiceId = "wgex5k3ov3h";
+let TheMessagingService: SolaceMessagingService | undefined = undefined;
 
 let EventApiProductName: string;
 const EventApiProductShared = true;

@@ -14,7 +14,6 @@ import {
   SchemaVersion,
 } from "@solace-labs/ep-openapi-node";
 import {
-  EEpSdkSchemaContentType,
   EEpSdkSchemaType,
   EpSdkApiContentError,
   EpSdkEpEventVersionsService,
@@ -61,7 +60,6 @@ export class TestHelpers {
         applicationDomainId: applicationDomainId,
         name: "SchemaName",
         schemaType: EEpSdkSchemaType.JSON_SCHEMA,
-        contentType: EEpSdkSchemaContentType.APPLICATION_JSON,
         shared: true,
       },
     });

@@ -33,12 +33,12 @@ import {
   EpSdkSchemaVersionsService,
   EpSdkStatesService,
   EpSdkEpEventVersionsService,
-  EEpSdkSchemaContentType,
   EEpSdkSchemaType,
   TEpSdkCustomAttribute,
   EpSdkApplicationDomainTask,
   EEpSdkTask_TargetState,
   EpSdkCustomAttributeDefinitionTask,
+  EpSdkBrokerTypes,
 } from "../../../src";
 
 const scriptName: string = path.basename(__filename);
@@ -128,7 +128,6 @@ describe(`${scriptName}`, () => {
         applicationDomainId: ApplicationDomainId,
         name: SchemaName,
         schemaType: EEpSdkSchemaType.JSON_SCHEMA,
-        contentType: EEpSdkSchemaContentType.APPLICATION_JSON,
         shared: true,
       },
     });
@@ -371,6 +370,7 @@ describe(`${scriptName}`, () => {
           applicationDomainId: ApplicationDomainId,
           name: PagingName,
           shared: false,
+          brokerType: EpSdkBrokerTypes.Solace,
         },
       });
       EventId = response.data.id;
@@ -379,12 +379,14 @@ describe(`${scriptName}`, () => {
       for (let i = 0; i < VersionQuantity; i++) {
         VersionString = `3.0.${i}`;
         const versionResponse: EventVersionResponse =
-          await EventsService.createEventVersionForEvent({
-            eventId: EventId,
+          await EventsService.createEventVersion({
             requestBody: {
               eventId: EventId,
               description: "paging version",
               version: VersionString,
+              deliveryDescriptor: {
+                brokerType: EpSdkBrokerTypes.Solace,
+              }
             },
           });
       }

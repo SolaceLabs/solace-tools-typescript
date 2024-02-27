@@ -16,8 +16,6 @@ import {
 import {
   EpSdkError,
   EpSdkServiceError,
-  EpSdkApplicationDomainsService,
-  EEpSdkSchemaContentType,
   EEpSdkSchemaType,
   EpSdkStatesService,
   EpSdkSchemaVersionsService,
@@ -91,7 +89,6 @@ describe(`${scriptName}`, () => {
         applicationDomainId: ApplicationDomainId,
         name: SchemaName,
         schemaType: EEpSdkSchemaType.JSON_SCHEMA,
-        contentType: EEpSdkSchemaContentType.APPLICATION_JSON,
       },
     });
     SchemaId = schemaResponse.data.id;
@@ -348,7 +345,6 @@ describe(`${scriptName}`, () => {
           name: PagingName,
           shared: false,
           schemaType: EEpSdkSchemaType.JSON_SCHEMA,
-          contentType: EEpSdkSchemaContentType.APPLICATION_JSON,
         },
       });
       SchemaId = response.data.id;
@@ -357,8 +353,7 @@ describe(`${scriptName}`, () => {
       for (let i = 0; i < VersionQuantity; i++) {
         VersionString = `3.0.${i}`;
         const versionResponse: SchemaVersionResponse =
-          await SchemasService.createSchemaVersionForSchema({
-            schemaId: SchemaId,
+          await SchemasService.createSchemaVersion({
             requestBody: {
               schemaId: SchemaId,
               description: "paging version",
