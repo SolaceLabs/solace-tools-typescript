@@ -109,9 +109,8 @@ describe(`${scriptName}`, () => {
         displayName: 'displayName',
         values: values
       };
-      const topicAddressEnumVersionResponse: TopicAddressEnumVersionResponse = await EnumsService.createEnumVersionForEnum({
+      const topicAddressEnumVersionResponse: TopicAddressEnumVersionResponse = await EnumsService.createEnumVersion({
         xContextId: 'xContextId',
-        enumId: EnumId,
         requestBody: requestBody,
       });
       const data: TopicAddressEnumVersion | undefined = topicAddressEnumVersionResponse.data;
