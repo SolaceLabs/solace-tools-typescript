@@ -1,5 +1,16 @@
 # @solace-labs/ep-migrate
 
+## 0.7.0
+
+### Minor Changes
+
+- 75ecc73d7: Open API clients to 2.0.27 and removes all references to deprecated APIs
+
+### Patch Changes
+
+- Updated dependencies [75ecc73d7]
+  - @solace-labs/ep-sdk@0.63.0
+
 ## 0.6.1
 
 ### Patch Changes
