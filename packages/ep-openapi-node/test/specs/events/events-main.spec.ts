@@ -9,12 +9,12 @@ import {
   TestLogger,
   TestConfig
 } from '../../lib';
-import { 
-  ApiError, 
-  ApplicationDomainResponse, 
-  ApplicationDomainsService, 
-  EventResponse, 
-  EventsService, 
+import {
+  ApiError,
+  ApplicationDomainResponse,
+  ApplicationDomainsService,
+  EventResponse,
+  EventsService,
   Event as EpEvent,
   EventVersion,
   EventVersionResponse,
@@ -51,7 +51,7 @@ const initializeGlobals = () => {
 
 describe(`${scriptName}`, () => {
 
-  before(async() => {
+  before(async () => {
     TestContext.newItId();
     initializeGlobals();
   });
@@ -60,18 +60,20 @@ describe(`${scriptName}`, () => {
     TestContext.newItId();
   });
 
-  after(async() => {
+  after(async () => {
     TestContext.newItId();
     try {
       let xvoid: void = await ApplicationDomainsService.deleteApplicationDomain({
         xContextId: 'xContextId',
         id: ApplicationDomainId
       });
-      xvoid = await CustomAttributeDefinitionsService.deleteCustomAttributeDefinition({
-        xContextId: 'xContextId',
-        id: CustomAttribtuteDefinitionId
-      });
-    } catch(e) {
+      if (CustomAttribtuteDefinitionId) {
+        xvoid = await CustomAttributeDefinitionsService.deleteCustomAttributeDefinition({
+          xContextId: 'xContextId',
+          id: CustomAttribtuteDefinitionId
+        });
+      }
+    } catch (e) {
       expect(e instanceof ApiError, TestLogger.createNotApiErrorMessage(e.message)).to.be.true;
       expect(false, TestLogger.createApiTestFailMessage('failed', e)).to.be.true;
     }
@@ -87,7 +89,7 @@ describe(`${scriptName}`, () => {
       });
       expect(applicationDomainResponse.data.id, TestLogger.createApiTestFailMessage('failed')).to.not.be.undefined;
       ApplicationDomainId = applicationDomainResponse.data.id;
-    } catch(e) {
+    } catch (e) {
       expect(e instanceof ApiError, TestLogger.createNotApiErrorMessage(e.message)).to.be.true;
       expect(false, TestLogger.createApiTestFailMessage('failed', e)).to.be.true;
     }
@@ -107,28 +109,7 @@ describe(`${scriptName}`, () => {
       expect(data, TestLogger.createApiTestFailMessage('failed')).to.not.be.undefined;
       expect(data.id, TestLogger.createApiTestFailMessage('failed')).to.not.be.undefined;
       EventId = data.id;
-    } catch(e) {
-      expect(e instanceof ApiError, TestLogger.createNotApiErrorMessage(e.message)).to.be.true;
-      expect(false, TestLogger.createApiTestFailMessage('failed', e)).to.be.true;
-    }
-  });
-
-  it(`${scriptName}: should create event version (deprecated)`, async () => {
-    try {
-      const requestBody: EventVersion = {
-        eventId: EventId,
-        version: '1.0.0',
-      };
-      const eventVersionResponse: EventVersionResponse = await EventsService.createEventVersionForEvent({
-        xContextId: 'xContextId',
-        eventId: EventId,
-        requestBody: requestBody
-      });
-      const data: EventVersion | undefined = eventVersionResponse.data;
-      expect(data, TestLogger.createApiTestFailMessage('failed')).to.not.be.undefined;
-      expect(data.id, TestLogger.createApiTestFailMessage('failed')).to.not.be.undefined;
-      EventVersionId = data.id;
-    } catch(e) {
+    } catch (e) {
       expect(e instanceof ApiError, TestLogger.createNotApiErrorMessage(e.message)).to.be.true;
       expect(false, TestLogger.createApiTestFailMessage('failed', e)).to.be.true;
     }
@@ -148,7 +129,7 @@ describe(`${scriptName}`, () => {
       expect(data, TestLogger.createApiTestFailMessage('failed')).to.not.be.undefined;
       expect(data.id, TestLogger.createApiTestFailMessage('failed')).to.not.be.undefined;
       EventVersionId = data.id;
-    } catch(e) {
+    } catch (e) {
       expect(e instanceof ApiError, TestLogger.createNotApiErrorMessage(e.message)).to.be.true;
       expect(false, TestLogger.createApiTestFailMessage('failed', e)).to.be.true;
     }
@@ -169,7 +150,7 @@ describe(`${scriptName}`, () => {
       expect(data, TestLogger.createApiTestFailMessage('failed')).to.not.be.undefined;
       expect(data.id, TestLogger.createApiTestFailMessage('failed')).to.not.be.undefined;
       CustomAttribtuteDefinitionId = data.id;
-    } catch(e) {
+    } catch (e) {
       expect(e instanceof ApiError, TestLogger.createNotApiErrorMessage(e.message)).to.be.true;
       expect(false, TestLogger.createApiTestFailMessage('failed', e)).to.be.true;
     }
@@ -187,14 +168,14 @@ describe(`${scriptName}`, () => {
         requestBody: {
           applicationDomainId: ApplicationDomainId,
           name: EventNameAttributes,
-          customAttributes: [ customAttribute ]
+          customAttributes: [customAttribute]
         }
       });
       const data: EpEvent | undefined = eventResponse.data;
       expect(data, TestLogger.createApiTestFailMessage('failed')).to.not.be.undefined;
       expect(data.id, TestLogger.createApiTestFailMessage('failed')).to.not.be.undefined;
       EventIdAttributes = data.id;
-    } catch(e) {
+    } catch (e) {
       expect(e instanceof ApiError, TestLogger.createNotApiErrorMessage(e.message)).to.be.true;
       expect(false, TestLogger.createApiTestFailMessage('failed', e)).to.be.true;
     }
@@ -205,17 +186,16 @@ describe(`${scriptName}`, () => {
       const requestBody: EventVersion = {
         eventId: EventIdAttributes,
         version: '1.0.0',
-      };        
-      const eventVersionResponse: EventVersionResponse = await EventsService.createEventVersionForEvent({
+      };
+      const eventVersionResponse: EventVersionResponse = await EventsService.createEventVersion({
         xContextId: 'xContextId',
-        eventId: EventIdAttributes,
         requestBody: requestBody
       });
       const data: EventVersion | undefined = eventVersionResponse.data;
       expect(data, TestLogger.createApiTestFailMessage('failed')).to.not.be.undefined;
       expect(data.id, TestLogger.createApiTestFailMessage('failed')).to.not.be.undefined;
       EventVersionIdAttributes = data.id;
-    } catch(e) {
+    } catch (e) {
       expect(e instanceof ApiError, TestLogger.createNotApiErrorMessage(e.message)).to.be.true;
       expect(false, TestLogger.createApiTestFailMessage('failed', e)).to.be.true;
     }

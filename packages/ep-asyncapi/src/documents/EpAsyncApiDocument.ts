@@ -54,10 +54,6 @@ export enum EChannelDelimiters {
   MINUS = "-",
 }
 
-export enum E_EpAsyncApiContentTypes {
-  APPLICATION_JSON = "application/json",
-}
-
 export type T_EpAsyncApi_LogInfo = {
   title: string;
   version: string;
@@ -514,17 +510,6 @@ export class EpAsyncApiDocument {
       }
     }
     return epAsyncApiMessageDocumentMap;
-  }
-
-  public getSupportedContentTypes(): Array<string> {
-    return Object.values(E_EpAsyncApiContentTypes);
-  }
-
-  public getDefaultContentType(): string | undefined {
-    const defaultContentType: string | null =
-      this.asyncApiDocument.defaultContentType();
-    if (defaultContentType === null) return undefined;
-    return defaultContentType;
   }
 
   public getLogInfo(): T_EpAsyncApi_LogInfo {

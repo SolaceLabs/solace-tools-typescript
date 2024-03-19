@@ -1,11 +1,9 @@
 import {
-  EEpSdkSchemaContentType,
   EEpSdkSchemaType,
 } from "@solace-labs/ep-sdk";
 import {
   EpAsyncApiDocument,
   EpAsyncApiDocumentService,
-  E_EpAsyncApiContentTypes,
   E_EpAsyncApiSchemaFormatType,
 } from "@solace-labs/ep-asyncapi";
 
@@ -75,23 +73,6 @@ class CliAsyncApiDocumentService {
       throw cliError;
     }
   };
-
-  public map_MessageDocumentContentType_To_EpSchemaContentType(
-    messageContentType: E_EpAsyncApiContentTypes
-  ): EEpSdkSchemaContentType {
-    const funcName = "map_MessageDocumentContentType_To_EpSchemaContentType";
-    const logName = `${CliAsyncApiDocumentService.name}.${funcName}()`;
-    switch (messageContentType) {
-      case E_EpAsyncApiContentTypes.APPLICATION_JSON:
-        return EEpSdkSchemaContentType.APPLICATION_JSON;
-      default:
-        CliUtils.assertNever(logName, messageContentType);
-    }
-    throw new CliInternalCodeInconsistencyError(logName, {
-      message: "map message content type",
-      messageContentType: messageContentType,
-    });
-  }
 
   public map_MessageDocumentSchemaFormatType_To_EpSchemaFormatType(
     messageSchemaFormatType: E_EpAsyncApiSchemaFormatType

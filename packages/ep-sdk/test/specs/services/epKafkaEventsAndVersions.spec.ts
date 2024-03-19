@@ -32,7 +32,6 @@ import {
   EpSdkSchemaVersionsService,
   EpSdkStatesService,
   EpSdkEpEventVersionsService,
-  EEpSdkSchemaContentType,
   EEpSdkSchemaType,
   EpSdkEpEventsService,
   EpSdkEventResponse,
@@ -101,7 +100,6 @@ describe(`${scriptName}`, () => {
         applicationDomainId: ApplicationDomainId,
         name: SchemaName,
         schemaType: EEpSdkSchemaType.JSON_SCHEMA,
-        contentType: EEpSdkSchemaContentType.APPLICATION_JSON,
         shared: true,
       },
     });

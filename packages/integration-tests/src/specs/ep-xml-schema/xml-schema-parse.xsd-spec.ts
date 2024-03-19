@@ -9,7 +9,6 @@ import {
   EventApIsService
 } from "@solace-labs/ep-openapi-node";
 import { 
-  EEpSdkSchemaContentType,
   EEpSdkSchemaType,
   EEpSdkTask_TargetState, 
   EpSdkEpEventTask, 

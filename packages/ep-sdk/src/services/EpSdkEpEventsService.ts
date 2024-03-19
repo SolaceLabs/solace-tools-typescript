@@ -55,7 +55,7 @@ export class EpSdkEpEventsServiceClass extends EpSdkServiceClass {
     if(eventResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'eventResponse.data === undefined', {
       eventResponse: eventResponse
     });
-    return eventResponse.data;
+    return eventResponse.data as EpSdkEvent;
   }
 
   /**
@@ -169,8 +169,8 @@ export class EpSdkEpEventsServiceClass extends EpSdkServiceClass {
             }
             return doAdd;
           });
-          eventList.push(...filteredList);
-        } else eventList.push(...eventsResponse.data);
+          eventList.push(...filteredList as EpSdkEvent[]);
+        } else eventList.push(...eventsResponse.data as EpSdkEvent[]);
         /* istanbul ignore next */
         if(eventsResponse.meta === undefined) throw new EpSdkApiContentError(logName, this.constructor.name,'eventsResponse.meta === undefined', {
           eventsResponse: eventsResponse
@@ -216,7 +216,7 @@ export class EpSdkEpEventsServiceClass extends EpSdkServiceClass {
     if(eventsResponse.data.length > 1) throw new EpSdkApiContentError(logName, this.constructor.name,'eventsResponse.data.length > 1', {    
       eventsResponse: eventsResponse
     });
-    const epSdkEvent: EpSdkEvent = eventsResponse.data[0];
+    const epSdkEvent: EpSdkEvent = eventsResponse.data[0] as EpSdkEvent;
     return epSdkEvent;
   }
 
@@ -237,7 +237,7 @@ export class EpSdkEpEventsServiceClass extends EpSdkServiceClass {
       if(eventResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "eventResponse.data === undefined", {
           eventId: eventId
         });
-      const epSdkEvent: EpSdkEvent = eventResponse.data;
+      const epSdkEvent: EpSdkEvent = eventResponse.data as EpSdkEvent;
       return epSdkEvent;  
     } catch(e) {
       if(e instanceof ApiError && e.status === 404) return undefined;
@@ -332,7 +332,7 @@ export class EpSdkEpEventsServiceClass extends EpSdkServiceClass {
     });
     const epSdkEventResponse: EpSdkEventResponse = {
       data: {
-        ...eventResponse.data,
+        ...(eventResponse.data as EpSdkEvent),
       },
       meta: eventResponse.meta
     }

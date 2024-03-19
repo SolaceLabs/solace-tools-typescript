@@ -7,7 +7,6 @@ import { ApiError, SchemaObject, SchemaVersion } from "@solace-labs/ep-openapi-n
 import {
   EpSdkError,
   EpSdkApplicationDomainsService,
-  EEpSdkSchemaContentType,
   EEpSdkSchemaType,
   EpSdkStatesService,
   EpSdkApplicationDomainTask,
@@ -296,7 +295,6 @@ describe(`${scriptName}`, () => {
         schemaName: AvroSchemaName,
         schemaObjectSettings: {
           shared: true,
-          contentType: EEpSdkSchemaContentType.APPLICATION_JSON,
           schemaType: EEpSdkSchemaType.AVRO,
         },
       });

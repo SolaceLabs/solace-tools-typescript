@@ -8,10 +8,10 @@ channels:
   ep-asyncapi/test:
     publish:
       message:
-        $ref: '#/components/messages/very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name'
+        $ref: '#/components/messages/very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name'
 components:
   messages:
-    very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name:
+    very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name-very-long-message-name:
      payload:
        type: string
 

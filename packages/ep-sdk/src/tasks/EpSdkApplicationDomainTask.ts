@@ -8,9 +8,12 @@
  */
 import {
   AddressLevel,
+  Application,
   ApplicationDomain,
   ApplicationDomainResponse,
   ApplicationDomainsService,
+  ApplicationVersion,
+  ApplicationsService,
   TopicDomain,
   TopicDomainResponse,
   TopicDomainsResponse,
@@ -28,6 +31,8 @@ import {
 } from "../types";
 import { 
   EpSdkApplicationDomainsService, 
+  EpSdkApplicationVersion, 
+  EpSdkApplicationVersionsService, 
   EpSdkTopicAddressLevelService, 
   EpSdkTopicDomainsService 
 } from "../services";
@@ -317,6 +322,30 @@ export class EpSdkApplicationDomainTask extends EpSdkTask {
     return createdTopicDomains;
   }
 
+  private async disassociateFromRuntimeManager({ applicationDomainId }:{
+    applicationDomainId: string;
+  }): Promise<Array<EpSdkApplicationVersion>> {    
+    const applications = await EpSdkApplicationVersionsService.listLatestVersions({
+      applicationDomainIds: [applicationDomainId],
+      pageNumber: 1,
+      pageSize: 99
+    });
+    const disassociatedApplications: EpSdkApplicationVersion[] = [];
+    for(const application of applications.data) {
+      // final check
+      if(application.application.applicationDomainId === applicationDomainId) {
+        await ApplicationsService.updateMsgSvcAssociationForAppVersion({
+          versionId: application.applicationVersion.id,
+          requestBody: {
+            messagingServiceIds: []
+          }
+         });
+        disassociatedApplications.push(application.applicationVersion);
+      }
+    }
+    return disassociatedApplications;
+  }
+
   private async deleteTopicDomains({ applicationDomainId, topicDomains }:{
     applicationDomainId: string;
     topicDomains?: Array<TopicDomain>;
@@ -579,6 +608,7 @@ export class EpSdkApplicationDomainTask extends EpSdkTask {
     // delete topic domains
     await this.deleteTopicDomains({ applicationDomainId, topicDomains: epSdkApplicationDomainTask_GetFuncReturn.epTopicDomains });
     // delete the application domain
+    await this.disassociateFromRuntimeManager({ applicationDomainId: epSdkApplicationDomainTask_GetFuncReturn.epObject.id});
     const applicationDomain: ApplicationDomain = await EpSdkApplicationDomainsService.deleteById({
       xContextId: this.xContextId,
       applicationDomainId: epSdkApplicationDomainTask_GetFuncReturn.epObject.id,

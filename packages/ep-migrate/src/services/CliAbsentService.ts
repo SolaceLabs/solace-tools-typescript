@@ -269,6 +269,13 @@ class CliAbsentService {
           if(applicationVersion.customAttributes) {
             const found = applicationVersion.customAttributes.find( x => x.customAttributeDefinitionName === CliMigrateManager.EpV2RunIdCustomAttributeDefinition.name && x.value === runId );
             if(found) {
+              await ApplicationsService.updateMsgSvcAssociationForAppVersion({
+                versionId: applicationVersion.id, 
+                requestBody: {
+                  messagingServiceIds: []
+                }
+              }
+              );
               await ApplicationsService.deleteApplicationVersion({ versionId: applicationVersion.id });
               CliRunSummary.absentEpV2ApplicationVersion({ runId, rctxt, applicationVersion });
             }
@@ -592,7 +599,6 @@ class CliAbsentService {
       epV2ApplicationDomainPrefix: prefix
     };
     CliRunContext.push(rctxt);
-
     const applicationDomainsResponse: ApplicationDomainsResponse = await EpSdkApplicationDomainsService.listAll({});
     const absentApplicationDomains: Array<ApplicationDomain> = [];
     if(applicationDomainsResponse.data) {

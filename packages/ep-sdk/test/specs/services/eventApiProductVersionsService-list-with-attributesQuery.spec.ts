@@ -39,7 +39,8 @@ TestLogger.logMessage(scriptName, ">>> starting ...");
 const TestSpecName = "eapV-list-with.spec";
 const TestSpecId: string = TestUtils.getUUID();
 // fixed id, must exist in test org
-const TestMessagingServiceId = "14p394d5c0i";
+// TODO - fix this, better create the messaging service and MEM as required
+const TestMessagingServiceId = "wgex5k3ov3h";
 let TestMessagingService: MessagingService | undefined = undefined;
 let ApplicationDomainName: string;
 let ApplicationDomainId: string | undefined;

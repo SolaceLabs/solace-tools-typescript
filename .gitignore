@@ -9,3 +9,4 @@ _todo*
 references
 generated.openapi-spec.json
 venv
+setup_env.sh

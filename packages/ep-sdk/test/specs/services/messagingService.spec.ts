@@ -7,7 +7,7 @@ import {
   ApiError,
   Plan,
   SolaceClassOfServicePolicy,
-  MessagingService,
+  SolaceMessagingService,
 } from "@solace-labs/ep-openapi-node";
 import { EpSdkError, EpSdkMessagingService } from "../../../src";
 
@@ -78,7 +78,7 @@ let ApplicationDomainId: string | undefined;
 // let MessagingServiceId: string | undefined;
 
 // fixed, taken from UI
-const MessagingServiceId = "14p394d5c0i";
+const MessagingServiceId = "wgex5k3ov3h";
 
 // let TheMessagingService: MessagingService | undefined;
 // let GatewayMessagingServiceId: string | undefined;
@@ -375,7 +375,7 @@ describe(`${scriptName}`, () => {
   it(`${scriptName}: should get list of all messaging services`, async () => {
     const PageSize = 1;
     try {
-      const messagingServiceList: Array<MessagingService> =
+      const messagingServiceList: Array<SolaceMessagingService> =
         await EpSdkMessagingService.listAll({
           pageSize: PageSize,
         });
@@ -395,7 +395,7 @@ describe(`${scriptName}`, () => {
 
   it(`${scriptName}: should get list of all messaging services by idList=[]`, async () => {
     try {
-      const messagingServiceList: Array<MessagingService> =
+      const messagingServiceList: Array<SolaceMessagingService> =
         await EpSdkMessagingService.listAll({
           idList: [],
         });
@@ -415,7 +415,7 @@ describe(`${scriptName}`, () => {
   it(`${scriptName}: should get list of all messaging services by idList`, async () => {
     const PageSize = 1;
     try {
-      const messagingServiceList: Array<MessagingService> =
+      const messagingServiceList: Array<SolaceMessagingService> =
         await EpSdkMessagingService.listAll({
           pageSize: PageSize,
           idList: [MessagingServiceId],
@@ -435,7 +435,7 @@ describe(`${scriptName}`, () => {
 
   it(`${scriptName}: should get messaging service`, async () => {
     try {
-      const messagingService: MessagingService =
+      const messagingService: SolaceMessagingService =
         await EpSdkMessagingService.getById({
           messagingServiceId: MessagingServiceId,
         });

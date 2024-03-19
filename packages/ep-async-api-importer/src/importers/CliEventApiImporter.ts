@@ -4,7 +4,6 @@ import {
   EpAsyncApiDocument,
   EpAsyncApiDocumentService,
   EpAsyncApiMessageDocument,
-  E_EpAsyncApiContentTypes,
   T_EpAsyncApiChannelDocumentMap,
 } from "@solace-labs/ep-asyncapi";
 import {
@@ -25,7 +24,6 @@ import {
   IEpSdkEventApiVersionTask_ExecuteReturn,
 } from "@solace-labs/ep-sdk";
 import {
-  CliAsyncApiSpecFeatureNotSupportedError,
   CliEPApiContentError,
   CliErrorFactory,
   CliImporterTestRunAssetsInconsistencyError,
@@ -495,15 +493,6 @@ export class CliEventApiImporter extends CliAssetsImporter {
         const epAsynApiChannelPublishOperation: EpAsynApiChannelPublishOperation | undefined = epAsyncApiChannelDocument.getEpAsyncApiChannelPublishOperation();
         if (epAsynApiChannelPublishOperation !== undefined) {
           const epAsyncApiMessageDocument: EpAsyncApiMessageDocument = epAsynApiChannelPublishOperation.getEpAsyncApiMessageDocument();
-          if(epAsyncApiMessageDocument.getContentType() !== E_EpAsyncApiContentTypes.APPLICATION_JSON)
-            /* istanbul ignore next */
-            throw new CliAsyncApiSpecFeatureNotSupportedError(logName, "unsupported message content type", {
-              messageName: epAsyncApiMessageDocument.getMessageName(),
-              contentType: epAsyncApiMessageDocument.getContentType(),
-              supportedContentTypes:
-                epAsyncApiDocument.getSupportedContentTypes(),
-            });
-
           const schemaFilePath = schemasOutputDir + "/" + CliUtils.convertStringToFilePath(epAsyncApiMessageDocument.getSchemaFileName());
           CliUtils.saveContents2File({
             filePath: schemaFilePath,
@@ -513,15 +502,6 @@ export class CliEventApiImporter extends CliAssetsImporter {
         const epAsyncApiChannelSubscribeOperation: EpAsyncApiChannelSubscribeOperation | undefined = epAsyncApiChannelDocument.getEpAsyncApiChannelSubscribeOperation();
         if (epAsyncApiChannelSubscribeOperation !== undefined) {
           const epAsyncApiMessageDocument: EpAsyncApiMessageDocument = epAsyncApiChannelSubscribeOperation.getEpAsyncApiMessageDocument();
-          if (epAsyncApiMessageDocument.getContentType() !== E_EpAsyncApiContentTypes.APPLICATION_JSON)
-            /* istanbul ignore next */
-            throw new CliAsyncApiSpecFeatureNotSupportedError(logName, "unsupported message content type", {
-              messageName: epAsyncApiMessageDocument.getMessageName(),
-              contentType: epAsyncApiMessageDocument.getContentType(),
-              supportedContentTypes:
-                epAsyncApiDocument.getSupportedContentTypes(),
-            });
-
           const schemaFilePath = schemasOutputDir + "/" + CliUtils.convertStringToFilePath(epAsyncApiMessageDocument.getSchemaFileName());
           CliUtils.saveContents2File({
             filePath: schemaFilePath,

@@ -30,7 +30,6 @@ import {
   IEpSdkTask_TransactionLogData,
   EpSdkSemVerUtils,
   EEpSdk_VersionStrategy,
-  EEpSdkSchemaContentType,
   EEpSdkSchemaType,
   EpSdkSchemaVersionsService,
   EpSdkEpEventVersionsService,
@@ -81,7 +80,6 @@ describe(`${scriptName}`, () => {
           applicationDomainId: ApplicationDomainId,
           name: SchemaName,
           schemaType: EEpSdkSchemaType.JSON_SCHEMA,
-          contentType: EEpSdkSchemaContentType.APPLICATION_JSON,
           shared: true,
         },
       });

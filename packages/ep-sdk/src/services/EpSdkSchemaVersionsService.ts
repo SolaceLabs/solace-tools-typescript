@@ -391,7 +391,6 @@ export class EpSdkSchemaVersionsServiceClass extends EpSdkVersionServiceClass {
       schemaName: fromSchemaObject.name,
       schemaObjectSettings: {
         shared: fromSchemaObject.shared,
-        contentType: fromSchemaObject.contentType,
         schemaType: fromSchemaObject.schemaType,
       },
     });

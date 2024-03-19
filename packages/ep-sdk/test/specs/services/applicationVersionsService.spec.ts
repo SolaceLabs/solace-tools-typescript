@@ -339,8 +339,7 @@ describe(`${scriptName}`, () => {
       for (let i = 0; i < VersionQuantity; i++) {
         VersionString = `3.0.${i}`;
         const versionResponse: ApplicationVersionResponse =
-          await ApplicationsService.createApplicationVersionForApplication({
-            applicationId: ApplicationId,
+          await ApplicationsService.createApplicationVersion({
             requestBody: {
               description: "paging version",
               version: VersionString,

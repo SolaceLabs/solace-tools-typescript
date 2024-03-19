@@ -22,7 +22,6 @@ import {
 } from './EpAsyncApiChannelDocument';
 import {
   EpAsyncApiDocument,
-  E_EpAsyncApiContentTypes
 } from './EpAsyncApiDocument';
 
 export enum E_EpAsyncApiSchemaFormatType {
@@ -35,35 +34,8 @@ export class EpAsyncApiMessageDocument {
   private epAsyncApiChannelDocument: EpAsyncApiChannelDocument;
   public asyncApiMessage: Message;
   private asyncApiMessageKey: string;
-  private contentType: E_EpAsyncApiContentTypes;
   private schemaFormatType: E_EpAsyncApiSchemaFormatType;
-  public static readonly ContentTypeIssue = 'contentType === undefined, neither message has a contentType nor api has a defaultContentType';
   public static readonly MissingMessagePayloadSchemaIssue = "Missing message payload schema.";
-
-
-  private determineContentType(): E_EpAsyncApiContentTypes {
-    const funcName = 'determineContentType';
-    const logName = `${EpAsyncApiMessageDocument.name}.${funcName}()`;
-
-    // note: 
-    // contentType: application/vnd.apache.avro+json
-    // contentType: application/json
-    // contentType: application/vnd.aai.asyncapi;version=2.0.0
-
-    let contentTypeString: string | undefined = this.asyncApiMessage.contentType();
-    if (!contentTypeString) contentTypeString = this.epAsyncApiDocument.getDefaultContentType();
-    // if (contentTypeString === undefined) throw new EpAsyncApiMessageError(logName, this.constructor.name, {
-    //   issue: EpAsyncApiMessageDocument.ContentTypeIssue,
-    //   apiTitle: this.epAsyncApiDocument.getTitle(),
-    //   apiChannel: this.epAsyncApiChannelDocument?.getAsyncApiChannelKey(),
-    //   apiMessage: this.getMessageName(),
-    //   apiMessageContent: this.asyncApiMessage,
-    // });
-    // hardcode to application/json
-    // nonsense, cater for EP not setting content type correctly
-    if (contentTypeString?.includes('avro')) return E_EpAsyncApiContentTypes.APPLICATION_JSON;
-    return E_EpAsyncApiContentTypes.APPLICATION_JSON;
-  }
 
   private determineSchemaFormatType(): E_EpAsyncApiSchemaFormatType {
     // const funcName = 'determineSchemaFormatType';
@@ -109,7 +81,6 @@ export class EpAsyncApiMessageDocument {
     this.epAsyncApiChannelDocument = epAsyncApiChannelDocument;
     this.asyncApiMessage = asyncApiMessage;
     this.asyncApiMessageKey = this.extractMessageKey(asyncApiMessage);
-    this.contentType = this.determineContentType();
     this.schemaFormatType = this.determineSchemaFormatType();
   }
 
@@ -169,8 +140,6 @@ export class EpAsyncApiMessageDocument {
   public getEpCustomAttributeValue(name: string): string | undefined {
     return this.asyncApiMessage.extension(`${EpGeneralExtensions.xEpCustomAttributeNamePrefix}${name}`);
   }
-
-  public getContentType(): E_EpAsyncApiContentTypes { return this.contentType; }
 
   public getMessageName(): string { return this.asyncApiMessageKey; }
 
@@ -338,8 +307,7 @@ export class EpAsyncApiMessageDocument {
   }
 
   public getSchemaFileName(): string {
-    if (this.getContentType() === E_EpAsyncApiContentTypes.APPLICATION_JSON) return `${this.getPayloadSchemaName()}.${"json"}`;
-    return `${this.getMessageNameAsFilePath()}.${"xxx"}`
+    return `${this.getPayloadSchemaName()}.${"json"}`;
   }
 
   public getPayloadSchema(): any {

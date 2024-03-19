@@ -86,7 +86,6 @@ describe(`${scriptName}`, () => {
         xContextId: 'xContextId',
         requestBody: {
           applicationDomainId: ApplicationDomainId,
-          contentType: 'json',
           name: SchemaName,
           schemaType: 'jsonSchema',
           shared: false
@@ -108,9 +107,8 @@ describe(`${scriptName}`, () => {
         schemaId: SchemaId,
         version: '1.0.0',
       };
-      const schemaVersionResponse: SchemaVersionResponse = await SchemasService.createSchemaVersionForSchema({
+      const schemaVersionResponse: SchemaVersionResponse = await SchemasService.createSchemaVersion({
         xContextId: 'xContextId',
-        schemaId: SchemaId,
         requestBody: requestBody
       });
       const data: SchemaVersion | undefined = schemaVersionResponse.data;

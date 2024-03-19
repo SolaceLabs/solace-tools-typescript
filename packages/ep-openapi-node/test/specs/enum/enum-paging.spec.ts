@@ -122,9 +122,8 @@ describe(`${scriptName}`, () => {
           displayName: 'displayName',
           values: topicAddressEnumValueList
         };
-        const topicAddressEnumVersionResponse: TopicAddressEnumVersionResponse = await EnumsService.createEnumVersionForEnum({
+        const topicAddressEnumVersionResponse: TopicAddressEnumVersionResponse = await EnumsService.createEnumVersion({
           xContextId: 'xContextId',
-          enumId: EnumId,
           requestBody: requestBody,
         });
         expect(topicAddressEnumVersionResponse.data.id, TestLogger.createApiTestFailMessage('failed')).to.not.be.undefined;
@@ -143,9 +142,9 @@ describe(`${scriptName}`, () => {
       const topicAddressEnumVersionList: Array<TopicAddressEnumVersion> = [];
       let nextPage: number | null = 1;
       while(nextPage !== null) {
-        const topicAddressEnumVersionsResponse: TopicAddressEnumVersionsResponse = await EnumsService.getEnumVersionsForEnum({
+        const topicAddressEnumVersionsResponse: TopicAddressEnumVersionsResponse = await EnumsService.getEnumVersions({
           xContextId: 'xContextId',
-          enumId: EnumId,
+          enumIds: [EnumId],
           pageSize: PageSize,
           pageNumber: nextPage
         });

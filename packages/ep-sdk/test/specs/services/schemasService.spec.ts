@@ -16,7 +16,6 @@ import {
   EpSdkServiceError,
   EpSdkApplicationDomainsService,
   EpSdkSchemasService,
-  EEpSdkSchemaContentType,
   EEpSdkSchemaType,
 } from "../../../src";
 
@@ -63,7 +62,6 @@ describe(`${scriptName}`, () => {
           applicationDomainId: ApplicationDomainId,
           name: SchemaName,
           schemaType: EEpSdkSchemaType.JSON_SCHEMA,
-          contentType: EEpSdkSchemaContentType.APPLICATION_JSON,
         },
       });
       SchemaId = schemaResponse.data.id;
@@ -138,7 +136,6 @@ describe(`${scriptName}`, () => {
           applicationDomainId: ApplicationDomainId,
           name: SchemaName,
           schemaType: EEpSdkSchemaType.JSON_SCHEMA,
-          contentType: EEpSdkSchemaContentType.APPLICATION_JSON,
         },
       });
       SchemaId = schemaResponse.data.id;

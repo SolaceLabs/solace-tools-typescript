@@ -127,19 +127,23 @@ describe(`${scriptName}`, () => {
           epSdkCustomAttributes: [EventAttribute]
         });
         // create version 1
-        const version1 = await EventsService.createEventVersionForEvent({
-          eventId: eventId,
+        const version1 = await EventsService.createEventVersion({
           requestBody: {
             eventId: eventId,
             version: EventVersionString_1,
+            deliveryDescriptor: {
+              brokerType: EpSdkBrokerTypes.Solace
+            }   
           },
         });
         // create version 2
-        const version2 = await EventsService.createEventVersionForEvent({
-          eventId: eventId,
+        const version2 = await EventsService.createEventVersion({
           requestBody: {
             eventId: eventId,
             version: EventVersionString_2,
+            deliveryDescriptor: {
+              brokerType: EpSdkBrokerTypes.Solace
+            }   
           },
         });
       }

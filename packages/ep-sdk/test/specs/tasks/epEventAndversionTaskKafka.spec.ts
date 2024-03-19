@@ -20,7 +20,6 @@ import {
   EEpSdkTask_TargetState,
   EpSdkBrokerTypes,
   EEpSdkSchemaType,
-  EEpSdkSchemaContentType,
   EpSdkSchemaVersionsService,
   EpSdkStatesService,
   EpSdkEpEventVersionTask,
@@ -76,7 +75,6 @@ describe(`${scriptName}`, () => {
         applicationDomainId: ApplicationDomainId,
         name: SchemaName,
         schemaType: EEpSdkSchemaType.JSON_SCHEMA,
-        contentType: EEpSdkSchemaContentType.APPLICATION_JSON,
         shared: true,
       },
     });

@@ -1,8 +1,10 @@
 asyncapi: '2.4.0'
-x-ep-application-domain-name: ep-asyncapi-importer/test/passing/acme-retail/AcmeRetail-Central-IT-Provider-TillSystem-v1-Test.spec
+id: urn:com:acme-retail:central-it:provider:till-system:test
 info:
-  title: Central-IT-Provider-TillSystem-v1-Test
-  version: '1.2.5'
+  x-ep-application-domain-name: TestNewAppDomain
+  x-ep-assets-application-domain-name: AssetTestNewAppDomain
+  title: AcmeRetail-Central-IT-Provider-TillSystem-v1-Test
+  version: '1.2.3'
   description: |
     Test for Provider Service API for the Central IT Till System.
 
@@ -17,49 +19,103 @@ defaultContentType: application/json
 
 channels:
 
-  catalyst-labs/acme-retail/till-system/v1/{regionId_v1}/{storeId_v1}/receipt:
-    x-ep-event-name: Store Receipt
-    description: The topic to receive till receipts from stores on.
+  catalyst-labs/acme-retail/till-system/v1/{storeId}/receipt:
+    description: The topic to simulate sending till receipts from stores on.
     parameters:
-      storeId_v1:
-        $ref: '#/components/parameters/storeId-v1'
-      regionId_v1:
-        $ref: '#/components/parameters/regionId-v1'
+      storeId:
+        $ref: '#/components/parameters/storeId'
     subscribe:
-      summary: Receive till receipts from stores.
-      operationId: receiveStoreTillReceipts
+      summary: Simulate sending till receipts from stores.
+      operationId: sendStoreTillReceipts
       message:
         # x-parser-message-name: storeTillReceipt
         $ref: '#/components/messages/storeTillReceipt-v1'
 
-  catalyst-labs/acme-retail/till-system/v1/{regionId_v1}/{storeId_v1}/error:
-    x-ep-event-name: Till System Error
-    description: The topic to send errors as response to a transaction on.
+  catalyst-labs/acme-retail/till-system/v1/{storeId}/error:
+    description: The topic to receive errors as response to a transaction on.
     parameters:
-      storeId_v1:
-        $ref: '#/components/parameters/storeId-v1'
-      regionId_v1:
-        $ref: '#/components/parameters/regionId-v1'
+      storeId:
+        $ref: '#/components/parameters/storeId'
     publish:
-      summary: Send errors to store for transaction.
-      operationId: sendStoreTillSystemError
+      summary: Receive errors to store for transaction.
+      operationId: receiveStoreTillSystemError
       message:
-  #       # x-parser-message-name: storeTillReceipt
+        # x-parser-message-name: storeTillReceipt
         $ref: '#/components/messages/storeTillSystemError-v1'
 
 components:
   messages:
-
     storeTillReceipt-v1:
-      $ref: "https://raw.githubusercontent.com/SolaceLabs/solace-tools-typescript/references/asyncapi-specs/acme-retail/messages/storeTillReceipt-v1.yml"
+      name: storeTillReceipt-v1
+      title: Store Till Receipt
+      summary: Store Till Receipt.
+      contentType: application/json
+      # traits:
+      #   - $ref: '#/components/messageTraits/commonHeaders'
+      payload:
+        $ref: "#/components/schemas/storeTillReceipt-v1"
 
     storeTillSystemError-v1:
-      $ref: "https://raw.githubusercontent.com/SolaceLabs/solace-tools-typescript/references/asyncapi-specs/acme-retail/messages/storeTillSystemError-v1.yml"
+      name: storeTillSystemError-v1
+      title: Till System Error for transaction.
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/storeTillSystemError-v1"
+
+  schemas:
+    storeTillReceipt-v1:
+      type: object
+      properties:
+        payload:
+          $ref: "#/components/schemas/storeTillReceiptPayload-v1"
+        header:
+          $ref: "https://raw.githubusercontent.com/solace-iot-team/solace-apim-reference-designs/main/use-cases/acme-retail/central-it/schemas/CommonHeader.v1.yml"
+    storeTillReceiptPayload-v1:
+      type: array
+      items:
+        $ref: '#/components/schemas/tillReceiptLine-v1'
+    tillReceiptLine-v1:
+      type: object
+      properties:
+        sku:
+          $ref: "https://raw.githubusercontent.com/solace-iot-team/solace-apim-reference-designs/main/use-cases/acme-retail/central-it/schemas/sku.v1.yml"
+        quantity:
+          $ref: "https://raw.githubusercontent.com/solace-iot-team/solace-apim-reference-designs/main/use-cases/acme-retail/central-it/schemas/quantity.v1.yml"
+        price:
+          $ref: "https://raw.githubusercontent.com/solace-iot-team/solace-apim-reference-designs/main/use-cases/acme-retail/central-it/schemas/price.v1.yml"
+        currency:
+          $ref: "https://raw.githubusercontent.com/solace-iot-team/solace-apim-reference-designs/main/use-cases/acme-retail/central-it/schemas/currency.v1.yml"
+      required:
+        - sku
+        - quantity
+        - price
+        - currency
+
+    storeTillSystemError-v1:
+      type: object
+      properties:
+        payload:
+          $ref: "https://raw.githubusercontent.com/solace-iot-team/solace-apim-reference-designs/main/use-cases/acme-retail/central-it/schemas/storeTillSystemErrorPayload-v1.yml"
+        header:
+          $ref: "https://raw.githubusercontent.com/solace-iot-team/solace-apim-reference-designs/main/use-cases/acme-retail/central-it/schemas/CommonHeader.v1.yml"
+
+  # securitySchemes:
+  #   saslScram:
+  #     type: scramSha256
+  #     description: Provide your username and password for SASL/SCRAM authentication
 
   parameters:
-    storeId-v1:
+    storeId:
       description: The ID of the store.
       schema:
         type: string
-    regionId-v1:
-      $ref: "https://raw.githubusercontent.com/SolaceLabs/solace-tools-typescript/references/asyncapi-specs/acme-retail/parameters/regionId.v1.yml"
+
+  # messageTraits:
+  #   commonHeaders:
+  #     headers:
+  #       type: object
+  #       properties:
+  #         my-app-header:
+  #           type: integer
+  #           minimum: 0
+  #           maximum: 100
