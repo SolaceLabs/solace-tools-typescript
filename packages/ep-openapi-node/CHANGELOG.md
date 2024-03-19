@@ -1,5 +1,11 @@
 # @solace-labs/ep-openapi-node
 
+## 3.0.0
+
+### Major Changes
+
+- 75ecc73d7: Open API clients to 2.0.27 and removes all references to deprecated APIs
+
 ## 2.54.0
 
 ### Minor Changes

@@ -1,5 +1,17 @@
 # @solace-labs/ep-sdk
 
+## 0.63.0
+
+### Minor Changes
+
+- 75ecc73d7: Open API clients to 2.0.27 and removes all references to deprecated APIs
+
+### Patch Changes
+
+- Updated dependencies [75ecc73d7]
+  - @solace-labs/ep-openapi-node@3.0.0
+  - @solace-labs/ep-rt-openapi-node@1.1.0
+
 ## 0.62.0
 
 ### Minor Changes

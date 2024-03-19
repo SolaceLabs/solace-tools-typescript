@@ -1,5 +1,16 @@
 # @solace-labs/ep-asyncapi
 
+## 0.59.0
+
+### Minor Changes
+
+- 75ecc73d7: Open API clients to 2.0.27 and removes all references to deprecated APIs
+
+### Patch Changes
+
+- Updated dependencies [75ecc73d7]
+  - @solace-labs/ep-openapi-node@3.0.0
+
 ## 0.58.0
 
 ### Minor Changes
