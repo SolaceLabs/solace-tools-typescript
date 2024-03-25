@@ -1,5 +1,11 @@
 # @solace-labs/ep-async-api-importer
 
+## 0.60.0
+
+### Minor Changes
+
+- 4c27ff0a5: Change repo url
+
 ## 0.59.0
 
 ### Minor Changes
