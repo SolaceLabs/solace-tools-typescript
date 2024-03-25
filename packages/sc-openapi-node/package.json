@@ -8,7 +8,7 @@
   "private": true,
   "repository": {
     "type": "git",
-    "url": "github:SolaceLabs/solace-tools",
+    "url": "github:SolaceLabs/solace-tools-typescript",
     "directory": "packages/ep-apim-openapi-node"
   },
   "bugs": {
