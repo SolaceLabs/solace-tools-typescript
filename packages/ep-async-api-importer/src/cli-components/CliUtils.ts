@@ -56,7 +56,7 @@ export class CliUtils {
 
   public static convertStringToFilePath(str: string): string {
     //eslint-disable-next-line
-    return str.replaceAll(/[^0-9a-zA-Z\/\.]+/g, '-');
+    return str.replaceAll(/[^0-9a-zA-Z\\.]+/g, '-');
   }
 
   // public static readFileContentsAsJson = (filePath: string): any => {
