@@ -1,5 +1,11 @@
 # @solace-labs/ep-async-api-importer
 
+## 0.61.0
+
+### Minor Changes
+
+- ecd84e821: Bug Fix: creating files with fwd slashes
+
 ## 0.60.0
 
 ### Minor Changes
