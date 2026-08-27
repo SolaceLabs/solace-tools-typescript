@@ -1,0 +1,25 @@
+version: 3
+
+project:
+  locator: SolaceLabs_ep-async-api-importer
+  id: SolaceLabs_ep-async-api-importer
+  name: ep-async-api-importer
+  teams: []
+  labels:
+    - javascript
+
+vendoredDependencies:
+  forceRescans: false
+  scanMethod: CLILicenseScan
+  licenseScanPathFilters:
+    exclude:
+      - "./.git"
+      - "./.github"
+
+paths:
+  exclude:
+    - ./.git
+    - ./.github
+
+telemetry:
+  scope: full
