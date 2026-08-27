@@ -1,0 +1,25 @@
+version: 3
+
+project:
+  locator: SolaceLabs_ep-asyncapi
+  id: SolaceLabs_ep-asyncapi
+  name: ep-asyncapi
+  teams: []
+  labels:
+    - javascript
+
+vendoredDependencies:
+  forceRescans: false
+  scanMethod: CLILicenseScan
+  licenseScanPathFilters:
+    exclude:
+      - "./.git"
+      - "./.github"
+
+paths:
+  exclude:
+    - ./.git
+    - ./.github
+
+telemetry:
+  scope: full
