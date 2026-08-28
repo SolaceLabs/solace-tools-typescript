@@ -1,0 +1,25 @@
+version: 3
+
+project:
+  locator: SolaceLabs_solace-tools-typescript
+  id: SolaceLabs_solace-tools-typescript
+  name: solace-tools-typescript
+  teams: []
+  labels:
+    - javascript
+
+vendoredDependencies:
+  forceRescans: false
+  scanMethod: CLILicenseScan
+  licenseScanPathFilters:
+    exclude:
+      - "./.git"
+      - "./.github"
+
+paths:
+  exclude:
+    - ./.git
+    - ./.github
+
+telemetry:
+  scope: full
