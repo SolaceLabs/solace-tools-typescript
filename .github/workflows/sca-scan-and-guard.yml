@@ -17,19 +17,9 @@ permissions:
 
 jobs:
   sca_scan:
-    strategy:
-      matrix:
-        include:
-          - { path: packages/ep-sdk, name: ep-sdk }
-          - { path: packages/ep-async-api-importer, name: ep-async-api-importer }
-          - { path: packages/ep-openapi-node, name: ep-openapi-node }
-          - { path: packages/ep-asyncapi, name: ep-asyncapi }
-          - { path: packages/ep-migrate, name: ep-migrate }
     uses: SolaceDev/solace-public-workflows/.github/workflows/sca-scan-and-guard.yaml@main
     with:
       setup_actions: '["setup-node"]'
-      additional_scan_params: |
-        fossa.only_path=${{ matrix.path }}
     secrets:
       FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
 
@@ -41,14 +31,6 @@ jobs:
       needs.sca_scan.result == 'success'
       && github.event_name == 'push'
       && github.ref_name == github.event.repository.default_branch
-    strategy:
-      matrix:
-        include:
-          - { name: ep-sdk }
-          - { name: ep-async-api-importer }
-          - { name: ep-openapi-node }
-          - { name: ep-asyncapi }
-          - { name: ep-migrate }
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -71,7 +53,7 @@ jobs:
           ddb_item_to_be_added: |
             {
               "squad": "cto",
-              "repository": "${{ matrix.name }}",
+              "repository": "${{ github.event.repository.name }}",
               "dev": {
                 "sha": "${{ github.sha }}",
                 "version": "${{ github.ref_name }}"
