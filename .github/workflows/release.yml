@@ -26,22 +26,22 @@ jobs:
         id: auth
       - name: Cancel Workflow
         if: ${{ always() && steps.auth.outputs.IS_AUTHORIZED == 'false' }}
-        uses: andymckay/cancel-action@0.2
+        uses: andymckay/cancel-action@8f8510d9dea52fcc8eb6ca10d6ce47fd5fc43cd8 # 0.2
 
       - name: Check out code
-        uses: actions/checkout@v3
+        uses: actions/checkout@a37ce9120846195fa4ece8f58b268e6043cb2f26 # v3
         # with:
         #   # ref: ${{ github.ref }}
 
       - name: Setup Node.js environment
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@3235b876344d2a9aa001b8d1453c930bba69e610 # v3
         with:
           node-version: 16
           cache: 'yarn'
           # registry-url: 'https://registry.npmjs.org'
 
       - name: Setup Python Environment
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@7f4fc3e22c37d6ff65e88745f38bd3157c663f7c # v4
         with:
           python-version: 3.8
 
